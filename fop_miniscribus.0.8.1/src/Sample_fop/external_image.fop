@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
+     <cms:pager printer_format="A4" build="14.10.2007 17:36:07" editor="FOP converter to QT-TextDocument" />
+     <fo:layout-master-set>
+          <fo:simple-page-master margin-left="22pt" page-height="841.891pt" master-name="A4" margin-bottom="22pt" margin-top="22pt" margin-right="22pt" page-width="595.277pt" >
+               <fo:region-body margin-left="22pt" background-color="#ffffff" margin-bottom="22pt" region-name="xsl-region-body" margin-top="22pt" margin-right="22pt" />
+          </fo:simple-page-master>
+     </fo:layout-master-set>
+     <fo:page-sequence master-reference="A4" >
+          <fo:flow flow-name="xsl-region-body" >
+               <fo:block-container width="500pt" opacity="255" margin-left="2pt" z-index="13.333" absolute-position="absolute" height="500pt" background-color="#ffffff" left="23.4999pt" margin-bottom="2pt" id="layer_10" margin-top="2pt" margin-right="2pt" top="23.3008pt" imgcount="1" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="13pt" >external image from http://bookshop.gfu.net</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >sample:</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" > 
+                    <fo:external-graphic height="12cm" src="http://bookshop.gfu.net/AxCMSTemplates_GFU/pics/products/3898643948.jpg"/>
+                    </fo:block>
+               </fo:block-container>
+          </fo:flow>
+     </fo:page-sequence>
+</fo:root>
