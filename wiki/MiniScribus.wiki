@@ -1,0 +1,13 @@
+#summary One-sentence summary of this page.
+
+= Fop MiniScribus XSL-Fo   =
+
+Add your content here.
+= Features: =
+*Inline SVG vector images ( instream-foreign-object )
+*Read all images supported from QT. Tiff,jpeg,gif,png,ppm, bmp.
+*Local or external http://... images ( fo:external-graphic)
+*Full support to Table Background color, cell color, spacing , padding,
+*Paragraph margin padding and inline formatting from avaiable fonts.
+*External link or internal by ID.
+*Document can render self or by Apache-fop java, on server or local.
