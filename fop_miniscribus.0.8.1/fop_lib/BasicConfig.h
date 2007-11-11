@@ -168,9 +168,9 @@ return humanread;
 /* check if a net file to download */
 static inline bool IsNetFile( QString fullFileName )
 {
-    if (fullFileName.startsWith("http://", Qt::CaseInsensitive) or 
-        fullFileName.startsWith("https://", Qt::CaseInsensitive) or
-        fullFileName.startsWith("ftp://", Qt::CaseInsensitive) or
+    if (fullFileName.startsWith("http://", Qt::CaseInsensitive) ||
+        fullFileName.startsWith("https://", Qt::CaseInsensitive) ||
+        fullFileName.startsWith("ftp://", Qt::CaseInsensitive) ||
         fullFileName.startsWith("webdav://", Qt::CaseInsensitive)  )
        { 
          return true;
