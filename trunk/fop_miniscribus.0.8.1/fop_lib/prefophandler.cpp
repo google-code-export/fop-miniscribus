@@ -396,6 +396,8 @@ QTextCharFormat PreFopHandler::NewMixedBlockFormat( const QDomElement e  )
                  
                 
             }
+            
+     return pf;
 }
 
 

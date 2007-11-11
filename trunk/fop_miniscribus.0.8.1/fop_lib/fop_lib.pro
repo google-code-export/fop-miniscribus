@@ -14,16 +14,32 @@ LANGUAGE	= C++
 DESTDIR	= ../all_os_libs/
 TARGET	= fop
 
+MOC_DIR	= build/.moc
+RCC_DIR	= build/.rcc
+OBJECTS_DIR = build/.obj
+UI_DIR	= ui
+
+
+win32 {
+win32-msvc* {
+   MOC_DIR	= build/.mocmsvc
+   ############################################
+   CONFIG += embed_manifest_exe 
+   CONFIG -= flat
+   DEFINES += MSBOOT ALERTME 
+   ############################################
+}
+
+
+}
+
 
 
 QT += xml
 QT += network
 QT += svg 
 
-MOC_DIR	= build/.moc
-RCC_DIR	= build/.rcc
-OBJECTS_DIR = build/.obj
-UI_DIR	= ui
+
 
 
 macx {

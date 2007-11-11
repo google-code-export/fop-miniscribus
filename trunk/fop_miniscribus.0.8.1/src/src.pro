@@ -15,6 +15,23 @@ win32:RC_FILE = win.rc
 CONFIG   += qt warn_off release
 
 
+win32 {
+win32-msvc* {
+   MOC_DIR	= build/.mocmsvc
+   ############################################
+   CONFIG += embed_manifest_exe 
+   CONFIG -= flat
+   DEFINES += MSBOOT ALERTME 
+   ############################################
+}
+
+
+}
+
+
+
+
+
 macx {
 RC_FILE = zzz.icns
 QTPLUGIN     += qmng qjpeg qgif qtiff
