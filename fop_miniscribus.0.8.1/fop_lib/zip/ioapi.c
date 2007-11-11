@@ -64,7 +64,7 @@ int ZCALLBACK ferror_file_func OF((
    voidpf opaque,
    voidpf stream));
 
-
+#ifndef(MSBOOT)
 voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
    voidpf opaque;
    const char* filename;
@@ -86,6 +86,7 @@ voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
         file = fopen(filename, mode_fopen);
     return file;
 }
+#endif
 
 
 uLong ZCALLBACK fread_file_func (opaque, stream, buf, size)
