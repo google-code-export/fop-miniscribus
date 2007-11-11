@@ -1,6 +1,13 @@
 #ifndef BASICCONFIG_H
 #define BASICCONFIG_H
 
+#ifdef MSBOOT
+#error
+#endif
+
+
+
+
 #include <QInputDialog>
 #include <QMenu>
 #include <QString>

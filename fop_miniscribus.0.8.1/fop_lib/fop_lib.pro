@@ -22,6 +22,7 @@ UI_DIR	= ui
 
 win32 {
 win32-msvc* {
+   message("WARNING ZLIB NOT RUNNING ON YOUR COMPILER MUST MAKE A PATCH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!") 
    MOC_DIR	= build/.mocmsvc
    ############################################
    CONFIG += embed_manifest_exe 
