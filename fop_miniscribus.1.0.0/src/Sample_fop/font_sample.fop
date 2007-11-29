@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" printer_format="A4" xmlns:fo="http://www.w3.org/1999/XSL/Format" build="13.10.2007 12:46:51" editor="FOP converter to QT-TextDocument" xmlns:svg="http://www.w3.org/2000/svg" >
+     <fo:layout-master-set>
+          <fo:simple-page-master margin-left="5.6693pt" page-height="841.891pt" master-name="Simple-A4-Page" margin-bottom="5.6693pt" master-right="5.6693pt" margin-top="5.6693pt" page-width="595.277pt" >
+               <fo:region-body margin-left="5.6693pt" background-color="#ffffff" margin-bottom="5.6693pt" region-name="PageBody" margin-top="5.6693pt" margin-right="5.6693pt" />
+          </fo:simple-page-master>
+     </fo:layout-master-set>
+     <fo:page-sequence master-reference="Simple-A4-Page" >
+          <fo:flow flow-name="PageBody" >
+               <fo:block-container width="168pt" opacity="255" border-start-color="#000000" margin-left="5pt" z-index="13.3333" absolute-position="absolute" height="700pt" background-color="#ffffff" left="391.639pt" margin-bottom="2pt" border-width="1pt" lock="1" id="layer_10" margin-top="6pt" margin-right="2pt" top="29.25pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >
+                         <fo:inline font-family="MS Shell Dlg 2" font-style="bold" color="#000000" font-size="8pt" > </fo:inline>
+                         <fo:inline font-family="MS Shell Dlg 2" font-style="bold underline" color="#000000" font-size="8pt" >Helvetica</fo:inline>
+                         <fo:inline font-family="MS Shell Dlg 2" font-style="bold" color="#000000" font-size="8pt" > </fo:inline>
+                    </fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" font-style="bold" color="#000000" font-size="8pt" />
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" font-style="bold" color="#000000" font-size="8pt" />
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" font-style="bold" color="#000000" font-size="10pt" >! " # $ % &amp; ' ( ) *</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >+ , - . / 0 1 2 3 4</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >5 6 7 8 9 : ; &lt; = ></fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >? @ A B C D E F G H</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >I J K L M N O P Q R</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >S T U V W X Y Z [ \</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >] ^ _ ` a b c d e f</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >g h i j k l m n o p</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >q r s t u v w x y z</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >{ | } ~ ¡ ¢ £ ¤ ¥ ¦</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >§ ¨ © ª « ¬ ® ¯ ° ±</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >² ³ ´ µ ¶ · ¸ ¹ º »</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >¼ ½ ¾ ¿ À Á Â Ã Ä Å</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Æ Ç È É Ê Ë Ì Í Î Ï</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ð Ñ Ò Ó Ô Õ Ö × Ø Ù</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ú Û Ü Ý Þ ß à á â ã</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >ä å æ ç è é ê ë ì í</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >î ï ð ñ ò ó ô õ ö ÷</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >ø ù ú û ü ý þ ÿ</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Œ œ Š š Ÿ</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ž ž ƒ ˜ – — ‘</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >’ ‚ “ ” „ † ‡</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >• … ‰ ‹ › ™</fo:block>
+                    <fo:block font-family="Helvetica" text-align="left" color="#000000" font-size="10pt" />
+                    <fo:block font-family="Helvetica" text-align="left" color="#000000" font-size="10pt" />
+               </fo:block-container>
+               <fo:block-container width="168pt" opacity="255" border-start-color="#000000" margin-left="5pt" z-index="16.8066" absolute-position="absolute" height="700pt" background-color="#ffffff" left="212.825pt" margin-bottom="2pt" border-width="1pt" lock="1" id="layer_1010" margin-top="6pt" margin-right="2pt" top="28.6532pt" imgcount="0" >
+                    <fo:block font-family="Times New Roman" text-align="left" font-style="bold underline" color="#000000" font-size="10pt" >Time New Roman</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" color="#000000" font-size="10pt" />
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >! " # $ % &amp; ' ( ) *</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >+ , - . / 0 1 2 3 4</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >5 6 7 8 9 : ; &lt; = ></fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >? @ A B C D E F G H</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >I J K L M N O P Q R</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >S T U V W X Y Z [ \</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >] ^ _ ` a b c d e f</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >g h i j k l m n o p</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >q r s t u v w x y z</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >{ | } ~ ¡ ¢ £ ¤ ¥ ¦</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >§ ¨ © ª « ¬ ® ¯ ° ±</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >² ³ ´ µ ¶ · ¸ ¹ º »</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >¼ ½ ¾ ¿ À Á Â Ã Ä Å</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Æ Ç È É Ê Ë Ì Í Î Ï</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ð Ñ Ò Ó Ô Õ Ö × Ø Ù</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ú Û Ü Ý Þ ß à á â ã</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >ä å æ ç è é ê ë ì í</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >î ï ð ñ ò ó ô õ ö ÷</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >ø ù ú û ü ý þ ÿ</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Œ œ Š š Ÿ</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ž ž ƒ ˜ – — ‘</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >’ ‚ “ ” „ † ‡</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >• … ‰ ‹ › ™</fo:block>
+                    <fo:block font-family="Times New Roman" text-align="left" color="#000000" font-size="10pt" />
+                    <fo:block font-family="Times New Roman" text-align="left" color="#000000" font-size="10pt" />
+               </fo:block-container>
+               <fo:block-container width="168pt" opacity="255" border-start-color="#000000" margin-left="5pt" z-index="20.2799" absolute-position="absolute" height="700pt" background-color="#ffffff" left="30.4098pt" margin-bottom="2pt" border-width="1pt" lock="1" id="layer_2010" margin-top="6pt" margin-right="2pt" top="29.8567pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" font-style="bold underline" color="#000000" font-size="10pt" >Arial</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="10pt" />
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="10pt" />
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >! " # $ % &amp; ' ( ) *</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >+ , - . / 0 1 2 3 4</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >5 6 7 8 9 : ; &lt; = ></fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >? @ A B C D E F G H</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >I J K L M N O P Q R</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >S T U V W X Y Z [ \</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >] ^ _ ` a b c d e f</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >g h i j k l m n o p</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >q r s t u v w x y z</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >{ | } ~ ¡ ¢ £ ¤ ¥ ¦</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >§ ¨ © ª « ¬ ® ¯ ° ±</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >² ³ ´ µ ¶ · ¸ ¹ º »</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >¼ ½ ¾ ¿ À Á Â Ã Ä Å</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Æ Ç È É Ê Ë Ì Í Î Ï</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ð Ñ Ò Ó Ô Õ Ö × Ø Ù</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ú Û Ü Ý Þ ß à á â ã</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >ä å æ ç è é ê ë ì í</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >î ï ð ñ ò ó ô õ ö ÷</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >ø ù ú û ü ý þ ÿ</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Œ œ Š š Ÿ</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >Ž ž ƒ ˜ – — ‘</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >’ ‚ “ ” „ † ‡</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="10pt" color="#000000" font-size="10pt" >• … ‰ ‹ › ™</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="10pt" />
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="10pt" />
+               </fo:block-container>
+          </fo:flow>
+     </fo:page-sequence>
+</fo:root>
