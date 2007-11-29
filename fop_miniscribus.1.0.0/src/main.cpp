@@ -497,7 +497,7 @@ GuiMain->view->OpenDesktop( QUrl ("http://ciz.ch/") );
         
 void ChecUpdateApps() 
 {
-GuiMain->view->OpenDesktop( QUrl("http://sourceforge.net/projects/wysiwyg-edit") );
+GuiMain->view->OpenDesktop( QUrl("http://code.google.com/p/fop-miniscribus/") );
 }
 
 
