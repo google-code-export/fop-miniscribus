@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" printer_format="A4" xmlns:fo="http://www.w3.org/1999/XSL/Format" build="13.10.2007 13:11:07" editor="FOP converter to QT-TextDocument" xmlns:svg="http://www.w3.org/2000/svg" >
+     <fo:layout-master-set>
+          <fo:simple-page-master margin-left="5.6693pt" page-height="841.891pt" master-name="Simple-A4-Page" margin-bottom="5.6693pt" master-right="5.6693pt" margin-top="5.6693pt" page-width="595.277pt" >
+               <fo:region-body margin-left="5.6693pt" background-color="#ffffff" margin-bottom="5.6693pt" region-name="PageBody" margin-top="5.6693pt" margin-right="5.6693pt" />
+          </fo:simple-page-master>
+     </fo:layout-master-set>
+     <fo:page-sequence master-reference="Simple-A4-Page" >
+          <fo:flow flow-name="PageBody" >
+               <fo:block-container width="487pt" opacity="1" margin-left="2pt" z-index="13.333" absolute-position="absolute" height="776pt" background-color="#ffffff" left="61.3051pt" margin-bottom="2pt" id="layer_10" margin-top="2pt" margin-right="2pt" top="30.5023pt" imgcount="0" >
+                    
+                    
+            <fo:block font-size="18pt" font-weight="bold">1. FOP test for images</fo:block>
+
+
+ <fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em">A GIF image in FOP</fo:block>
+  <fo:block>
+    <fo:external-graphic src="graphics/xml_feather.gif"/>
+</fo:block>
+
+<fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em">A transparent GIF image in FOP</fo:block>
+  <fo:block>
+    <fo:external-graphic src="graphics/xml_feather_transparent.gif"/>
+  </fo:block>
+
+<fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em">A JPEG image in FOP</fo:block>
+  <fo:block>
+    <fo:external-graphic src="graphics/fop.jpg"/>
+  </fo:block>
+                    
+                    
+        
+   <fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em">A BMP image in FOP</fo:block>
+  <fo:block>
+    <fo:external-graphic src="graphics/linux.bmp"/>
+  </fo:block>
+  
+
+<fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em">A PNG image in FOP</fo:block>
+  <fo:block>
+    <fo:external-graphic src="graphics/asf-logo.png"/>
+  </fo:block>
+  
+  <fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em">A TIFF image in FOP</fo:block>
+  <fo:block>
+    <fo:external-graphic src="graphics/xml_fax.tif"/>
+  </fo:block>
+
+
+
+  <fo:block font-size="16pt" font-weight="bold" space-before.minimum="1em" space-before.optimum="1.5em" space-before.maximum="2em"/>
+  
+  <fo:block>
+  This section is only required to show that the layout still works.
+ </fo:block>
+
+
+
+
+                    
+                    
+                    
+               </fo:block-container>
+          </fo:flow>
+     </fo:page-sequence>
+</fo:root>
