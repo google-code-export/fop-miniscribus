@@ -196,17 +196,16 @@ QString  FloatDiagram::SaveHtmlImage( const QString urlimage , const QString pat
                      QPixmap trassvg = RenderPixmapFromSvgByte(  i.value().toByteArray() ); 
                      trassvg.save(path + finame,"PNG",100);
                      return finame;                   
+                 } else {
+                     QPixmap allformat;
+                     allformat.loadFromData( i.value().toByteArray() );
+                     allformat.save(path + finame,"PNG",100);
+                     return finame;
                  }
                  
                  
                                           
-                                          QFile f(path + finame);
-                                          if ( f.open( QIODevice::WriteOnly ) ) 
-                                          {
-                                            f.write(i.value().toByteArray());
-                                            f.close();
-                                            return finame;
-                                          }
+                                         
              }
          } 
          
