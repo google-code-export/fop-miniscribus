@@ -8,9 +8,6 @@ PageDB::PageDB( QObject * parent )
       PageDimensionName *Pra = new PageDimensionName("CH-A4",FopInt("211mm"),FopInt("297mm"),QRectF(20,20,20,20),QColor(BASECOLOR),0);
                        Pra->display("211mm x 297mm");
     
-    PageDimensionName *speciale = new PageDimensionName("CH-A4-Special",898.5,1263,QRectF(20,20,20,20),QColor(BASECOLOR),0);
-                       speciale->display("211mm x 297mm");   /* 898.5  1263 */
-    
     PageDimensionName *Pra0 = new PageDimensionName("A4",FopInt("210mm"),FopInt("297mm"),QRectF(10,10,10,10),QColor(BASECOLOR),0);
                        Pra0->display("210mm x 297mm");
      PageDimensionName *Pra1 = new PageDimensionName("A0",FopInt("841mm"),FopInt("1189mm"),QRectF(22,22,22,22),QColor(BASECOLOR),5);
@@ -35,19 +32,6 @@ PageDB::PageDB( QObject * parent )
      PageDimensionName *Pra11 = new PageDimensionName("C4-Vertical",FopInt("114mm"),FopInt("229mm"),QRectF(22,22,22,22),QColor(BASECOLOR),0);
                        Pra11->display("114mm x 229mm");
     
-    PageDimensionName *Pra20 = new PageDimensionName("Letter",FopInt("216mm"),FopInt("279mm"),QRectF(22,22,22,22),QColor(BASECOLOR),2);
-                       Pra20->display("216mm x 279mm");
-                       
-                       /* 216 x 279 mm  216 x 356 mm 279 x 432 mm */
-      PageDimensionName *Pra21 = new PageDimensionName("Legal",FopInt("216mm"),FopInt("356mm"),QRectF(22,22,22,22),QColor(BASECOLOR),3);
-                       Pra21->display("216mm x 356mm");    
-
-     PageDimensionName *Pra22 = new PageDimensionName("DLE",FopInt("110mm"),FopInt("220mm"),QRectF(22,22,22,22),QColor(BASECOLOR),26);
-                       Pra22->display("110mm x 220mm");   
-                       
-                       
-       PageDimensionName *Pra23 = new PageDimensionName("Tabloid",FopInt("279mm"),FopInt("432mm"),QRectF(22,22,22,22),QColor(BASECOLOR),29);
-                       Pra23->display("279mm x 432mm");   
     
     Pages.append(Pra);
     Pages.append(Pra0);
@@ -61,11 +45,6 @@ PageDB::PageDB( QObject * parent )
     Pages.append(Pra8);
     Pages.append(Pra10);
     Pages.append(Pra11);
-    Pages.append(speciale);
-    Pages.append(Pra20);
-    Pages.append(Pra21);
-    Pages.append(Pra22);
-    Pages.append(Pra23);
     emit newdata();
 }
 
@@ -322,7 +301,6 @@ QTextCharFormat PreFopHandler::GlobalCharFormat( const QDomElement e , QTextChar
              }
              if (nod.nodeName().toLower() == "font-family") {
                  QFont userfont( nod.nodeValue() ); 
-                       userfont.setKerning(true);
                  if (userfont.exactMatch()) {
                           if (fontstrech !=0) {
                           userfont.setStretch ( fontstrech ); 
