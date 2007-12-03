@@ -124,7 +124,7 @@ void  Fop_Handler::ParserParagraph( const QDomElement e , QTextDocument * d , Fo
        if (firsttdcell) {
        CursorStatementPosition = Tcursor.position();   /* latest cursor position  */
        } else {
-       CursorStatementPosition = Tcursor.position();
+       CursorStatementPosition = 0;
        }
        
     
@@ -168,6 +168,7 @@ void Fop_Handler::HandleBlock( QTextBlock  para  , QDomElement appender )
           QTextFragment fr = de.fragment();
               if (fr.isValid()) {
                positioner++;
+                  bool tisalviono;
                   const QTextCharFormat base = fr.charFormat();
                   int staycursorpos =  fr.position();
                   Pics = base.toImageFormat();
@@ -179,16 +180,24 @@ void Fop_Handler::HandleBlock( QTextBlock  para  , QDomElement appender )
                   const QString hrefadress = Pics.name();
                   if (hrefadress.startsWith("/svg/",Qt::CaseInsensitive)) {
                   /* difference only dwo way vector and other as png! */
-                  newnameimage = FilenameAllow( CurrentIdLayer + "-" + hrefadress + ".svg");
+                  newnameimage = FilenameAllow( hrefadress + ".svg");
                   } else {
-                  newnameimage = FilenameAllow( CurrentIdLayer + "-" + hrefadress + ".png");
+                  newnameimage = FilenameAllow( hrefadress + ".png");
                   }
                   
                   
                   ImageFilename = newnameimage;
                   newnameimage = newnameimage.prepend(ImageFopBaserRefDir);
+                  
+                  QFileInfo PictureonDisc( newnameimage );
+                  
                     if (hrefadress.contains("external")) {
-                           bool aisalvato = SaveImageExterPath(hrefadress,newnameimage);
+                        
+                              if (!PictureonDisc.exists())  {
+                              tisalviono = SaveImageExterPath(hrefadress,newnameimage);
+                              } else {
+                              tisalviono = true;
+                              }
                               QDomElement imageELO = wdoc.createElement("fo:external-graphic");
                               
                               imageELO.setAttribute ("src",FOPIMAGEDIR + ImageFilename);
@@ -199,7 +208,7 @@ void Fop_Handler::HandleBlock( QTextBlock  para  , QDomElement appender )
                               imageELO.setAttribute ("height",QString("%1pt").arg(Pics.height()));
                               }
                               /* if saved image append */
-                              if (aisalvato) {
+                              if (tisalviono) {
                               paragraph.appendChild(imageELO);
                               }
                               //////////qDebug() << "### salvataggio di  -> " << ImageFilename << " si/no->" << aisalvato; 
@@ -628,18 +637,13 @@ void  Fop_Handler::ParserTable( const QDomElement e , QTextDocument * d , Fop_La
     return;
     }
     
-    Fop_Block *foppi = new Fop_Block(imagecounter,e,"fo:table");
-    
+    Fop_Block *foppi = new Fop_Block(imagecounter,e,"fo:table");    /* grep current source to play */
     qreal tableborderborder = TakeOneBorder(e);
     qreal tablewidth = Unit(e.attribute ("width",QString("0")));
     QDomElement co = e.parentNode().toElement();
-    
     QTextCursor Tcursor = QTextCursor(d);
     bool IsCorrectCursor = Tcursor.movePosition(QTextCursor::End);
-    
-     
     int mappos = Tcursor.position();  /* last position from last cursor on class ! */
-    
     
   QTextCursor cellCursor;  /* new cursor only for cell tabbing */
   QString tatype = e.attribute( "table-layout" );  /* on attribute root table */
@@ -671,18 +675,11 @@ void  Fop_Handler::ParserTable( const QDomElement e , QTextDocument * d , Fop_La
     return;
     }
     ////////qDebug() << "### true row  " << columnCounter << " list" << coolsizes;
-    
     /* #########################base table #######################################*/
     QTextTable *qtable = Tcursor.insertTable( rowCounter, columnCounter );
-    
-    
-    
-    
-    
     ///////qDebug() << "### parse table... ";
     ////////qDebug() << "### rowCounter " << rowCounter;
     ////////qDebug() << "### columnCounter " << columnCounter;
-    
     QTextTableFormat tableFormat;
     QString tbg = bodytable.attribute("background-color");
     
@@ -695,7 +692,6 @@ void  Fop_Handler::ParserTable( const QDomElement e , QTextDocument * d , Fop_La
     if (!tbg.isEmpty()) {
     tableFormat.setBackground ( QColor(tbg) ); 
     }
-    
     tableFormat.setBorder(borderDik);
     tableFormat.setCellSpacing(Unit(bodytable.attribute ("cell-space",QString("0"))));
     tableFormat.setCellPadding(TakeOnePadding(bodytable));
@@ -780,7 +776,7 @@ void  Fop_Handler::ParserTable( const QDomElement e , QTextDocument * d , Fop_La
                                     if (blocksDD == 1) {
                                     ParserParagraph(cellinside,d,layer,FirstcellInitCursor,true); 
                                     } else {
-                                    ParserParagraph(cellinside,d,layer,CursorStatementPosition,false);    
+                                    ParserParagraph(cellinside,d,layer,CursorStatementPosition,true);    
                                     }
                                     
                                 cellinside = cellinside.nextSiblingElement("fo:block");
