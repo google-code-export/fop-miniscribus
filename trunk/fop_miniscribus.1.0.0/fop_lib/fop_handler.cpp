@@ -1536,6 +1536,9 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
     const QString hrefimageplace = ImagesrcUrl(e);   /* grab url from image on main.h */
     ////////////qDebug() << "### hrefimageplace " << hrefimageplace;
     ////////qDebug() << "### ImageParserTag " << wi << "X" << hi;
+    
+    QFileInfo fixurl(hrefimageplace);
+    
     if (IsNetFile(hrefimageplace)) {
         /* remote file is placed on qmap container is downloaded before init QTextDocument */
         
@@ -1551,7 +1554,7 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
      derangedata = ResourceBlockRemoteImage( hrefimageplace  ).toByteArray();
         
     }  else {
-     QFileInfo fixurl(hrefimageplace);
+     
      extension =  fixurl.completeSuffix().toLower();
 
                     /* decompressed item xx */
