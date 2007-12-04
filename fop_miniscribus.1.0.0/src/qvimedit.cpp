@@ -4,6 +4,10 @@
 /*  incomming class name QVimedit */
 //
 
+#include "prefophandler.h"
+#include "fop_handler.h"
+
+
 QString QVimedit::ImageFilterHaving() const
 {
   QString filter;
@@ -17,8 +21,17 @@ QString QVimedit::ImageFilterHaving() const
   }
   filter += ");;";
   QString filterSimple;
+  QString gsversion = getGSVersion();
+  
+  qDebug() << "### args " << gsversion;
+  
   
   filterSimple += tr( "Scalable Vector Graphics" ) + " (*.svg *.svg.gz);;";
+  if (gsversion.size() > 4) {
+   filterSimple += tr( "PostScript Vector Graphics" ) + " (*.ps *.eps);;"; 
+   filterSimple += tr( "PDF Page units" ) + " (*.pdf);;"; 
+  }
+  
   for ( int y = 0; y < formats.count(); ++y ) {
 
     QString form( formats[ y ] );
@@ -134,10 +147,26 @@ void  QVimedit::InsertImageonCursor()
         }
         /* read image */
         if (extension.contains("sv")) {
-            /* no build instream here */
-        imgresor = QUrl(QString(":/svg/external-paste-%1").arg(TimestampsMs));
+        imgresor = QUrl(QString(":/png/external-paste-%1").arg(TimestampsMs));
         resultimage = RenderPixmapFromSvgByte(  derangedata );
-        } else {
+        } else if (extension.contains("ps") || extension.contains("eps")) {
+        imgresor = QUrl(QString(":/png/external-paste-%1").arg(TimestampsMs));
+            QApplication::restoreOverrideCursor();
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        resultimage = LoadPS( fixurl.absoluteFilePath() );
+        } else if (extension.contains("pdf")) {
+        imgresor = QUrl(QString(":/png/external-paste-%1").arg(TimestampsMs));
+            QApplication::restoreOverrideCursor();
+            int page = QInputDialog::getInteger(this, tr("Render Page Nr."),tr("Page:"),1, 1, 100, 1);
+            int large = QInputDialog::getInteger(this, tr("Page scaled to width"),tr("Point unit:"),400, 10, 3000, 10);
+            if (page > 0 && large > 0) {
+                QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+                resultimage = LoadPDF( fixurl.absoluteFilePath() ,page,large);
+            } else {
+                QApplication::restoreOverrideCursor();
+            return;
+            }
+        }  else {
         imgresor = QUrl(QString(":/png/external-paste-%1").arg(TimestampsMs));
         resultimage.loadFromData( derangedata );
         }
@@ -149,8 +178,17 @@ void  QVimedit::InsertImageonCursor()
         return;
         }
         
-        ImageContainer.insert(imgresor.toString(),derangedata);
-        scaledsimage = resultimage.scaledToWidth(200);
+         
+         QByteArray bytes;
+         QBuffer buffer(&bytes);
+         buffer.open(QIODevice::WriteOnly);
+         
+        
+        
+        
+        scaledsimage = resultimage.scaledToWidth(resultimage.width());
+        scaledsimage.save(&buffer, "PNG");
+        ImageContainer.insert(imgresor.toString(),bytes);
         document()->addResource(QTextDocument::ImageResource,imgresor,resultimage);
         QTextImageFormat format;
         format.setName( imgresor.toString() );
@@ -161,6 +199,8 @@ void  QVimedit::InsertImageonCursor()
         textCursor().insertImage( format );
         QApplication::restoreOverrideCursor();
 }
+
+         
 
 
 
@@ -240,16 +280,46 @@ void QVimedit::insertFromMimeData ( const QMimeData * source )
     
 }
 
+QString QVimedit::Xhtml()
+{
 
+    QString errorStr;
+    int errorLine, errorColumn;
+    QDomDocument exdoc;
+    QDomDocument doc;
+    QDomElement blox = doc.createElement("body");
+    doc.appendChild(blox);
+    
+    if (!exdoc.setContent(document()->toHtml(),false, &errorStr, &errorLine, &errorColumn)) {
+        return document()->toHtml();
+    } else {
+        
 
+    QDomElement root = exdoc.documentElement();
+    QDomNode child;
+    QDomElement e = root.firstChildElement("body");
+    child = e.firstChild();
+        
+       while ( !child.isNull() ) {
+           if ( child.isElement() ) {
+            blox.appendChild(doc.importNode(child,true).toElement());
+           } else if (child.isText()) {
+             blox.appendChild(doc.createTextNode(child.toText().data()));
+           }
+         child = child.nextSibling();           
+       }
+        return doc.toString(5);
+    }
 
-
+}
 
 
 
 QVimedit::QVimedit( QWidget* parent )
  : QTextBrowser(parent)
 {
+      document()->setUseDesignMetrics (true );
+    
      #if defined Q_WS_X11
      QDesktopWidget *desk = QApplication::desktop();
      QRect winsize = desk->screenGeometry();
@@ -296,10 +366,14 @@ TContext->addAction(tr( "Table: Append Columns" ), this , SLOT( AppendTableCools
 TContext->addAction(tr( "Table: Merge / Union Cells if select" ), this , SLOT( MergeCellByCursorPosition() ) );
 TContext->addAction(tr( "Table: Set Columns FixedLength" ), this , SLOT( SetColumLarge() ) );
 TContext->addAction(tr( "Table: Set Cell Background Color" ), this , SLOT( SetTableCellColor() ) );
+TContext->addAction(tr( "Table: Set border" ), this , SLOT( MaketableBorder() ) );
+TContext->addAction(tr( "Table: Background color" ), this , SLOT( MaketableColorBG() ) );    
 }
 TContext->addAction(QIcon(QString::fromUtf8(":/img/pictures.png")),tr( "Insert a new image." ), this , SLOT( InsertImageonCursor() ) );
 TContext->addAction(QIcon(QString::fromUtf8(":/img/table.png")),tr( "Insert new Table." ), this , SLOT( CreateanewTable() ) );
 TContext->addAction(tr( "Set Block margin to selected text." ), this , SLOT( SetTextBlockMargin() ) );
+TContext->addAction(tr( "Set text color" ), this , SLOT( MaketextColor() ) );
+
 
 
 return TContext;
@@ -607,9 +681,54 @@ void QVimedit::MakeHrefLink()
 
 
 
+//////////////////////////////////////////////////////////
+
+
+void QVimedit::MaketextColor()
+{
+    bool ok;
+    QColor col = QColorDialog::getRgba(NULL,&ok, this);
+    if (!col.isValid()) {
+        return;
+    } else {
+    setTextColor(col);
+    }
+}
 
 
 
+
+
+
+void QVimedit::MaketableColorBG()
+{
+    if (!textCursor().currentTable()) { 
+       return; 
+    }
+    bool ok;
+    QColor col = QColorDialog::getRgba(NULL,&ok, this);
+    if (!col.isValid()) {
+        return;
+    } else {
+       QTextTableFormat taform = textCursor().currentTable()->format(); 
+       taform.setBackground ( col ); 
+       textCursor().currentTable()->setFormat(taform);
+    }
+}
+
+
+void QVimedit::MaketableBorder()
+{
+    if (!textCursor().currentTable()) { 
+       return; 
+    }
+    bool ok;
+    int i = QInputDialog::getInteger(this, tr("Table Border"),tr("Px units:"), 0, 0, 10, 1, &ok);
+    
+       QTextTableFormat taform = textCursor().currentTable()->format(); 
+       taform.setBorder(i);
+       textCursor().currentTable()->setFormat(taform);
+}
 
 
 

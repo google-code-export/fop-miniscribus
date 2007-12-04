@@ -191,7 +191,7 @@ void Fop_Handler::HandleBlock( QTextBlock  para  , QDomElement appender )
                   
                   QFileInfo PictureonDisc( newnameimage );
                   
-                    if (!hrefadress.contains("instream-foreign")) {
+                    if (!hrefadress.contains("instream")) {
                         
                               if (!PictureonDisc.exists())  {
                               tisalviono = SaveImageExterPath(hrefadress,newnameimage);
@@ -1532,7 +1532,7 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
     QPixmap                 resultimage;
     QPixmap                 scaledsimage;
     QString                 resourceName;
-    QString                 filenamenoextension;
+    
     const QString hrefimageplace = ImagesrcUrl(e);   /* grab url from image on main.h */
     ////////////qDebug() << "### hrefimageplace " << hrefimageplace;
     ////////qDebug() << "### ImageParserTag " << wi << "X" << hi;
@@ -1542,7 +1542,6 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
         QUrl neturi(hrefimageplace); 
         QString findfile = neturi.path();
         findfile = findfile.right(findfile.lastIndexOf("/")).toLower();
-        filenamenoextension = FilenameAllow(neturi.path().toLower().left(neturi.path().size() - 3));
         if (findfile.contains(".")) {
           extension = findfile.right(findfile.lastIndexOf("."));  
         } else {
@@ -1554,7 +1553,6 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
     }  else {
      QFileInfo fixurl(hrefimageplace);
      extension =  fixurl.completeSuffix().toLower();
-     filenamenoextension = FilenameAllow(fixurl.baseName());
 
                     /* decompressed item xx */
                     if (extension.endsWith(".gz"))  {
@@ -1569,23 +1567,21 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
                     }
                     
     }
-        /* all data avaiable */
-        /* remove allow extension to reappend on save only to distinct from fo:instream-foreign-object inline image svg ! */
-        if (filenamenoextension.startsWith("png")) {
-            filenamenoextension.replace("png","");  
-        }
-        if (filenamenoextension.startsWith("svg")) {
-            filenamenoextension.replace("svg","");  
-        }
-        /* extension stay on first /  3 letter */
-        /* on resave only 2 type from image svg png image from self programm stay same */
+    /* all data avaiable */
+        
+     /////////qDebug() << "### extension " << extension;
+    
                     /* begin render image */
                     if (extension.contains("sv"))  {
                        resultimage = RenderPixmapFromSvgByte(  derangedata );
-                       resourceName = QString("/svg/%1").arg(filenamenoextension);
+                       resourceName = QString("/svg/Z_SVG_external-graphic_%1").arg(imagecounter);
                     } else {
                         resultimage.loadFromData( derangedata );
-                        resourceName = QString("/png/%1").arg(filenamenoextension);
+                        
+                        QString tmpfilename = FilenameAllow(fixurl.baseName());
+                                tmpfilename = tmpfilename.replace("png","");  /* leave start png and resave on same name leave / */
+                        
+                        resourceName = QString("/png/%1").arg(tmpfilename);
                     }
 
     
@@ -1621,14 +1617,10 @@ void Fop_Handler::ImageParserTag(  const QDomElement e ,  QTextDocument * d  , F
     /* scaling image size ?? */
     
     QUrl recresourcein(resourceName);
-    
-                        /* fill image on QTextDocument only one each QTextDocument layer */
-                        if (!layer->HavingImage(resourceName)) {
+                        /* fill image on QTextDocument */
                         d->addResource( QTextDocument::ImageResource,recresourcein, resultimage );
-                        layer->AppendImage(resourceName,derangedata);
-                        }
     
-                        
+                        layer->AppendImage(resourceName,derangedata);
     
     
                         QTextImageFormat format;

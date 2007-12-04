@@ -20,6 +20,194 @@
 #include "network_get.h"
 
 
+/* find gpl GhostScript path or exe */
+extern inline QString getGSDefaultExeName()
+{
+	QString gsName;
+    QString gVersion;
+#if defined Q_WS_WIN
+    QFileInfo Pinfo;
+	// Try to locate GhostScript thanks to the qsetting
+	 gsName = "gswin32c.exe";
+     QSettings softs("HKEY_LOCAL_MACHINE\\Software",QSettings::NativeFormat);
+     QStringList allsoftware = softs.childGroups();
+     QStringList gsonly = allsoftware.filter(QRegExp("Ghostscript"));
+     //////////qDebug() << "### gsonly " <<  gsonly;
+         for (int i = 0; i < gsonly.size(); ++i) {
+              const QString RealName = gsonly.at(i);  /* realpath */
+                      if (RealName.contains("Ghostscript")) {
+                       //////////qDebug() << "### soft " <<  RealName;
+                       for(int e=1;e<99;e++)  {
+                           /* check version 8 ++ 99 down */
+                           gVersion = QString("8.%1").arg(100 - e);
+                           if (softs.value(RealName+"/"+gVersion+"/GS_DLL").toString().size() > 6 ) {
+                               Pinfo.setFile(softs.value(RealName+"/"+gVersion+"/GS_DLL").toString());
+                               return gsName.prepend(Pinfo.absolutePath()+"/");
+                           }
+                           /* check version 7 ++ 99 down */
+                           gVersion = QString("7.%1").arg(100 - e);
+                           if (softs.value(RealName+"/"+gVersion+"/GS_DLL").toString().size() > 6 ) {
+                               Pinfo.setFile(softs.value(RealName+"/"+gVersion+"/GS_DLL").toString());
+                               return gsName.prepend(Pinfo.absolutePath()+"/");
+                           }
+                       }
+               }
+         }
+    
+    /* win not having GPL Ghostscript ! */
+    gsName = "";  
+    return gsName;         
+#endif
+#if defined Q_WS_MAC
+     QStringList paths;
+     paths << "/usr/local/bin/gs" << "/usr/bin/gs" << "/bin/gs" << "/bin/gs" << "/sw/bin/gs" << "/opt/bin/gs";
+         QFileInfo gsp; 
+          for (int i = 0; i < paths.size(); ++i)  {
+                  gsp.setFile (paths.at(i));
+                  if (gsp.exists()) {
+                   return paths.at(i);
+                  }                      
+          }
+	gsName = "gs";
+    return gsName;
+#endif
+#if defined Q_WS_X11
+    gsName = "gs";
+	return gsName;
+#endif
+         /* forum http://www.qtcentre.org/forum/f-qt-programming-2/t-qsettings-read-only-avaiable-10254.html */
+}
+
+extern inline QString PathConvert( QString path ) 
+{
+    QString resolvepath;
+    #if defined Q_WS_WIN
+    //////resolvepath = QDir::convertSeparators(path);
+    resolvepath = path.replace('/','\\');
+    #endif
+    resolvepath = path;
+    
+    qDebug() << "### resolvepath " << resolvepath; 
+    return resolvepath;
+}
+
+/* find gpl GhostScript version  */
+extern inline QString getGSVersion()
+{
+        QProcess process;
+        process.setReadChannelMode(QProcess::MergedChannels);
+        process.start( getGSDefaultExeName() ,  QStringList() << "-v");
+          if (!process.waitForFinished()) {
+          return QString();
+          } else {
+           return process.readAll().replace("\n","");
+          }
+}
+
+extern inline int callGS( const QStringList & args )
+{
+    QProcess *proc = new QProcess(NULL);
+    QStringList gspaths;
+    QFileInfo gspath( getGSDefaultExeName() );
+    gspaths.append(PathConvert(gspath.absolutePath() ));
+    gspaths.append(PathConvert(gspath.absolutePath().replace("bin","lib") ));
+    QStringList env = proc->systemEnvironment();
+    env.replaceInStrings(QRegExp("^PATH=(.*)", Qt::CaseInsensitive), "PATH=\\1;"+gspaths.join(";"));
+    proc->setEnvironment(env);
+    
+    QStringList ce = proc->environment();
+    
+    qDebug() << "### args " << args;
+    
+    proc->start(getGSDefaultExeName(),args);
+	if (!proc->waitForFinished(30000)) {
+        return -1;
+    }   else {
+        QString dd = proc->readAll();
+        qDebug() << "### QProcess-> " << dd;   
+    }
+     int ex = proc->exitCode();
+	 delete proc;
+	 return ex;
+}
+
+
+
+extern inline QPixmap LoadPDF(QString fn, int Page, int w )
+{
+	QString tmp, cmd1, cmd2;
+	const QString pdfFile = PathConvert(fn);
+	const QString tmpFile = PathConvert(QDir::homePath()+"/sctodaytmps.png");
+    const QString qttmpFile = QDir::homePath()+"/sctodaytmps.png";
+	QPixmap pm;
+    tmp.setNum(Page);
+	int ret = -1;
+	tmp.setNum(Page);
+	QStringList args;
+    args.append("-sDEVICE=png16m");
+    args.append("-r72");
+    args.append("-dGraphicsAlphaBits=4");
+    args.append("-o");
+	args.append(tmpFile);
+    args.append("-dFirstPage="+tmp);
+	args.append("-dLastPage="+tmp);
+	args.append(pdfFile);
+	ret = callGS(args);
+    qDebug() << "### ret " << ret;
+	if (ret == 0)
+	{
+		QPixmap tmpimage(qttmpFile);
+        QPixmap penna = tmpimage.scaledToWidth(w);
+        tmpimage.detach(); 
+        QFile lastaction(qttmpFile);
+        lastaction.remove();
+        QPainter p;
+		p.begin(&penna);
+		p.setBrush(Qt::NoBrush);
+		p.setPen(QPen(QBrush(Qt::black),2,Qt::SolidLine));
+		p.drawRect(0, 0, penna.width(), penna.height());
+		p.end();
+        return penna;
+	}
+	return pm;
+}
+
+
+
+
+
+
+extern inline QPixmap LoadPS( QString fn )
+{
+	const QString pdfFile = PathConvert(fn);
+	const QString tmpFile = PathConvert(QDir::homePath()+"/sctodaytmps.png");
+    const QString qttmpFile = QDir::homePath()+"/sctodaytmps.png";
+	QPixmap pm;
+	int ret = -1;
+	QStringList args;
+    args.append("-sDEVICE=png16m");
+    args.append("-r72");
+    args.append("-dGraphicsAlphaBits=4");
+    args.append("-o");
+	args.append(tmpFile);
+	args.append(pdfFile);
+	ret = callGS(args);
+    ////////qDebug() << "### ret " << ret;
+	if (ret == 0)
+	{
+		  QPixmap tmpimage(qttmpFile);
+          QFile lastaction(qttmpFile);
+          lastaction.remove();
+        
+        return tmpimage;
+	}
+	return pm;
+}
+
+
+
+
+
 
 
 extern inline QByteArray  OpenGzipOneFileByte( QString fileName )
@@ -260,17 +448,6 @@ void AppendImage( const QString resourcename , QVariant pix )
              }
          } 
   ImageMap.insert(resourcename,pix);
-}
-bool HavingImage( const QString resourcename ) 
-{
-       QMapIterator<QString,QVariant> i(ImageMap);
-         while (i.hasNext()) {
-             i.next();
-             if ( i.key() == resourcename)  {
-             return true;
-             }
-         } 
-  return false;
 }
 void SetRealName( const QString names ) 
 {

@@ -96,7 +96,10 @@
 typedef QMap<QString, QString> Appsetting;
 typedef  QMap<QString,QVariant> TypImageContainer; 
 
-#define _PROGRAM_NAME_ "PPK Fop edit 1.1"
+
+#define _CURRENT_VERSION_ "1.0.2"
+
+#define _PROGRAM_NAME_ "PPK Fop edit " "_CURRENT_VERSION_
 #define _PROGRAM_SHORT_NAME_ "tmp_cache"
 #define _DEFAULT_TEXT_ "Write your text..."
 #define FIXEDIMAGE_CIZ "http://ciz.ch/map/theme/zest/image/ppk-web-logo.png"
@@ -109,12 +112,12 @@ typedef  QMap<QString,QVariant> TypImageContainer;
 #define _REGISTER_PROGRAM_NAME_ "FOP MiniScribus"
 #define _PROGRAM_NAME_DOMAINE_ "fop.ciz.ch"
 #define _ORGANIZATION_NAME__ "1-PPK-Schweiz"
-#define _CURRENT_VERSION_ "1.0.0"
+
 #define _PROGRAM_VERSION_ "version " "_CURRENT_VERSION_
 #define Q_WORKS_PEND "open"
 
 #define _PROGRAM_TITLE_ \
-             QString("FOP MiniScribus  Block-Container version 1.0.0")
+             QString("FOP MiniScribus  Block-Container version %1").arg(_CURRENT_VERSION_)
 #define _BUNDLE_NAME_ \
              QString("MiniScribus")
 

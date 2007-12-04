@@ -11,10 +11,15 @@
 #include <QMimeData>
 #include <QDir>
 #include <QTextDocumentFragment>
-#include "main.h"
+#include "BasicConfig.h"
 #include <QCompleter>
 #include "prefophandler.h"
 #include "getmargin.h"
+
+#include "fop_handler.h"
+
+
+
 
 class QVimedit : public QTextBrowser
 {
@@ -23,6 +28,7 @@ class QVimedit : public QTextBrowser
 public:	 
     QVimedit( QWidget *parent = 0);
     QVariant ResourceBlock( const QString resourcename );
+    QString Xhtml();
     void Linkers( QStringList l );
     inline TypImageContainer GetListBlock() { return ImageContainer; }
     void  AppendImageBlocks( TypImageContainer block );
@@ -86,6 +92,9 @@ public slots:
     void SetTextBlockMargin();
     void InsertImageonCursor();
     void MakeHrefLink();
+    void MaketableColorBG();
+    void MaketableBorder();
+    void MaketextColor();
 
 
 
