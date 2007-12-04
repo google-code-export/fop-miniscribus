@@ -261,6 +261,17 @@ void AppendImage( const QString resourcename , QVariant pix )
          } 
   ImageMap.insert(resourcename,pix);
 }
+bool HavingImage( const QString resourcename ) 
+{
+       QMapIterator<QString,QVariant> i(ImageMap);
+         while (i.hasNext()) {
+             i.next();
+             if ( i.key() == resourcename)  {
+             return true;
+             }
+         } 
+  return false;
+}
 void SetRealName( const QString names ) 
 {
     name = names;

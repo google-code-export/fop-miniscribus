@@ -90,6 +90,7 @@ QSettings setter;
 PageDB *db;
 private:
     void FillData();
+    QProgressDialog *dlg;
 signals:
     void TotalPage(int);
     void SetPagePrintIndex(int);

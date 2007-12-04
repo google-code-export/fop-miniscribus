@@ -200,6 +200,12 @@ void FAPanel::ResetFromToprintPaint()
 /* save all layer to a file */
 void FAPanel::SaveOn( const QString savefile ) 
 {
+        dlg = new QProgressDialog(this,Qt::Popup);
+        dlg->setLabelText (tr("Render XML Layer...."));
+        dlg->setCancelButton(0);
+        dlg->setMinimumDuration(700);
+        dlg->setRange(0,items.size());
+    
     fopSaveXmlfile = new Fop_Handler(savefile,false,db,BigParent);
     
     QDomDocument XMLDomdocfop = fopSaveXmlfile->GetStructure(PrinterPageRectFix,margin,QColor(Qt::white),db->page(CurrentPrinterPage)->name());
@@ -210,12 +216,15 @@ void FAPanel::SaveOn( const QString savefile )
      /* now take normal data and color border top left ecc... */
     for (int i=0;i<items.size();i++) {
         fopSaveXmlfile->AppendLayer(items[i]->GetBaseLayerElement(XMLDomdocfop),items[i]->document());
+        dlg->setValue(i);
     }
        fopSaveXmlfile->Writtelnend();
     
     
     
     fopSaveXmlfile->~Fop_Handler();   /* remove from cached resource .... */
+    dlg->close();
+    dlg->deleteLater();
 }
 
 
@@ -223,7 +232,13 @@ void FAPanel::SaveOn( const QString savefile )
 /* all file remote or locale are store to load here */
 void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile ) 
 {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    dlg = new QProgressDialog(this,Qt::Popup);
+        dlg->setLabelText (tr("Render Page Layer...."));
+        dlg->setCancelButton(0);
+        dlg->setMinimumDuration(700);
+        dlg->setRange(0,items.size());
+    
+    
     fopOpenXmlfile = onOpen;
     int printerformating = 0;   /* a4*/
     if (!fopOpenXmlfile->PaintPrinterName().isEmpty()) {
@@ -239,8 +254,13 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
     
     int LayersHightSum = 0;
     
+        
+    
+    
         for (int i=0;i<Litem.size();i++) {
               /* Paint the item inside scene */
+              dlg->setValue(i);
+              qApp->processEvents(QEventLoop::ExcludeUserInputEvents,80);
               int gradesInit = Litem[i]->GetRotate();
               const int DeegresRotation = qBound(0,gradesInit,359);
             
@@ -277,7 +297,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
                        LayersHightSum +=ioq->DocumentHighgtActual();
                        items.append(ioq);
         
-        
+                  
        }
        
     
@@ -289,6 +309,8 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
         
         UpdatePageSumms();
         
+        dlg->close();
+    dlg->deleteLater();
         
     emit SetPagePrintIndex(printerformating);
     emit TotalPage(PageSumm);
@@ -299,6 +321,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
             /* wait to rotate all elements */
             QTimer::singleShot(1350, this, SLOT(PrintPdfCurrentMainFile())); 
         }
+        
      QApplication::restoreOverrideCursor();
 }
 
