@@ -232,6 +232,8 @@ void FAPanel::SaveOn( const QString savefile )
 /* all file remote or locale are store to load here */
 void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile ) 
 {
+    QApplication::restoreOverrideCursor();
+    
     dlg = new QProgressDialog(this,Qt::Popup);
         dlg->setLabelText (tr("Render Page Layer...."));
         dlg->setCancelButton(0);
@@ -300,6 +302,9 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
                   
        }
        
+       dlg->close();
+    dlg->deleteLater();
+       
     
        
        const qreal docshi = LayersHightSum;
@@ -309,8 +314,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
         
         UpdatePageSumms();
         
-        dlg->close();
-    dlg->deleteLater();
+        
         
     emit SetPagePrintIndex(printerformating);
     emit TotalPage(PageSumm);
