@@ -29,6 +29,7 @@ public:
  setupUi( this );
  setMinimumSize ( sizeHint() ) ;
  LoadBaseMenu();
+    label_4->setText(tr("Page/s 1"));
     
     #if defined Q_WS_WIN
     QString exepath;
@@ -96,7 +97,8 @@ void LoadBaseMenu()
         toolBarZoom->addWidget(backgroundToolButton);
         QObject::connect(view, SIGNAL(PaintButton(FloatDiagram*)), this, SLOT(BgButton(FloatDiagram*))); 
         QObject::connect(view, SIGNAL(OnRotate(int)), this, SLOT(UpdateDegree(int))); 
-     
+        QObject::connect(view, SIGNAL(TotalPage(int)), this, SLOT(PageUpdate(int)));
+        
     
      QObject::connect(gomargin, SIGNAL(clicked()), this, SLOT(PageMargin()));
      QObject::connect(unita, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(UpdateUnits()));
@@ -187,6 +189,13 @@ void RotateLayer( int r )
     fdialdeegres->setText(tr("Current %1°").arg(r));
     view->RotateCurrentActive( r );
 }
+void PageUpdate( int p )
+{
+    label_4->setText(tr("Page/s %1").arg(p));
+}
+
+
+
 void UpdateDegree( int r ) 
 {
     fdialdeegres->setText(tr("Current %1°").arg(r));

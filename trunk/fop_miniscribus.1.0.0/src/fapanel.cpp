@@ -256,7 +256,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
     
     int LayersHightSum = 0;
     
-        
+        dlg->setLabelText (tr("Render Page %1 Layer....").arg(Litem.size()));
     
     
         for (int i=0;i<Litem.size();i++) {
