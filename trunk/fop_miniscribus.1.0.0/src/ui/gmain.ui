@@ -285,6 +285,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="separator" />
     <addaction name="actionAutor_Home_Page" />
     <addaction name="actionCheck_Update" />
+    <addaction name="actionGhostScript_link" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menuEdit_Layer" />
@@ -676,6 +677,14 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text" >
     <string>Page universal Font</string>
+   </property>
+  </action>
+  <action name="actionGhostScript_link" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >:/img/web-48x48.png</iconset>
+   </property>
+   <property name="text" >
+    <string>GhostScript link</string>
    </property>
   </action>
  </widget>

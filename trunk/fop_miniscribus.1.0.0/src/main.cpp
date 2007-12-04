@@ -41,6 +41,22 @@ public:
     softs.setValue("Lastversion",QString(_CURRENT_VERSION_));   /* to regedit  to find from friend programm db label */
     softs.setValue(QString(_CURRENT_VERSION_)+"/pdfdirect","1");
     #endif
+    
+    
+    if (getGSVersion().size() < 6)  {
+        QString msgDB =tr("You do not have GhostScript installed you will need to grab a copy. to render PS, EPS , PDF as image ....");
+        int removeyes = QMessageBox::question(this, tr("Search now version?"),msgDB,
+                                                            tr("&Yes"), tr("&No"),
+                                                             QString(),8888,9999);
+        
+         if (removeyes == 0) {
+             GhostScriptLinks();
+         }
+    }
+    
+    
+    
+    
 }
 
 void LoadBaseMenu() 
@@ -202,6 +218,21 @@ void UpdateDegree( int r )
 }
 
 
+void GhostScriptLinks() 
+{
+ #if defined Q_WS_MAC
+    view->OpenDesktop( QUrl("http://www.google.ch/search?q=espgs-7.07.1.ppc.dmg") );
+ #endif
+ #if defined Q_WS_WIN
+    view->OpenDesktop( QUrl("http://www.google.ch/search?q=GhostScript") );
+ #endif
+ #if defined Q_WS_X11
+    view->OpenDesktop( QUrl("http://www.google.ch/search?q=GhostScript") );
+ #endif
+}
+
+
+
 void AboutApps() {
         Gui_About *ab = new Gui_About(this);  
         ab->setWindowTitle(tr("Info - %1").arg(_REGISTER_PROGRAM_NAME_));
@@ -340,6 +371,8 @@ public:
     
     	
     
+        
+        QObject::connect(GuiMain->actionGhostScript_link, SIGNAL(triggered()), GuiMain, SLOT(GhostScriptLinks()));
        QObject::connect(GuiMain->actionLock_current_item, SIGNAL(triggered()), GuiMain->view, SLOT(LockItem()));
        QObject::connect(GuiMain->actionUnlock_current_item, SIGNAL(triggered()), GuiMain->view, SLOT(UnLockItem()));
        QObject::connect(GuiMain->actionAdvanced_edit, SIGNAL(triggered()), GuiMain->view, SLOT(BigEdit()));
