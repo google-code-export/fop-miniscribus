@@ -134,7 +134,8 @@ void  QVimedit::InsertImageonCursor()
         }
         /* read image */
         if (extension.contains("sv")) {
-        imgresor = QUrl(QString(":/svg/SVG_instream-foreign-object-%1").arg(TimestampsMs));
+            /* no build instream here */
+        imgresor = QUrl(QString(":/svg/external-paste-%1").arg(TimestampsMs));
         resultimage = RenderPixmapFromSvgByte(  derangedata );
         } else {
         imgresor = QUrl(QString(":/png/external-paste-%1").arg(TimestampsMs));

@@ -606,6 +606,7 @@ void OpenFile( const QString file )
                 ////////////qDebug() << "### setter " << GuiMain->setter.value("LastDir").toString();
             Fop_open = new Fop_Handler(file,true,db,GuiMain);
             QObject::connect(Fop_open, SIGNAL(ConnectList(bool)), this, SLOT(RenderPage(bool)));
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
             }                
     }
 }
@@ -646,6 +647,8 @@ void RenderPage(bool e )  {
     }
     
     if (errorMg.size() > 0) {
+        QApplication::restoreOverrideCursor();
+        
     QMessageBox infoset;
                 infoset.setWindowTitle(QObject::tr("Error found on document!") );
                 infoset.setText ( errorMg );
@@ -655,9 +658,11 @@ void RenderPage(bool e )  {
     if (!getpdf) {
     GuiMain->view->PaintPage(Fop_open);
         std::cout << "## ohne pdf " << std::endl;
+        QApplication::restoreOverrideCursor();
     } else if (getpdf && maketopdf.size() > 0)  {
         std::cout << "## mit pdf " << std::endl;
     GuiMain->view->PaintPage(Fop_open,maketopdf);
+        QApplication::restoreOverrideCursor();
     }
 } 
 void NewPageFormatten()
