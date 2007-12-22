@@ -262,7 +262,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
         for (int i=0;i<Litem.size();i++) {
               /* Paint the item inside scene */
               dlg->setValue(i);
-              qApp->processEvents(QEventLoop::ExcludeUserInputEvents,80);
+              ////////qApp->processEvents(QEventLoop::ExcludeUserInputEvents,80);
               int gradesInit = Litem[i]->GetRotate();
               const int DeegresRotation = qBound(0,gradesInit,359);
             
@@ -299,7 +299,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
                        LayersHightSum +=ioq->DocumentHighgtActual();
                        items.append(ioq);
         
-                  
+                  qApp->processEvents();
        }
        
        dlg->close();
@@ -318,15 +318,21 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
         
     emit SetPagePrintIndex(printerformating);
     emit TotalPage(PageSumm);
-     QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
         
         if (topdffile.size() > 0) {
             Current_file_from_Main_to_PDF = topdffile;
-            /* wait to rotate all elements */
-            QTimer::singleShot(1350, this, SLOT(PrintPdfCurrentMainFile())); 
+            /* wait to rotate layer! :-) */
+            PrePareToprintPaint();
+            scaleView(0.46);
+            qApp->processEvents();
+            scaleView(0.46);
+            qApp->processEvents();
+            QTimer::singleShot(800, this, SLOT(PrintPdfCurrentMainFile())); 
         }
         
-     QApplication::restoreOverrideCursor();
+     
 }
 
 
@@ -337,13 +343,13 @@ void FAPanel::PrintPdfCurrentMainFile()
         return;
     }
     QString topdffile = Current_file_from_Main_to_PDF;
-    
+    qApp->processEvents();
     
             QFile fix( topdffile );
             if (fix.exists()) {
                 fix.remove();
             }
-            qDebug() << "### panel   " << topdffile;
+            ////////qDebug() << "### panel   " << topdffile;
             
                         PrePareToprintPaint();
                         MakePrintChoise(QPrinter::PdfFormat,QPrinter::Portrait,topdffile); 
@@ -864,7 +870,7 @@ void FAPanel::MakePrintChoise( QPrinter::OutputFormat form , QPrinter::Orientati
             for (int i=0; i<PageSumm;i++) {
                 int nextpage = i +1;
                 bool havenewpage = false;
-                
+                qApp->processEvents();
                 if (i != 0) {
                 spaceready++;
                 PageCanyonSpacing = spaceready * PAGESPACING;  /* lastspacing each page page not at first */
