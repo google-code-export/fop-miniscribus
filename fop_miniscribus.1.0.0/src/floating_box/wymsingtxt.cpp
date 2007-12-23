@@ -45,7 +45,7 @@ WymsingTxt::WymsingTxt( QRectF recter , QColor sfondo , QColor margincolor , qre
     Qfontlist->setFontFilters( QFontComboBox::ScalableFonts );
     
     
-    
+    stackedWidget->hide();
     
     QStringList palign;
     palign << "[1] AlignLeft" << "[2] AlignRight" << "[4] AlignHCenter";
@@ -69,8 +69,8 @@ WymsingTxt::WymsingTxt( QRectF recter , QColor sfondo , QColor margincolor , qre
        
         
         
-      tablegr->hide();    /* propryetys setter */
-      imagegr->hide();   /* propryetys setter */
+      /////tablegr->hide();    /* propryetys setter */
+      /////imagegr->hide();   /* propryetys setter */
       wtxt->AppendImageBlocks(block);
       CatchPixmapCurrent("");
         
@@ -529,6 +529,7 @@ void WymsingTxt::ResettingTableControll()
     tabiborder->setValue(0);
     tabipadding->setValue(0);
     tabispacing->setValue(0);
+    stackedWidget->hide();
 }
 
 
@@ -639,9 +640,10 @@ void WymsingTxt::UpdateCurrentImage()
     
     QTextImageFormat imgfo = c.charFormat().toImageFormat();
       if (imgfo.isValid()) {
-      if (!imagegr->isVisible())   {
-          imagegr->show();
-      }
+      
+          stackedWidget->show();
+          stackedWidget->setCurrentIndex(0);
+    
       
       const QString  resname = imgfo.name();
       const qreal oldwi = imgfo.width();
@@ -678,6 +680,8 @@ void WymsingTxt::UpdateCurrentImage()
       
       
       
+  } else {
+      stackedWidget->hide();
   }
 }
 
@@ -692,20 +696,20 @@ void WymsingTxt::TableImageSetup()
     /* table start setter */
     if (c.currentTable()) {
         /* setting table alle */
-        if (!tablegr->isVisible())   {
-        tablegr->show();
-        }
-        ReadNowTable(c.currentTable());
+          stackedWidget->show();
+          stackedWidget->setCurrentIndex(1);
+          ReadNowTable(c.currentTable());
     } else {
-     tablegr->hide();
+     ////////tablegr->hide();
      ResettingTableControll();
+     ///////stackedWidget->hide();
     }
     /* table end  setter */
     
     if (imgfo.isValid()) {
-      if (!imagegr->isVisible())   {
-          imagegr->show();
-      }
+          stackedWidget->show();
+          stackedWidget->setCurrentIndex(0);
+        
           const QString  resname = imgfo.name();
           if (resname.size() > 0) {
           imgname->setText(resname);
@@ -718,8 +722,10 @@ void WymsingTxt::TableImageSetup()
       
       
     } else {
-       imagegr->hide();
+       
        CurrentResname = "";
+       //////stackedWidget->hide();
+
     }
 }
 
