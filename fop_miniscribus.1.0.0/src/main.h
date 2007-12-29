@@ -97,7 +97,7 @@ typedef QMap<QString, QString> Appsetting;
 typedef  QMap<QString,QVariant> TypImageContainer; 
 
 
-#define _CURRENT_VERSION_ "1.0.2"
+#define _CURRENT_VERSION_ "1.0.3"
 
 #define _PROGRAM_NAME_ "PPK Fop edit " "_CURRENT_VERSION_
 #define _PROGRAM_SHORT_NAME_ "tmp_cache"

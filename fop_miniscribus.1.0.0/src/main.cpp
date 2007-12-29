@@ -29,7 +29,8 @@ public:
  setupUi( this );
  setMinimumSize ( sizeHint() ) ;
  LoadBaseMenu();
-    label_4->setText(tr("Page/s 1"));
+ label_4->setText(tr("Page/s 1"));
+    
     
     #if defined Q_WS_WIN
     QString exepath;
@@ -40,24 +41,21 @@ public:
     softs.setValue("Bundlename",_BUNDLE_NAME_);
     softs.setValue("Lastversion",QString(_CURRENT_VERSION_));   /* to regedit  to find from friend programm db label */
     softs.setValue(QString(_CURRENT_VERSION_)+"/pdfdirect","1");
+    if (setter.value("ghosthaving").toInt() == 1) {
+    /* update to friend programm*/
+    softs.setValue("gscmd",getGSDefaultExeName());
+    }
     #endif
     
     
-    if (getGSVersion().size() < 6)  {
-        QString msgDB =tr("You do not have GhostScript installed you will need to grab a copy. to render PS, EPS , PDF as image ....");
-        int removeyes = QMessageBox::question(this, tr("Search now version?"),msgDB,
-                                                            tr("&Yes"), tr("&No"),
-                                                             QString(),8888,9999);
-        
-         if (removeyes == 0) {
-             GhostScriptLinks();
-         }
-    }
+   
     
     
-    
+  QTimer::singleShot(800, this, SLOT(CheckGhostInstall()));
     
 }
+
+
 
 void LoadBaseMenu() 
 {
@@ -314,6 +312,38 @@ void SwapPaperFormat( int i )
     }
     view->SwapPaperFormat(i);
 }
+ 
+void CheckGhostInstall() 
+{
+    if (setter.value("ghosthaving").toInt() == 2) {
+    return;   /* not ask 2 time no! */
+    }
+    
+    
+     if (getGSVersion().size() < 5)  {
+        QString msgDB =tr("GhostScript is not install on this system: you will need to grab a copy if you like to insert PS, EPS , PDF as image ....");
+         
+         
+         QMessageBox::StandardButton reply;
+         reply = QMessageBox::question(this, tr("GhostScript tools."),
+                                    msgDB,
+                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+          
+         if (reply == QMessageBox::Yes) {
+             setter.setValue("ghosthaving",0);
+             GhostScriptLinks();
+         } else if (reply == QMessageBox::No) {
+            setter.setValue("ghosthaving",2);
+         } else {
+            setter.setValue("ghosthaving",0);
+         }
+        
+      } else {
+         setter.setValue("ghosthaving",1);
+         setter.setValue("gscmd",getGSDefaultExeName());
+      }
+    
+}
 
 
 };
@@ -551,7 +581,7 @@ void NewFopDocument()
     if (sender()) {
               QAction *textAction = qobject_cast<QAction *>(sender());
                 qDebug() << "### NewFopDocument " << textAction->objectName();
-                if (textAction->objectName() == "action_New_FOP_doc") {
+                if (textAction->objectName() == "action_New_FOP_doc" && getGSVersion().size() > 3) {
                     int removeyes = QMessageBox::question(0, tr("Confirm please."),tr("Insert a new Text Layer?."),
                                                                         tr("&Yes"), tr("&No"),
                                                                          QString(),8888,9999);
