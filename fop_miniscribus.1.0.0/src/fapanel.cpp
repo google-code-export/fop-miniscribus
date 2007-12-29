@@ -329,7 +329,7 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
             qApp->processEvents();
             scaleView(0.46);
             qApp->processEvents();
-            QTimer::singleShot(800, this, SLOT(PrintPdfCurrentMainFile())); 
+            QTimer::singleShot(200, this, SLOT(PrintPdfCurrentMainFile())); 
         }
         
      
