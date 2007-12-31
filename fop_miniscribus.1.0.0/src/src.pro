@@ -27,7 +27,10 @@ CONFIG+=x86 ppc
 INCLUDEPATH +=  ../fop_lib ../fop_lib/zip
 DEPENDPATH += ../fop_lib ../fop_lib/zip
 
-LIBS += ../all_os_libs/libfop.a
+
+
+LIBS   += -L../all_os_libs/ -lfop
+
 
 QT += xml
 QT += network

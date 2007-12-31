@@ -1124,7 +1124,7 @@ QTextCharFormat Fop_Handler::GetCharFormat( const QDomElement e , QTextCharForma
              } else {
                  ///////////f.setAnchor(false);
              }
-             if (nod.nodeName().toLower() == "font-style" or nod.nodeName().toLower() == "font-weight") {
+             if (nod.nodeName().toLower() == "font-style" || nod.nodeName().toLower() == "font-weight") {
                   if (nod.nodeValue().toLower() == "italic") {
                   f.setFontItalic(true);
                   } else if (nod.nodeValue().toLower() == "oblique") {

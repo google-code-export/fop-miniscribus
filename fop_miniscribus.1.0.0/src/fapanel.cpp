@@ -707,11 +707,11 @@ void FAPanel::OpenDesktop( QUrl loc )
     
     QString fullFileName = loc.toString();
     
-    if (fullFileName.startsWith("http://", Qt::CaseInsensitive) or 
-        fullFileName.startsWith("https://", Qt::CaseInsensitive) or
-        fullFileName.startsWith("ftp://", Qt::CaseInsensitive) or
-        fullFileName.startsWith("news://", Qt::CaseInsensitive) or
-        fullFileName.startsWith("mailto:", Qt::CaseInsensitive) or
+    if (fullFileName.startsWith("http://", Qt::CaseInsensitive) || 
+        fullFileName.startsWith("https://", Qt::CaseInsensitive) ||
+        fullFileName.startsWith("ftp://", Qt::CaseInsensitive) ||
+        fullFileName.startsWith("news://", Qt::CaseInsensitive) ||
+        fullFileName.startsWith("mailto:", Qt::CaseInsensitive) ||
         fullFileName.startsWith("webdav://", Qt::CaseInsensitive)  )
        { 
          /* all ok */

@@ -470,7 +470,7 @@ void  QVimedit::AppendTableRows()
     int cellcoolcursoris = existingcell.column(); /* int value start from zero */
     int cellrowcursoris = existingcell.row(); /* int value start from zero */
     int approwtot = QInputDialog::getInteger(this, tr("Append NR. line row"),tr("Row:"), 1, 1, 100, 1, &ok);
-        if (ok and approwtot > 0) {
+        if (ok && approwtot > 0) {
           textCursor().currentTable()->insertRows(cellrowcursoris + 1,approwtot);
         }
     }
@@ -484,7 +484,7 @@ void  QVimedit::AppendTableCools()
         int cellcoolcursoris = existingcell.column(); /* int value start from zero */
         int cellrowcursoris = existingcell.row(); /* int value start from zero */
         int appcooltot = QInputDialog::getInteger(this, tr("Table append Column"),tr("Cool:"), 1, 1, 10, 1, &ok);
-            if (ok and appcooltot > 0) {
+            if (ok && appcooltot > 0) {
               textCursor().currentTable()->insertColumns(cellcoolcursoris + 1,appcooltot);
             }
     }  
@@ -591,7 +591,7 @@ void  QVimedit::CreateanewTable()
     int colonne = QInputDialog::getInteger(this, tr("New Table cool"),tr("Cool:"), 3, 1, 10, 1, &ok);
     int righe = QInputDialog::getInteger(this, tr("New Table row"),tr("Row:"), 3, 1, 100, 1, &ok);
     int largo = width() / 3;
-    if (colonne > 0 and righe > 0 and largo > 0) {
+    if (colonne > 0 && righe > 0 && largo > 0) {
     QStringList tables;
     tables.clear();
     tables.append(QString("<table border=\"1\" align=\"left\" width=\"%1\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">").arg(largo));
