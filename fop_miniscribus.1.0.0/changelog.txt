@@ -26,5 +26,5 @@ Export fop file to XHTML ready ,  only rotate layer not possibel on html css. HT
 opacity:%1; filter: alpha(opacity=%1); -moz-opacity:%1;  if alpha color chanel is more as 44. 
 Prepare setup to import PostScript image on GhostScript. ref. http://qtforum.de/forum/viewtopic.php?t=5517 and generate Barcode.
 29.12.07  version 1.0.3  Handle font point size more as 99 , optimize GhostScript controll and better start of friend programm
-direct pdf render (rotate elements on 500 milli.sek)
+direct pdf render (rotate elements on 500 milli.sek) + make source compatible on MS Visual Studio 2008 beta2
 
