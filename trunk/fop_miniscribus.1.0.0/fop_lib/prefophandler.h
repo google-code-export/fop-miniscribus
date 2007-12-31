@@ -2,7 +2,7 @@
 #define PREFOPHANDLER_H
 #include <iostream>
 #include <stdio.h>
-#include <unistd.h>
+//////#include <unistd.h>
 #include <iostream>
 #include <QtCore>
 #include <QDebug>

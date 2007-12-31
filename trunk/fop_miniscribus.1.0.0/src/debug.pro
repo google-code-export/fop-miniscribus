@@ -3,16 +3,16 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = xx
+TARGET = MiniScribus
 DEPENDPATH += . floating_box ui
 INCLUDEPATH += . floating_box ui
 
 
-DESTDIR	+= ./
+DESTDIR	+= ../
 
 win32:RC_FILE = win.rc
 CONFIG += console
-CONFIG   += qt warn_off release
+CONFIG   += qt warn_off debug
 
 
 macx {
@@ -27,7 +27,10 @@ CONFIG+=x86 ppc
 INCLUDEPATH +=  ../fop_lib ../fop_lib/zip
 DEPENDPATH += ../fop_lib ../fop_lib/zip
 
-LIBS += ../all_os_libs/libfop.a
+
+
+LIBS   += -L../all_os_libs/ -lfop
+
 
 QT += xml
 QT += network
