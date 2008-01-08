@@ -46,7 +46,6 @@ HEADERS += BasicConfig.h \
            zip/quazipfileinfo.h \
            zip/quazipnewinfo.h \
            zip/unzip.h \
-           zip/zconf.h \
            zip/zip.h \
            zip/zlib.h
 SOURCES += fop_handler.cpp \
