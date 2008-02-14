@@ -39,7 +39,17 @@ QT += svg
 MOC_DIR	= build/.moc
 RCC_DIR	= build/.rcc
 OBJECTS_DIR = build/.obj
-UI_DIR	= ui
+#### bug on window 
+unix:UI_DIR	= ui
+macx:UI_DIR	= ui
+
+unix {
+TARGET = fopedit
+BINDIR = /usr/bin
+target.path = $$BINDIR
+INSTALLS += target
+}
+
 
 
 
