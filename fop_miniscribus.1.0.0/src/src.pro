@@ -7,11 +7,12 @@ TARGET = MiniScribus
 DEPENDPATH += . floating_box ui
 INCLUDEPATH += . floating_box ui
 
+##########TARGET = xx
 
 DESTDIR	+= ../
 
 win32:RC_FILE = win.rc
-#######CONFIG += console
+######CONFIG += console
 CONFIG   += qt warn_off release
 
 

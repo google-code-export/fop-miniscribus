@@ -466,7 +466,7 @@ Fop_Handler::Fop_Handler( const  QString  file , bool modus , PageDB *dbin , QWi
 
 
 /* Init to save new pageitem */
-QDomDocument Fop_Handler::GetStructure( QRectF page , QRectF margin , QColor pagebg , const QString PaperName )
+QDomDocument Fop_Handler::GetStructure( QRectF page , QRectF margin , QColor pagebg , const QString PaperName , int pagesum  )
 {
     wdoc.clear();
     CurrentPrinterNameFormat = PaperName;
@@ -486,6 +486,9 @@ QDomDocument Fop_Handler::GetStructure( QRectF page , QRectF margin , QColor pag
     
     QDomElement fopeditor = wdoc.createElement("cms:pager");
                 fopeditor.setAttribute ("build",timer1.toString(Qt::LocalDate));
+                if (pagesum !=0) {
+                fopeditor.setAttribute ("pagesumm",pagesum);
+                }
                 fopeditor.setAttribute ("editor",_PROGRAM_NAME_LIB_ );
                 fopeditor.setAttribute ("printer_format",PaperName);
                 
@@ -1344,6 +1347,10 @@ void  Fop_Handler::OpenModus() {
      }
      
      layout_master = root.firstChildElement("fo:layout-master-set");
+    
+     QDomElement extrat = root.firstChildElement("cms:pager"); 
+     Page_summer = extrat.attribute("pagesumm",0).toInt();
+     qDebug() << "####  pagesumme  xml say " << Page_summer;
      
      ////////qreal pagerwi = Unit(layout.attribute ("page-width",0));
      

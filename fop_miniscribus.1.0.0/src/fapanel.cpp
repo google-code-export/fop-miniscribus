@@ -200,6 +200,11 @@ void FAPanel::ResetFromToprintPaint()
 /* save all layer to a file */
 void FAPanel::SaveOn( const QString savefile ) 
 {
+    
+    
+    qDebug() << "####  page summ " << PageSumm;
+    
+    
         dlg = new QProgressDialog(this,Qt::Popup);
         dlg->setLabelText (tr("Render XML Layer...."));
         dlg->setCancelButton(0);
@@ -208,7 +213,7 @@ void FAPanel::SaveOn( const QString savefile )
     
     fopSaveXmlfile = new Fop_Handler(savefile,false,db,BigParent);
     
-    QDomDocument XMLDomdocfop = fopSaveXmlfile->GetStructure(PrinterPageRectFix,margin,QColor(Qt::white),db->page(CurrentPrinterPage)->name());
+    QDomDocument XMLDomdocfop = fopSaveXmlfile->GetStructure(PrinterPageRectFix,margin,QColor(Qt::white),db->page(CurrentPrinterPage)->name(),PageSumm);
     /* Take a root xml dom document to fill from layer !! */
     for (int e=0;e<items.size();e++) {
           fopSaveXmlfile->ImageBlockAppend( items[e]->GetResource() );
@@ -253,8 +258,9 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
     }
     SwapPaperFormat(printerformating);    /* page format from page */  
     QList<Fop_Layer*> Litem = fopOpenXmlfile->GetLayerList();
-    
     int LayersHightSum = 0;
+    qDebug() << "####  XPage" << onOpen->getPageSumms();
+    
     
         dlg->setLabelText (tr("Render Page %1 Layer....").arg(Litem.size()));
     
@@ -306,11 +312,15 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
     dlg->deleteLater();
        
     
-       
+       if (onOpen->getPageSumms() < 1) {
        const qreal docshi = LayersHightSum;
         if (NeedetPageSumm(docshi) !=PageSumm) {
           PageSumm = NeedetPageSumm(docshi);
         }
+       } else {
+          PageSumm = onOpen->getPageSumms(); 
+       }
+       ////////fopOpenXmlfile->Page_summer = -1;
         
         UpdatePageSumms();
         
@@ -332,7 +342,10 @@ void FAPanel::PaintPage( Fop_Handler * onOpen , QString topdffile )
             QTimer::singleShot(200, this, SLOT(PrintPdfCurrentMainFile())); 
         }
         
-     
+     onOpen->deleteLater();
+     fopOpenXmlfile->deleteLater();
+     delete onOpen;
+        
 }
 
 
@@ -877,7 +890,7 @@ void FAPanel::MakePrintChoise( QPrinter::OutputFormat form , QPrinter::Orientati
                 SourceHight = PrinterPageRectFix.height() * spaceready;
                 InitOnYtop = SourceHight + PageCanyonSpacing;
                 }
-                scene->render(&painter,painter.viewport(),QRectF(0,InitOnYtop,PrinterPageRectFix.width(),PrinterPageRectFix.height()),Qt::IgnoreAspectRatio);   /* Ratio must paint correct! */
+                scene->render(&painter,painter.viewport(),QRectF(0,InitOnYtop,PrinterPageRectFix.width(),PrinterPageRectFix.height()),Qt::KeepAspectRatioByExpanding);   /* Ratio must paint correct! */
                 if (nextpage != PageSumm) {
                 havenewpage = printer.newPage();
                 }
@@ -897,7 +910,7 @@ void FAPanel::MakePrintChoise( QPrinter::OutputFormat form , QPrinter::Orientati
 /* needet page to fill  from Y */
 int FAPanel::NeedetPageSumm( qreal fromY ) 
 {
-    qreal Hips = PrinterPageRectFix.height() + PAGESPACING;
+    qreal Hips = PrinterPageRectFix.height() -  PAGESPACING - 100;
     int maxpge = 100;
       for (int i=1; i<maxpge;i++) {
           qreal statusP = Hips * i;
