@@ -74,10 +74,12 @@ public:
       inline int RemoteFileSize() { return RemoteImageMap.size(); }
       inline QString PaintPrinterName() const { return CurrentPrinterNameFormat; }
       /* write a new document */
-      QDomDocument GetStructure( QRectF page , QRectF margin , QColor pagebg , const QString PaperName );  /* layer paint in dom */
+      QDomDocument GetStructure( QRectF page , QRectF margin , QColor pagebg , const QString PaperName , int pagesum = 0 );  /* layer paint in dom */
       void AppendLayer( QDomElement e , QTextDocument * d );   /* append layer to doc writteln */
       void Writtelnend();     /* save writteln file end! */
       inline QRectF PageMargin() { return Pmargin; }
+      inline int getPageSumms() const  { return Page_summer; }
+      int Page_summer;
 protected:
     /* write fop read QTextDocument and bring to file stream or to QDomDocument */
     void HandleFrame( QTextFrame  * Tframe , FRAME_TYP dd , QDomElement appender );
