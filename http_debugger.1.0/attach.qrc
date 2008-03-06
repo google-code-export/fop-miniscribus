@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>img/error.png</file>
+        <file>img/folderopen.png</file>
+        <file>img/info.png</file>
+        <file>img/save-48x48.png</file>
+        <file>img/toresource.dshttp</file>
+        <file>img/web-48x48.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,667 @@
+<ui version="4.0" >
+ <class>Gmain</class>
+ <widget class="QMainWindow" name="Gmain" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>703</width>
+    <height>605</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Soap - WSDL - Webdav debugger</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <layout class="QGridLayout" >
+    <item row="0" column="0" >
+     <widget class="QTabWidget" name="tabWidget" >
+      <property name="currentIndex" >
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab" >
+       <attribute name="title" >
+        <string>Request</string>
+       </attribute>
+       <layout class="QGridLayout" >
+        <item row="0" column="0" >
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QGroupBox" name="groupBox" >
+            <property name="title" >
+             <string>Url + path</string>
+            </property>
+            <layout class="QGridLayout" >
+             <item row="0" column="0" >
+              <layout class="QHBoxLayout" >
+               <item>
+                <layout class="QVBoxLayout" >
+                 <item>
+                  <widget class="QLabel" name="label" >
+                   <property name="text" >
+                    <string>Url</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" >
+                   <item>
+                    <widget class="QLabel" name="label_2" >
+                     <property name="text" >
+                      <string>SoapAction</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="usesoapaction" >
+                     <property name="text" >
+                      <string>disable</string>
+                     </property>
+                     <property name="checked" >
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" >
+                 <item>
+                  <widget class="QLineEdit" name="movetourl" >
+                   <property name="text" >
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEdit_2" >
+                   <property name="enabled" >
+                    <bool>true</bool>
+                   </property>
+                   <property name="text" >
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_2" >
+            <property name="title" >
+             <string>Option</string>
+            </property>
+            <layout class="QGridLayout" >
+             <item row="0" column="0" >
+              <layout class="QHBoxLayout" >
+               <item>
+                <layout class="QVBoxLayout" >
+                 <item>
+                  <widget class="QLabel" name="label_3" >
+                   <property name="text" >
+                    <string>Method</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_4" >
+                   <property name="text" >
+                    <string>HTTP Content Type:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" >
+                 <item>
+                  <widget class="QComboBox" name="comboBox" >
+                   <property name="minimumSize" >
+                    <size>
+                     <width>150</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text" >
+                     <string>POST</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>GET</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>PUT</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>MKCOL</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>MOVE</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>PROPFIND</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>PROPPATCH</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>DELETE</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>LOCK</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>UNLOCK</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="comboBox_2" >
+                   <property name="currentIndex" >
+                    <number>-1</number>
+                   </property>
+                   <item>
+                    <property name="text" >
+                     <string>text/xml</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>text/xml; charset=utf-8</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>aplication/soap+xml</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>aplication/soap+xml; charset=utf-8</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text" >
+                     <string>application/x-www-form-urlencoded</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_6" >
+          <property name="text" >
+           <string>Header option send:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QTableWidget" name="tableWidget" >
+          <property name="maximumSize" >
+           <size>
+            <width>16777215</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="rowCount" >
+           <number>10</number>
+          </property>
+          <property name="columnCount" >
+           <number>2</number>
+          </property>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <row/>
+          <column>
+           <property name="text" >
+            <string>Value Name send on Header</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Real value</string>
+           </property>
+          </column>
+          <item row="0" column="0" >
+           <property name="text" >
+            <string>Connection</string>
+           </property>
+          </item>
+          <item row="0" column="1" >
+           <property name="text" >
+            <string>keep-alive</string>
+           </property>
+          </item>
+          <item row="1" column="0" >
+           <property name="text" >
+            <string>User-Agent</string>
+           </property>
+          </item>
+          <item row="1" column="1" >
+           <property name="text" >
+            <string>DevNavigator</string>
+           </property>
+          </item>
+          <item row="2" column="0" >
+           <property name="text" >
+            <string>Accept-Charset</string>
+           </property>
+          </item>
+          <item row="2" column="1" >
+           <property name="text" >
+            <string>ISO-8859-1,utf-8;q=0.7,*;q=0.7</string>
+           </property>
+          </item>
+          <item row="3" column="0" >
+           <property name="text" >
+            <string>Accept-Encoding</string>
+           </property>
+          </item>
+          <item row="3" column="1" >
+           <property name="text" >
+            <string>gzip,deflate,qcompress</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="3" column="0" >
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="label_5" >
+            <property name="text" >
+             <string>XML send:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_2" >
+            <property name="text" >
+             <string>disable xml</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_3" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="StreamLocalFile" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>select file..</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="0" >
+         <widget class="QTextEdit" name="textEdit" >
+          <property name="lineWrapMode" >
+           <enum>QTextEdit::NoWrap</enum>
+          </property>
+          <property name="acceptRichText" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2" >
+       <attribute name="title" >
+        <string>Response</string>
+       </attribute>
+       <layout class="QGridLayout" >
+        <item row="0" column="0" >
+         <widget class="QLabel" name="label_7" >
+          <property name="text" >
+           <string>Header result:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QTextEdit" name="textEdit_2" >
+          <property name="maximumSize" >
+           <size>
+            <width>16777215</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="readOnly" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="label_8" >
+          <property name="text" >
+           <string>Buffer result:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" >
+         <widget class="QTextEdit" name="textEdit_3" >
+          <property name="readOnly" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <layout class="QHBoxLayout" >
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="CheckXmlValid" >
+        <property name="text" >
+         <string>Test xml syntax...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="SendRequest" >
+        <property name="text" >
+         <string>Send</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>703</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>File</string>
+    </property>
+    <addaction name="action_Exit" />
+    <addaction name="separator" />
+    <addaction name="actionOpen_file" />
+    <addaction name="DemoRun" />
+   </widget>
+   <widget class="QMenu" name="menuExport" >
+    <property name="title" >
+     <string>Export</string>
+    </property>
+    <addaction name="SaveAsFileResult" />
+   </widget>
+   <widget class="QMenu" name="menuAbout" >
+    <property name="title" >
+     <string>About</string>
+    </property>
+    <addaction name="actionQT_info" />
+    <addaction name="actionAbout_app" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>Help</string>
+    </property>
+    <addaction name="LinkGeneratorSoap" />
+    <addaction name="WebdavSpecification" />
+   </widget>
+   <addaction name="menuFile" />
+   <addaction name="menuExport" />
+   <addaction name="menuAbout" />
+   <addaction name="menuHelp" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QToolBar" name="toolBar" >
+   <property name="windowTitle" >
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_Exit" />
+   <addaction name="actionOpen_file" />
+   <addaction name="actionAbout_app" />
+   <addaction name="WebdavSpecification" />
+   <addaction name="LinkGeneratorSoap" />
+  </widget>
+  <action name="action_Exit" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/error.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Exit</string>
+   </property>
+   <property name="shortcut" >
+    <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionOpen_file" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/folderopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Open file</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave_request_as_file" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/save-48x48.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save request as file</string>
+   </property>
+  </action>
+  <action name="SaveAsFileResult" >
+   <property name="text" >
+    <string>Save result as file</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionQT_info" >
+   <property name="text" >
+    <string>QT info</string>
+   </property>
+  </action>
+  <action name="actionAbout_app" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/info.png</iconset>
+   </property>
+   <property name="text" >
+    <string>About app</string>
+   </property>
+   <property name="shortcut" >
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="LinkGeneratorSoap" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/web-48x48.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Generic soap client xml generator</string>
+   </property>
+  </action>
+  <action name="WebdavSpecification" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/web-48x48.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Web dav specification</string>
+   </property>
+  </action>
+  <action name="DemoRun" >
+   <property name="icon" >
+    <iconset resource="attach.qrc" >:/img/folderopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Open Demo file</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="attach.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>usesoapaction</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>lineEdit_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>101</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>167</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>textEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>111</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>134</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>lineEdit_3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>134</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>469</x>
+     <y>264</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>StreamLocalFile</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>105</x>
+     <y>266</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>598</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Exit</sender>
+   <signal>activated()</signal>
+   <receiver>Gmain</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>351</x>
+     <y>268</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
