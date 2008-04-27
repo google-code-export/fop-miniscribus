@@ -1,24 +1,11 @@
-/****************************************************************************
-**
-** Copyright (C) 2006 J-P Nurmi. All rights reserved.
-**
-** The used XML syntax highlighting principles have been adapted from 
-** KXESyntaxHighlighter, which is part of KXML Editor 1.1.4,
-** (C) 2003 by The KXMLEditor Team (http://kxmleditor.sourceforge.net).
-** 
-** This file may be used under the terms of the GPL Version 2, June 1991.
-** For details, see http://www.gnu.org/licenses/gpl.html
-** 
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
 #ifndef XMLHIGHLIGHTER_H
 #define XMLHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 #include <QColor>
+#include <QTextEdit>
+#include "loadconfig.h"
 
 class XmlHighlighter : public QSyntaxHighlighter
 {
@@ -38,7 +25,7 @@ public:
 		Error,
 		Other
 	};
-
+  
 	void setHighlightColor(HighlightType type, QColor color, bool foreground = true);
 	void setHighlightFormat(HighlightType type, QTextCharFormat format);
 
@@ -76,5 +63,49 @@ private:
 
 	ParsingState state;
 };
+
+
+
+
+
+class XMLTextEdit : public QTextEdit
+{
+     Q_OBJECT
+//
+public:
+XMLTextEdit( QWidget * parent = 0 );
+bool Conform();
+QDomDocument xml_document();
+inline QString text() const 
+{
+  return QTextEdit::toPlainText();
+}
+QMenu *createOwnStandardContextMenu();
+protected:
+  void contextMenuEvent ( QContextMenuEvent * e );
+  bool event( QEvent *event );
+private:
+  XmlHighlighter *highlight;
+signals:
+public slots:
+  void Syntaxcheck();
+  void setPlainText( const QString txt );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif // XMLHIGHLIGHTER_H

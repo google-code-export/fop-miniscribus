@@ -353,7 +353,7 @@
          </layout>
         </item>
         <item row="4" column="0" >
-         <widget class="QTextEdit" name="textEdit" >
+         <widget class="XMLTextEdit" name="textEdit" >
           <property name="lineWrapMode" >
            <enum>QTextEdit::NoWrap</enum>
           </property>
@@ -397,7 +397,7 @@
          </widget>
         </item>
         <item row="3" column="0" >
-         <widget class="QTextEdit" name="textEdit_3" >
+         <widget class="XMLTextEdit" name="textEdit_3" >
           <property name="readOnly" >
            <bool>true</bool>
           </property>
@@ -579,6 +579,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XMLTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header location="global" >xmlhighlighter.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="attach.qrc" />
  </resources>

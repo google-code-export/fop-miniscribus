@@ -12,14 +12,13 @@ DESTDIR	+= ./
 ####QT += svg 
 QT += xml
 QT += network
-QT += sql
 
 MOC_DIR	= build/.moc
 RCC_DIR	= build/.rcc
 OBJECTS_DIR = build/.obj
 
 #########CONFIG += console
-CONFIG   += qt warn_off debug
+CONFIG   += qt warn_off release
 LANGUAGE	= C++
 
 
