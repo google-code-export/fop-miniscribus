@@ -402,7 +402,7 @@ void MountTextPrivate::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const 
 				 const int stopat = qMax(StartSelectionMouse,cursorPos); 
 				 const int startat = qMin(StartSelectionMouse,cursorPos);
 				/* selection tracer */
-			   qDebug() << "### tmouseMoveEvent 1a from-to #######" << StartSelectionMouse << "|" << cursorPos;
+			   //////////////qDebug() << "### tmouseMoveEvent 1a from-to #######" << StartSelectionMouse << "|" << cursorPos;
 				 cursorIsFocusIndicator = true;
 				 if (stopat == cursorPos) {
 					   /* direction -> left-right */
