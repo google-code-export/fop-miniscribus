@@ -189,12 +189,10 @@ void MountTextPrivate::DocsizeChanged( const QSizeF size )
 
 void MountTextPrivate::blockCount( int bb )
 {
-	 qDebug() << "### blockCountChanged " << bb;
+	 ////////////qDebug() << "### blockCountChanged " << bb;
 	 lastrect = boundingRect();
 	 //////////LastCharFormat = _c.charFormat();
 }
-
-
 
 void MountTextPrivate::cursorPosition( const QTextCursor curs )
 {
@@ -206,7 +204,7 @@ void MountTextPrivate::cursorPosition( const QTextCursor curs )
 		C_cursor = curs;
 	}
 	GrepCursorData();
-	qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor;
+	//////////////qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor;
 }
 
 QRectF MountTextPrivate::actualcursorrect()
@@ -337,8 +335,6 @@ QTextLine MountTextPrivate::currentTextLine(const QTextCursor &cursor)
 
 
 
-
-
 void MountTextPrivate::procesevent( QEvent *e )
 {
 	  QMatrix matrix;
@@ -350,8 +346,8 @@ void MountTextPrivate::procesevent( QEvent *e )
 						if (edit_enable) { 
 						QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
 						tmouseMoveEvent(e, ev->button(), ev->pos() );
-						}
 						return;
+						}
             break; }
 					case QEvent::GraphicsSceneHoverMove: {
             if (edit_enable) 
@@ -398,24 +394,36 @@ void MountTextPrivate::procesevent( QEvent *e )
 
 void MountTextPrivate::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	  const int cursorPos = hitTest(pos,Qt::ExactHit);
+	  const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit);
 	
 	  if (StartSelectionMouse != -1 && cursorPos > 0) {
 			if (StartSelectionMouse != cursorPos) {
-	    setBlinkingCursorEnabled(false);
+	       setBlinkingCursorEnabled(false);
+				 const int stopat = qMax(StartSelectionMouse,cursorPos); 
+				 const int startat = qMin(StartSelectionMouse,cursorPos);
 				/* selection tracer */
-			  qDebug() << "### tmouseMoveEvent 1a from-to #######" << StartSelectionMouse << "|" << cursorPos;
+			   qDebug() << "### tmouseMoveEvent 1a from-to #######" << StartSelectionMouse << "|" << cursorPos;
 				 cursorIsFocusIndicator = true;
-				 C_cursor.setPosition(StartSelectionMouse);
-				 for (int i = StartSelectionMouse; i < cursorPos; ++i) {
-				 C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+				 if (stopat == cursorPos) {
+					   /* direction -> left-right */
+						 C_cursor.setPosition(StartSelectionMouse);
+						 for (int i = StartSelectionMouse; i < cursorPos; ++i) {
+						 C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+						 }
+			   } else {
+					  /* direction <- right-left */
+					    /* not possibel on QGraphicsItem + QTextDocument */
+						  ///////C_cursor.setPosition(qMin(StartSelectionMouse,cursorPos));
+						 ///////for (int i = StartSelectionMouse; i < cursorPos; ++i) {
+						  ///////C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+						//////// }
+					  selectAll();
+					  return;
 				 }
+				 setClipboardSelection();
 				 repaintCursor();
-				
 			}
-		}
-	
-	  
+		} 
 }
 
 
@@ -423,8 +431,7 @@ void MountTextPrivate::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const 
 void MountTextPrivate::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	qDebug() << "### mousePressEvent  ";
-	
+	 //////////qDebug() << "### mousePressEvent  ";
 	lastrect = boundingRect();
 	ClearSelections();
 	setCursorPosition(pos);
@@ -435,8 +442,7 @@ void MountTextPrivate::tmousePressEvent(Qt::MouseButton button, const QPointF &p
 
 void MountTextPrivate::tmouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	 qDebug() << "### tmouseReleaseEvent 1 ############################################";
-	
+	 ////////////qDebug() << "### tmouseReleaseEvent 1 ############################################";
 	 StartSelectionMouse = -1;
 }
 
@@ -492,13 +498,12 @@ void MountTextPrivate::ClearSelections()
 
 void MountTextPrivate::cut()
 {
-    qDebug() << "### cut 1  ";
+    //////////qDebug() << "### cut 1  ";
     if (!C_cursor.hasSelection()) {
 	    return;
 		}
     copy();
-		qDebug() << "### cut 2  ";
-		
+		//////qDebug() << "### cut 2  ";
     C_cursor.removeSelectedText();
 	  ClearSelections();
 }
@@ -607,7 +612,7 @@ void MountTextPrivate::paint_doc(  QPainter * painter ,
 		/* blink cursor from timer event ! */
 		if (edit_enable) {
 			
-				if (cursortime) {
+				if (cursortime && cursorOn) {
 				CTX.cursorPosition = cursor_position;
 				} else {
 				CTX.cursorPosition = -1;
