@@ -128,7 +128,7 @@ void TextLayer::updatearea( const QRectF areas )
     return;
     }
     evesum++;
-    qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
+    ///////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
     update(areas);
 }
 

@@ -39,6 +39,7 @@ public:
   QRectF line_rect;
   QRectF line_rect_out;
   int line_nummer;
+  int StartSelectionMouse;
   qreal linehight;
   QTextLine DDline;
   QLineF CursorDrawLine;
@@ -80,6 +81,8 @@ protected:
   void tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos);
   void tmouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos);
+  void tmouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos);
+  void tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos);
   void tkeyPressEvent(QKeyEvent *e);
   void timerEvent(QTimerEvent *event);
   void repaintCursor( bool allrect = false );

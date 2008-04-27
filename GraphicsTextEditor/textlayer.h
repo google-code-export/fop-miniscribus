@@ -65,10 +65,10 @@ public:
     int type() const;
 protected:
     void RestoreMoveAction();
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void inputMethodEvent(QInputMethodEvent *event);
     void keyPressEvent( QKeyEvent * event );
     uint evesum;
