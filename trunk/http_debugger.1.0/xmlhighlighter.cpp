@@ -1,25 +1,152 @@
-/****************************************************************************
-**
-** Copyright (C) 2006 J-P Nurmi. All rights reserved.
-**
-** The used XML syntax highlighting principles have been adapted from 
-** KXESyntaxHighlighter, which is part of KXML Editor 1.1.4,
-** (C) 2003 by The KXMLEditor Team (http://kxmleditor.sourceforge.net).
-** 
-** This file may be used under the terms of the GPL Version 2, June 1991.
-** For details, see http://www.gnu.org/licenses/gpl.html
-** 
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
 #include "xmlhighlighter.h"
+
+XMLTextEdit::XMLTextEdit(QWidget *parent)
+  : QTextEdit(parent)
+{
+  setViewportMargins(50, 0, 0, 0);
+  highlight = new XmlHighlighter(document());
+  setLineWrapMode ( QTextEdit::NoWrap );
+  setAcceptRichText ( false );
+  connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(update()));
+  connect(this, SIGNAL(textChanged()), this, SLOT(update()));
+}
+
+
+bool XMLTextEdit::Conform()
+{
+	  QString errorStr;
+    int errorLine, errorColumn;
+    QDomDocument doc;
+	  return doc.setContent(text(),false, &errorStr, &errorLine, &errorColumn);
+}
+
+QDomDocument XMLTextEdit::xml_document()
+{
+	  QString errorStr;
+    int errorLine, errorColumn;
+    QDomDocument doc;
+	  doc.setContent(text(),false, &errorStr, &errorLine, &errorColumn);
+	  return doc;
+}
+
+
+void XMLTextEdit::setPlainText( const QString txt )
+{
+	  QString errorStr;
+    int errorLine, errorColumn;
+    QDomDocument doc;
+	  if (!doc.setContent(txt,false, &errorStr, &errorLine, &errorColumn)) {
+			QTextEdit::setPlainText(txt);
+		} else {
+			QTextEdit::setPlainText(doc.toString(5));
+		}
+}
+
+void XMLTextEdit::Syntaxcheck()
+{
+	if (text().size() > 0 ) {
+		QString errorStr;
+    int errorLine, errorColumn;
+    QDomDocument doc;
+					if (!doc.setContent(text(),false, &errorStr, &errorLine, &errorColumn)) {
+							//////return doc.toString(5);
+						 QMessageBox::information(0, tr("Found xml error"),tr("Check line %1 column %2 on string \"%3\"!")
+						                     .arg(errorLine - 1)
+						                     .arg(errorColumn - 1)
+						                     .arg(errorStr));
+						
+						  if (errorLine >= 0 ) {
+								
+							}
+						
+					} else {
+						 QMessageBox::information(0, tr("XML valid."),tr("All tag are valid size %1.").arg(text().size()));
+						 setPlainText(doc.toString(5));
+					}
+	} else {
+		QMessageBox::information(0, tr("XML not found!"),tr("Null size xml document!"));
+	}
+	
+}
+void XMLTextEdit::contextMenuEvent ( QContextMenuEvent * e )
+{
+  QMenu *RContext = createOwnStandardContextMenu();
+  RContext->exec(QCursor::pos());
+  delete RContext;
+}
+
+QMenu *XMLTextEdit::createOwnStandardContextMenu() 
+{
+QMenu *TContext = createStandardContextMenu();
+TContext->addAction(QIcon(QString::fromUtf8(":/img/zoomin.png")),tr( "Zoom In" ), this , SLOT( zoomIn() ) );
+TContext->addAction(QIcon(QString::fromUtf8(":/img/zoomout.png")),tr( "Zoom Out" ), this , SLOT( zoomOut() ) );
+TContext->addAction(tr("Check xml syntax" ), this , SLOT( Syntaxcheck() ) );
+return TContext;
+}
+
+bool XMLTextEdit::event( QEvent *event ) 
+{
+  if (event->type()==QEvent::Paint) {
+    QPainter p(this);
+    p.fillRect(0, 0, 50, height(), QColor("#636363"));
+		QFont workfont(font());
+    QPen pen(QColor("#ffffff"),1);
+		p.setPen(pen); 
+		p.setFont (workfont);
+    int contentsY = verticalScrollBar()->value();
+    qreal pageBottom = contentsY+viewport()->height();
+    int m_lineNumber(1);
+    const QFontMetrics fm=fontMetrics();
+    const int ascent = fontMetrics().ascent() +1;
+      
+    for (QTextBlock block=document()->begin(); block.isValid(); block=block.next(), m_lineNumber++) {
+      QTextLayout *layout = block.layout();
+      const QRectF boundingRect = layout->boundingRect();
+      QPointF position = layout->position();
+      if ( position.y() +boundingRect.height() < contentsY ) {
+        continue;
+      }
+      if ( position.y() > pageBottom ) {
+        break;
+      }
+      const QString txt = QString::number(m_lineNumber);
+      p.drawText(50-fm.width(txt)-2, qRound(position.y())-contentsY+ascent, txt);
+			
+      }
+			p.setPen(QPen(Qt::NoPen)); 
+    } else if ( event->type() == QEvent::KeyPress ) {
+			QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+			if ((ke->modifiers() & Qt::ControlModifier) && ke->key() == Qt::Key_Minus)   {
+				QTextEdit::zoomOut();
+				return true;
+			}
+			if ((ke->modifiers() & Qt::ControlModifier) && ke->key() == Qt::Key_Plus)   {
+				QTextEdit::zoomIn();
+				return true;
+			}
+		}
+    return QTextEdit::event(event);
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 static const QColor DEFAULT_SYNTAX_CHAR		= Qt::blue;
 static const QColor DEFAULT_ELEMENT_NAME	= Qt::darkRed;
 static const QColor DEFAULT_COMMENT			= Qt::darkGreen;
 static const QColor DEFAULT_ATTRIBUTE_NAME	= Qt::red;
-static const QColor DEFAULT_ATTRIBUTE_VALUE	= Qt::blue;
+static const QColor DEFAULT_ATTRIBUTE_VALUE	= Qt::darkGreen;
 static const QColor DEFAULT_ERROR			= Qt::darkMagenta;
 static const QColor DEFAULT_OTHER			= Qt::black;
 

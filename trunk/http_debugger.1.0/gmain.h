@@ -23,8 +23,8 @@ class Gmain : public QMainWindow, public Ui::Gmain
 public:
  Gmain( QWidget * parent  = 0 );
 protected:
- XmlHighlighter *highlight;
- XmlHighlighter *highlight_0;
+ ////////XmlHighlighter *highlight;
+ ///////////XmlHighlighter *highlight_0;
  Communicator *http_instance;
  QBuffer *buffer_send;
  QBuffer *buffer_incomming;

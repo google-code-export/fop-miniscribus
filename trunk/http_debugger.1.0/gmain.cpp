@@ -12,8 +12,8 @@ Gmain::Gmain( QWidget * parent )
 {
 	setupUi( this );
 	/////tableWidget->
-	highlight = new XmlHighlighter(textEdit->document());
-	highlight_0 = new XmlHighlighter(textEdit_3->document());
+	///////////highlight = new XmlHighlighter(textEdit->document());
+	////////highlight_0 = new XmlHighlighter(textEdit_3->document());
 	BaseInit();
 	//////////qDebug() << "###  xml size " << textEdit->toPlainText().size();
 	opendFile(QString::fromUtf8(":/img/toresource.dshttp"));
