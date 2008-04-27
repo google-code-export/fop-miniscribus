@@ -12,6 +12,7 @@ DESTDIR	+= ./
 ####QT += svg 
 QT += xml
 QT += network
+QT += sql
 
 MOC_DIR	= build/.moc
 RCC_DIR	= build/.rcc
