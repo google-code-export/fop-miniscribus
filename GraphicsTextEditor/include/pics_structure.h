@@ -3,9 +3,26 @@
 
 #include <QtGui>
 #include <QtCore>
+#include <QPixmap>
 
 
-
+/* allowed char on file name image to save */
+static inline QString Imagename( QString touri )
+{
+    touri = touri.replace(" ","_");
+    QStringList piece = touri.split("");
+    QString alloweduri = "abcdefghijklmnopqrstuvwxyz1234567890_-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    QStringList alist = alloweduri.split("");
+    
+     for (int i = 0; i < piece.size(); ++i) {
+           QString pin = piece.at(i);
+           if (!alist.contains(pin)) {
+               touri.replace(pin,"");
+           }
+       }
+    
+    return touri.trimmed();
+}
 
 
 
@@ -95,7 +112,17 @@ class SPics
         QPixmap curr = pix();
         curr.save(fullpath,extension.data());
     }
-    
+    void SavePixThread( QString dir = QString() )
+    {
+        QString fullpath = dir + FileName();
+        QFile f( fullpath );
+        if ( f.open( QIODevice::WriteOnly ) )
+        {
+          f.write ( qUncompress( data ) );
+          f.close();          
+        }
+        
+    }
     void set_pics( const QPixmap * barcode )
     {
       if (barcode->isNull()) {

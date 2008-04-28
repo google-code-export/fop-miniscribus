@@ -131,23 +131,7 @@ static inline qreal ToPoint( qreal unit , const QString unita )  {
 }
 
 
-/* allowed char on file name to save */
-static inline QString Imagename( QString touri )
-{
-    touri = touri.replace(" ","_");
-    QStringList piece = touri.split("");
-    QString alloweduri = "abcdefghijklmnopqrstuvwxyz1234567890._-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    QStringList alist = alloweduri.split("");
-    
-     for (int i = 0; i < piece.size(); ++i) {
-           QString pin = piece.at(i);
-           if (!alist.contains(pin)) {
-               touri.replace(pin,"");
-           }
-       }
-    
-    return touri.trimmed();
-}
+
 
 
 

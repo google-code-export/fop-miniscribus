@@ -4,7 +4,7 @@
 
 #include <QtGui>
 #include <QtCore>
-
+#include "pics_structure.h"
 
 
 
@@ -23,6 +23,7 @@ class RichDoc
       resource = d.resource;
       html = d.html;
       style = d.style;
+			return *this;
     }
     operator QVariant() const {
     return QVariant::fromValue(*this);

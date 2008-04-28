@@ -71,8 +71,13 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void inputMethodEvent(QInputMethodEvent *event);
     void keyPressEvent( QKeyEvent * event );
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     uint evesum;
     T_MODE modus;
+    QMenu *textedit;
+    QMenu *layeredit;
+
+    QAction *actionLayerBackColor,*actionLayerMargin;
     bool IsSelectActive;
     int id;
     bool sceneEvent(QEvent *event);
@@ -96,6 +101,7 @@ public slots:
     void cursorPositionChanged( const QTextCursor curs );
     void appendtext( const QString txt );
     void updatearea( const QRectF areas );
+    void LayerBGcolor();
 };
 
 QT_END_NAMESPACE
