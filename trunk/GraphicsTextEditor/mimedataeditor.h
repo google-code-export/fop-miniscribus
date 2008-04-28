@@ -9,10 +9,13 @@
 #define _BG_CHAR_ALPHA_ 201
 #define _TXT_CHAR_SPACING_ 300 /* css letter-spacing:0.1em */
 
+#define _IMAGE_PICS_ITEM_ 100
 
 
+#define _MAXIEDITWI_  2000;   /* image maximum widht */
 
 
+#include <QMessageBox>
 #include <QInputDialog>
 #include <QColorDialog>
 #include <QPointer>
@@ -112,6 +115,7 @@ QRectF line_rect_out;
 QMenu *TextMenu( QWidget * inparent );
 QMenu *BlockMenu( QWidget * inparent );
 void ComposeAction();
+QString ImageFilterHaving() const;
 signals:
   void updateRequest(QRectF);
 public slots:

@@ -4,6 +4,20 @@
 #include <QtGui>
 #include <QtCore>
 #include <QPixmap>
+#include <QSvgRenderer>
+
+
+static inline QPixmap RenderPixmapFromSvgByte(  QByteArray streams ) 
+{
+        QSvgRenderer  svgRenderer( streams );
+        QPixmap pix(  svgRenderer.defaultSize() );
+        pix.fill(Qt::transparent);
+        QPainter paint(&pix);
+        svgRenderer.render(&paint);
+        return pix;
+}
+
+
 
 
 /* allowed char on file name image to save */
