@@ -27,6 +27,55 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     evesum = 0;
 }
 
+
+void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    
+    bool canedit = mount->editable();
+    if (!canedit) {
+    return;
+    }
+    
+     ////////textedit->addSeparator();
+    
+    
+    textedit = new QMenu(tr("Base menu"),event->widget());
+    QMenu *charsfo = mount->TextMenu(event->widget());
+    QMenu *blockfo = mount->BlockMenu(event->widget());
+    textedit->addAction(charsfo->menuAction()); 
+    textedit->addAction(blockfo->menuAction()); 
+    
+    actionLayerBackColor = new QAction(tr("Layer Background color"),this);
+    actionLayerBackColor->setIcon(createColorIcon(bgcolor));
+	  connect(actionLayerBackColor, SIGNAL(triggered()),this,SLOT(LayerBGcolor()));
+    textedit->addAction(actionLayerBackColor);
+    
+    actionLayerMargin = new QAction(tr("Layer margin top,left,right,bottom"),this);
+    actionLayerMargin->setIcon(QIcon(QString::fromUtf8(":/img/view_top_bottom.png")));
+	  connect(actionLayerMargin, SIGNAL(triggered()),mount,SLOT(SetLayerMargin()));
+    textedit->addAction(actionLayerMargin);
+    
+    
+    
+    /////
+    textedit->exec(event->screenPos());
+    delete blockfo;
+    
+}
+
+void TextLayer::LayerBGcolor()
+{
+    QRgb col = QColorDialog::getRgba(bgcolor.rgb()); 
+    QColor col2 = QColor(col);
+    int trans = qAlpha(col); 
+    col2.setAlpha(trans);
+       if (!col2.isValid()) {
+        return;
+        } 
+    
+    bgcolor = col2;
+}
+
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!isSelected()) {

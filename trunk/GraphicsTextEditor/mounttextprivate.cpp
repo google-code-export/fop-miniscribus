@@ -2,7 +2,7 @@
 /* #####################################buggi ##################################################*/
 
 MountTextPrivate::MountTextPrivate( QObject *parent )
-	: QObject( parent ),cursorWidth(1),preeditCursor(0),timeline(0),edit_enable(false),overwriteMode(false),
+	: Layoutpainter( parent ),cursorWidth(1),preeditCursor(0),timeline(0),edit_enable(false),overwriteMode(false),
     cursorIsFocusIndicator(false),movecursor(false),navigatelink(false),cursor_position(-1)
 {
 	setParent(parent);
@@ -91,6 +91,7 @@ void MountTextPrivate::setDocument(QTextDocument *document)
 	setContent(Qt::RichText,QString(),document);
 }
 
+
 void MountTextPrivate::setContent(Qt::TextFormat format, QString text, QTextDocument *document)
 {
 	  qDebug() << "### setContent " << __LINE__;
@@ -163,13 +164,13 @@ void MountTextPrivate::setContent(Qt::TextFormat format, QString text, QTextDocu
 				/* reconnect all */
 						 C_cursor = _c; 
 				/////_d = new QTextDocument(this);
-				_layout = _d->documentLayout(); 
+				 
+				_layout_1 = _d->documentLayout();
 				QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
 				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
 	      QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), parent(), SLOT(cursorPositionChanged(QTextCursor) ));
-				QObject::connect(_layout, SIGNAL(documentSizeChanged(QSizeF) ), this, SLOT(DocsizeChanged(QSizeF) ));
-				QObject::connect(_layout, SIGNAL(update(QRectF)), this, SIGNAL(updateRequest(QRectF)));
-        QObject::connect(_layout, SIGNAL(updateBlock(QTextBlock)), this, SLOT(_q_updateBlock(QTextBlock)));
+				QObject::connect(_layout_1, SIGNAL(documentSizeChanged(QSizeF) ), this, SLOT(DocsizeChanged(QSizeF) ));
+				QObject::connect(_layout_1, SIGNAL(update(QRectF)), this, SIGNAL(updateRequest(QRectF)));
 						
 				qDebug() << "### setContent crea " << __LINE__;
 				/////////edit(true);
@@ -204,7 +205,8 @@ void MountTextPrivate::cursorPosition( const QTextCursor curs )
 		C_cursor = curs;
 	}
 	GrepCursorData();
-	//////////////qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor;
+	qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor << C_cursor.position();
+	NewCharformat(C_cursor);
 }
 
 QRectF MountTextPrivate::actualcursorrect()
@@ -380,8 +382,9 @@ void MountTextPrivate::procesevent( QEvent *e )
 				case QEvent::GraphicsSceneMousePress: {
             QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
 					  qDebug() << "### 1 GraphicsSceneMousePress";
-					  if (ev->buttons() == Qt::LeftButton ) {
+					  if (ev->buttons() == Qt::LeftButton && edit_enable) {
             tmousePressEvent(ev->button(), ev->pos() , ev->modifiers(), ev->buttons(),ev->screenPos());
+						return;
 						}
             break; }
 		 }
@@ -410,6 +413,9 @@ void MountTextPrivate::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const 
 						 for (int i = StartSelectionMouse; i < cursorPos; ++i) {
 						 C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
 						 }
+						 
+						 cursor_position = stopat;
+						 
 			   } else {
 					  /* direction <- right-left */
 					    /* not possibel on QGraphicsItem + QTextDocument */
@@ -431,12 +437,23 @@ void MountTextPrivate::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const 
 void MountTextPrivate::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	 //////////qDebug() << "### mousePressEvent  ";
+	qDebug() << "### mousePressEvent in ";
 	lastrect = boundingRect();
-	ClearSelections();
 	setCursorPosition(pos);
+	
+	cursortime = true;
+	
+	if (StartSelectionMouse == cursor_position) {
+		  ClearSelections();
+		  repaintCursor();
+		  return;
+	} else {
+		cursortime = false;
+		setBlinkingCursorEnabled(false);
+		cursortime = false;
+	}
 	StartSelectionMouse = cursor_position;
-	cursortime = true;   /* fast  display not alternate */
+	   /* fast  display not alternate */
 	repaintCursor();
 }
 
@@ -612,7 +629,7 @@ void MountTextPrivate::paint_doc(  QPainter * painter ,
 		/* blink cursor from timer event ! */
 		if (edit_enable) {
 			
-				if (cursortime && cursorOn) {
+				if (cursortime) {
 				CTX.cursorPosition = cursor_position;
 				} else {
 				CTX.cursorPosition = -1;
@@ -629,7 +646,7 @@ void MountTextPrivate::paint_doc(  QPainter * painter ,
 				 CTX.selections.append(Internal_selection);
 				}
 	  }
-    _layout->draw(painter,CTX);
+    _layout_1->draw(painter,CTX);
 		/*dispay editable modus yes oderwise here not paint ! */              
 }
 
@@ -757,6 +774,7 @@ void MountTextPrivate::timerEvent(QTimerEvent *event)
             } else {
 							cursortime = false;
             }
+						 qDebug() << "### cursortime  " << cursortime;
 						
 				repaintCursor();
     }
@@ -812,10 +830,23 @@ void MountTextPrivate::tkeyPressEvent(QKeyEvent *e)
             return;
     }
 #endif
-	
-	
-	
-	
+		
+		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_B) {
+            e->accept();
+			qDebug() << "### a BoldText / BoldText " << textCursor().position();
+            BoldText();
+						return;
+		}
+		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_I) {
+            e->accept();
+            ItalicText();
+						return;
+		}
+		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_U) {
+            e->accept();
+            UnderlineText();
+						return;
+		}
 	
 	if (false) {
 	} else if (cursorMoveKeyEvent(e)) {
@@ -916,9 +947,9 @@ process:
            repaintCursor(false);  /* expanded */
         } else if (!text.isEmpty() && C_cursor.hasSelection() ) {
 					     QString remove = C_cursor.selectedText();    ///// QTextCursor::deletePreviousChar ()
-					     qDebug() << "### remove  " << remove;
+					     ///////qDebug() << "### remove  " << remove;
 					     for (int i = 0; i < remove.size(); ++i) {
-								 qDebug() << "### remove  " << remove.at(i);
+								 //////qDebug() << "### remove  " << remove.at(i);
 								 C_cursor.deletePreviousChar();
 							 }
 					     C_cursor.insertText(text);
@@ -1262,5 +1293,47 @@ void MountTextPrivate::insertFromMimeData(const QMimeData *source)
         repaintCursor(true);
 		}
 }
+
+
+
+
+
+
+void  MountTextPrivate::SetLayerMargin()
+{
+        if (_d) {
+            QTextFrame  *Tframe = _d->rootFrame();
+            QTextFrameFormat rootformats = Tframe->frameFormat();
+            
+             GetMargin *marge = new GetMargin(0);
+             marge->setWindowTitle(tr("Set Layer margin"));  /* or page */
+             marge->Set_margin( QRectF (rootformats.topMargin(),rootformats.rightMargin() ,rootformats.bottomMargin() ,rootformats.leftMargin() ) );
+             int faxme = marge->exec();
+             if (faxme == 1) {
+                 QRectF setFrams = marge->Get_margin();
+                 const qreal TopMargin = setFrams.x();
+                 const qreal RightMargin = setFrams.y();
+                 const qreal BottomMargin = setFrams.width();
+                 const qreal LeftMargin = setFrams.height();
+                 
+                 rootformats.setBottomMargin(BottomMargin);
+                 rootformats.setTopMargin(TopMargin);
+                 rootformats.setRightMargin(RightMargin);
+                 rootformats.setLeftMargin(LeftMargin);
+                 rootformats.setPadding(0);
+                 Tframe->setFrameFormat(rootformats);
+             }
+             
+         }
+}
+
+
+
+
+
+
+
+
+
 
 

@@ -2,6 +2,19 @@
 #define MIMEDATAEDITOR_H
 
 
+
+
+
+#define _TXT_CHAR_ALPHA_ 200
+#define _BG_CHAR_ALPHA_ 201
+#define _TXT_CHAR_SPACING_ 300 /* css letter-spacing:0.1em */
+
+
+
+
+
+#include <QInputDialog>
+#include <QColorDialog>
 #include <QPointer>
 #include <iostream>
 #include <stdio.h>
@@ -44,6 +57,84 @@
 #include <QMimeData>
 #include <QTextDocumentFragment>
 
+#include "getmargin.h"
+
+
+static inline  QIcon createColorToolButtonIcon(const QString &imageFile,QColor color)
+{
+    QPixmap pixmap(50, 80);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QPixmap image(imageFile);
+    QRect target(0, 0, 50, 60);
+    QRect source(0, 0, 42, 42);
+    painter.fillRect(QRect(0, 60, 50, 80), color);
+    painter.drawPixmap(target, image, source);
+    return QIcon(pixmap);
+}
+
+static inline  QIcon createColorIcon( QColor color )
+{
+    QPixmap pixmap(50, 50);
+    pixmap.fill(color);
+    return QIcon(pixmap);
+}
+
+
+class Layoutpainter : public QObject
+{
+     Q_OBJECT
+//
+public:
+Layoutpainter( QObject *parent );
+~Layoutpainter();
+QTextCursor textCursor();
+QAction *actionBold;
+QAction *actionItalic;
+QAction *actionUnderline;
+QAction *actionStricktext;
+QAction *actionOverline;
+QAction *actionBackColor;
+QAction *actionTextColor;
+QAction *actionBlockMargin;
+
+QAction *actionstretchfont;
+QAction *actionAlignLeft,
+        *actionAlignCenter,
+        *actionAlignRight,
+        *actionAlignJustify;
+
+QActionGroup *grp;
+
+QTextCursor C_cursor;
+QTextDocument *_d;
+QRectF line_rect_out;
+QMenu *TextMenu( QWidget * inparent );
+QMenu *BlockMenu( QWidget * inparent );
+void ComposeAction();
+signals:
+  void updateRequest(QRectF);
+public slots:
+ void NewCharformat(QTextCursor cursor);
+ /* on qmenu */
+ /* txt op */
+ void BoldText();
+ void ItalicText();
+ void UnderlineText();
+ void OverlineText();
+ void StrickText();
+ void BGcolor();
+ void TXcolor();
+ void StretchText();
+ void MakealignmentChanged(Qt::Alignment a);
+
+ /* block op */
+ void  SetTextBlockMargin();
+ void MaketextAlign(QAction *a);
+
+};
+
+////////////Q_DECLARE_METATYPE(Layoutpainter); 
 
 
 class QTextEditMimeData : public QMimeData

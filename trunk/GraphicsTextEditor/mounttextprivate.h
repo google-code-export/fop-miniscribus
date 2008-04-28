@@ -5,7 +5,7 @@
 
 class QAbstractTextDocumentLayout;
 
-class MountTextPrivate : public QObject
+class MountTextPrivate : public Layoutpainter
 {
      Q_OBJECT
 //
@@ -29,15 +29,15 @@ public:
   inline bool editable() { return edit_enable; }
   /* ############# core doc #####################*/
   QRectF lastrect;
-  QTextCursor C_cursor;
+  //////QTextCursor C_cursor;
+  /////QTextDocument *_d;
   qreal X_Pos_Cursor;
   qreal Y_Pos_Cursor;
-  QTextDocument *_d;   ///////////  QTextLayout
-  QAbstractTextDocumentLayout * _layout;
+  QAbstractTextDocumentLayout *_layout_1;
   int cursor_position;
   int position_selection_start;  /* anchor cursor */
   QRectF line_rect;
-  QRectF line_rect_out;
+  
   int line_nummer;
   int StartSelectionMouse;
   qreal linehight;
@@ -98,7 +98,6 @@ void insertFromMimeData(const QMimeData *source);
 
 
 signals:
-    void updateRequest(QRectF);
     void docselectionChanged();
     void cursor_newPos();
 private slots:
@@ -114,6 +113,7 @@ private slots:
  void DocsizeChanged( const QSizeF size );
 public slots:
  void int_clipboard_new();
+ void SetLayerMargin();
  
 
 };
