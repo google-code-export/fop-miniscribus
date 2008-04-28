@@ -13,6 +13,7 @@ public:
   MountTextPrivate( QObject *parent  = 0 );
   void setContent(Qt::TextFormat format = Qt::RichText , QString text = QString() , QTextDocument *document = 0);
   void setDocument(QTextDocument *document);
+  void ImageonCursor( QString file );
   QTextCursor _cForPosition();
   void setxhtml( QString html );
   QTextLine currentTextLine(const QTextCursor &cursor);
@@ -56,7 +57,7 @@ bool cursorIsFocusIndicator;
 bool edit_enable;
 bool navigatelink;
 bool overwriteMode;
-
+QMap<QString,SPics> imagemaps;
 bool Cursor_From_Event_Source;
 
 /* ############# mouse selection  doc #####################*/
@@ -64,11 +65,12 @@ QRectF FocusSelectionHighlight;
 QRectF TextHighlightSelect;
 QMap<int,QRectF> selection_list;
 /* ############# mouse selection  doc #####################*/
-
+void RegisterImage( SPics e , bool insert = true );  /* insert on doc default true */
 int cursorWidth;
 int preeditCursor;
 qreal cw;  /* space font metrich widht */
 protected:
+  QSettings setter;
   void selectionChanged(bool forceEmitSelectionChanged = false );
   void GrepCursorData();
   bool cursorMoveKeyEvent(QKeyEvent *e);
@@ -114,6 +116,8 @@ private slots:
 public slots:
  void int_clipboard_new();
  void SetLayerMargin();
+
+ void  InsertImageonCursor();
  
 
 };

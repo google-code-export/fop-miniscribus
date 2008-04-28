@@ -77,7 +77,9 @@ protected:
     QMenu *textedit;
     QMenu *layeredit;
 
-    QAction *actionLayerBackColor,*actionLayerMargin;
+    QAction *actionLayerBackColor,
+            *actionInsertImage,
+            *actionLayerMargin;
     bool IsSelectActive;
     int id;
     bool sceneEvent(QEvent *event);

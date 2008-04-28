@@ -126,10 +126,16 @@ void updateFlipStep(int val)
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QApplication a(argc, argv);
+    
+    a.setOrganizationName("CrossKern");
+    a.setOrganizationDomain("crosskern.com");
+    a.setApplicationName("Layer Handler");
+    
+    
     Panel panel(3, 3);
     panel.show();
-    return app.exec();
+    return a.exec();
 }
 
 #include "main.moc"

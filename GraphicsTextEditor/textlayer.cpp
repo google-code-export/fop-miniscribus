@@ -56,6 +56,12 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     textedit->addAction(actionLayerMargin);
     
     
+    actionInsertImage = new QAction(tr("Insert image"),this);
+    actionInsertImage->setIcon(QIcon(QString::fromUtf8(":/img/thumbnail.png")));
+	  connect(actionInsertImage, SIGNAL(triggered()),mount,SLOT(InsertImageonCursor()));
+    textedit->addAction(actionInsertImage);
+    
+    
     
     /////
     textedit->exec(event->screenPos());

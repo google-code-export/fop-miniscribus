@@ -328,7 +328,72 @@ void Layoutpainter::BoldText()
 
 
 
+QString Layoutpainter::ImageFilterHaving() const
+{
+  QString filter;
+  filter = tr( "All supported Types" ) + " (";
+  QList<QByteArray> formats = QImageReader::supportedImageFormats();
+  for ( int x = 0; x < formats.count(); ++x ) {
 
+    filter += QString( "*.%1" ).arg( QString( formats[ x ] ) );
+    if ( x != formats.count() - 1 )
+      filter += " ";
+  }
+  filter += ");;";
+  QString filterSimple;
+  double gsversion = getGSVersion();
+  qDebug() << "### args " << gsversion;
+  filterSimple += tr( "Scalable Vector Graphics" ) + " (*.svg *.svg.gz);;";
+  if (gsversion > 6.5) {
+   filterSimple += tr( "PostScript Vector Graphics" ) + " (*.ps *.eps);;"; 
+   filterSimple += tr( "PDF Page units" ) + " (*.pdf);;"; 
+  }
+  
+  for ( int y = 0; y < formats.count(); ++y ) {
+
+    QString form( formats[ y ] );
+    if ( form == "bmp" )
+      filterSimple += tr( "Windows Bitmap" ) + " (*.bmp)";
+    else if ( form == "gif" )
+      filterSimple += tr( "Graphic Interchange Format" ) + " (*.gif)";
+    else if ( form == "jpeg" || form == "jpg" ) {
+
+      if ( !filterSimple.contains( form ) )
+        filterSimple += tr( "Joint Photographic Experts Group" ) + " (*.jpeg *.jpg)";
+    } else if ( form == "mng" )
+      filterSimple += tr( "Multiple-image Network Graphics" ) + " (*.mng)";
+    else if ( form == "png" )
+      filterSimple += tr( "Portable Network Graphics" ) + " (*.png)";
+    else if ( form == "pbm" || form == "ppm" ) {
+
+      if ( !filterSimple.contains( form ) )
+        filterSimple += tr( "Portable Bitmap" ) + " (*.pbm *.ppm)";
+    } else if ( form == "pgm" )
+      filterSimple += tr( "Portable Graymap" ) + " (*.pgm)";
+    else if ( form == "xbm" || form == "xpm" ) {
+
+      if ( !filterSimple.contains( form ) )
+        filterSimple += tr( "X11 Bitmap" ) + " (*.xbm *.xpm)";
+    } else if ( form == "ico" )
+      filterSimple += tr( "Icon Image File Format" ) + " (*.ico)";
+    else if ( form == "jp2" || form == "j2k" ) {
+
+      if ( !filterSimple.contains( form ) )
+        filterSimple += tr( "JPEG 2000" ) + " (*.jp2 *.j2k)";
+    } else if ( form == "tif" || form == "tiff" ) {
+
+      if ( !filterSimple.contains( form ) )
+        filterSimple += tr( "Tagged Image File Format" ) + " (*.tif *.tiff)";
+    } else
+      filterSimple += tr( "Unknown Format" ) + QString( " (*.%1)" ).arg( form );
+
+    if ( y != formats.count() - 1 && !filterSimple.endsWith( ";;" ) )
+      filterSimple += ";;";
+  }
+  filterSimple = filterSimple.left( filterSimple.length() - 2 );
+  filter += filterSimple;
+  return filter;
+}
 
 
 

@@ -95,7 +95,8 @@ void MountTextPrivate::setDocument(QTextDocument *document)
 void MountTextPrivate::setContent(Qt::TextFormat format, QString text, QTextDocument *document)
 {
 	  qDebug() << "### setContent " << __LINE__;
-	  
+	  imagemaps.clear();
+	
 	  //////edit(false);
 	  bool nondoc = false;
 	  qDebug() << "### setContent " << __LINE__;
@@ -1330,7 +1331,138 @@ void  MountTextPrivate::SetLayerMargin()
 
 
 
+void  MountTextPrivate::RegisterImage( SPics e , bool insert )
+{
+    QApplication::restoreOverrideCursor();
+    bool ok;
+    QString txtinfo = QInputDialog::getText(0, tr("Image Description to blind people."),tr("Description:"), QLineEdit::Normal,e.name, &ok);
+    if (txtinfo.size() > 0) {
+    e.info = txtinfo.left(110);
+    }
+		/////////  QMap<QString,SPics> imagemaps;
+    imagemaps.insert(e.name,e);
+    _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
+		
+    if (insert) {
+        QTextImageFormat format;
+        format.setName( e.name );
+        format.setHeight ( e.pix().height() );
+        format.setWidth ( e.pix().width() );
+        format.setToolTip(e.info);
+        format.setProperty(_IMAGE_PICS_ITEM_,e);
+        textCursor().insertImage( format );
+    }
+    
+}
+void  MountTextPrivate::InsertImageonCursor()
+{
+	  if (!_d) {
+		return;
+		}
+    QString file = QFileDialog::getOpenFileName(0, tr( "Choose Image to insert..." ), QString(setter.value("LastDir").toString()) , ImageFilterHaving() );
+    if ( file.isEmpty() ) {
+    return;
+    }
+    setter.setValue("LastDir",file.left(file.lastIndexOf("/"))+"/");
+    ImageonCursor(file);
+}
 
+void  MountTextPrivate::ImageonCursor( QString file )
+{
+     QDateTime timer1( QDateTime::currentDateTime() );
+     const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
+     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+     QFileInfo fixurl(file);
+     const QString extension =  fixurl.completeSuffix().toLower();
+     QByteArray              derangedata;
+     QPixmap                 resultimage;
+     QPixmap                 scaledsimage;
+     QUrl                    imgresor;
+     
+        QFile f(fixurl.absoluteFilePath());
+        if (f.open(QIODevice::ReadOnly)) {
+            derangedata = f.readAll();
+            f.close();
+        }
+  
+        
+        //////////////qDebug() << "### image" << derangedata.size();
+        if (derangedata.size() < 1) {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::critical(0, tr( "Alert! image format." ), tr( "Unable to read file %1" ).arg(fixurl.fileName()) );  
+        return;
+        }
+        /* read image */
+        if (extension.contains("svg")) {
+        resultimage = RenderPixmapFromSvgByte(  derangedata );
+        } else if (extension.contains("ps") || extension.contains("eps")) {
+            QApplication::restoreOverrideCursor();
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        resultimage = LoadPS( fixurl.absoluteFilePath() );
+        } else if (extension.contains("pdf")) {
+            QApplication::restoreOverrideCursor();
+            int page = QInputDialog::getInteger(0, tr("Render Page Nr."),tr("Page:"),1, 1, 100, 1);
+            int large = QInputDialog::getInteger(0, tr("Page scaled to width"),tr("Point unit:"),400, 10, 3000, 10);
+            if (page > 0 && large > 0) {
+                QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+                resultimage = LoadPDF( fixurl.absoluteFilePath() ,page,large);
+            } else {
+                QApplication::restoreOverrideCursor();
+            return;
+            }
+        }  else {
+        resultimage.loadFromData( derangedata );
+        }
+        
+        /* read in */
+        if ( resultimage.isNull() ) {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::critical(0, tr( "Alert! image format." ), tr( "Unable to render to image file %1 from type %2." ).arg(fixurl.fileName()).arg(extension) ); 
+        return;
+        }
+        
+         
+         QByteArray bytes;
+         QBuffer buffer(&bytes);
+         buffer.open(QIODevice::WriteOnly);
+         QApplication::restoreOverrideCursor();
+				 int limitwiimage = _MAXIEDITWI_;
+				 if (limitwiimage > boundingRect().width()) {
+					 limitwiimage = boundingRect().width();
+				 }
+				 
+				
+				if (resultimage.width() > limitwiimage) {
+             /* question widht */
+           scaledsimage = resultimage.scaledToWidth( limitwiimage );
+        } else {
+           scaledsimage = resultimage.scaledToWidth( resultimage.width() ); 
+        }
+				
+				
+				
+        if (_DRAWMODUS_WEB_ == 1) {
+				scaledsimage.save(&buffer,"JPG",70);
+				} else {
+        scaledsimage.save(&buffer,"PNG",100);
+				}
+				
+        if (!scaledsimage.isNull()) {
+        const QString nami = Imagename(fixurl.baseName());
+        SPics  xpix;
+        xpix.name = nami;
+				if (_DRAWMODUS_WEB_ == 1) {
+				xpix.extension = QByteArray("JPG");
+				} else {
+        xpix.extension = QByteArray("PNG");
+				}
+				/* bytes having data images */
+				xpix.set_pics(scaledsimage);
+				
+				RegisterImage(xpix,true);
+				}
+        QApplication::restoreOverrideCursor();
+}
 
 
 
