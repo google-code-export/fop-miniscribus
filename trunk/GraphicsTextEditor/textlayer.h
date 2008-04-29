@@ -104,6 +104,7 @@ public slots:
     void appendtext( const QString txt );
     void updatearea( const QRectF areas );
     void LayerBGcolor();
+    void cursor_wake_up();
 };
 
 QT_END_NAMESPACE

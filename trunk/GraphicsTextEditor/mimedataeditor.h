@@ -59,6 +59,11 @@
 #include <QTextDocumentFragment>
 #include <QMimeData>
 #include <QTextDocumentFragment>
+#include <QKeySequence>
+
+
+#define ACCEL_KEYL(k) "\t" + QString("Ctrl+" #k)
+
 
 #include "getmargin.h"
 

@@ -14,6 +14,7 @@ public:
   void setContent(Qt::TextFormat format = Qt::RichText , QString text = QString() , QTextDocument *document = 0);
   void setDocument(QTextDocument *document);
   void ImageonCursor( QString file );
+  QMenu *StandardMenu( QWidget * inparent );
   QTextCursor _cForPosition();
   void setxhtml( QString html );
   QTextLine currentTextLine(const QTextCursor &cursor);
@@ -116,8 +117,12 @@ private slots:
 public slots:
  void int_clipboard_new();
  void SetLayerMargin();
-
- void  InsertImageonCursor();
+ void undo();
+ void redo();
+ void InsertImageonCursor();
+ void deleteSelected();
+ void undoAvailable( bool e );
+ void redoAvailable( bool e );
  
 
 };

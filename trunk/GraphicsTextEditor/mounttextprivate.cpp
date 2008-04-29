@@ -17,12 +17,15 @@ MountTextPrivate::MountTextPrivate( QObject *parent )
  
 void MountTextPrivate::int_clipboard_new()
 {
-	qDebug() << "### clipboard in " << clipboard->text();
+	qDebug() << "### clipboard in ";
+	_layout_1->dumpObjectTree();
+	
+	
 }
 
 void MountTextPrivate::paste()
 {
-	  if (clipboard->text().size() > 200) {
+	  if (clipboard->text().size() > 600) {
 		qApp->beep();
 		qApp->beep();
 		return;
@@ -80,7 +83,8 @@ void MountTextPrivate::setDocument(QTextDocument *document)
 	if (_d) {
 	_d->disconnect(this);
 	_d->documentLayout()->disconnect(this);
-	/////_d->documentLayout()->setPaintDevice(0);
+	_d->documentLayout()->setPaintDevice(0);
+		
 	
 	if (_d->parent() == this) {
 			//////////delete _d;
@@ -112,14 +116,14 @@ void MountTextPrivate::setContent(Qt::TextFormat format, QString text, QTextDocu
 					_d = new QTextDocument(this);
 					nondoc = true;
         }
-				_d->setUseDesignMetrics(true);
-				_d->setMaximumBlockCount(20);
+				//////_d->setUseDesignMetrics(true);
+				///////_d->setMaximumBlockCount(20);
 
 				QTextCursor _c(_d);
 				
 				qDebug() << "### setContent crea " << __LINE__;
 				
-				_d->setUndoRedoEnabled(false);
+				
 				
 				    if (!text.isEmpty()) {
 							if (format == Qt::PlainText) {
@@ -166,12 +170,16 @@ void MountTextPrivate::setContent(Qt::TextFormat format, QString text, QTextDocu
 						 C_cursor = _c; 
 				/////_d = new QTextDocument(this);
 				 
+				/////////////////d->setUndoRedoEnabled(false);
 				_layout_1 = _d->documentLayout();
 				QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
 				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
 	      QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), parent(), SLOT(cursorPositionChanged(QTextCursor) ));
 				QObject::connect(_layout_1, SIGNAL(documentSizeChanged(QSizeF) ), this, SLOT(DocsizeChanged(QSizeF) ));
 				QObject::connect(_layout_1, SIGNAL(update(QRectF)), this, SIGNAL(updateRequest(QRectF)));
+				QObject::connect(_d, SIGNAL(undoAvailable(bool)),this, SIGNAL(undoAvailable(bool)));
+        QObject::connect(_d, SIGNAL(redoAvailable(bool)),this, SIGNAL(redoAvailable(bool)));
+				_d->setUndoRedoEnabled(true);
 						
 				qDebug() << "### setContent crea " << __LINE__;
 				/////////edit(true);
@@ -179,6 +187,17 @@ void MountTextPrivate::setContent(Qt::TextFormat format, QString text, QTextDocu
 		}
 		
 		qDebug() << "### setContent " << __LINE__;
+}
+
+
+
+void MountTextPrivate::undoAvailable( bool e )
+{
+	qDebug() << "### undoAvailable " << __LINE__ << e;
+}
+void MountTextPrivate::redoAvailable( bool e )
+{
+	qDebug() << "### redoAvailable " << __LINE__ << e;
 }
 
 void MountTextPrivate::DocsizeChanged( const QSizeF size )
@@ -775,13 +794,25 @@ void MountTextPrivate::timerEvent(QTimerEvent *event)
             } else {
 							cursortime = false;
             }
-						 qDebug() << "### cursortime  " << cursortime;
+						 qDebug() << "### cursortime  " << cursortime << _d->isUndoRedoEnabled() << _d->isUndoAvailable();
 						
 				repaintCursor();
     }
 }
 
+void MountTextPrivate::undo()
+{
+	   qDebug() << "### undo stack go ..... ";
+    ////_d->undo(&C_cursor);
+	  _d->undo();
+}
 
+void MountTextPrivate::redo()
+{
+	  qDebug() << "### redo stack go ..... ";
+    ///_d->redo(&C_cursor);
+	  _d->redo();
+}
 
 
 void MountTextPrivate::setBlinkingCursorEnabled(bool enable)
@@ -848,18 +879,26 @@ void MountTextPrivate::tkeyPressEvent(QKeyEvent *e)
             UnderlineText();
 						return;
 		}
+		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Z) {
+            e->accept();
+            undo();
+						return;
+		}
+		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Y) {
+            e->accept();
+            redo();
+						return;
+		}
 	
 	if (false) {
 	} else if (cursorMoveKeyEvent(e)) {
-		    
-		    goto accept_move_cursor;  /* jump line */
+		goto accept_move_cursor;  /* jump line */
 	} else if (e == QKeySequence::Undo) {
-            _d->undo();
+            undo();
     }
     else if (e == QKeySequence::Redo) {
-           _d->redo();
-    }
-    else if (e == QKeySequence::Cut) {
+           redo();
+    } else if (e == QKeySequence::Cut) {
            cut();
 			     position_selection_start = 0;
     }
@@ -1354,11 +1393,57 @@ void  MountTextPrivate::RegisterImage( SPics e , bool insert )
     }
     
 }
+
+QMenu *MountTextPrivate::StandardMenu( QWidget * inparent )
+{
+    QMenu *menu = new QMenu(inparent);
+    QAction *a;
+	  
+	  if (editable()) {
+	      QString text = tr("&Undo");
+        a = menu->addAction(tr("&Undo") + ACCEL_KEYL(Z), this, SLOT(undo()));
+        a->setEnabled(_d->isUndoAvailable());
+        a = menu->addAction(tr("&Redo") + ACCEL_KEYL(Y), this, SLOT(redo()));
+        a->setEnabled(_d->isRedoAvailable());
+        menu->addSeparator();
+			  a = menu->addAction(tr("Cu&t") + ACCEL_KEYL(X), this, SLOT(cut()));
+        a->setEnabled(C_cursor.hasSelection());
+		}
+		    a = menu->addAction(tr("&Copy") + ACCEL_KEYL(C), this, SLOT(copy()));
+        a->setEnabled(C_cursor.hasSelection());
+	
+		    menu->addSeparator();
+        a = menu->addAction(tr("Select All") + ACCEL_KEYL(A), this, SLOT(selectAll()));
+        a->setEnabled(!_d->isEmpty());
+		
+		if (editable()) {
+				a = menu->addAction(tr("&Paste") + ACCEL_KEYL(V), this, SLOT(paste()));
+        a->setEnabled(clipboard->text().size() > 1);
+        a = menu->addAction(tr("Delete"), this, SLOT(deleteSelected()));
+        a->setEnabled(C_cursor.hasSelection());
+    }
+		
+		return menu;
+
+}
+
+void MountTextPrivate::deleteSelected()
+{
+    if (editable()) {
+    C_cursor.removeSelectedText();
+		}
+}
+
 void  MountTextPrivate::InsertImageonCursor()
 {
 	  if (!_d) {
 		return;
 		}
+		
+		_d->undo();
+		return;
+		
+		
     QString file = QFileDialog::getOpenFileName(0, tr( "Choose Image to insert..." ), QString(setter.value("LastDir").toString()) , ImageFilterHaving() );
     if ( file.isEmpty() ) {
     return;

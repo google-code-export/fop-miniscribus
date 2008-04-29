@@ -23,8 +23,17 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     QByteArray precode(QByteArray::fromBase64(xcode));    
     mount->setxhtml(precode.data());
     connect(mount, SIGNAL(updateRequest(QRectF) ), this, SLOT(updatearea(QRectF)));
+    connect(mount, SIGNAL(cursor_newPos() ), this, SLOT(cursor_wake_up()));
     mount->edit(false);
     evesum = 0;
+}
+
+
+void TextLayer::cursor_wake_up()
+{
+    
+    qDebug() << "### cursor_wake_up ";
+    document()->setModified(true); 
 }
 
 
@@ -39,7 +48,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
      ////////textedit->addSeparator();
     
     
-    textedit = new QMenu(tr("Base menu"),event->widget());
+    textedit = mount->StandardMenu(event->widget());
     QMenu *charsfo = mount->TextMenu(event->widget());
     QMenu *blockfo = mount->BlockMenu(event->widget());
     textedit->addAction(charsfo->menuAction()); 
