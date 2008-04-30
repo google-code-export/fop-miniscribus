@@ -598,7 +598,6 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 	qDebug() << "### mousePressEvent in ";
 	lastrect = boundingRect();
 	setCursorPosition(pos);
-	
 	cursortime = true;
 	
 	if (StartSelectionMouse == cursor_position) {
@@ -606,9 +605,7 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 		  repaintCursor();
 		  return;
 	} else {
-		cursortime = false;
-		setBlinkingCursorEnabled(false);
-		cursortime = false;
+		///////setBlinkingCursorEnabled(false);
 	}
 	StartSelectionMouse = cursor_position;
 	   /* fast  display not alternate */
