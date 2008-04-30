@@ -3,6 +3,9 @@
 #include "textlayer.h"
 #include <QtGui/qgraphicsview.h>
 
+
+
+
 class Panel : public QGraphicsView
 {
     Q_OBJECT
@@ -93,12 +96,12 @@ void flip()
         swapTimeLine->setDirection(QTimeLine::Backward);
         swapTimeLine->start();
         flipped = false;
-        embed->setDocument(ioq->document());
+        ///////embed->setDocument(ioq->document());
     } else {
         swapTimeLine->setDirection(QTimeLine::Forward);
         swapTimeLine->start();
         flipped = true;
-        ioq->setDocument(embed->document()->clone());
+        ///////ioq->setDocument(embed->document()->clone());
     }
     
     
@@ -121,6 +124,8 @@ void updateFlipStep(int val)
 
 
 };
+
+
 
 
 

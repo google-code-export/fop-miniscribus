@@ -136,8 +136,7 @@ public slots:
  void TXcolor();
  void StretchText();
  void MakealignmentChanged(Qt::Alignment a);
- void undo();
- void redo();
+
  /* block op */
  void  SetTextBlockMargin();
  void MaketextAlign(QAction *a);

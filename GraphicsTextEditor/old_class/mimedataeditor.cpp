@@ -1,6 +1,7 @@
 #include "mimedataeditor.h"
 
 Layoutpainter::Layoutpainter(QObject *parent)
+  : QObject(parent)
 {
     ComposeAction();
 }
@@ -15,27 +16,6 @@ QAction *actionTextColor;
 QAction *actionBold;
 ...........................
 */
-
-void Layoutpainter::undo()
-{
-    if (!_d) {
-    return;
-    }
-	   qDebug() << "### undo stack go ..... ";
-    ////_d->undo(&C_cursor);
-	  _d->undo();
-}
-
-void Layoutpainter::redo()
-{
-    if (!_d) {
-    return;
-    }
-    
-	  qDebug() << "### redo stack go ..... ";
-    ///_d->redo(&C_cursor);
-	  _d->redo();
-}
 
 void Layoutpainter::ComposeAction()
 {
@@ -433,9 +413,7 @@ QString Layoutpainter::ImageFilterHaving() const
 
 Layoutpainter::~Layoutpainter()
 {
-   _d->clear();
-   _d->deleteLater(); 
-
+   delete _d;
 }
 
 
