@@ -28,14 +28,13 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
         QTextFrame  *Tframe = _doc->rootFrame();
         QTextFrameFormat rootformats = Tframe->frameFormat();
         rootformats.setWidth(wi);
-        rootformats.setBorder(1);
-        rootformats.setBorderBrush(QBrush(bgcolor));
+        rootformats.setBorder(0);
         Tframe->setFrameFormat(rootformats);
         _doc->setPageSize(QSizeF(wi,hi)); 
         DLayout = _doc->documentLayout();
     mount->txtControl()->document()->toHtml().size();  /* connect all */
     
-    qDebug() << "### TextLayer init ...........  html in size ->" << _doc->toHtml().size();
+    //////////qDebug() << "### TextLayer init ...........  html in size ->" << _doc->toHtml().size();
     setZValue(0.99999);
     setDocument(_doc);
     RestoreMoveAction();
@@ -47,10 +46,45 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
 void TextLayer::cursorPositionChanged( const QTextCursor cur)
 {
     
-   qDebug() << "### cursorPositionChanged ->" << document()->toHtml().size();
+   ///////////////qDebug() << "### cursorPositionChanged ->" << document()->toHtml().size();
    update();
     
 }
+
+void TextLayer::SaveFilelayer()
+{
+    QString file = QFileDialog::getSaveFileName(0, tr("Save Layer File"),QString(setter.value("LastDir").toString()),tr("Layer File (*.layer)"));
+    if (file.size() > 0) {
+        setter.setValue("LastDir",file.left(file.lastIndexOf("/"))+"/");
+        
+        RichDoc asidoc = ReadActualItem();
+         if (!file.endsWith(".layer")) {
+            file.append(".layer");
+         }
+        const QString stream = SaveRichDoc(asidoc);
+        fwriteutf8(file,stream);
+    }
+}
+
+
+void TextLayer::OpenFilelayer()
+{
+    QString file = QFileDialog::getOpenFileName(0, tr( "Choose Layer File..." ), QString(setter.value("LastDir").toString()) ,tr("Layer File (*.layer)"));
+    
+    if (file.size() > 0) {
+        setter.setValue("LastDir",file.left(file.lastIndexOf("/"))+"/");
+        
+        QString inside;
+        QFile f(file); 
+                if (f.open(QFile::ReadOnly | QFile::Text)) {
+                    inside = QString::fromUtf8(f.readAll());
+                    f.close();
+                }
+        RichDoc dddoc = OpenRichDoc(inside); 
+        insert(dddoc);       
+    }
+}
+
 
 void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
@@ -70,7 +104,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QMenu *DocRevision = new QMenu(tr("Revision History"),event->widget());
     DocRevision->setIcon(QIcon(":/img/html_div.png"));
         int longs = 0;
-                 QMapIterator<uint,RichDoc> i(history);
+                 QMapIterator<uint,QString> i(history);
                  while (i.hasNext()) {
                      i.next();
                      if (longs < 101) {
@@ -92,6 +126,13 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         a = RootMenu->addAction(tr("Layer background color"), this, SLOT(SetNewBGColor()));
         a->setIcon(createColorIcon(bgcolor));
+        a = RootMenu->addAction(tr("Save as Layer file"), this, SLOT(SaveFilelayer()));
+        a->setIcon(QIcon(":/img/bringtofront.png"));
+        
+        a = RootMenu->addAction(tr("Open Layer file"), this, SLOT(OpenFilelayer()));
+        a->setIcon(QIcon(":/img/bringtofront.png"));
+        
+        
         
     }
     RootMenu->exec(event->screenPos());
@@ -105,7 +146,7 @@ void TextLayer::InsertRevision()
     QAction *invoice = qobject_cast<QAction *>(sender());
     const uint index = invoice->data().toUInt();
     qDebug() << "### history id  ->" << index;
-    RichDoc olditem =  history[index];
+    RichDoc olditem = OpenRichDoc(history[index]);
     insert(olditem);
     EditModus();
     update();
@@ -115,7 +156,8 @@ void TextLayer::insert( RichDoc Rdoc )
 {
     _doc = Rdoc.todoc();
     setStyle(Rdoc.style.split(";"),false);
-    setDocument(_doc);
+    mount->txtControl()->setDocument(_doc,this);
+    mount->txtControl()->RegisterResource(Rdoc.resource);
 }
 
 
@@ -146,7 +188,7 @@ void TextLayer::init()
 }
 void TextLayer::cursor_wake_up()
 {
-    qDebug() << "### cursor_wake_up ";
+    ///////////qDebug() << "### cursor_wake_up ";
     update();
 }
 
@@ -172,7 +214,7 @@ void TextLayer::read()
 {
         RichDoc itemdoc = ReadActualItem();
         QDateTime timer1( QDateTime::currentDateTime() );
-        history.insert(timer1.toTime_t(),itemdoc);
+        history.insert(timer1.toTime_t(),SaveRichDoc(itemdoc));
 }
 
 
@@ -200,19 +242,34 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(widget);
     
      /* Layer Background draw! */
-		painter->save();
-		painter->setPen(Qt::NoPen);
-		painter->setBrush(QBrush(bgcolor));
-		painter->drawRect(boundingRect());
-		painter->restore();
+		qreal hightlengh =  mount->txtControl()->boundingRect().height();
+    if (format != Lock )  {  
+                if (hightlengh > hi ) {
+                  hi = hightlengh + 5;
+                }
+    } 
     
     
-    if (mount) {
+    
+    
+     if (mount) {
     mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),false);
     } else {
         qApp->beep();
 		    qApp->beep();
     }
+    
+      
+      if (modus == Lock ) {  /* writteln modus icon */
+				painter->save();
+				QPixmap pixbg(":/img/encrypted.png");
+				painter->drawPixmap(QPointF(boundingRect().width() - 40,8),pixbg);
+				painter->restore();
+			}
+      
+   
+    
+    
     
     //////QGraphicsItem::paint(painter,option,widget);
 }

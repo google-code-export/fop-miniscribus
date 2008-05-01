@@ -9,7 +9,7 @@
 #define _BG_CHAR_ALPHA_ 201
 #define _TXT_CHAR_SPACING_ 300 /* css letter-spacing:0.1em */
 
-#define _IMAGE_PICS_ITEM_ 100
+
 
 
 #define _MAXIEDITWI_  2000;   /* image maximum widht */

@@ -6,7 +6,7 @@
 #include <QtCore>
 #include "pics_structure.h"
 
-
+#define _IMAGE_PICS_ITEM_ 100
 
 
 class RichDoc
@@ -71,12 +71,12 @@ class RichDoc
         QTextDocument *d = new QTextDocument();
         d->setHtml(QString(html));
 			  helper = QTextCursor(d);
-			  ////////QMapIterator<QString,SPics> i(resource);
-		     ////////while (i.hasNext()) {
-           /////////i.next();
-				   ////////////SPics record = i.value();
-				   //////////////d->addResource( QTextDocument::ImageResource,QUrl(record.name),record.pix());
-         ////////}
+			  QMapIterator<QString,SPics> i(resource);
+		     while (i.hasNext()) {
+           i.next();
+				   SPics record = i.value();
+				   d->addResource( QTextDocument::ImageResource,QUrl(record.name),record.pix());
+         }
 				 QTextFrame  *Tframe = d->rootFrame();
 				 QTextFrame::iterator it;
          for (it = Tframe->begin(); !(it.atEnd()); ++it) {
@@ -102,13 +102,10 @@ class RichDoc
 													      if (pico.isValid()) {
 																		const QString hrefadress = pico.name();
 																		SPics spico = resource[hrefadress];
-																		/////////qDebug() << "### from doc hrefadress " << hrefadress;
-																		/////////////qDebug() << "### from doc hrefadress " << spico.info;
+																		qDebug() << "### from RichDoc add resource " << hrefadress;
+																		qDebug() << "### from RichDoc info " << spico.info;
 																		pico.setToolTip(spico.info);
-																		pico.setProperty(100,spico);
-																	  ///////base.setProperty(100,spico);
-																	  ///////base.setToolTip(spico.info);
-																	  ////////////helper = QTextCursor(d);
+																		pico.setProperty(_IMAGE_PICS_ITEM_,spico);
 																		helper.setPosition(fr.position());
                                     helper.setPosition(fr.position() + fr.length(),QTextCursor::KeepAnchor);
                                     helper.setCharFormat(pico);
