@@ -41,6 +41,7 @@ public:
     QTextDocument *_doc;
 protected:
     QSettings setter;
+    QAction *actionSwapEdit;
     void init();
     void read();
     void RestoreMoveAction();
@@ -81,6 +82,7 @@ public slots:
     void SetNewBGColor();
     void SaveFilelayer();
     void OpenFilelayer();
+    void SwapEdit();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)

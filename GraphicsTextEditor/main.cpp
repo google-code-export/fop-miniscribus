@@ -1,5 +1,8 @@
 #include <QtGui>
+#if QT_VERSION >= 0x040400
 #include "roundrectitem.h"
+#endif 
+
 #include "textlayer.h"
 #include <QtGui/qgraphicsview.h>
 
@@ -32,15 +35,17 @@ public:
     ioq = new TextLayer(1,0,scene);
     ioq->setPos(QPointF(0,0));
     /* edit gui */
+    #if QT_VERSION >= 0x040400
     embed = new QTextBrowser();
     embed->setText ( "sdfsdfsdfsdfsd fsd f sd f dsf ds f ds fds f ds f sd f dsf ds f dsf ds f ds fs f ds fs f sf ds f");
     embed->setReadOnly(false);
     embed->setOpenExternalLinks(false);
     backItem = new RoundRectItem(bounds, palette().color(QPalette::Window), embed);
     backItem->setTransform(QTransform().rotate(90, Qt::YAxis));
+    backItem->setZValue(100000);
     scene->addItem(backItem);
     /* edit gui */
-    
+    #endif 
     fitInView(ioq, Qt::KeepAspectRatio);
     
     connect(backItem, SIGNAL(activated()), this, SLOT(flip()));
@@ -90,21 +95,21 @@ void flip()
     }
     
     
-     
+     #if QT_VERSION >= 0x040400
     
     if (flipped) {
         swapTimeLine->setDirection(QTimeLine::Backward);
         swapTimeLine->start();
         flipped = false;
-        ///////embed->setDocument(ioq->document());
+        embed->setDocument(ioq->document());
     } else {
         swapTimeLine->setDirection(QTimeLine::Forward);
         swapTimeLine->start();
         flipped = true;
-        ///////ioq->setDocument(embed->document()->clone());
+        //////////ioq->setDocument(embed->document());
     }
     
-    
+    #endif 
     
 }
 
