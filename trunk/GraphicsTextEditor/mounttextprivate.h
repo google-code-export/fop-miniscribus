@@ -33,14 +33,15 @@ class TextWriter : public Layoutpainter
     Q_OBJECT
     //////Q_DECLARE_PRIVATE(TextWriter)
 public:
-    explicit TextWriter(QTextDocument *doc , QObject *parent );
+    explicit TextWriter( QObject *parent );
     virtual ~TextWriter();
     void setBlinkingCursorEnabled(bool enable);
+    QMenu *StandardMenu( QWidget * inparent );   /* copy paste select all qmenu */
     QTextLine currentTextLine(const QTextCursor &cursor);
+    void setDocument ( QTextDocument * document , QObject *parent = 0 );
     inline bool editable() { return edit_enable; }
     void edit( bool e);
     QTextDocument *document();
-    QTextCursor textCursor();
     void paint_doc(  QPainter * painter ,
                          const QStyleOptionGraphicsItem *option , 
                          QBrush BGpage , 
@@ -50,14 +51,16 @@ public:
     inline QPointF controlOffset() { return QPointF(0., boundingRect().height()); }
     void procesevent( QEvent *e );
     void ClearSelections();
+    inline QMap<QString,SPics> imglist() { return imagemaps; }
 private:
+    QSettings setter;
     int hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const;
     void selectionChanged(bool forceEmitSelectionChanged = false );
-    
+    QClipboard *clipboard;
     /* portanti */
     QRectF lastrect;
     int StartSelectionMouse;
-    int cursor_position;
+    /////int cursor_position;
     int position_selection_start;
     QObject *bridge;
     //////QTextCursor C_cursor;
@@ -103,6 +106,12 @@ public slots:
      void cut();
      void paste();
      void copy();
+     void int_clipboard_new();
+     void deleteSelected();
+     void SetLayerMargin();
+     void  ImageonCursor( QString file );
+     void  InsertImageonCursor();
+     void  RegisterImage( SPics e , bool insert );
 };
 
 Q_DECLARE_METATYPE(TextWriter *)

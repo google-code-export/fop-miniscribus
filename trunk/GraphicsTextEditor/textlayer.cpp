@@ -11,6 +11,8 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     format(DIV_ABSOLUTE),mount(new TextController)
 {
     mount->q = this;
+    history.clear();
+    id = layer_id;
     setAcceptDrops(true);
     setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsMovable,true);
@@ -31,20 +33,121 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
         Tframe->setFrameFormat(rootformats);
         _doc->setPageSize(QSizeF(wi,hi)); 
         DLayout = _doc->documentLayout();
-    qDebug() << "### TextLayer init  html in size ->" << _doc->toHtml().size();
+    mount->txtControl()->document()->toHtml().size();  /* connect all */
+    
+    qDebug() << "### TextLayer init ...........  html in size ->" << _doc->toHtml().size();
+    setZValue(0.99999);
+    setDocument(_doc);
+    RestoreMoveAction();
     init();
-    qDebug() << "### TextLayer init  html in size ->" << mount->txtControl()->document()->toHtml().size();
+    //////////////qDebug() << "### TextLayer init  html in size ->" << mount->txtControl()->document()->toHtml().size();
 }
+
+
+void TextLayer::cursorPositionChanged( const QTextCursor cur)
+{
+    
+   qDebug() << "### cursorPositionChanged ->" << document()->toHtml().size();
+   update();
+    
+}
+
+void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    bool canedit = mount->txtControl()->editable();
+    if (!isSelected()) {
+    return;
+    }
+    if (modus == Lock) {
+    return;
+    }
+    QAction *a;
+    RootMenu = mount->txtControl()->StandardMenu(event->widget());
+    
+    a = RootMenu->addAction(tr("Register commit layer now"), this, SLOT(CommitLayer()));
+    a->setIcon(QIcon(":/img/html_div.png"));
+    if (canedit) {
+    QMenu *DocRevision = new QMenu(tr("Revision History"),event->widget());
+    DocRevision->setIcon(QIcon(":/img/html_div.png"));
+        int longs = 0;
+                 QMapIterator<uint,RichDoc> i(history);
+                 while (i.hasNext()) {
+                     i.next();
+                     if (longs < 101) {
+                     QDateTime from;
+                              from.setTime_t(i.key()); 
+                     QAction *revisior = new QAction(tr("Set revision from %1 - id %2").arg(from.toString()).arg(i.key()),this);
+                     revisior->setIcon(QIcon(":/img/html_div.png"));
+                     revisior->setData(i.key());
+	                   connect(revisior, SIGNAL(triggered()),this,SLOT(InsertRevision()));
+                     DocRevision->addAction(revisior);
+                     }
+                     longs++;
+                 } 
+        
+        
+        if (longs > 0) {
+         RootMenu->addAction(DocRevision->menuAction()); 
+        }
+        
+        a = RootMenu->addAction(tr("Layer background color"), this, SLOT(SetNewBGColor()));
+        a->setIcon(createColorIcon(bgcolor));
+        
+    }
+    RootMenu->exec(event->screenPos());
+    delete RootMenu;
+    
+}
+void TextLayer::InsertRevision()
+{
+    
+    read();
+    QAction *invoice = qobject_cast<QAction *>(sender());
+    const uint index = invoice->data().toUInt();
+    qDebug() << "### history id  ->" << index;
+    RichDoc olditem =  history[index];
+    insert(olditem);
+    EditModus();
+    update();
+}
+
+void TextLayer::insert( RichDoc Rdoc )
+{
+    _doc = Rdoc.todoc();
+    setStyle(Rdoc.style.split(";"),false);
+    setDocument(_doc);
+}
+
+
+void TextLayer::CommitLayer()
+{
+    read();
+    ///////////qDebug() << "### history.size ->" << history.size();
+}
+
+
+void TextLayer::setDocument ( QTextDocument * document )
+{
+    mount->txtControl()->setDocument(document,this);
+}
+
+QTextDocument *TextLayer::document()
+{
+    return mount->txtControl()->document();
+}
+QTextCursor TextLayer::textCursor()
+{
+  return mount->txtControl()->textCursor();
+}
+
 void TextLayer::init()
 {
-    history.clear();
     read();
 }
-
-
 void TextLayer::cursor_wake_up()
 {
     qDebug() << "### cursor_wake_up ";
+    update();
 }
 
 
@@ -57,7 +160,7 @@ TextWriter *TextController::txtControl() const
 {
     if (!device) {
        TextLayer *that = const_cast<TextLayer *>(q); 
-       device = new TextWriter(q->_doc,that);
+       device = new TextWriter(that);
        connect(device, SIGNAL(q_cursor_newPos() ),q, SLOT(cursor_wake_up()));
        connect(device, SIGNAL(q_update(QRectF) ),q, SLOT(updatearea(QRectF)));
     }
@@ -67,17 +170,9 @@ TextWriter *TextController::txtControl() const
 
 void TextLayer::read()
 {
-        /* big undo action */
-        dd = new LogData;
-        dd->bgcolor = bgcolor;
-        dd->border = border;
-        dd->bordercolor = bordercolor;
-        dd->hi = hi;
-        dd->wi = wi;
-        dd->DFormat = format;
-        dd->doc = _doc;
+        RichDoc itemdoc = ReadActualItem();
         QDateTime timer1( QDateTime::currentDateTime() );
-        history.insert(timer1.toTime_t(),dd);
+        history.insert(timer1.toTime_t(),itemdoc);
 }
 
 
@@ -89,7 +184,7 @@ void TextLayer::updatearea( const QRectF areas )
     return;
     }
     evesum++;
-    qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
+    //////////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
     update(areas);
 }
 
@@ -103,9 +198,23 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget *widget)
 {
     Q_UNUSED(widget);
+    
+     /* Layer Background draw! */
+		painter->save();
+		painter->setPen(Qt::NoPen);
+		painter->setBrush(QBrush(bgcolor));
+		painter->drawRect(boundingRect());
+		painter->restore();
+    
+    
     if (mount) {
-    mount->txtControl()->paint_doc(painter,option,QBrush(Qt::green),boundingRect(),false);
+    mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),false);
+    } else {
+        qApp->beep();
+		    qApp->beep();
     }
+    
+    //////QGraphicsItem::paint(painter,option,widget);
 }
 
 
@@ -167,6 +276,15 @@ void TextLayer::RestoreMoveAction()
     //////////////////qDebug() << "### reset ";
 }
 
+
+void TextLayer::EditModus() 
+{
+    modus == Edit;
+    mount->txtControl()->edit(true);
+    setFlag(QGraphicsItem::ItemIsMovable,false);
+    update(boundingRect());
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*  events  enum CurrentModus{ Show, Edit, Move , Lock }; */
@@ -187,11 +305,9 @@ void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     }
     if (event->buttons() == Qt::LeftButton && event->modifiers() == Qt::ControlModifier  &&  modus == Show && 
         !mount->txtControl()->editable()) {
-    modus == Edit;
-    mount->txtControl()->edit(true);
+    EditModus();
     mount->txtControl()->procesevent(event);
-    setFlag(QGraphicsItem::ItemIsMovable,false);
-    update(boundingRect());
+    EditModus();
     return;
     }
     if (mount->txtControl()->editable()) {
@@ -229,10 +345,7 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (!isSelected()) {
     return;
     }
-    
-    if (mount->txtControl()->editable()) {
     mount->txtControl()->procesevent(event);
-    }
     QGraphicsItem::mousePressEvent(event); 
 }
 
@@ -252,10 +365,142 @@ void TextLayer::keyPressEvent( QKeyEvent * event )
 }
 
 
+void TextLayer::timerEvent(QTimerEvent *event)
+{
+
+    
+}
+
+void TextLayer::setZValue(qreal index )
+{
+    QGraphicsItem::setZValue(index);
+    
+}
 
 
+void TextLayer::SetNewBGColor() 
+{
+     bool ok;
+     QRgb col = QColorDialog::getRgba(bgcolor.rgba(),&ok);
+     if (!ok) {
+        return; 
+     }
+     int AlphaColor =  qAlpha ( col );
+     bgcolor = QColor( col );
+     bgcolor.setAlpha(AlphaColor);
+     update();
+}
 
+RichDoc TextLayer::ReadActualItem()
+{
+    QString styles;
+    QTextFrame  *Tframe = document()->rootFrame();
+    QTextFrameFormat ft = Tframe->frameFormat();
+    int xBottomMargin =  ToUnit(ft.bottomMargin(),"mm");
+    int xTopMargin = ToUnit(ft.topMargin(),"mm");
+    int xRightMargin = ToUnit(ft.rightMargin(),"mm");
+    int xLeftMargin = ToUnit(ft.leftMargin(),"mm");
+    const QString margin = QString("padding:%1mm %2mm %3mm %4mm;").arg(xTopMargin).arg(xRightMargin).arg(xBottomMargin).arg(xLeftMargin); 
+    qreal realhightdoc = ToUnit(hi,"mm");
+    qreal realwidhtdoc = ToUnit(wi,"mm");
+    #define ALPHAHTML(alpha) ((alpha)/254.99999999)
+    if (format != DIV_AUTO) {
+    styles = "position:absolute; overflow:hidden; top:"+QString("%1mm").arg(ToUnit(pos().y(),"mm"))+"; left:"+QString("%1mm").arg(ToUnit(pos().x(),"mm"))+"; width:"+QString("%1mm").arg(ToUnit(wi,"mm"))+"; height:"+QString("%1mm").arg(ToUnit(hi,"mm"))+"; ";
+    } else {
+    styles = "min-height:"+QString("%1mm").arg(hi)+";";   
+    }
+    styles.append(margin);
+    int alphacolor = qBound(0,bgcolor.alpha(),255);
+    qreal percentos = ALPHAHTML( alphacolor );
+    
+    if (alphacolor <= 1) {
+    styles.append(QString("background-color:transparent; ") );
+    } else {
+    styles.append(QString("background-color:%1; ").arg( bgcolor.name() ) );  
+    }
+    if (percentos < 1 && alphacolor > 1) {
+    QString Tnetto = QString("%1").arg(percentos, 0, 'f', 4);  /* CSS 2 alpha */
+    QString IETnetto = QString("%1").arg(percentos * 100, 0, 'f', 4);  /* IE alpha */
+    styles.append(QString("opacity:%1;filter:alpha(opacity=%2);-moz-opacity:%1;").arg(Tnetto).arg(IETnetto));
+    }
+    
+    if (border > 0 ) {
+    styles.append(QString("border:%2mm solid %1; ").arg(bordercolor.name()).arg(ToUnit(border,"mm")));
+    }
+    if (zValue() > 1) {
+    styles.append(QString("z-index:%1;").arg(qRound(zValue())));
+    }
+    
+    RichDoc Rdoc;
+            Rdoc.Register(document(),mount->txtControl()->imglist(),styles);
+    return Rdoc;
+}
 
+void TextLayer::setStyle( QStringList syle , bool fromclone )
+{
+    #define ALPHAHTML(alpha) ((alpha)*254.99999999)
+    QStringList find;
+    find << "position" << "top" << "left" << "width" << "opacity" << "height" << "background-color" << "z-index" << "id"; 
+    QMap<QString,QVariant> incss; 
+    for (int o = 0; o < find.size(); ++o)  {
+         incss.insert(find.at(o),QString("0"));
+    }
+    /* fill default null values */
+    /////qDebug() << "### syle " << syle;
+    for (int i = 0; i < syle.size(); ++i)  {
+        QString values = syle.at(i).trimmed();
+        QStringList css = values.split(":");
+        if (css.size() == 2) {
+        incss.insert(css.at(0),css.at(1));
+        }
+    }
+   if (incss.value("position").toString() == "absolute") {
+         format = DIV_ABSOLUTE;
+         if (fromclone) {  
+         setPos(QPointF(Metric(incss.value("left").toString())+5,Metric(incss.value("top").toString()) + 5)); 
+         } else {
+         setPos(QPointF(Metric(incss.value("left").toString()),Metric(incss.value("top").toString())));
+         }
+           
+           
+      if ( Metric(incss.value("width").toString()) > 10 ) {
+        wi = Metric(incss.value("width").toString());
+            QTextFrame  *Tframe = document()->rootFrame();
+            QTextFrameFormat rootformats = Tframe->frameFormat();
+            rootformats.setWidth(wi); 
+            Tframe->setFrameFormat(rootformats);
+      }
+    
+      if (Metric(incss.value("height").toString()) > 10) {
+        hi = Metric(incss.value("height").toString());
+      }
+    
+        if (incss.value("z-index").toInt() > 1) {
+            if (fromclone) {
+              setZValue(incss.value("z-index").toDouble() + 1);
+            } else {
+               setZValue(incss.value("z-index").toDouble()); 
+            }
+         }
+    }
+    
+    if (incss.value("background-color").toString() !="0") {
+       bgcolor = QColor(incss.value("background-color").toString());
+          if (incss.value("opacity").toDouble() > 0) {
+              int alFaCol = qBound(0.00,ALPHAHTML(incss.value("opacity").toDouble()),255.00);
+              bgcolor.setAlpha(alFaCol);
+          }
+          if (incss.value("background-color").toString() == "transparent") {
+            bgcolor.setAlpha(0);
+          }
+          
+          
+      }
+      
+    modus = Show;
+    update();
+      
+}
 
 
 QT_END_NAMESPACE
