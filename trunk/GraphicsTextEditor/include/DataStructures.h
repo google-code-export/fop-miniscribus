@@ -184,7 +184,30 @@ extern inline QString PathConvert( QString path )
     return resolvepath;
 }
 
-
+/* write a file to utf-8 format */
+static inline bool fwriteutf8(QString fullFileName,QString xml)
+{
+    if (fullFileName.contains("/", Qt::CaseInsensitive)) {
+    QString ultimacartellaaperta = fullFileName.left(fullFileName.lastIndexOf("/"))+"/";
+    QDir dira(ultimacartellaaperta);
+    if ( dira.mkpath(ultimacartellaaperta) ) { } else {
+    return false;
+    }
+    }
+    
+        QTextCodec *codecx;
+        codecx = QTextCodec::codecForMib(106);
+        QFile f( fullFileName );
+        if ( f.open( QFile::WriteOnly | QFile::Text ) )
+        {
+        QTextStream sw( &f );
+        sw.setCodec(codecx);
+        sw << xml;
+        f.close();
+        return true;
+        }
+        return false;
+}
 
 
 

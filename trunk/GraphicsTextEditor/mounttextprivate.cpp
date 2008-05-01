@@ -36,20 +36,71 @@ void TextWriter::setDocument ( QTextDocument * document , QObject *parent )
 	setContent(Qt::AutoText,QString(),document);
 }
 
+void TextWriter::RegisterResource( QMap<QString,SPics> list )
+{
+	             QMapIterator<QString,SPics> i(list);
+                 while (i.hasNext()) {
+                     i.next();
+									    SPics e  = i.value();
+									    qDebug() << "### TextWriter insert 4 addResource " << e.name << e.pix().isNull();
+						         _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
+									   imagemaps.insert(e.name,e);
+								 }
+	
+}
+
 void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *document)
 {
 	if (_d == document) {
 	return;
 	}
 	imagemaps.clear();  /* image resource */
+	/* register image if found on doc before clone !!!! */
+	if (document) {
+		     QTextFrame  *Tframe = document->rootFrame();
+				 QTextFrame::iterator it;
+         for (it = Tframe->begin(); !(it.atEnd()); ++it) {
+				               QTextBlock para = it.currentBlock();
+					             if (para.isValid()) {
+												   QTextBlock::iterator de;
+														for (de = para.begin(); !(de.atEnd()); ++de) {
+																QTextFragment fr = de.fragment();
+																if (fr.isValid()) {
+																	 QTextCharFormat base = fr.charFormat();
+																	 QTextImageFormat pico = base.toImageFormat();
+																				if (pico.isValid()) {
+																						const QString hrefadress = pico.name();
+																					  qDebug() << "### hrefadress register " << hrefadress;
+																					  QVariant xx = pico.property(_IMAGE_PICS_ITEM_); 
+																					   if (!xx.isNull()) {
+                                                SPics pic = xx.value<SPics>();
+																							  qDebug() << "### TextWriter insert 1 " << pic.name;
+																							  imagemaps.insert(pic.name,pic);
+                                             }
+																					
+																				}
+																}
+																				 
+														}
+												 
+											 }
+				 }
+	}
 	cursor_position = 0;
 	bool nondoc = false;
-	
-	
 	if (!_d) {
-	
         if (document) {
 					_d = document;
+					if (imagemaps.size() > 0) {
+						  QMapIterator<QString,SPics> i(imagemaps);
+                 while (i.hasNext()) {
+                     i.next();
+									    SPics e  = i.value();
+									    qDebug() << "### TextWriter insert 2 addResource " << e.name << e.pix().isNull();
+						         _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
+								 }
+						
+					}
         } else {
 					_d = new QTextDocument;
 					 nondoc = true;
@@ -111,7 +162,7 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
  
 void TextWriter::int_clipboard_new()
 {
-	qDebug() << "### clipboard in ";
+	///////////qDebug() << "### clipboard in ";
 }
 
 void TextWriter::paint_doc(  QPainter * painter ,
@@ -120,14 +171,18 @@ void TextWriter::paint_doc(  QPainter * painter ,
                          const QRectF fulllayer ,  
                          bool alternate )
 {
-	 
+	  painter->save();
+		painter->setPen(Qt::NoPen);
+		painter->setBrush(BGpage);
+		painter->drawRect(fulllayer);
+		painter->restore();
+	  painter->save();
 	
-	   if (edit_enable) {  /* writteln modus icon */
-				painter->save();
-				QPixmap pixbg(":/img/icon.png");
-				painter->drawPixmap(QPointF(boundingRect().width() - 40,8),pixbg);
-				painter->restore();
-			}
+		const QColor backcolor = BGpage.color();
+    const QColor contrastbackcolor(
+        backcolor.red()   > 127 ? 0 : 255,
+        backcolor.green() > 127 ? 0 : 255,
+        backcolor.blue()  > 127 ? 0 : 255); 
 	
 	  /* rect from frame root QTextDocument*/
 	  QRectF doc_rect = boundingRect();
@@ -143,13 +198,13 @@ void TextWriter::paint_doc(  QPainter * painter ,
 		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
 		/* blink cursor from timer event ! */
 		if (edit_enable) {
-				if (cursortime) {  /* cursor blink vom timer QApplication::cursorFlashTime() */
-				CTX.cursorPosition = cursor_position;
+				if (cursortime) {  /* cursor blink yes vom timer QApplication::cursorFlashTime() */
+				painter->setPen(QPen(QBrush(contrastbackcolor),1));
+				CTX.cursorPosition = C_cursor.position();
 				} else {
+				painter->setPen(Qt::NoPen);
 				CTX.cursorPosition = -1;
 				}
-				
-				
 	  }
 		if (C_cursor.hasSelection()) {
 					QAbstractTextDocumentLayout::Selection Internal_selection;
@@ -161,6 +216,14 @@ void TextWriter::paint_doc(  QPainter * painter ,
 				   CTX.selections.append(Internal_selection);
 				}
     _d->documentLayout()->draw(painter,CTX);
+				
+			if (editable()) {  /* writteln modus icon */
+				QPixmap pixbg(":/img/icon.png");
+				painter->drawPixmap(QPointF(fulllayer.width() - 40,8),pixbg);
+			}
+				
+				
+		painter->restore();
 		/* _d = QTextDocument dispay editable modus yes oderwise here not paint ! */              
 }
 

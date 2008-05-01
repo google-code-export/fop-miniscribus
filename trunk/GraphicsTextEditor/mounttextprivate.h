@@ -51,6 +51,7 @@ public:
     inline QPointF controlOffset() { return QPointF(0., boundingRect().height()); }
     void procesevent( QEvent *e );
     void ClearSelections();
+    void RegisterResource( QMap<QString,SPics> list );
     inline QMap<QString,SPics> imglist() { return imagemaps; }
 private:
     QSettings setter;

@@ -40,6 +40,7 @@ public:
     void setStyle( QStringList syle , bool fromclone );
     QTextDocument *_doc;
 protected:
+    QSettings setter;
     void init();
     void read();
     void RestoreMoveAction();
@@ -61,7 +62,7 @@ protected:
     bool sceneEvent(QEvent *event);
 private:
     TextController *mount;
-    QMap<uint,RichDoc> history;
+    QMap<uint,QString> history;
     QColor bgcolor;
     QColor bordercolor;
     qreal border;
@@ -78,6 +79,8 @@ public slots:
     void InsertRevision();
     void EditModus();
     void SetNewBGColor();
+    void SaveFilelayer();
+    void OpenFilelayer();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)
