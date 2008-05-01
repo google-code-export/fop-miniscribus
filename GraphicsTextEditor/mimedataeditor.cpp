@@ -16,6 +16,20 @@ QAction *actionBold;
 ...........................
 */
 
+void Layoutpainter::cursorPosition( const QTextCursor curs )
+{
+	cursor_position = curs.position();
+	///////LastCharFormat = curs.charFormat();
+	if (curs.isCopyOf(C_cursor)) {
+      
+	} else {
+		 C_cursor.setPosition(curs.position());
+		 cursor_position = C_cursor.position();
+	}
+	////////qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor << C_cursor.position();
+	NewCharformat(C_cursor);
+}
+
 void Layoutpainter::undo()
 {
     if (!_d) {
@@ -230,8 +244,7 @@ void Layoutpainter::NewCharformat( QTextCursor cursor )
     QTextCharFormat format = c.charFormat();
     ////////QTextBlock bf = textCursor().block();
     QFont f = format.font();
-     qDebug() << "### Layoutpainter cursor in .........." << f.bold() << " .............................................";
-    
+     ///////////qDebug() << "### Layoutpainter cursor in .........." << f.bold() << " .............................................";
     actionBold->setChecked( f.bold() );
     actionItalic->setChecked( f.italic() );
     actionUnderline->setChecked(f.underline() );
@@ -276,7 +289,19 @@ void Layoutpainter::MaketextAlign(QAction *a)
     textCursor().setBlockFormat(format);
 }
 
-
+void Layoutpainter::FosInsertFrame()
+{
+    QTextFrameFormat frame;
+                     frame.setBorder(2);   
+                     frame.setBorderBrush(QBrush(Qt::red));  
+                     frame.setBorderStyle(QTextFrameFormat::BorderStyle_Dotted);
+                      QTextLength mesure(QTextLength::FixedLength,180); 
+                     frame.setWidth(mesure);   
+                     frame.setPosition(QTextFrameFormat::FloatRight);   
+        textCursor().insertFrame(frame);
+    
+    
+}
 
 
 void Layoutpainter::ItalicText()

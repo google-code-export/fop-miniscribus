@@ -84,8 +84,6 @@ void TextWriter::setDocument(QTextDocument *document)
 	_d->disconnect(this);
 	_d->documentLayout()->disconnect(this);
 	_d->documentLayout()->setPaintDevice(0);
-		
-	
 	if (_d->parent() == this) {
 			//////////delete _d;
 	 }

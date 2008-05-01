@@ -147,6 +147,20 @@ static inline qreal ToPoint( qreal unit , const QString unita )  {
     return ri;
 }
 
+
+extern inline qreal Metric( const QString datain  ) /////  pixel in point out 
+{
+  const qreal pointm = FopInt(datain);
+  //////////////qDebug() << "### Metric " << datain << " point " << Faktor(pointm);
+  return pointm;
+}
+
+extern inline qreal ToUnit( qreal misura , const QString units )  ///// point int pixel out 
+{
+	qreal conis = Pointo(misura,units);
+  return  conis;
+}
+
 /* simple mkdir */
 static inline bool Cache( const QString dirpath )
 {

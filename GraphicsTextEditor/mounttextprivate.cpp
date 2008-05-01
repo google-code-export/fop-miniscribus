@@ -1,20 +1,117 @@
 #include "mounttextprivate.h"
-/* #####################################buggi ##################################################*/
 
-
-
-TextWriter::TextWriter(QTextDocument *doc , QObject *parent )
+TextWriter::TextWriter(QObject *parent )
   : Layoutpainter(this),cursorIsFocusIndicator(false),edit_enable(false),cursorOn(false),timeline(0),
 	overwriteMode(false),StartSelectionMouse(-1)
 {
 	bridge = parent;
-	_d = new QTextDocument(this);
-	setContent(Qt::AutoText,QString(),doc);
+	_d = new QTextDocument;
+	C_cursor = QTextCursor(_d);
+	///////setContent(Qt::AutoText,QString(),doc);
   setBlinkingCursorEnabled(false);
 	edit(false);
-  emit q_cursor_newPos();
-  qDebug() << "### TextWriter init  html in size ->" << _d->toHtml().size();
-  
+  ///////////qDebug() << "### TextWriter init  html in size ->" << _d->toHtml().size();
+	clipboard = QApplication::clipboard();
+}
+
+void TextWriter::setDocument ( QTextDocument * document , QObject *parent )
+{
+	bridge = parent;
+	if (document->toHtml().size() < 22) {
+	qApp->beep();
+	qApp->beep();
+	qApp->beep();
+	return;
+	}
+	  if (_d) {
+		_d->clear();
+	  _d->disconnect(this);
+	  _d->documentLayout()->disconnect(this);
+			if (_d->parent() == this) {
+        delete _d;
+		  }
+		_d = 0;
+		}
+		
+	setContent(Qt::AutoText,QString(),document);
+}
+
+void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *document)
+{
+	if (_d == document) {
+	return;
+	}
+	imagemaps.clear();  /* image resource */
+	cursor_position = 0;
+	bool nondoc = false;
+	
+	
+	if (!_d) {
+	
+        if (document) {
+					_d = document;
+        } else {
+					_d = new QTextDocument;
+					 nondoc = true;
+        }
+				
+				C_cursor = QTextCursor(_d);
+				
+				
+				    if (!text.isEmpty()) {
+							if (format == Qt::PlainText) {
+                   _d->setPlainText(text);
+							} else {
+								 _d->setHtml(text);
+								 
+							}
+						}
+						
+						QTextFrame  *Tframe = _d->rootFrame();
+						QTextFrameFormat rootformats = Tframe->frameFormat();
+						if (!lastrect.isNull()) {
+							_d->setTextWidth(lastrect.width());
+							rootformats.setWidth(lastrect.width()); 
+						}
+						if (nondoc) { 
+						rootformats.setBottomMargin(0);
+						rootformats.setTopMargin(0);
+						rootformats.setRightMargin(0);
+						rootformats.setLeftMargin(0);
+						rootformats.setPadding(0);
+						}
+            Tframe->setFrameFormat(rootformats);
+				
+						C_cursor.setPosition(0,QTextCursor::MoveAnchor);
+				    cursor_position = C_cursor.position();
+				QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
+				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
+				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
+	      ////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(NewCharformat(QTextCursor) ));
+				//////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ),bridge, SLOT(cursorPositionChanged(QTextCursor) ));
+				QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)),this,SIGNAL(updateRequest(QRectF)));
+				/////QObject::connect(_d, SIGNAL(undoAvailable(bool)),this, SIGNAL(undoAvailable(bool)));
+        ///////QObject::connect(_d, SIGNAL(redoAvailable(bool)),this, SIGNAL(redoAvailable(bool)));
+				_d->setUndoRedoEnabled(true);
+						if (nondoc) {
+							/* no document  set plain text or html not doc precision format as default color */
+							
+						}
+						
+						
+				repaintCursor();
+				emit q_cursor_newPos();
+						
+	}
+					
+		
+}
+
+
+ 
+void TextWriter::int_clipboard_new()
+{
+	qDebug() << "### clipboard in ";
 }
 
 void TextWriter::paint_doc(  QPainter * painter ,
@@ -23,12 +120,7 @@ void TextWriter::paint_doc(  QPainter * painter ,
                          const QRectF fulllayer ,  
                          bool alternate )
 {
-	  /* Layer Background draw! */
-		painter->save();
-		painter->setPen(Qt::NoPen);
-		painter->setBrush(BGpage);
-		painter->drawRect(fulllayer);
-		painter->restore();
+	 
 	
 	   if (edit_enable) {  /* writteln modus icon */
 				painter->save();
@@ -57,7 +149,9 @@ void TextWriter::paint_doc(  QPainter * painter ,
 				CTX.cursorPosition = -1;
 				}
 				
-				if (C_cursor.hasSelection()) {
+				
+	  }
+		if (C_cursor.hasSelection()) {
 					QAbstractTextDocumentLayout::Selection Internal_selection;
 					Internal_selection.cursor = C_cursor;
 								QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
@@ -66,7 +160,6 @@ void TextWriter::paint_doc(  QPainter * painter ,
 								Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 				   CTX.selections.append(Internal_selection);
 				}
-	  }
     _d->documentLayout()->draw(painter,CTX);
 		/* _d = QTextDocument dispay editable modus yes oderwise here not paint ! */              
 }
@@ -102,62 +195,7 @@ QRectF TextWriter::boundingRect() const
 	}
 }
 
-void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *document)
-{
-	  imagemaps.clear();
-	  cursor_position = 0;
-	  bool nondoc = false;
-    if (_d->isEmpty()) {
-        if (document) {
-					_d = document;
-        } else {
-					_d = new QTextDocument;
-					 nondoc = true;
-        }
-				C_cursor = QTextCursor(_d);
-				    if (!text.isEmpty()) {
-							if (format == Qt::PlainText) {
-                   _d->setPlainText(text);
-							} else {
-								 _d->setHtml(text);
-								 
-							}
-						}
-						
-						QTextFrame  *Tframe = _d->rootFrame();
-						QTextFrameFormat rootformats = Tframe->frameFormat();
-						if (!lastrect.isNull()) {
-							_d->setTextWidth(lastrect.width());
-							rootformats.setWidth(lastrect.width()); 
-						}
-						if (nondoc) { 
-						rootformats.setBottomMargin(0);
-						rootformats.setTopMargin(0);
-						rootformats.setRightMargin(0);
-						rootformats.setLeftMargin(0);
-						rootformats.setPadding(0);
-						}
-            Tframe->setFrameFormat(rootformats);
-				
-						C_cursor.setPosition(0,QTextCursor::MoveAnchor);
-				    cursor_position = C_cursor.position();
-						
-				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
-				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
-	      QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ),bridge, SLOT(cursorPositionChanged(QTextCursor) ));
-				QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)),bridge,SIGNAL(updatearea(QRectF)));
-				/////QObject::connect(_d, SIGNAL(undoAvailable(bool)),this, SIGNAL(undoAvailable(bool)));
-        ///////QObject::connect(_d, SIGNAL(redoAvailable(bool)),this, SIGNAL(redoAvailable(bool)));
-				_d->setUndoRedoEnabled(true);
-		} else {
-			 lastrect = boundingRect();
-			_d->disconnect(this);
-	    _d->documentLayout()->disconnect(this);
-	    _d->documentLayout()->setPaintDevice(0);
-      _d->clear();
-			return setContent(format,text,document);
-		}
-}
+
 
 
 
@@ -182,15 +220,40 @@ QTextDocument *TextWriter::document()
   return _d; 
 }
 
-QTextCursor TextWriter::textCursor()
-{
-  return C_cursor; 
-}
+
 
 
 TextWriter::~TextWriter()
 {
   delete _d;
+}
+
+void  TextWriter::SetLayerMargin()
+{
+        if (_d) {
+            QTextFrame  *Tframe = _d->rootFrame();
+            QTextFrameFormat rootformats = Tframe->frameFormat();
+            
+             GetMargin *marge = new GetMargin(0);
+             marge->setWindowTitle(tr("Set Layer margin"));  /* or page */
+             marge->Set_margin( QRectF (rootformats.topMargin(),rootformats.rightMargin() ,rootformats.bottomMargin() ,rootformats.leftMargin() ) );
+             int faxme = marge->exec();
+             if (faxme == 1) {
+                 QRectF setFrams = marge->Get_margin();
+                 const qreal TopMargin = setFrams.x();
+                 const qreal RightMargin = setFrams.y();
+                 const qreal BottomMargin = setFrams.width();
+                 const qreal LeftMargin = setFrams.height();
+                 
+                 rootformats.setBottomMargin(BottomMargin);
+                 rootformats.setTopMargin(TopMargin);
+                 rootformats.setRightMargin(RightMargin);
+                 rootformats.setLeftMargin(LeftMargin);
+                 rootformats.setPadding(0);
+                 Tframe->setFrameFormat(rootformats);
+             }
+             
+         }
 }
 
 
@@ -215,7 +278,8 @@ void TextWriter::ClearSelections()
 {
 	  cursorIsFocusIndicator = false;
     TextHighlightSelect = QRectF();
-	  repaintCursor(true);
+	  C_cursor.setPosition(C_cursor.position());
+		emit updateRequest(boundingRect());
 }
 
 void TextWriter::selectAll()
@@ -227,6 +291,13 @@ void TextWriter::selectAll()
 	  cursorIsFocusIndicator = true;
 	  qDebug() << "### position_selection_start/stop selectAll" << cursor_position << "/" << position_selection_start; 
     selectionChanged(selectionLength != qAbs(C_cursor.position() - C_cursor.anchor()));
+}
+
+void TextWriter::deleteSelected()
+{
+    if (editable()) {
+    C_cursor.removeSelectedText();
+		}
 }
 
 void TextWriter::cut()
@@ -542,10 +613,10 @@ void TextWriter::procesevent( QEvent *e )
 				case QEvent::GraphicsSceneMousePress: {
             QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
 					  qDebug() << "### 1 GraphicsSceneMousePress";
-					  if (ev->buttons() == Qt::LeftButton && edit_enable) {
+					  if (ev->buttons() == Qt::LeftButton) {
             tmousePressEvent(ev->button(), ev->pos() , ev->modifiers(), ev->buttons(),ev->screenPos());
 						return;
-						}
+						} 
             break; }
 		 }
 		 
@@ -591,6 +662,8 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 			}
 		} 
 }
+
+
 
 void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
@@ -854,9 +927,211 @@ QMimeData *TextWriter::createMimeDataFromSelection() const
     return new QTextEditMimeData(fragment);    /////QTextDocumentFragment::fromHtml(md->html())
 }
 
+QMenu *TextWriter::StandardMenu( QWidget * inparent )
+{
+    QMenu *menu = new QMenu(inparent);
+    QAction *a;
+	  
+	  if (editable()) {
+	      QString text = tr("&Undo");
+        a = menu->addAction(tr("&Undo") + ACCEL_KEYL(Z), this, SLOT(undo()));
+        a->setEnabled(_d->isUndoAvailable());
+			  a->setIcon(QIcon(":/img/undo.png"));
+			
+        a = menu->addAction(tr("&Redo") + ACCEL_KEYL(Y), this, SLOT(redo()));
+        a->setEnabled(_d->isRedoAvailable());
+			  a->setIcon(QIcon(":/img/redo.png"));
+        menu->addSeparator();
+			
+			  QMenu *charsfo = TextMenu(inparent);
+        QMenu *blockfo = BlockMenu(inparent);
+         menu->addAction(charsfo->menuAction()); 
+         menu->addAction(blockfo->menuAction()); 
+			   menu->addSeparator();
+			
+			
+			
+			  a = menu->addAction(tr("Cu&t") + ACCEL_KEYL(X), this, SLOT(cut()));
+        a->setEnabled(C_cursor.hasSelection());
+			  a->setIcon(QIcon(":/img/editcut.png"));
+		}
+		    a = menu->addAction(tr("&Copy") + ACCEL_KEYL(C), this, SLOT(copy()));
+        a->setEnabled(C_cursor.hasSelection());
+		    a->setIcon(QIcon(":/img/editcopy.png"));
+	
+		    menu->addSeparator();
+        a = menu->addAction(tr("Select All") + ACCEL_KEYL(A), this, SLOT(selectAll()));
+        a->setEnabled(!_d->isEmpty());
+		
+		if (editable()) {
+				a = menu->addAction(tr("&Paste") + ACCEL_KEYL(V), this, SLOT(paste()));
+        a->setEnabled(clipboard->text().size() > 1);
+			  a->setIcon(QIcon(":/img/editpaste.png"));
+        a = menu->addAction(tr("Delete"), this, SLOT(deleteSelected()));
+        a->setEnabled(C_cursor.hasSelection());
+			  a->setIcon(QIcon(":/img/delete.png"));
+			
+			  a = menu->addAction(tr("Insert image"), this, SLOT(InsertImageonCursor()));
+			  a->setIcon(QIcon(":/img/thumbnail.png"));
+			
+			  a = menu->addAction(tr("Layer margin"), this, SLOT(SetLayerMargin()));
+			  a->setIcon(QIcon(":/img/view_top_bottom.png"));
+			  
+				a = menu->addAction(tr("Insert frame"), this, SLOT(FosInsertFrame()));
+			
+			
+    }
+		
+		return menu;
+
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                          EVENTS                                                 */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+void  TextWriter::InsertImageonCursor()
+{
+	  if (!_d) {
+		return;
+		}
+    QString file = QFileDialog::getOpenFileName(0, tr( "Choose Image to insert..." ), QString(setter.value("LastDir").toString()) , ImageFilterHaving() );
+    if ( file.isEmpty() ) {
+    return;
+    }
+    setter.setValue("LastDir",file.left(file.lastIndexOf("/"))+"/");
+    ImageonCursor(file);
+}
+
+void  TextWriter::ImageonCursor( QString file )
+{
+     QDateTime timer1( QDateTime::currentDateTime() );
+     const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
+     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+     QFileInfo fixurl(file);
+     const QString extension =  fixurl.completeSuffix().toLower();
+     QByteArray              derangedata;
+     QPixmap                 resultimage;
+     QPixmap                 scaledsimage;
+     QUrl                    imgresor;
+     
+        QFile f(fixurl.absoluteFilePath());
+        if (f.open(QIODevice::ReadOnly)) {
+            derangedata = f.readAll();
+            f.close();
+        }
+  
+        
+        //////////////qDebug() << "### image" << derangedata.size();
+        if (derangedata.size() < 1) {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::critical(0, tr( "Alert! image format." ), tr( "Unable to read file %1" ).arg(fixurl.fileName()) );  
+        return;
+        }
+        /* read image */
+        if (extension.contains("svg")) {
+        resultimage = RenderPixmapFromSvgByte(  derangedata );
+        } else if (extension.contains("ps") || extension.contains("eps")) {
+            QApplication::restoreOverrideCursor();
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        resultimage = LoadPS( fixurl.absoluteFilePath() );
+        } else if (extension.contains("pdf")) {
+            QApplication::restoreOverrideCursor();
+            int page = QInputDialog::getInteger(0, tr("Render Page Nr."),tr("Page:"),1, 1, 100, 1);
+            int large = QInputDialog::getInteger(0, tr("Page scaled to width"),tr("Point unit:"),400, 10, 3000, 10);
+            if (page > 0 && large > 0) {
+                QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+                resultimage = LoadPDF( fixurl.absoluteFilePath() ,page,large);
+            } else {
+                QApplication::restoreOverrideCursor();
+            return;
+            }
+        }  else {
+        resultimage.loadFromData( derangedata );
+        }
+        
+        /* read in */
+        if ( resultimage.isNull() ) {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::critical(0, tr( "Alert! image format." ), tr( "Unable to render to image file %1 from type %2." ).arg(fixurl.fileName()).arg(extension) ); 
+        return;
+        }
+        
+         
+         QByteArray bytes;
+         QBuffer buffer(&bytes);
+         buffer.open(QIODevice::WriteOnly);
+         QApplication::restoreOverrideCursor();
+				 int limitwiimage = _MAXIEDITWI_;
+				 if (limitwiimage > boundingRect().width()) {
+					 limitwiimage = boundingRect().width();
+				 }
+				if (resultimage.width() > limitwiimage) {
+             /* question widht */
+           scaledsimage = resultimage.scaledToWidth( limitwiimage );
+        } else {
+           scaledsimage = resultimage.scaledToWidth( resultimage.width() ); 
+        }
+				
+				
+				
+        if (_DRAWMODUS_WEB_ == 1) {
+				scaledsimage.save(&buffer,"JPG",70);
+				} else {
+        scaledsimage.save(&buffer,"PNG",100);
+				}
+				
+        if (!scaledsimage.isNull()) {
+        const QString nami = Imagename(fixurl.baseName());
+        SPics  xpix;
+        xpix.name = nami;
+				if (_DRAWMODUS_WEB_ == 1) {
+				xpix.extension = QByteArray("JPG");
+				} else {
+        xpix.extension = QByteArray("PNG");
+				}
+				/* bytes having data images */
+				xpix.set_pics(scaledsimage);
+				
+				RegisterImage(xpix,true);
+				}
+        QApplication::restoreOverrideCursor();
+}
+
+
+
+
+
+void  TextWriter::RegisterImage( SPics e , bool insert )
+{
+    QApplication::restoreOverrideCursor();
+    bool ok;
+    QString txtinfo = QInputDialog::getText(0, tr("Image Description to blind people."),tr("Description:"), QLineEdit::Normal,e.name, &ok);
+    if (txtinfo.size() > 0) {
+    e.info = txtinfo.left(110);
+    }
+		/////////  QMap<QString,SPics> imagemaps;
+    imagemaps.insert(e.name,e);
+    _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
+		
+    if (insert) {
+        QTextImageFormat format;
+        format.setName( e.name );
+        format.setHeight ( e.pix().height() );
+        format.setWidth ( e.pix().width() );
+        format.setToolTip(e.info);
+        format.setProperty(_IMAGE_PICS_ITEM_,e);
+        textCursor().insertImage( format );
+    }
+    
+}
+
+
+
+
 
 
 

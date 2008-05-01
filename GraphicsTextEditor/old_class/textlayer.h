@@ -74,7 +74,7 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     uint evesum;
     T_MODE modus;
-    QMenu *textedit;
+    QMenu *RootMenu;
     QMenu *layeredit;
 
     QAction *actionLayerBackColor,

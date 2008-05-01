@@ -64,7 +64,7 @@
 
 #define ACCEL_KEYL(k) "\t" + QString("Ctrl+" #k)
 
-
+#include "DataStructures.h"
 #include "getmargin.h"
 
 
@@ -113,7 +113,7 @@ QAction *actionAlignLeft,
         *actionAlignJustify;
 
 QActionGroup *grp;
-
+int cursor_position;
 QTextCursor C_cursor;
 QTextDocument *_d;
 QRectF line_rect_out;
@@ -141,6 +141,8 @@ public slots:
  /* block op */
  void  SetTextBlockMargin();
  void MaketextAlign(QAction *a);
+ void cursorPosition( const QTextCursor curs );
+ void FosInsertFrame();
 
 };
 

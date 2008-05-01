@@ -25,12 +25,19 @@ public:
     ~TextLayer();
     void setSelected( bool selected );
     QRectF boundingRect() const;
+    QTextDocument *document();
+    void setDocument ( QTextDocument * document );
+    QTextCursor textCursor();
+    RichDoc ReadActualItem();
+    void insert( RichDoc Rdoc );
+    void setZValue(qreal index );
     bool contains(const QPointF &point) const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     enum { Type = 22 };
     int type() const;
     LAYERTYPE Ltype() const;
     enum CurrentModus{ Show, Edit, Move , Lock };
+    void setStyle( QStringList syle , bool fromclone );
     QTextDocument *_doc;
 protected:
     void init();
@@ -40,10 +47,11 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void timerEvent(QTimerEvent *event);
     ////void inputMethodEvent(QInputMethodEvent *event);
     void keyPressEvent( QKeyEvent * event );
-    ////void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-    
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+    QMenu *RootMenu;
     QAbstractTextDocumentLayout *DLayout;
     LAYERTYPE format;
     CurrentModus modus;
@@ -52,9 +60,8 @@ protected:
     int id;
     bool sceneEvent(QEvent *event);
 private:
-    TextController *mount;   /////  mount(new TextController)  ////  mount->txtControl()->document();
-    QSharedDataPointer<LogData> dd;
-    QMap<uint,LogData*> history;
+    TextController *mount;
+    QMap<uint,RichDoc> history;
     QColor bgcolor;
     QColor bordercolor;
     qreal border;
@@ -66,6 +73,11 @@ private:
 public slots:
     void updatearea( const QRectF areas );
     void cursor_wake_up();
+    void cursorPositionChanged( const QTextCursor cur);
+    void CommitLayer();
+    void InsertRevision();
+    void EditModus();
+    void SetNewBGColor();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)
@@ -85,17 +97,6 @@ public:
 Q_DECLARE_METATYPE(TextController *)
 
 
-
-class LogData : public QSharedData{
-public:
-    QColor bgcolor;
-    QColor bordercolor;
-    qreal border;
-    qreal wi;
-    qreal hi;
-    LAYERTYPE DFormat;
-    QTextDocument *doc;
-};
 
 
 
