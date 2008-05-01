@@ -45,7 +45,7 @@ public:
     void paint_doc(  QPainter * painter ,
                          const QStyleOptionGraphicsItem *option , 
                          QBrush BGpage , 
-                         const QRectF fulllayer ,  
+                         const QRectF fulllayer ,  QPen BorderFiller, 
                          bool alternate );
     QRectF boundingRect() const;
     inline QPointF controlOffset() { return QPointF(0., boundingRect().height()); }

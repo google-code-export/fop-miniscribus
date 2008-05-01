@@ -5,10 +5,10 @@ QT_BEGIN_NAMESPACE
 
 
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
-    : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(0.),
+    : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),
     hi(330),wi(550),bgcolor(QColor(Qt::yellow)),
-    bordercolor(QColor(Qt::transparent)),
-    format(DIV_ABSOLUTE),mount(new TextController)
+    bordercolor(QColor(Qt::red)),
+    format(DIV_AUTO),mount(new TextController)
 {
     mount->q = this;
     history.clear();
@@ -95,8 +95,19 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     if (modus == Lock) {
     return;
     }
+    bool activeedit = canedit ?  true : false;
+    
+    
+    
     QAction *a;
     RootMenu = mount->txtControl()->StandardMenu(event->widget());
+    
+        actionSwapEdit = new QAction(tr("Edit modus"),this);
+        actionSwapEdit->setIcon(QIcon(":/img/icon.png"));
+        actionSwapEdit->setCheckable(true);
+        actionSwapEdit->setChecked(activeedit);
+	      connect(actionSwapEdit, SIGNAL(triggered()),this,SLOT(SwapEdit()));
+        RootMenu->addAction(actionSwapEdit);
     
     a = RootMenu->addAction(tr("Register commit layer now"), this, SLOT(CommitLayer()));
     a->setIcon(QIcon(":/img/html_div.png"));
@@ -134,11 +145,24 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         
         
+        
     }
     RootMenu->exec(event->screenPos());
     delete RootMenu;
     
 }
+
+void TextLayer::SwapEdit()
+{
+    bool canedit = mount->txtControl()->editable();
+    if (canedit) {
+        RestoreMoveAction();
+    } else {
+        EditModus();
+    }
+    
+}
+
 void TextLayer::InsertRevision()
 {
     
@@ -247,13 +271,22 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                 if (hightlengh > hi ) {
                   hi = hightlengh + 5;
                 }
+                if (format == DIV_AUTO ) {
+                   hi = hightlengh + 10;
+                }
+                
     } 
     
     
-    
+    QPen BorderPaint;
+    if (border > 0) {
+        BorderPaint = QPen(QBrush(bordercolor),border);
+    } else {
+        BorderPaint = QPen(Qt::NoPen);
+    }
     
      if (mount) {
-    mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),false);
+    mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),BorderPaint,false);
     } else {
         qApp->beep();
 		    qApp->beep();

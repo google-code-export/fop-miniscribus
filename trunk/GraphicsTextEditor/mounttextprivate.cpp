@@ -168,11 +168,11 @@ void TextWriter::int_clipboard_new()
 void TextWriter::paint_doc(  QPainter * painter ,
                          const QStyleOptionGraphicsItem *option , 
                          QBrush BGpage , 
-                         const QRectF fulllayer ,  
+                         const QRectF fulllayer , QPen BorderFiller ,
                          bool alternate )
 {
 	  painter->save();
-		painter->setPen(Qt::NoPen);
+		painter->setPen(BorderFiller);
 		painter->setBrush(BGpage);
 		painter->drawRect(fulllayer);
 		painter->restore();
