@@ -80,9 +80,11 @@ public slots:
     void InsertRevision();
     void EditModus();
     void SetNewBGColor();
+    void SetNewBorderColor();
     void SaveFilelayer();
     void OpenFilelayer();
     void SwapEdit();
+    void Borderwidht();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)

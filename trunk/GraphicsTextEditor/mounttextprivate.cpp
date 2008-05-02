@@ -171,11 +171,19 @@ void TextWriter::paint_doc(  QPainter * painter ,
                          const QRectF fulllayer , QPen BorderFiller ,
                          bool alternate )
 {
+	
+	  qreal borderWWI = 0.;
+	
+	         if (BorderFiller.widthF() > 0) {
+           borderWWI	= BorderFiller.widthF();
+					 }
+					 
 	  painter->save();
 		painter->setPen(BorderFiller);
 		painter->setBrush(BGpage);
 		painter->drawRect(fulllayer);
 		painter->restore();
+					 
 	  painter->save();
 	
 		const QColor backcolor = BGpage.color();
@@ -183,17 +191,27 @@ void TextWriter::paint_doc(  QPainter * painter ,
         backcolor.red()   > 127 ? 0 : 255,
         backcolor.green() > 127 ? 0 : 255,
         backcolor.blue()  > 127 ? 0 : 255); 
-	
+	 
 	  /* rect from frame root QTextDocument*/
-	  QRectF doc_rect = boundingRect();
+	  const  QRectF doc_rect = boundingRect();
+		QRectF Docrect = boundingRect(); //////_d->documentLayout()->frameBoundingRect(_d->rootFrame());
+    QRectF BorderCorrects(borderWWI,borderWWI,Docrect.width() - ( borderWWI * 2),Docrect.height() - ( borderWWI * 2) ); 
+					 
+					 if (borderWWI < 1) {
+						 BorderCorrects = boundingRect();
+					 }
+					 
+					 
 		QColor BackHightlight("#a6ffc7");
 					 BackHightlight.setAlpha(140);
 		QAbstractTextDocumentLayout::PaintContext CTX;    
 		CTX.selections;
-		 if (doc_rect.isValid()) {
-					painter->setClipRect(doc_rect, Qt::IntersectClip);
-					CTX.clip = doc_rect;
+		
+		 if (BorderCorrects.isValid()) {
+					painter->setClipRect(BorderCorrects, Qt::IntersectClip);
+					CTX.clip = BorderCorrects;
 		 }
+		 
 		CTX.palette.setColor(QPalette::Highlight,BackHightlight);
 		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
 		/* blink cursor from timer event ! */
@@ -216,14 +234,17 @@ void TextWriter::paint_doc(  QPainter * painter ,
 				   CTX.selections.append(Internal_selection);
 				}
     _d->documentLayout()->draw(painter,CTX);
+		painter->restore();
 				
 			if (editable()) {  /* writteln modus icon */
 				QPixmap pixbg(":/img/icon.png");
+				painter->save();
 				painter->drawPixmap(QPointF(fulllayer.width() - 40,8),pixbg);
+				painter->restore();
 			}
 				
 				
-		painter->restore();
+		
 		/* _d = QTextDocument dispay editable modus yes oderwise here not paint ! */              
 }
 
@@ -396,7 +417,9 @@ void TextWriter::selectionChanged(bool forceEmitSelectionChanged /*=false*/)
          TextHighlightSelect = QRectF();
          repaintCursor(true);
 		} else {
+			ClearSelections();
 			return;
+			
 		}
 		
 }
@@ -691,7 +714,7 @@ void TextWriter::procesevent( QEvent *e )
 
 QTextTableCell TextWriter::OnPosition( const int posi )
 {
-	qDebug() << "### cell  OnPosition " << posi;
+	////////////qDebug() << "### cell  OnPosition " << posi;
 	       if (posi != -1) {
 	        QTextCursor tmpcursor(_d);
 					tmpcursor.setPosition(posi);
@@ -712,34 +735,12 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 	  const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
 	  const int stopat = qMax(StartSelectionMouse,cursorPos); 
 		const int startat = qMin(StartSelectionMouse,cursorPos);
-	  qDebug() << "### start/stop cell position " << StartSelectionMouse << cursorPos << cursorPosFozze;
-	  if ( C_cursor.currentTable() ) {
-			QTextTable *table = C_cursor.currentTable();
-			QTextTableCell firstcell = OnPosition(StartSelectionMouse);
-			QTextTableCell lastcell = OnPosition(cursorPosFozze);
-			if ( firstcell.isValid() && lastcell.isValid() ) {
-			int fcellrow = firstcell.row();
-			int fcellcool = firstcell.column();
-			qDebug() << "### row / cool " << fcellrow << fcellcool;
-			/////////////   qBound ( const T & min, const T & value, const T & max ) 
-      ///////////C_cursor.selectedTableCells(fcellrow,lastcell.row() - fcellrow,lastcell.column() -  fcellcool);
-			int numRows = qBound(1,lastcell.row() - fcellrow,table->rows());
-			int numColumns = qBound(1,lastcell.column() - fcellcool,table->columns());
-			qDebug() << "### nnrow / nncool " << numRows << numColumns;
-			C_cursor.selectedTableCells(&fcellrow,&numRows,&fcellcool,&numColumns);
-			C_cursor.setPosition(firstcell.firstPosition());
-			C_cursor.setPosition(lastcell.lastPosition(), QTextCursor::KeepAnchor);
-			cursor_position = stopat;
-			setBlinkingCursorEnabled(false);
-			QRectF tablerect = _d->documentLayout()->frameBoundingRect(table);
-			emit updateRequest(tablerect);
-			return;
-			}
-		}
+	  ////////////qDebug() << "### start/stop cell position " << StartSelectionMouse << cursorPos << cursorPosFozze;
+	 
 	
 	
 	
-	  if (StartSelectionMouse != -1 && cursorPos > 0) {
+	  if (StartSelectionMouse != -1 && cursorPos > 0 && !C_cursor.currentTable()) {
 			if (StartSelectionMouse != cursorPos) {
 	       setBlinkingCursorEnabled(false);
 				 
@@ -771,6 +772,31 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 				 repaintCursor();
 			}
 		} 
+		
+		
+		 if ( C_cursor.currentTable() ) {
+			QTextTable *table = C_cursor.currentTable();
+			QTextTableCell firstcell = OnPosition(StartSelectionMouse);
+			QTextTableCell lastcell = OnPosition(cursorPosFozze);
+			if ( firstcell.isValid() && lastcell.isValid() ) {
+			int fcellrow = firstcell.row();
+			int fcellcool = firstcell.column();
+			////////////qDebug() << "### row / cool " << fcellrow << fcellcool;
+			/////////////   qBound ( const T & min, const T & value, const T & max ) 
+      ///////////C_cursor.selectedTableCells(fcellrow,lastcell.row() - fcellrow,lastcell.column() -  fcellcool);
+			int numRows = qBound(1,lastcell.row() - fcellrow,table->rows());
+			int numColumns = qBound(1,lastcell.column() - fcellcool,table->columns());
+			//////////////qDebug() << "### nnrow / nncool " << numRows << numColumns;
+			C_cursor.selectedTableCells(&fcellrow,&numRows,&fcellcool,&numColumns);
+			C_cursor.setPosition(firstcell.firstPosition());
+			C_cursor.setPosition(lastcell.lastPosition(), QTextCursor::KeepAnchor);
+			cursor_position = stopat;
+			setBlinkingCursorEnabled(false);
+			QRectF tablerect = _d->documentLayout()->frameBoundingRect(table);
+			emit updateRequest(tablerect);
+			return;
+			}
+		}
 }
 
 
@@ -778,7 +804,7 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	///////qDebug() << "### mousePressEvent in ";
+	qDebug() << "### mousePressEvent in ";
 	lastrect = boundingRect();
 	setCursorPosition(pos);
 	cursortime = true;
@@ -804,37 +830,39 @@ void TextWriter::tmouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPo
 
 void TextWriter::tmouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	///////////////qDebug() << "### MouseButtonDblClick 1 ############################################";
+	qDebug() << "### MouseButtonDblClick 1 ############################################";
+	
 	if (button != Qt::LeftButton) {
 		e->ignore();
 		return;
 	}
   StartSelectionMouse = -1;
-	
 	cursortime = true;   /* fast  display not alternate */
 	setCursorPosition(pos);
-
 	lastrect = boundingRect();
-	if (lastrect.contains(pos) ) { 
+
 		
 		      if (currentTextLine(C_cursor).rect().isValid() && currentTextLine(C_cursor).textLength() > 0) {
             C_cursor.select(QTextCursor::WordUnderCursor);   /////  return tc.selectedText();
 						const int position = C_cursor.selectionStart();
             const int anchor = C_cursor.selectionEnd();
+						
+						qDebug() << "selectedText " << C_cursor.selectedText();
+						
+						
 						const QTextCursor oldSelection = C_cursor;
 						if (position != anchor && C_cursor.selectedText().size() > 0) {
 					    cursor_position = anchor;
 							position_selection_start = position;
 							QRectF selectionXY = currentTextLine(C_cursor).rect();
-							ClearSelections();
-							selectionChanged(selectionXY.isValid());
+							selectionChanged(selectionXY.isValid());   /////   line 414
 						}
 				    repaintCursor();
           } else {
 						ClearSelections();
 				    repaintCursor();
 					}
-  }
+  
 }
 
 
