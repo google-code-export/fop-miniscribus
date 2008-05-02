@@ -35,6 +35,7 @@ class TextWriter : public Layoutpainter
 public:
     explicit TextWriter( QObject *parent );
     virtual ~TextWriter();
+    QTextTableCell OnPosition( const int posi );
     void setBlinkingCursorEnabled(bool enable);
     QMenu *StandardMenu( QWidget * inparent );   /* copy paste select all qmenu */
     QTextLine currentTextLine(const QTextCursor &cursor);
