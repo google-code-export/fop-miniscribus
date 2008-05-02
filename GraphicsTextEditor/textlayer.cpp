@@ -5,7 +5,7 @@ QT_BEGIN_NAMESPACE
 
 
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
-    : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),
+    : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
     hi(330),wi(550),bgcolor(QColor(Qt::yellow)),
     bordercolor(QColor(Qt::red)),
     format(DIV_ABSOLUTE),mount(new TextController)
@@ -92,9 +92,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     if (!isSelected()) {
     return;
     }
-    if (modus == Lock) {
-    return;
-    }
+    
     bool activeedit = canedit ?  true : false;
     
     
@@ -108,6 +106,26 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         actionSwapEdit->setChecked(activeedit);
 	      connect(actionSwapEdit, SIGNAL(triggered()),this,SLOT(SwapEdit()));
         RootMenu->addAction(actionSwapEdit);
+    
+        bool locked = false;
+        if (modus == Lock && !canedit) { 
+        locked = true;
+        }
+        actionSwapLock = new QAction(tr("Lock Unlock Layer"),this);
+        if (locked) {
+        actionSwapLock->setIcon(QIcon(":/img/encrypted.png"));
+        } else {
+        actionSwapLock->setIcon(QIcon(":/img/unlock.png"));   
+        }
+        
+        actionSwapLock->setCheckable(true);
+        actionSwapLock->setChecked(locked);
+        connect(actionSwapLock, SIGNAL(triggered()),this,SLOT(SwapLockmodus()));
+        RootMenu->addAction(actionSwapLock);
+        
+    
+    
+    
     
     a = RootMenu->addAction(tr("Register commit layer now"), this, SLOT(CommitLayer()));
     a->setIcon(QIcon(":/img/html_div.png"));
@@ -169,6 +187,50 @@ void TextLayer::SwapEdit()
     }
     
 }
+
+void TextLayer::SwapLockmodus()
+{
+    QApplication::restoreOverrideCursor();
+    
+    if (modus == Lock) {
+        modus = Show;
+        setFlag(QGraphicsItem::ItemIsMovable,false);
+        setFlag(QGraphicsItem::ItemIsSelectable,true);
+        setFlag(QGraphicsItem::ItemIsFocusable,true);
+        RestoreMoveAction();
+        return;
+    } else {
+        modus = Lock;
+        mount->txtControl()->edit(false);
+        setFlag(QGraphicsItem::ItemIsMovable,false);
+        setFlag(QGraphicsItem::ItemIsSelectable,true);
+        setFlag(QGraphicsItem::ItemIsFocusable,true);
+    }
+    
+    update(boundingRect());
+}
+
+/*
+
+void TextLayer::RestoreMoveAction() 
+{
+    modus == Show;
+    QGraphicsItem::setCursor(Qt::ArrowCursor);
+    QApplication::restoreOverrideCursor();
+    setSelected(true);
+    mount->txtControl()->edit(false);
+    setFlag(QGraphicsItem::ItemIsMovable,true);
+    setFlag(QGraphicsItem::ItemIsSelectable,true);
+    setFlag(QGraphicsItem::ItemIsFocusable,true);
+    update();
+    //////////////////qDebug() << "### reset ";
+}
+
+*/
+
+
+
+
 void TextLayer::Borderwidht()
 {
     QTextFrame  *Tframe = document()->rootFrame();
@@ -305,6 +367,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget *widget)
 {
     Q_UNUSED(widget);
+    bool canedit = mount->txtControl()->editable();
     
      /* Layer Background draw! */
 		qreal hightlengh =  mount->txtControl()->boundingRect().height();
@@ -331,14 +394,14 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     }
     
      if (mount) {
-    mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),BorderPaint,false);
+    mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),BorderPaint,currentprintrender);
     } else {
         qApp->beep();
 		    qApp->beep();
     }
     
       
-      if (modus == Lock ) {  /* writteln modus icon */
+      if (modus == Lock && !canedit && !currentprintrender) {  /* writteln modus icon */
 				painter->save();
 				QPixmap pixbg(":/img/encrypted.png");
 				painter->drawPixmap(QPointF(boundingRect().width() - 40,8),pixbg);
@@ -407,7 +470,7 @@ void TextLayer::RestoreMoveAction()
     setFlag(QGraphicsItem::ItemIsMovable,true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
-    update();
+    update(boundingRect());
     //////////////////qDebug() << "### reset ";
 }
 
@@ -417,6 +480,8 @@ void TextLayer::EditModus()
     modus == Edit;
     mount->txtControl()->edit(true);
     setFlag(QGraphicsItem::ItemIsMovable,false);
+    setFlag(QGraphicsItem::ItemIsSelectable,true);
+    setFlag(QGraphicsItem::ItemIsFocusable,true);
     update(boundingRect());
 }
 
