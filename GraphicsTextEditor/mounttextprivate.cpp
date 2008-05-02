@@ -675,7 +675,7 @@ void TextWriter::procesevent( QEvent *e )
 				
 				case QEvent::GraphicsSceneMousePress: {
             QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
-					  qDebug() << "### 1 GraphicsSceneMousePress";
+					  ///////////////qDebug() << "### 1 GraphicsSceneMousePress";
 					  if (ev->buttons() == Qt::LeftButton) {
             tmousePressEvent(ev->button(), ev->pos() , ev->modifiers(), ev->buttons(),ev->screenPos());
 						return;
@@ -689,15 +689,62 @@ void TextWriter::procesevent( QEvent *e )
 	
 }
 
+QTextTableCell TextWriter::OnPosition( const int posi )
+{
+	qDebug() << "### cell  OnPosition " << posi;
+	       if (posi != -1) {
+	        QTextCursor tmpcursor(_d);
+					tmpcursor.setPosition(posi);
+	        if ( !tmpcursor.currentTable() ) {
+						return QTextTableCell();
+					}
+					return tmpcursor.currentTable()->cellAt(tmpcursor);
+				 }  else {
+					 return QTextTableCell();
+				 }
+}
+
+
+
 void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
 	  const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit);
+	  const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
+	  const int stopat = qMax(StartSelectionMouse,cursorPos); 
+		const int startat = qMin(StartSelectionMouse,cursorPos);
+	  qDebug() << "### start/stop cell position " << StartSelectionMouse << cursorPos << cursorPosFozze;
+	  if ( C_cursor.currentTable() ) {
+			QTextTable *table = C_cursor.currentTable();
+			QTextTableCell firstcell = OnPosition(StartSelectionMouse);
+			QTextTableCell lastcell = OnPosition(cursorPosFozze);
+			if ( firstcell.isValid() && lastcell.isValid() ) {
+			int fcellrow = firstcell.row();
+			int fcellcool = firstcell.column();
+			qDebug() << "### row / cool " << fcellrow << fcellcool;
+			/////////////   qBound ( const T & min, const T & value, const T & max ) 
+      ///////////C_cursor.selectedTableCells(fcellrow,lastcell.row() - fcellrow,lastcell.column() -  fcellcool);
+			int numRows = qBound(1,lastcell.row() - fcellrow,table->rows());
+			int numColumns = qBound(1,lastcell.column() - fcellcool,table->columns());
+			qDebug() << "### nnrow / nncool " << numRows << numColumns;
+			C_cursor.selectedTableCells(&fcellrow,&numRows,&fcellcool,&numColumns);
+			C_cursor.setPosition(firstcell.firstPosition());
+			C_cursor.setPosition(lastcell.lastPosition(), QTextCursor::KeepAnchor);
+			cursor_position = stopat;
+			setBlinkingCursorEnabled(false);
+			QRectF tablerect = _d->documentLayout()->frameBoundingRect(table);
+			emit updateRequest(tablerect);
+			return;
+			}
+		}
+	
+	
 	
 	  if (StartSelectionMouse != -1 && cursorPos > 0) {
 			if (StartSelectionMouse != cursorPos) {
 	       setBlinkingCursorEnabled(false);
-				 const int stopat = qMax(StartSelectionMouse,cursorPos); 
-				 const int startat = qMin(StartSelectionMouse,cursorPos);
+				 
+				 
+				 
 				/* selection tracer */
 			   //////////////qDebug() << "### tmouseMoveEvent 1a from-to #######" << StartSelectionMouse << "|" << cursorPos;
 				 cursorIsFocusIndicator = true;
@@ -731,7 +778,7 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	qDebug() << "### mousePressEvent in ";
+	///////qDebug() << "### mousePressEvent in ";
 	lastrect = boundingRect();
 	setCursorPosition(pos);
 	cursortime = true;
@@ -939,6 +986,13 @@ void TextWriter::repaintCursor( bool allrect )
 			emit updateRequest(boundingRect());
 		  return;
 		 }
+		 
+		if (C_cursor.hasComplexSelection() && C_cursor.currentTable()) {
+        QTextTable *table = C_cursor.currentTable();
+        QRectF tablerect = _d->documentLayout()->frameBoundingRect(table);
+				emit updateRequest(tablerect);
+		}
+			
 		 
 		 if (currentTextLine(C_cursor).rect().isValid()) {
 			 emit updateRequest(currentTextLine(C_cursor).rect());
