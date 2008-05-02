@@ -47,7 +47,7 @@ public:
                          const QStyleOptionGraphicsItem *option , 
                          QBrush BGpage , 
                          const QRectF fulllayer ,  QPen BorderFiller, 
-                         bool alternate );
+                         bool currentprintrender = false );
     QRectF boundingRect() const;
     inline QPointF controlOffset() { return QPointF(0., boundingRect().height()); }
     void procesevent( QEvent *e );

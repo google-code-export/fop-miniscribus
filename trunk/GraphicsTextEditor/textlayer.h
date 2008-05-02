@@ -39,9 +39,11 @@ public:
     enum CurrentModus{ Show, Edit, Move , Lock };
     void setStyle( QStringList syle , bool fromclone );
     QTextDocument *_doc;
+    bool currentprintrender;
 protected:
     QSettings setter;
-    QAction *actionSwapEdit;
+    QAction *actionSwapEdit,
+             *actionSwapLock;
     void init();
     void read();
     void RestoreMoveAction();
@@ -85,6 +87,7 @@ public slots:
     void OpenFilelayer();
     void SwapEdit();
     void Borderwidht();
+    void SwapLockmodus();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)

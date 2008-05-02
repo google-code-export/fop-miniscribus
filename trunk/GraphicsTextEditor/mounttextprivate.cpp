@@ -42,7 +42,7 @@ void TextWriter::RegisterResource( QMap<QString,SPics> list )
                  while (i.hasNext()) {
                      i.next();
 									    SPics e  = i.value();
-									    qDebug() << "### TextWriter insert 4 addResource " << e.name << e.pix().isNull();
+									   ///////// qDebug() << "### TextWriter insert 4 addResource " << e.name << e.pix().isNull();
 						         _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
 									   imagemaps.insert(e.name,e);
 								 }
@@ -169,7 +169,7 @@ void TextWriter::paint_doc(  QPainter * painter ,
                          const QStyleOptionGraphicsItem *option , 
                          QBrush BGpage , 
                          const QRectF fulllayer , QPen BorderFiller ,
-                         bool alternate )
+                         bool currentprintrender )
 {
 	
 	  qreal borderWWI = 0.;
@@ -236,7 +236,7 @@ void TextWriter::paint_doc(  QPainter * painter ,
     _d->documentLayout()->draw(painter,CTX);
 		painter->restore();
 				
-			if (editable()) {  /* writteln modus icon */
+			if (editable() && !currentprintrender ) {  /* writteln modus icon */
 				QPixmap pixbg(":/img/icon.png");
 				painter->save();
 				painter->drawPixmap(QPointF(fulllayer.width() - 40,8),pixbg);
@@ -290,7 +290,7 @@ void TextWriter::edit( bool e)
 {
 	edit_enable = e;
 	setBlinkingCursorEnabled(e);
-	qDebug() << "### edit " << e;
+	//////////qDebug() << "### edit " << e;
 }
 
 void TextWriter::updateRequest( const QRectF area )
@@ -373,7 +373,7 @@ void TextWriter::selectAll()
 	  cursor_position = C_cursor.position();
 	  position_selection_start = C_cursor.anchor();
 	  cursorIsFocusIndicator = true;
-	  qDebug() << "### position_selection_start/stop selectAll" << cursor_position << "/" << position_selection_start; 
+	  ////////////qDebug() << "### position_selection_start/stop selectAll" << cursor_position << "/" << position_selection_start; 
     selectionChanged(selectionLength != qAbs(C_cursor.position() - C_cursor.anchor()));
 }
 
@@ -495,7 +495,7 @@ void TextWriter::tkeyPressEvent(QKeyEvent *e)
 		
 		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_B) {
             e->accept();
-			qDebug() << "### a BoldText / BoldText " << textCursor().position();
+			//////////qDebug() << "### a BoldText / BoldText " << textCursor().position();
             BoldText();
 						return;
 		}
