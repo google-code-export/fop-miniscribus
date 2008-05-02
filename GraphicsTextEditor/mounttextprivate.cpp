@@ -1008,8 +1008,11 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 			
 			  QMenu *charsfo = TextMenu(inparent);
         QMenu *blockfo = BlockMenu(inparent);
+				QMenu *tablesfo = TableMenu(inparent);
+			
          menu->addAction(charsfo->menuAction()); 
          menu->addAction(blockfo->menuAction()); 
+			   menu->addAction(tablesfo->menuAction()); 
 			   menu->addSeparator();
 			
 			

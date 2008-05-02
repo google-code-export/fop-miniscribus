@@ -119,8 +119,10 @@ QTextDocument *_d;
 QRectF line_rect_out;
 QMenu *TextMenu( QWidget * inparent );
 QMenu *BlockMenu( QWidget * inparent );
+QMenu *TableMenu( QWidget * inparent );
 void ComposeAction();
 QString ImageFilterHaving() const;
+qreal Get_Cell_Width( QTextTableFormat TableFormat , int position ); 
 signals:
   void updateRequest(QRectF);
 public slots:
@@ -143,6 +145,17 @@ public slots:
  void MaketextAlign(QAction *a);
  void cursorPosition( const QTextCursor curs );
  void FosInsertFrame();
+
+ void MaketableColorBG();
+ void MaketableBorder();
+ void CreateanewTable();
+ void SetTableCellColor();
+ void AppendTableCools();
+ void AppendTableRows();
+ void RemoveRowByCursorPosition();
+ void RemoveCoolByCursorPosition();
+ void MergeCellByCursorPosition();
+ void SetColumLarge();
 
 };
 

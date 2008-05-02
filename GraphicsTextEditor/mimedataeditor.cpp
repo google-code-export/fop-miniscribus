@@ -112,12 +112,243 @@ void Layoutpainter::ComposeAction()
     actionAlignCenter->setCheckable(true);
     actionAlignJustify = new QAction(QIcon(":/img/textjustify.png"), tr("Text align Justify"),grp);
     actionAlignJustify->setCheckable(true);
-    
-    
-    
-    
-    
+     
 }
+
+QMenu *Layoutpainter::TableMenu( QWidget * inparent )
+{
+    QMenu *MenuTables = new QMenu(tr("Table"),inparent);
+    MenuTables->setIcon(QIcon(QString::fromUtf8(":/img/newtodo.png")));
+    QAction *a;
+    a = MenuTables->addAction(tr("Insert new Table"), this, SLOT(CreateanewTable()));
+    a->setIcon(QIcon(QString::fromUtf8(":/img/newtodo.png")));
+    
+    if (textCursor().currentTable()) {
+        
+        
+        a = MenuTables->addAction(tr("Table border"), this, SLOT(MaketableBorder()));
+    
+        
+        a = MenuTables->addAction(tr("Table background color"), this, SLOT(MaketableColorBG()));
+        a->setIcon(createColorIcon(textCursor().currentTable()->format().background().color()));
+        
+        a = MenuTables->addAction(tr("Current cell background color"), this, SLOT(SetTableCellColor()));
+        a->setIcon(createColorIcon(textCursor().currentTable()->cellAt(textCursor()).format().background().color()));
+        
+        a = MenuTables->addAction(tr("Table append cools on cursor"), this, SLOT(AppendTableCools()));
+        a->setIcon(QIcon(QString::fromUtf8(":/img/month.png")));
+        
+         a = MenuTables->addAction(tr("Table append rows on cursor"), this, SLOT(AppendTableRows()));
+        a->setIcon(QIcon(QString::fromUtf8(":/img/7days.png")));
+        
+         a = MenuTables->addAction(tr("Remove rows on cursor"), this, SLOT(RemoveRowByCursorPosition()));
+        a->setIcon(QIcon(QString::fromUtf8(":/img/stop.png")));
+        
+        a = MenuTables->addAction(tr("Remove cools on cursor"), this, SLOT(RemoveCoolByCursorPosition()));
+        a->setIcon(QIcon(QString::fromUtf8(":/img/stop.png")));
+        
+        
+        a = MenuTables->addAction(tr("Merge selected cell on cursor"), this, SLOT(MergeCellByCursorPosition()));
+        
+        a = MenuTables->addAction(tr("Set current column fixed width"), this, SLOT(SetColumLarge()));
+        a->setIcon(QIcon(QString::fromUtf8(":/img/month.png")));
+        
+        ////////////////textCursor().currentTable()->format().background().color().rgba()
+    }
+    
+    
+    
+    
+    /*
+void MaketableColorBG();
+ void MaketableBorder();
+ void CreateanewTable();
+ void SetTableCellColor();
+ void AppendTableCools();
+ void AppendTableRows();
+ void RemoveRowByCursorPosition();
+ void RemoveCoolByCursorPosition();
+ void MergeCellByCursorPosition();
+ void SetColumLarge();
+    */
+    
+    
+    return MenuTables;
+}
+
+void  Layoutpainter::SetColumLarge()
+{
+    if (textCursor().currentTable()) { 
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    QTextTableFormat tbforms = textCursor().currentTable()->format();
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+        bool ok;
+        int LargeSet = QInputDialog::getInteger(0, tr("Set Cell Width"),
+                                      tr("Point Length:"),Get_Cell_Width(tbforms,cellcoolcursoris), 1, 2000, 1, &ok);
+        if (ok && LargeSet > 0) {
+        QVector<QTextLength> constraints = tbforms.columnWidthConstraints();
+        for (int i = 0; i < constraints.size(); ++i) {
+            if (i == cellcoolcursoris) {
+                constraints.replace(i,QTextLength(QTextLength::FixedLength, LargeSet)); 
+            }
+        }
+        tbforms.setColumnWidthConstraints(constraints);
+        textCursor().currentTable()->setFormat(tbforms);
+        }
+    }
+}
+
+
+qreal Layoutpainter::Get_Cell_Width( QTextTableFormat TableFormat , int position )  
+{
+    qreal notfound = 0;
+    QVector<QTextLength> constraints = TableFormat.columnWidthConstraints();
+        for (int i = 0; i < constraints.size(); ++i) {
+            if (i == position) {
+                QTextLength langecell = constraints.value(i);
+                 if (langecell.type() == QTextLength::FixedLength) {
+                  return langecell.rawValue();
+                 }                     
+                                     
+            }
+        }
+   return notfound;
+}
+
+void  Layoutpainter::MergeCellByCursorPosition()
+{
+    if (textCursor().currentTable()) {  
+       textCursor().currentTable()->mergeCells(textCursor());
+    }  
+}
+
+
+void Layoutpainter::RemoveCoolByCursorPosition()
+{
+    if (textCursor().currentTable()) {  
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+    int cellrowcursoris = existingcell.row(); /* int value start from zero */
+    textCursor().currentTable()->removeColumns(cellcoolcursoris,1);
+    }
+}
+
+void  Layoutpainter::RemoveRowByCursorPosition()
+{
+    if (textCursor().currentTable()) {  
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+    int cellrowcursoris = existingcell.row(); /* int value start from zero */
+    textCursor().currentTable()->removeRows(cellrowcursoris,1);
+    }
+}
+
+
+void  Layoutpainter::AppendTableRows()
+{
+    bool ok = false;
+    if (textCursor().currentTable()) {
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+    int cellrowcursoris = existingcell.row(); /* int value start from zero */
+    int approwtot = QInputDialog::getInteger(0, tr("Append NR. line row"),tr("Row:"), 1, 1, 100, 1, &ok);
+        if (ok && approwtot > 0) {
+          textCursor().currentTable()->insertRows(cellrowcursoris + 1,approwtot);
+        }
+    }
+}
+
+void  Layoutpainter::AppendTableCools()
+{
+    bool ok = false;
+    if (textCursor().currentTable()) {
+        QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+        int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+        int cellrowcursoris = existingcell.row(); /* int value start from zero */
+        int appcooltot = QInputDialog::getInteger(0, tr("Table append Column"),tr("Cool:"), 1, 1, 10, 1, &ok);
+            if (ok && appcooltot > 0) {
+              textCursor().currentTable()->insertColumns(cellcoolcursoris + 1,appcooltot);
+            }
+    }  
+}
+
+
+void  Layoutpainter::SetTableCellColor()
+{
+     if (textCursor().currentTable()) { 
+     bool ok;
+     QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+        /* reformat this -> existingcell */
+        QTextCharFormat existformat = existingcell.format();
+                     /* get color */
+                     QColor col = QColorDialog::getRgba(textCursor().currentTable()->cellAt(textCursor()).format().background().color().rgba(),&ok, 0);
+                     if (!col.isValid()) {
+                        return; 
+                     }
+                        QBrush stylesin(col);
+                        existformat.setBackground(stylesin);
+                        existingcell.setFormat(existformat); 
+    }
+}
+
+void  Layoutpainter::CreateanewTable()
+{
+
+    QString subtext, collx, rowx,largo;
+    bool ok;
+    int colonne = QInputDialog::getInteger(0, tr("New Table cool"),tr("Cool:"), 3, 1, 10, 1, &ok);
+    int righe = QInputDialog::getInteger(0, tr("New Table row"),tr("Row:"), 3, 1, 100, 1, &ok);
+    largo = "100%";
+    if (colonne > 0 && righe > 0) {
+    QStringList tables;
+    tables.clear();
+    tables.append(QString("<table border=\"1\" align=\"left\" width=\"%1\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">").arg(largo));
+    for (int i=0;i<righe;i++){
+        tables.append(QString("<tr>")); 
+           for (int o=0;o<colonne;o++){
+               tables.append(QString("<td><p></p></td>")); 
+           }
+        tables.append(QString("</tr>")); 
+    }  
+    tables.append(QString("</table>"));  
+    
+    subtext = tables.join("\n");
+    QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(subtext);
+    textCursor().insertFragment(fragment);
+    }
+}
+
+//// textCursor().currentTable()->format().background().color().rgba()
+
+void Layoutpainter::MaketableColorBG()
+{
+    if (!textCursor().currentTable()) { 
+       return; 
+    }
+    bool ok;
+    QColor col = QColorDialog::getRgba(textCursor().currentTable()->format().background().color().rgba(),&ok,0);
+    if (!col.isValid()) {
+        return;
+    } else {
+       QTextTableFormat taform = textCursor().currentTable()->format(); 
+       taform.setBackground ( col ); 
+       textCursor().currentTable()->setFormat(taform);
+    }
+}
+
+void Layoutpainter::MaketableBorder()
+{
+    if (!textCursor().currentTable()) { 
+       return; 
+    }
+    bool ok;
+    int i = QInputDialog::getInteger(0, tr("Table Border"),tr("Pt units:"), 0, 0, 10, 1, &ok);
+    
+       QTextTableFormat taform = textCursor().currentTable()->format(); 
+       taform.setBorder(i);
+       textCursor().currentTable()->setFormat(taform);
+}
+
 
 QMenu *Layoutpainter::TextMenu( QWidget * inparent )
 {
@@ -147,6 +378,7 @@ QMenu *Layoutpainter::BlockMenu( QWidget * inparent )
     
     return MenuBlock;
 }
+
 
 
 QTextCursor Layoutpainter::textCursor() 

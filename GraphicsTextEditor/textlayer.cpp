@@ -8,7 +8,7 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),
     hi(330),wi(550),bgcolor(QColor(Qt::yellow)),
     bordercolor(QColor(Qt::red)),
-    format(DIV_AUTO),mount(new TextController)
+    format(DIV_ABSOLUTE),mount(new TextController)
 {
     mount->q = this;
     history.clear();
@@ -272,7 +272,11 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                   hi = hightlengh + 5;
                 }
                 if (format == DIV_AUTO ) {
-                   hi = hightlengh + 10;
+                   hi = qBound(Metric("18mm"), hightlengh + 10,Metric("297mm"));
+                    
+                   if (hi > Metric("297mm") ) {
+                       RestoreMoveAction();
+                   }
                 }
                 
     } 
@@ -411,6 +415,16 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if (!isSelected()) {
     return;
     }
+    
+    if (modus == Lock) {
+    return;
+    }
+    
+    if (modus == Move) {
+        /* move from stop xy */
+    }
+    
+    
     if (mount->txtControl()->editable()) {
     mount->txtControl()->procesevent(event);
     }
@@ -420,6 +434,16 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!isSelected()) {
+    return;
+    }
+    
+    if (modus == Lock) {
+    return;
+    }
+    
+    if (modus == Move) {
+    modus = Show;
+    RestoreMoveAction();
     return;
     }
     
@@ -434,6 +458,18 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!isSelected()) {
     return;
+    }
+    
+    if (modus == Lock) {
+    return;
+    }
+    
+    if (format == DIV_ABSOLUTE && event->buttons() == Qt::LeftButton && 
+        event->modifiers() == Qt::ControlModifier  &&  
+        modus == Show && !mount->txtControl()->editable()) {
+        modus = Move;  
+        /* start to move item size hi x wi  */
+        return;
     }
     mount->txtControl()->procesevent(event);
     QGraphicsItem::mousePressEvent(event); 
