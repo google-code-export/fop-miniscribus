@@ -137,6 +137,13 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         a = RootMenu->addAction(tr("Layer background color"), this, SLOT(SetNewBGColor()));
         a->setIcon(createColorIcon(bgcolor));
+        a = RootMenu->addAction(tr("Layer border color"), this, SLOT(SetNewBorderColor()));
+        a->setIcon(createColorIcon(bordercolor));
+        a = RootMenu->addAction(tr("Layer Border widht"), this, SLOT(Borderwidht()));
+        a->setIcon(QIcon(":/img/configure.png"));
+        
+        
+        
         a = RootMenu->addAction(tr("Save as Layer file"), this, SLOT(SaveFilelayer()));
         a->setIcon(QIcon(":/img/bringtofront.png"));
         
@@ -161,6 +168,40 @@ void TextLayer::SwapEdit()
         EditModus();
     }
     
+}
+void TextLayer::Borderwidht()
+{
+    QTextFrame  *Tframe = document()->rootFrame();
+    QTextFrameFormat ft = Tframe->frameFormat();
+    
+    int maxborder = mount->txtControl()->boundingRect().width() / 10;
+    bool ok;
+    int LargeSet = QInputDialog::getInteger(0, tr("Layer border Width"),
+                                      tr("Point Length:"),border,0,maxborder,1,&ok);
+    if (ok) {
+        border = LargeSet;
+        qreal maxi0 = qMin (ft.topMargin(),ft.bottomMargin());
+        qreal maxi1 = qMin (ft.rightMargin(),ft.leftMargin());
+        qreal maxi = qMin (maxi0,maxi1);
+        if ( border > maxi) {
+                ft.setBottomMargin(border);
+                ft.setTopMargin(border);
+                ft.setRightMargin(border);
+                ft.setLeftMargin(border);
+                ft.setPadding(0);
+                Tframe->setFrameFormat(ft);
+        }
+        
+        /*
+        int xBottomMargin =  ToUnit(ft.bottomMargin(),"mm");
+    int xTopMargin = ToUnit(ft.topMargin(),"mm");
+    int xRightMargin = ToUnit(ft.rightMargin(),"mm");
+    int xLeftMargin = ToUnit(ft.leftMargin(),"mm");
+        
+        */
+        
+        update();
+    }
 }
 
 void TextLayer::InsertRevision()
@@ -517,6 +558,23 @@ void TextLayer::SetNewBGColor()
      update();
 }
 
+
+void TextLayer::SetNewBorderColor() 
+{
+     bool ok;
+     QRgb col = QColorDialog::getRgba(bordercolor.rgba(),&ok);
+     if (!ok) {
+        return; 
+     }
+     int AlphaColor =  qAlpha ( col );
+     bordercolor = QColor( col );
+     bordercolor.setAlpha(AlphaColor);
+     if (border < 1) {
+       border = 1;  
+     }
+     update();
+}
+
 RichDoc TextLayer::ReadActualItem()
 {
     QString styles;
@@ -544,6 +602,14 @@ RichDoc TextLayer::ReadActualItem()
     } else {
     styles.append(QString("background-color:%1; ").arg( bgcolor.name() ) );  
     }
+    
+    if (border > 0 ) {
+    styles.append(QString("background-color:%1; ").arg( bgcolor.name() ) );  
+    }
+    
+    
+    
+    
     if (percentos < 1 && alphacolor > 1) {
     QString Tnetto = QString("%1").arg(percentos, 0, 'f', 4);  /* CSS 2 alpha */
     QString IETnetto = QString("%1").arg(percentos * 100, 0, 'f', 4);  /* IE alpha */
@@ -551,8 +617,9 @@ RichDoc TextLayer::ReadActualItem()
     }
     
     if (border > 0 ) {
-    styles.append(QString("border:%2mm solid %1; ").arg(bordercolor.name()).arg(ToUnit(border,"mm")));
+    styles.append(QString("border-width:%2mm;border-style:solid;border-color:%1;").arg(bordercolor.name()).arg(ToUnit(border,"mm")));
     }
+    
     if (zValue() > 1) {
     styles.append(QString("z-index:%1;").arg(qRound(zValue())));
     }
@@ -566,7 +633,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
 {
     #define ALPHAHTML(alpha) ((alpha)*254.99999999)
     QStringList find;
-    find << "position" << "top" << "left" << "width" << "opacity" << "height" << "background-color" << "z-index" << "id"; 
+    find << "position" << "top" << "left" << "width" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     QMap<QString,QVariant> incss; 
     for (int o = 0; o < find.size(); ++o)  {
          incss.insert(find.at(o),QString("0"));
@@ -623,6 +690,11 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
           
       }
       
+    if (incss.value("border-width").toString() !="0") {
+    bordercolor = QColor(incss.value("border-color").toString());
+    border = Metric(incss.value("border-width").toString()); 
+    }
+    
     modus = Show;
     update();
       
