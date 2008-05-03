@@ -14,7 +14,7 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     history.clear();
     id = layer_id;
     setAcceptDrops(true);
-    setAcceptHoverEvents(true);
+    ///////setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsMovable,true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
