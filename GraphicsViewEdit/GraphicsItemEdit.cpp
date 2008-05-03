@@ -196,8 +196,10 @@ void TextLayer::SwapEdit()
 {
     bool canedit = mount->txtControl()->editable();
     if (canedit) {
+        mount->txtControl()->edit(false);
         RestoreMoveAction();
     } else {
+        mount->txtControl()->edit(true);
         EditModus();
     }
     
@@ -209,6 +211,7 @@ void TextLayer::SwapLockmodus()
     
     if (modus == Lock) {
         modus = Show;
+        mount->txtControl()->edit(false);
         setFlag(QGraphicsItem::ItemIsMovable,false);
         setFlag(QGraphicsItem::ItemIsSelectable,true);
         setFlag(QGraphicsItem::ItemIsFocusable,true);
@@ -366,11 +369,13 @@ void TextLayer::read()
 
 void TextLayer::updatearea( const QRectF areas )
 {
-    if (areas.width() > boundingRect().width()) {
+    const qreal limits = boundingRect().width() + 20;
+    if (areas.width() > limits) {
     return;
     }
     evesum++;
-    //////////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
+    qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
+    qDebug() << "### area top left " << areas.topLeft();
     update(areas);
 }
 
