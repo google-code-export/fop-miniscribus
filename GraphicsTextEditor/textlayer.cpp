@@ -1,7 +1,7 @@
 #include "textlayer.h"
 #include "mounttextprivate.h"
 
-QT_BEGIN_NAMESPACE
+
 
 
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
@@ -13,8 +13,8 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     mount->q = this;
     history.clear();
     id = layer_id;
-    setAcceptDrops(true);
-    setAcceptHoverEvents(true);
+    ///////setAcceptDrops(true);
+    ////////setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsMovable,true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
@@ -765,8 +765,6 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
       
 }
 
-
-QT_END_NAMESPACE
 
 
 

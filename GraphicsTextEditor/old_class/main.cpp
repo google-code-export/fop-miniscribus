@@ -34,8 +34,6 @@ public:
 
     ioq = new TextLayer(1,0,scene);
     ioq->setPos(QPointF(0,0));
-    fitInView(ioq, Qt::KeepAspectRatio);
-    
     /* edit gui */
     #if QT_VERSION >= 0x040400
     embed = new QTextBrowser();
@@ -47,12 +45,11 @@ public:
     backItem->setZValue(100000);
     scene->addItem(backItem);
     /* edit gui */
-   
-    
+    #endif 
+    fitInView(ioq, Qt::KeepAspectRatio);
     
     connect(backItem, SIGNAL(activated()), this, SLOT(flip()));
     connect(swapTimeLine, SIGNAL(frameChanged(int)), this, SLOT(updateFlipStep(int)));
-     #endif 
     
 }
 
@@ -74,9 +71,7 @@ void keyPressEvent(QKeyEvent *event)
 void resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
-    #if QT_VERSION >= 0x040400
     fitInView(backItem, Qt::KeepAspectRatio);
-    #endif 
 }
 QTextBrowser *embed;
 TextLayer *ioq;
@@ -88,10 +83,8 @@ bool flipped;
 bool flipLeft;
 QTimeLine *swapTimeLine;
 QGraphicsScene *scene;
-#if QT_VERSION >= 0x040400
 RoundRectItem *baseItem;
 RoundRectItem *backItem;
- #endif 
 
 private slots:
     
@@ -122,7 +115,6 @@ void flip()
 
 void updateFlipStep(int val)
 {
-    #if QT_VERSION >= 0x040400
     QTransform trans;
                trans.rotate(val, Qt::YAxis);
                trans.rotate(val, Qt::XAxis);
@@ -133,7 +125,6 @@ void updateFlipStep(int val)
     if (val == 0 ) {
     fitInView(backItem, Qt::KeepAspectRatio);
     }
-    #endif
 }
 
 
