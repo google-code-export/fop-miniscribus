@@ -7,11 +7,18 @@
 #include <QGraphicsItem>
 #include <QSharedData>
 
-QT_BEGIN_HEADER
 
-typedef enum {DIV_ABSOLUTE = 50,DIV_AUTO,/* 51 */DIV_FLOAT,/* 52 */DIV_HEADER,DIV_FOOTER} LAYERTYPE;
 
-QT_BEGIN_NAMESPACE
+typedef enum LAYERTYPE
+{  
+  DIV_ABSOLUTE = 50,
+  DIV_AUTO,    /* 51 */
+  DIV_FLOAT,   /* 52 */
+  DIV_HEADER,   /* 53 */
+  DIV_FOOTER   /* 54 */
+} LAYERTYPE;
+
+
 
 class TextController;
 class LogData;
@@ -21,6 +28,11 @@ class TextLayer : public QObject, public QGraphicsItem
    Q_OBJECT 
 
 public:
+    
+
+    
+    /////typedef enum {DIV_ABSOLUTE = 50,DIV_AUTO,/* 51 */DIV_FLOAT,/* 52 */DIV_HEADER,DIV_FOOTER} LAYERTYPE;
+
     TextLayer(const int layer_id , QGraphicsItem *parent = 0 , QGraphicsScene *scene = 0);
     ~TextLayer();
     void setSelected( bool selected );
@@ -109,9 +121,6 @@ Q_DECLARE_METATYPE(TextController *)
 
 
 
-
-QT_END_NAMESPACE
-QT_END_HEADER
 
 
 
