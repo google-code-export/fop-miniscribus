@@ -51,9 +51,19 @@ public:
     inline QMap<QString,SPics> imglist() { return imagemaps; }
 private:
     QSettings setter;
+    void GrepCursorData();
     int hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const;
     void selectionChanged(bool forceEmitSelectionChanged = false );
     QClipboard *clipboard;
+    int line_nummer;
+    qreal linehight;
+    QTextLine DDline;
+    QLineF CursorDrawLine;
+    QRectF line_rect;
+    QRectF paragraphrect;
+    QRectF line_rect_out;
+    qreal X_Pos_Cursor;
+    qreal Y_Pos_Cursor;
     /* portanti */
     QRectF lastrect;
     int StartSelectionMouse;

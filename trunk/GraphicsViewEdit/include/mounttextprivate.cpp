@@ -178,6 +178,8 @@ void TextWriter::paint_doc(  QPainter * painter ,
            borderWWI	= BorderFiller.widthF();
 					 }
 					 
+		QPen line_pen(QBrush(QColor(Qt::black)),5);
+					 
 	  painter->save();
 		painter->setPen(BorderFiller);
 		painter->setBrush(BGpage);
@@ -217,10 +219,10 @@ void TextWriter::paint_doc(  QPainter * painter ,
 		/* blink cursor from timer event ! */
 		if (edit_enable) {
 				if (cursortime) {  /* cursor blink yes vom timer QApplication::cursorFlashTime() */
-				painter->setPen(QPen(QBrush(contrastbackcolor),1));
+				/////////////////painter->setPen(QPen(QBrush(contrastbackcolor),1));
 				CTX.cursorPosition = C_cursor.position();
 				} else {
-				painter->setPen(Qt::NoPen);
+				////////////////painter->setPen(Qt::NoPen);
 				CTX.cursorPosition = -1;
 				}
 	  }
@@ -240,6 +242,11 @@ void TextWriter::paint_doc(  QPainter * painter ,
 				QPixmap pixbg(":/img/icon.png");
 				painter->save();
 				painter->drawPixmap(QPointF(fulllayer.width() - 40,8),pixbg);
+				if (!CursorDrawLine.isNull()) {
+				painter->setPen(line_pen);
+				painter->drawLine(CursorDrawLine);
+				}
+				
 				painter->restore();
 			}
 				
@@ -290,7 +297,6 @@ void TextWriter::edit( bool e)
 {
 	edit_enable = e;
 	setBlinkingCursorEnabled(e);
-	//////////qDebug() << "### edit " << e;
 }
 
 void TextWriter::updateRequest( const QRectF area )
@@ -343,11 +349,19 @@ void  TextWriter::SetLayerMargin()
 
 void TextWriter::setBlinkingCursorEnabled(bool enable)
 {
+	
+	
+	   if (cursorOn) {
+			return;
+		 }
+		 
+		 cursorOn = enable;
+
     if (enable && QApplication::cursorFlashTime() > 0) {
         cursorTimeLine.start( QApplication::cursorFlashTime() / 2,this);
 		}  else {
         cursorTimeLine.stop();
-        cursorOn = enable;
+        
 		}
 		
 		if (!edit_enable) {
@@ -459,8 +473,7 @@ void TextWriter::timerEvent(QTimerEvent *event)
             } else {
 							cursortime = false;
             }
-						 /////////qDebug() << "### cursortime  " << cursortime << _d->isUndoRedoEnabled() << _d->isUndoAvailable();
-						
+				qDebug() << "### cursortime  " << cursortime;
 				repaintCursor();
     }
 }
@@ -706,7 +719,7 @@ void TextWriter::procesevent( QEvent *e )
             break; }
 		 }
 		 
-	   if (edit_enable && !cursorOn)  {
+	   if (edit_enable)  {
 			setBlinkingCursorEnabled(true);
 		 }
 	
@@ -811,10 +824,12 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 	
 	if (StartSelectionMouse == cursor_position) {
 		  ClearSelections();
+		  setBlinkingCursorEnabled(true);
 		  repaintCursor();
+		  
 		  return;
 	} else {
-		///////setBlinkingCursorEnabled(false);
+		setBlinkingCursorEnabled(false);
 	}
 	StartSelectionMouse = cursor_position;
 	   /* fast  display not alternate */
@@ -1011,23 +1026,51 @@ void TextWriter::repaintCursor( bool allrect )
 {
 	   
 	   if (allrect) {
-			emit updateRequest(boundingRect());
+			emit q_update(boundingRect());
 		  return;
 		 }
+		 
+		 GrepCursorData();
+		 
 		 
 		if (C_cursor.hasComplexSelection() && C_cursor.currentTable()) {
         QTextTable *table = C_cursor.currentTable();
         QRectF tablerect = _d->documentLayout()->frameBoundingRect(table);
-				emit updateRequest(tablerect);
+				emit q_update(tablerect);
 		}
 			
 		 
-		 if (currentTextLine(C_cursor).rect().isValid()) {
-			 emit updateRequest(currentTextLine(C_cursor).rect());
+		 if (paragraphrect.isValid()) {
+			 emit q_update(paragraphrect);
 		 } else {
-			 emit updateRequest(boundingRect());
+			 emit q_update(boundingRect());
 		 }
 }
+
+void TextWriter::GrepCursorData()
+{
+	if (!editable()) {
+	return;
+	}
+	if (!_d) {
+		return;
+	}
+	
+	   paragraphrect = _d->documentLayout()->blockBoundingRect(textCursor().block());
+	   //////qDebug() << "### mouse pararec  " << paragraphrect;
+		 DDline = currentTextLine(textCursor());
+		 line_rect = DDline.naturalTextRect();
+		 line_rect_out = DDline.rect();
+		 line_nummer = DDline.lineNumber();
+		 linehight = DDline.height();
+	   cursor_position = textCursor().position();
+		 X_Pos_Cursor = paragraphrect.x();  //////DDline.cursorToX(cursor_position);
+	   Y_Pos_Cursor =  qBound (0.,paragraphrect.y(),boundingRect().bottom());
+		 qDebug() << "### mouse data  Ln." << Y_Pos_Cursor << " Cp." << cursor_position  << "|" << textCursor().position();
+		 CursorDrawLine = QLineF(QPointF(X_Pos_Cursor,Y_Pos_Cursor),QPointF(X_Pos_Cursor,paragraphrect.bottom()));
+}
+
+
 
 void TextWriter::insertFromMimeData(const QMimeData *source)
 {
