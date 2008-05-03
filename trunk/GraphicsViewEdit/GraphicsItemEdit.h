@@ -6,7 +6,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsItem>
 #include <QSharedData>
-#include "graphicsscene.h"
+#include "GraphicsScene.h"
 
 
 
