@@ -6,7 +6,7 @@
 
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
     : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
-    hi(330),wi(550),bgcolor(QColor(Qt::yellow)),
+    hi(Metric("22mm")),wi(Metric("55mm")),bgcolor(QColor(Qt::white)),
     bordercolor(QColor(Qt::red)),
     format(DIV_ABSOLUTE),mount(new TextController)
 {
@@ -18,13 +18,9 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     setFlag(QGraphicsItem::ItemIsMovable,true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
-    setSelected(true);
-    QString Stream_0 = "PHAgc3R5bGU9IiBtYXJnaW4tdG9wOjBweDsgbWFyZ2luLWJvdHRvbTowcHg7IG1hcmdpbi1sZWZ0OjBweDsgbWFyZ2luLXJpZ2h0OjBweDsgLXF0LWJsb2NrLWluZGVudDowOyB0ZXh0LWluZGVudDowcHg7IGZvbnQtc2l6ZTo4cHQ7Ij48c3BhbiBzdHlsZT0iIGZvbnQtZmFtaWx5OidMdWNpZGEgQ29uc29sZSc7IGZvbnQtc2l6ZToxNHB0OyBmb250LXdlaWdodDo2MDA7IGNvbG9yOiNmZjU1MDA7Ij5DVFJMK1EgIHF0IDQuNCBRdGV4dGVkaXRvcjwvc3Bhbj4KPC9wPgoKPHAgc3R5bGU9Ii1xdC1wYXJhZ3JhcGgtdHlwZTplbXB0eTsgbWFyZ2luLXRvcDowcHg7IG1hcmdpbi1ib3R0b206MHB4OyBtYXJnaW4tbGVmdDowcHg7IG1hcmdpbi1yaWdodDowcHg7IC1xdC1ibG9jay1pbmRlbnQ6MDsgdGV4dC1pbmRlbnQ6MHB4OyBmb250LWZhbWlseTonTHVjaWRhIENvbnNvbGUnOyBmb250LXNpemU6MTRwdDsiPjwvcD4KCjxwIHN0eWxlPSIgbWFyZ2luLXRvcDowcHg7IG1hcmdpbi1ib3R0b206MHB4OyBtYXJnaW4tbGVmdDowcHg7IG1hcmdpbi1yaWdodDowcHg7IC1xdC1ibG9jay1pbmRlbnQ6MDsgdGV4dC1pbmRlbnQ6MHB4OyBmb250LWZhbWlseTonTHVjaWRhIENvbnNvbGUnOyBmb250LXNpemU6MTRwdDsiPjxzcGFuIHN0eWxlPSIgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7Ij5DVFJMK2RvdWJsZSBjbGljayB0byBpbmxpbmUgZWRpdCBsYXllcjwvc3Bhbj4KPC9wPgoKPHAgc3R5bGU9Ii1xdC1wYXJhZ3JhcGgtdHlwZTplbXB0eTsgbWFyZ2luLXRvcDowcHg7IG1hcmdpbi1ib3R0b206MHB4OyBtYXJnaW4tbGVmdDowcHg7IG1hcmdpbi1yaWdodDowcHg7IC1xdC1ibG9jay1pbmRlbnQ6MDsgdGV4dC1pbmRlbnQ6MHB4OyBmb250LWZhbWlseTonTHVjaWRhIENvbnNvbGUnOyBmb250LXNpemU6MTRwdDsiPjwvcD4KCjxwIHN0eWxlPSIgbWFyZ2luLXRvcDowcHg7IG1hcmdpbi1ib3R0b206MHB4OyBtYXJnaW4tbGVmdDowcHg7IG1hcmdpbi1yaWdodDowcHg7IC1xdC1ibG9jay1pbmRlbnQ6MDsgdGV4dC1pbmRlbnQ6MHB4OyBmb250LWZhbWlseTonTHVjaWRhIENvbnNvbGUnOyBmb250LXNpemU6MTRwdDsiPjxzcGFuIHN0eWxlPSIgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7Ij5Nb3ZlIGxheWVyIG9ubHkgZHJhZy4uLjwvc3Bhbj4KPC9wPgoKPHAgc3R5bGU9Ii1xdC1wYXJhZ3JhcGgtdHlwZTplbXB0eTsgbWFyZ2luLXRvcDowcHg7IG1hcmdpbi1ib3R0b206MHB4OyBtYXJnaW4tbGVmdDowcHg7IG1hcmdpbi1yaWdodDowcHg7IC1xdC1ibG9jay1pbmRlbnQ6MDsgdGV4dC1pbmRlbnQ6MHB4OyBmb250LWZhbWlseTonTHVjaWRhIENvbnNvbGUnOyBmb250LXNpemU6MTRwdDsiPjwvcD4KCjxwIHN0eWxlPSItcXQtcGFyYWdyYXBoLXR5cGU6ZW1wdHk7IG1hcmdpbi10b3A6MHB4OyBtYXJnaW4tYm90dG9tOjBweDsgbWFyZ2luLWxlZnQ6MHB4OyBtYXJnaW4tcmlnaHQ6MHB4OyAtcXQtYmxvY2staW5kZW50OjA7IHRleHQtaW5kZW50OjBweDsgZm9udC1mYW1pbHk6J0x1Y2lkYSBDb25zb2xlJzsgZm9udC1zaXplOjE0cHQ7Ij48L3A+";
-    QByteArray xcode("");;
-    xcode.append(Stream_0);
-    QByteArray precode(QByteArray::fromBase64(xcode));    
+    setSelected(false);
     _doc = new QTextDocument();  
-    _doc->setHtml(QString(precode.data()));
+    _doc->setHtml(tr("<p>Write your text<p>"));
         QTextFrame  *Tframe = _doc->rootFrame();
         QTextFrameFormat rootformats = Tframe->frameFormat();
         rootformats.setWidth(wi);
@@ -32,24 +28,19 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
         Tframe->setFrameFormat(rootformats);
         _doc->setPageSize(QSizeF(wi,hi)); 
         DLayout = _doc->documentLayout();
-    mount->txtControl()->document()->toHtml().size();  /* connect all */
-    
-    //////////qDebug() << "### TextLayer init ...........  html in size ->" << _doc->toHtml().size();
-    setZValue(0.99999);
     setDocument(_doc);
+    mount->txtControl()->document()->toHtml().size();  /* connect all */
+    setZValue(0.99999);
     RestoreMoveAction();
     init();
-    //////////////qDebug() << "### TextLayer init  html in size ->" << mount->txtControl()->document()->toHtml().size();
 }
 
 void TextLayer::LayerHightChecks() 
 {
         qreal txthight = mount->txtControl()->boundingRect().height();
-    
         if (txthight > hi) {
         SetDimension(wi,txthight);
         }
-        
         QTextFrame  *Tframe = document()->rootFrame();
         QTextFrameFormat rootformats = Tframe->frameFormat();
         rootformats.setWidth(wi);
@@ -58,12 +49,15 @@ void TextLayer::LayerHightChecks()
 }
 
 
+void TextLayer::setModus( CurrentModus  e)
+{
+   modus = e;
+   update();
+}
+
 void TextLayer::cursorPositionChanged( const QTextCursor cur)
 {
-    
-   ///////////////qDebug() << "### cursorPositionChanged ->" << document()->toHtml().size();
    update();
-    
 }
 
 void TextLayer::SaveFilelayer()
@@ -107,7 +101,8 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     if (!isSelected()) {
     return;
     }
-    
+    /////GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    /* zvalue up and down   zmax()   zmin() */
     bool activeedit = canedit ?  true : false;
     
     
@@ -271,7 +266,6 @@ void TextLayer::Borderwidht()
                 ft.setPadding(0);
                 Tframe->setFrameFormat(ft);
         }
-        
         /*
         int xBottomMargin =  ToUnit(ft.bottomMargin(),"mm");
     int xTopMargin = ToUnit(ft.topMargin(),"mm");
@@ -279,7 +273,6 @@ void TextLayer::Borderwidht()
     int xLeftMargin = ToUnit(ft.leftMargin(),"mm");
         
         */
-        
         update();
     }
 }
@@ -290,7 +283,7 @@ void TextLayer::InsertRevision()
     read();
     QAction *invoice = qobject_cast<QAction *>(sender());
     const uint index = invoice->data().toUInt();
-    qDebug() << "### history id  ->" << index;
+    ////qDebug() << "### history id  ->" << index;
     RichDoc olditem = OpenRichDoc(history[index]);
     insert(olditem);
     EditModus();
@@ -305,6 +298,14 @@ void TextLayer::insert( RichDoc Rdoc )
     mount->txtControl()->RegisterResource(Rdoc.resource);
     LayerHightChecks();
     update(boundingRect());
+    guiwait = Rdoc;
+    QTimer::singleShot(300, this, SLOT(E_Reload())); 
+}
+
+void TextLayer::E_Reload()
+{
+    mount->txtControl()->RegisterResource(guiwait.resource);
+    LayerHightChecks();
 }
 
 
@@ -374,8 +375,8 @@ void TextLayer::updatearea( const QRectF areas )
     return;
     }
     evesum++;
-    qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
-    qDebug() << "### area top left " << areas.topLeft();
+    //////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
+    ///////////qDebug() << "### area top left " << areas.topLeft();
     update(areas);
 }
 
@@ -399,7 +400,6 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                 }
                 if (format == DIV_AUTO ) {
                    hi = qBound(Metric("18mm"), hightlengh + 10,Metric("297mm"));
-                    
                    if (hi > Metric("297mm") ) {
                        RestoreMoveAction();
                    }
@@ -434,7 +434,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     
     
     
-    //////QGraphicsItem::paint(painter,option,widget);
+   ///////QGraphicsItem::paint(painter,option,widget);
 }
 
 
@@ -552,7 +552,7 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         bool ChangeXY;
         QGraphicsItem::setCursor(Qt::SizeAllCursor);
         /* move from stop xy */
-        qDebug() << " move layer status ...............";
+        //////qDebug() << " move layer status ...............";
          qreal WWxi = event->pos().x()  - event->lastPos().x();
          qreal HHyi = event->pos().y()  - event->lastPos().y();
          qreal diff = qMax ( HHyi , WWxi );
@@ -569,21 +569,33 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                  ChangeXY = true;
              }
          }
-        
+   
     } else { 
         if (!mount->txtControl()->editable()) {
          QGraphicsItem::setCursor(Qt::ClosedHandCursor);  
         }
     }
     
+    ShowInfos();
     
     if (mount->txtControl()->editable()) {
     mount->txtControl()->procesevent(event);
     }
+    
+    
     QGraphicsItem::mouseMoveEvent(event); 
 }
 
-
+void TextLayer::ShowInfos()
+{
+    
+   setToolTip(QString("Layer %1mm x %2mm X=%4 mm Y=%3 mm")
+                                .arg(ToUnit(wi,"mm"))
+                                .arg(ToUnit(hi,"mm"))
+                                .arg(ToUnit(pos().y(),"mm"))
+                                .arg(ToUnit(pos().x(),"mm"))); 
+    
+}
 
 void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -607,7 +619,7 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (mount->txtControl()->editable()) {
     mount->txtControl()->procesevent(event);
     }
-    
+    ShowInfos();
     QGraphicsItem::mouseReleaseEvent(event); 
 }
 

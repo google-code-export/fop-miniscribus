@@ -22,9 +22,11 @@ class TextLayer : public QObject, public QGraphicsItem
    Q_OBJECT 
 
 public:
+    enum CurrentModus{ Show, Edit, Move , Lock };
     TextLayer(const int layer_id , QGraphicsItem *parent = 0 , QGraphicsScene *scene = 0);
     ~TextLayer();
     void setSelected( bool selected );
+    void setModus( CurrentModus  e);
     QRectF boundingRect() const;
     QTextDocument *document();
     void setDocument ( QTextDocument * document );
@@ -38,7 +40,6 @@ public:
     enum { Type = 22 };
     int type() const;
     LAYERTYPE Ltype() const;
-    enum CurrentModus{ Show, Edit, Move , Lock };
     void setStyle( QStringList syle , bool fromclone );
     QTextDocument *_doc;
     bool currentprintrender;
@@ -48,6 +49,7 @@ public:
     LayerHightChecks();
     }
 protected:
+    RichDoc guiwait;
     QSettings setter;
     QAction *actionSwapEdit,
              *actionSwapLock;
@@ -95,6 +97,8 @@ public slots:
     void SwapEdit();
     void Borderwidht();
     void SwapLockmodus();
+    void ShowInfos();
+    void E_Reload();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)
