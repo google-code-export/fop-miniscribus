@@ -89,9 +89,11 @@ bool FocusInstance() const
 
 ~OS_application()
 {
+ #if defined Q_WS_WIN
 	if ( !m_prevInstance ) {
 		CloseHandle( (HANDLE) m_mutex );
   }
+  #endif
 }
 /* start main window */
 void MainStart()
