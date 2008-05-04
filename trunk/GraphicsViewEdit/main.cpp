@@ -10,6 +10,11 @@
 #include <windows.h>
 #endif
 
+#ifdef Q_OS_UNIX
+#include <sys/socket.h>
+#include <errno.h>
+#endif
+
 
 /* catch event from QCoreApplication if haveit more */
 #define osApplication \
@@ -30,6 +35,15 @@ public:
     if (m_prevInstance) {
     Apps_Open = true;
     }
+    #endif
+    #ifdef Q_OS_UNIX
+    int s = socket(AF_UNIX, SOCK_STREAM, 0);
+	  sockaddr addr;
+    memset(&addr, 0, sizeof(struct sockaddr));
+	  addr.sa_family = AF_UNIX;
+    strncpy(addr.sa_data,"/tmp/layeres.sock", sizeof(addr.sa_data) - 1);
+	  int res = connect(s, &addr, sizeof(addr));
+    qDebug() << "### sock connect res " << res;
     #endif
     /* QSetting setup to access */
     setOrganizationName("CrossKern");
@@ -66,6 +80,10 @@ bool FocusInstance() const
 		return true;
 	}
   #endif
+  #ifdef Q_OS_UNIX
+  QFileInfo sockets("/tmp/layeres.sock");
+  return sockets.exists();
+  #endif
 	return false;
 }
 
@@ -86,7 +104,7 @@ void MainStart()
 protected:
 bool event(QEvent *ev)
 {
-              qDebug() << "### type event " << ev->type();
+              
     bool eaten;
     switch (ev->type()) {
     case QEvent::FileOpen:
