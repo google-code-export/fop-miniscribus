@@ -12,7 +12,6 @@ DESTDIR	+= ./
 
 QT += xml
 QT += network
-QT += sql
 QT += svg 
 
 CONFIG   += qt warn_off release console
