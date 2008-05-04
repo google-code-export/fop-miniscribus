@@ -174,11 +174,18 @@ void TextWriter::paint_doc(  QPainter * painter ,
 	
 	  qreal borderWWI = 0.;
 	
+	  const QColor backcolor = BGpage.color();
+    const QColor contrastbackcolor(
+        backcolor.red()   > 127 ? 0 : 255,
+        backcolor.green() > 127 ? 0 : 255,
+        backcolor.blue()  > 127 ? 0 : 255); 
+	
+	
 	         if (BorderFiller.widthF() > 0) {
            borderWWI	= BorderFiller.widthF();
 					 }
 					 
-		QPen line_pen(QBrush(QColor(Qt::black)),5);
+		QPen line_pen(QBrush(Qt::red),1,Qt::DotLine,Qt::RoundCap);
 					 
 	  painter->save();
 		painter->setPen(BorderFiller);
@@ -188,11 +195,7 @@ void TextWriter::paint_doc(  QPainter * painter ,
 					 
 	  painter->save();
 	
-		const QColor backcolor = BGpage.color();
-    const QColor contrastbackcolor(
-        backcolor.red()   > 127 ? 0 : 255,
-        backcolor.green() > 127 ? 0 : 255,
-        backcolor.blue()  > 127 ? 0 : 255); 
+		
 	 
 	  /* rect from frame root QTextDocument*/
 	  const  QRectF doc_rect = boundingRect();
@@ -242,13 +245,31 @@ void TextWriter::paint_doc(  QPainter * painter ,
 				QPixmap pixbg(":/img/icon.png");
 				painter->save();
 				painter->drawPixmap(QPointF(fulllayer.width() - 40,8),pixbg);
-				if (!CursorDrawLine.isNull()) {
-				painter->setPen(line_pen);
-				painter->drawLine(CursorDrawLine);
-				}
 				
+				/* left border from active paragraph */
+				
+				//////if (!CursorDrawLine.isNull()) {
+				///////painter->setPen(line_pen);
+				////////painter->drawLine(CursorDrawLine);
+				//////////}
 				painter->restore();
 			}
+			
+			//////////////painter->save();
+			/////////painter->setBrush(QBrush(Qt::white));
+      ///////////QTextLayout Latooltips( "ToolTip sample dsafgdsgfsdgsdgsgsdgsgsdgdsg gsdg sdgsdgsdgs " );
+      ////////////Latooltips.beginLayout();
+      /////////////QTextLine line = Latooltips.createLine();
+      //////////line.setLineWidth( 100 );
+      ///////////line.setPosition( QPointF( 0, 0 ) );
+			////////////Latooltips.setTextOption(QTextOption(Qt::AlignRight));
+      ////////////Latooltips.endLayout();
+			
+			/////////////QPointF  pointxy(fulllayer.width() - line.width() - 5 ,45);
+			///////////painter->drawRect(line.rect());
+			
+      ///////////Latooltips.draw(painter,pointxy);
+			/////////////////painter->restore();
 				
 				
 		
@@ -473,7 +494,7 @@ void TextWriter::timerEvent(QTimerEvent *event)
             } else {
 							cursortime = false;
             }
-				qDebug() << "### cursortime  " << cursortime;
+				//////qDebug() << "### cursortime  " << cursortime;
 				repaintCursor();
     }
 }

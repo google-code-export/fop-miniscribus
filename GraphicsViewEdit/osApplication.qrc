@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/" >
+        <file>img/_default_layer.layer</file>
         <file>img/1day.png</file>
         <file>img/1leftarrow.png</file>
         <file>img/1rightarrow.png</file>

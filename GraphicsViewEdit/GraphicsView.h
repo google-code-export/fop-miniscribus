@@ -20,16 +20,23 @@ public:
   GraphicsView( QWidget * parent  = 0 );
 protected:
     void resizeEvent(QResizeEvent *event);
+    void wheelEvent (QWheelEvent * event);
     void drawBackground(QPainter *painter, const QRectF &rect);
+    void scaleView (qreal scaleFactor);
   GraphicsScene *scene;
   qreal width;
   qreal height;
+  uint layercount;
   QWidget *BigParent;
   QPixmap chessgrid;
+  TextLayer *CurrentActive;
 private:
+  void fillNullItem();
 signals:
-
 public slots:
+    void AppendDemo();
+    void WorksOn(QGraphicsItem * item , qreal zindex );
+    void DisplayTop();
 
 };
 //
