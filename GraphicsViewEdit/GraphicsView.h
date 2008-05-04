@@ -11,6 +11,7 @@
 #include "GraphicsItemEdit.h"
 #include "mounttextprivate.h"
 #include "GraphicsScene.h"
+#include <math.h>
 
 class GraphicsView : public QGraphicsView
 {
