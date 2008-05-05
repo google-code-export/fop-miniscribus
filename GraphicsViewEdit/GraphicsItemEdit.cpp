@@ -28,7 +28,7 @@
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
     : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
     hi(Metric("22mm")),wi(Metric("55mm")),bgcolor(QColor(Qt::white)),
-    bordercolor(QColor(Qt::red)),
+    bordercolor(QColor(Qt::red)),Rotate(0),
     format(DIV_ABSOLUTE),mount(new TextController)
 {
     mount->q = this;
@@ -55,6 +55,13 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     RestoreMoveAction();
     init();
 }
+
+QList<QAction *> TextLayer::MainActions()
+{
+   return mount->txtControl()->MainActions();
+    
+}
+
 
 void TextLayer::LayerHightChecks() 
 {
@@ -122,6 +129,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     if (!isSelected()) {
     return;
     }
+    Rotater *slider;
     /////GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
     /* zvalue up and down   zmax()   zmin() */
     bool activeedit = canedit ?  true : false;
@@ -142,6 +150,15 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         if (modus == Lock && !canedit) { 
         locked = true;
         }
+        
+        if (canedit && format == DIV_ABSOLUTE ) {
+        slider = new Rotater(Rotate,event->widget());
+        QWidgetAction *widgetslider = new QWidgetAction(event->widget());
+        widgetslider->setDefaultWidget(slider);
+        RootMenu->addAction(widgetslider); 
+        connect(slider, SIGNAL(rotater(int)),this, SLOT(RotateLayer(int)));
+        }
+        
         actionSwapLock = new QAction(tr("Lock Unlock Layer"),this);
         if (locked) {
         actionSwapLock->setIcon(QIcon(":/img/encrypted.png"));
@@ -204,7 +221,17 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
     }
     RootMenu->exec(event->screenPos());
+    
+    
+    if (canedit && format == DIV_ABSOLUTE ) {
+     slider->disconnect(this);
+     slider->deleteLater(); 
+    }
+    
+    
     delete RootMenu;
+    
+    
     
 }
 
@@ -243,6 +270,15 @@ void TextLayer::SwapLockmodus()
     
     update(boundingRect());
 }
+
+
+void TextLayer::RotateLayer( const int ro ) 
+{ 
+   Rotate = ro;
+    qDebug() << "### RotateLayer " << ro;
+   update();
+}
+    
 
 /*
 
@@ -452,10 +488,20 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 			}
       
    
-    
+    setTransform(ActualMatrixe(Rotate),false);
     
     
    ///////QGraphicsItem::paint(painter,option,widget);
+}
+
+
+QTransform TextLayer::ActualMatrixe( int r ) 
+{
+     QMatrix matrix;
+     matrix.translate ( boundingRect().center().x() , boundingRect().center().y() );
+     matrix.rotate(r);
+     matrix.translate ( - boundingRect().center().x() , - boundingRect().center().y() );
+     return QTransform(matrix);
 }
 
 
@@ -757,6 +803,10 @@ RichDoc TextLayer::ReadActualItem()
     styles.append(QString("background-color:%1; ").arg( bgcolor.name() ) );  
     }
     
+    if (Rotate > 0 ) {
+    styles.append(QString("degree-rotation:%1; ").arg( Rotate ) );  
+    }
+    
     
     
     
@@ -783,7 +833,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
 {
     #define ALPHAHTML(alpha) ((alpha)*254.99999999)
     QStringList find;
-    find << "position" << "top" << "left" << "width" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
+    find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     QMap<QString,QVariant> incss; 
     for (int o = 0; o < find.size(); ++o)  {
          incss.insert(find.at(o),QString("0"));
@@ -843,6 +893,10 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     if (incss.value("border-width").toString() !="0") {
     bordercolor = QColor(incss.value("border-color").toString());
     border = Metric(incss.value("border-width").toString()); 
+    }
+    
+    if (incss.value("degree-rotation").toInt() !=0) {
+       Rotate =  incss.value("degree-rotation").toInt();
     }
     
     modus = Show;

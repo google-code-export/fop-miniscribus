@@ -1158,6 +1158,12 @@ QMimeData *TextWriter::createMimeDataFromSelection() const
     return new QTextEditMimeData(fragment);    /////QTextDocumentFragment::fromHtml(md->html())
 }
 
+QList<QAction *> TextWriter::MainActions()
+{
+	
+}
+
+
 QMenu *TextWriter::StandardMenu( QWidget * inparent )
 {
     QMenu *menu = new QMenu(inparent);
