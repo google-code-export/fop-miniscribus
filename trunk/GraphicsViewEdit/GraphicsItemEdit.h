@@ -182,6 +182,9 @@ public slots:
     void ShowInfos();
     void E_Reload();
     void RotateLayer( const int ro );
+    void Copy_Html_Plain();
+    void Copy_Text_Plain();
+    void copyLayer();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)

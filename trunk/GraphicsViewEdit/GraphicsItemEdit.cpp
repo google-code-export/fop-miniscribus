@@ -220,6 +220,12 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         
     }
+    
+    RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy full text plain" ), this , SLOT( Copy_Text_Plain() ) );
+    RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy xhtml text plain" ), this , SLOT( Copy_Html_Plain() ) );
+    RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy current Layer" ), this , SLOT( copyLayer() ) );
+    
+    
     RootMenu->exec(event->screenPos());
     
     
@@ -234,6 +240,36 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     
 }
+
+
+void TextLayer::Copy_Html_Plain()
+{
+    const QString txt = document()->clone()->toHtml("utf-8");
+    QClipboard  *baseram = QApplication::clipboard();
+    QMimeData *data = new QMimeData;
+    data->setText(txt);
+    baseram->setMimeData(data,QClipboard::Clipboard);
+}
+
+void TextLayer::Copy_Text_Plain()
+{
+    const QString txt = document()->clone()->toPlainText();
+    QClipboard  *baseram = QApplication::clipboard();
+    QMimeData *data = new QMimeData;
+    data->setText(txt);
+    baseram->setMimeData(data,QClipboard::Clipboard);
+}
+
+void  TextLayer::copyLayer()
+{
+    RichDoc dd = ReadActualItem();
+    QString stream = SaveRichDoc(dd); /* QDataStream zu toBase64 fuer sql*/
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData("application/x-layerrichdoc",stream.toUtf8());
+    QClipboard *ramclip = QApplication::clipboard();
+    ramclip->setMimeData(mimeData,QClipboard::Clipboard);
+}
+
 
 void TextLayer::SwapEdit()
 {
