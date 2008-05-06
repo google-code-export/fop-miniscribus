@@ -104,16 +104,16 @@ void Layoutpainter::ComposeAction()
     
     
     actionOverline = new QAction(tr("Text Overline"),this);
-	  actionOverline->setCheckable(true);
+	  //////actionOverline->setCheckable(true);
 	  connect(actionOverline, SIGNAL(triggered()),this,SLOT(OverlineText()));
     
     actionStricktext = new QAction(tr("StrikeOut text"),this);
 	  actionStricktext->setCheckable(true);
 	  connect(actionStricktext, SIGNAL(triggered()),this,SLOT(StrickText()));
 
-    actionOverline = new QAction(tr("Text Overline"),this);
-	  actionOverline->setCheckable(true);
-	  connect(actionOverline, SIGNAL(triggered()),this,SLOT(OverlineText()));
+    ////////actionOverline = new QAction(tr("Text Overline"),this);
+	  /////////actionOverline->setCheckable(true);
+	  //////////connect(actionOverline, SIGNAL(triggered()),this,SLOT(OverlineText()));
     
     actionstretchfont = new QAction(tr("Stretch text font"),this);
 	  connect(actionstretchfont, SIGNAL(triggered()),this,SLOT(StretchText()));
@@ -201,10 +201,96 @@ void MaketableColorBG();
  void MergeCellByCursorPosition();
  void SetColumLarge();
     */
-    
-    
     return MenuTables;
 }
+
+
+QMenu *Layoutpainter::FrameMenu( QWidget * inparent )
+{
+    QMenu *MenuFrame = new QMenu(tr("Frame format"),inparent);
+    QAction *a;
+    
+    MenuFrame->setIcon(QIcon(QString::fromUtf8(":/img/frame.png")));
+    a = MenuFrame->addAction(tr("Insert frame"), this, SLOT(FosInsertFrame()));
+    if (textCursor().currentFrame()) {
+        QTextFrameFormat Ftf =textCursor().currentFrame()->frameFormat();
+        a = MenuFrame->addAction(tr("Set frame margin"), this, SLOT(SetFrameMargin()));
+        a->setIcon(QIcon(":/img/frame.png"));
+        QTextFrame *base = textCursor().currentFrame();
+        FrameStyler *stylerwi = new FrameStyler(base,inparent);
+        QWidgetAction *widgetmenu = new QWidgetAction(inparent);
+        widgetmenu->setDefaultWidget(stylerwi);
+        MenuFrame->addAction(widgetmenu); 
+        a = MenuFrame->addAction(tr("Frame background color"), this, SLOT(SetFrameBGColor()));
+        a->setIcon(createColorIcon(Ftf.background().color()));
+
+        
+        
+    }
+    return MenuFrame;
+}
+
+void  Layoutpainter::SetFrameBGColor()
+{
+     if (textCursor().currentFrame()) {
+          QTextFrame *frame = textCursor().currentFrame();
+          QTextFrameFormat Ftf = frame->frameFormat();
+          bool ok;
+                     /* get color */
+                     QColor col = QColorDialog::getRgba(Ftf.background().color().rgba(),&ok, 0);
+                     if (!col.isValid()) {
+                        return; 
+                     }
+                        QBrush stylesin(col);
+                        Ftf.setBackground(stylesin);
+                        frame->setFrameFormat(Ftf);
+    }
+}
+
+void Layoutpainter::FosInsertFrame()
+{
+    QTextFrameFormat frame;
+                     frame.setBorder(2);   
+                     frame.setBorderBrush(QBrush(Qt::red));  
+                     frame.setBorderStyle(QTextFrameFormat::BorderStyle_Dotted);
+                      QTextLength mesure(QTextLength::FixedLength,180); 
+                     frame.setWidth(mesure); 
+                     frame.setPadding(2);    
+                     frame.setPosition(QTextFrameFormat::FloatRight);   
+        textCursor().insertFrame(frame);
+    
+    
+}
+
+void  Layoutpainter::SetFrameMargin()
+{
+    
+        if (textCursor().currentFrame()) {
+            QTextFrame *base = textCursor().currentFrame();
+            QTextFrameFormat Ftf = base->frameFormat();
+             GetMargin *marge = new GetMargin(0);
+             marge->setWindowTitle(tr("Set Frame margin"));
+             marge->Set_margin( QRectF (Ftf.topMargin(), Ftf.rightMargin() ,Ftf.bottomMargin() , Ftf.leftMargin() ) );
+             int faxme = marge->exec();
+             if (faxme == 1) {
+                 QRectF setFrams = marge->Get_margin();
+                 const qreal TopMargin = setFrams.x();
+                 const qreal RightMargin = setFrams.y();
+                 const qreal BottomMargin = setFrams.width();
+                 const qreal LeftMargin = setFrams.height();
+                 Ftf.setLeftMargin(LeftMargin);
+                 Ftf.setBottomMargin(BottomMargin);
+                 Ftf.setTopMargin(TopMargin);
+                 Ftf.setRightMargin(RightMargin);
+                 base->setFrameFormat(Ftf);
+             }
+             
+         }
+}
+
+
+
+
 
 void  Layoutpainter::SetColumLarge()
 {
@@ -412,6 +498,10 @@ QMenu *Layoutpainter::BlockMenu( QWidget * inparent )
 
 
 
+
+
+
+
 QTextCursor Layoutpainter::textCursor() 
 {
   return C_cursor;
@@ -512,7 +602,7 @@ void Layoutpainter::NewCharformat( QTextCursor cursor )
     actionItalic->setChecked( f.italic() );
     actionUnderline->setChecked(f.underline() );
     MakealignmentChanged(textCursor().block().blockFormat().alignment());
-    actionOverline->setChecked( f.overline() );
+    ///////actionOverline->setChecked( f.overline() );
     actionStricktext->setChecked( f.strikeOut() );
     actionTextColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.foreground().color()));
     actionBackColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.background().color()));
@@ -552,19 +642,7 @@ void Layoutpainter::MaketextAlign(QAction *a)
     textCursor().setBlockFormat(format);
 }
 
-void Layoutpainter::FosInsertFrame()
-{
-    QTextFrameFormat frame;
-                     frame.setBorder(2);   
-                     frame.setBorderBrush(QBrush(Qt::red));  
-                     frame.setBorderStyle(QTextFrameFormat::BorderStyle_Dotted);
-                      QTextLength mesure(QTextLength::FixedLength,180); 
-                     frame.setWidth(mesure);   
-                     frame.setPosition(QTextFrameFormat::FloatRight);   
-        textCursor().insertFrame(frame);
-    
-    
-}
+
 
 
 void Layoutpainter::ItalicText()
@@ -600,17 +678,17 @@ void Layoutpainter::StretchText()
     }
  }
  
+ /*
+QPen line_pen_nord(QBrush(Qt::red),2,Qt::DotLine,Qt::RoundCap);
+QTextCursor c = textCursor();
+QTextCharFormat format = c.charFormat();
+format.setObjectType(QTextCharFormat::UserObject + 1);
+format.setProperty(enum::bordernord,line_pen_nord);
+ c.setCharFormat(format);
+*/
  
  
- void Layoutpainter::OverlineText()
- {
-	  QTextCursor c = textCursor();
-    QTextCharFormat format = c.charFormat();
-    QFont f = format.font();
-    f.setOverline(actionOverline->isChecked() ? true : false);
-    format.setFont(f);
-	  c.setCharFormat(format);
- }
+
 
  
 void Layoutpainter::StrickText()
@@ -647,7 +725,25 @@ void Layoutpainter::FontText()
 }
 
 
-
+ void Layoutpainter::OverlineText()
+ {
+    /* QTextFormat setProperty ( int propertyId, const QVariant & value )  */ 
+    QPen line_pen(QBrush(Qt::red),2,Qt::DotLine,Qt::RoundCap);
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    QTextFrameFormat Ft;
+    Ft.setBorderStyle ( QTextFrameFormat::BorderStyle_Solid ); 
+    Ft.setBorder ( 2 );
+    Ft.setBorderBrush ( QBrush(Qt::red) );
+		//////////format.setObjectType(QTextCharFormat::UserObject + 1);
+    ///////////format.setProperty(6001,line_pen);
+    /////////c.insertText(QString(QChar::ObjectReplacementCharacter),format);
+    format.setTextOutline(line_pen); 
+     
+     ///////Ft.toCharFormat();
+     format.merge ( Ft ); 
+    c.setCharFormat(format);
+ }
 
 
 QString Layoutpainter::ImageFilterHaving() const
@@ -719,20 +815,6 @@ QString Layoutpainter::ImageFilterHaving() const
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Layoutpainter::~Layoutpainter()
 {
    _d->clear();
@@ -740,7 +822,53 @@ Layoutpainter::~Layoutpainter()
 
 }
 
+SpanBorder::SpanBorder(  QObject* par  )
+ 		: QObject(par)
+{  }
+QSizeF SpanBorder::intrinsicSize(QTextDocument* doc, int posInDoc, const QTextFormat &fmt)
+{
+			Q_UNUSED(fmt)
+      QTextCursor c(doc);
+      c.setPosition(posInDoc);
+      const QRectF xx = currentTextLine(c).rect();
+      qDebug() << " xx " << xx;
+      return xx.size();
+}
 
+QTextLine SpanBorder::currentTextLine(const QTextCursor &cursor)
+{
+    const QTextBlock block = cursor.block();
+    if (!block.isValid())
+        return QTextLine();
+
+    const QTextLayout *layout = block.layout();
+    if (!layout)
+        return QTextLine();
+
+    const int relativePos = cursor.position() - block.position();
+    return layout->lineForTextPosition(relativePos);
+}
+
+void SpanBorder::drawObject(QPainter* p, const QRectF &rect, QTextDocument* doc,
+		int posInDoc, const QTextFormat &fmt)
+{
+    Q_UNUSED(doc)
+    Q_UNUSED(posInDoc)
+    QTextCharFormat formats = fmt.toCharFormat();
+    QVariant v = formats.property(6001);
+    qDebug() << " border .. " << v.isNull();
+    if (!v.isNull()) {
+        QPen borderG = v.value<QPen>();
+        if (borderG.style() != Qt::NoPen) {
+            p->save();
+		        p->setPen(borderG);
+		        p->setBrush(Qt::NoBrush);
+		        p->drawRect(rect);
+            p->restore();
+        }
+    }
+    ///////    format.setProperty (QVariant::Pen,line_pen);
+}
 
 
 QStringList QTextEditMimeData::formats() const

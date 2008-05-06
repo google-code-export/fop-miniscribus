@@ -154,9 +154,9 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
 						rootformats.setPadding(0);
 						}
             Tframe->setFrameFormat(rootformats);
-				
-						C_cursor.setPosition(0,QTextCursor::MoveAnchor);
-				    cursor_position = C_cursor.position();
+				span_border = new SpanBorder(this);
+				C_cursor.setPosition(0,QTextCursor::MoveAnchor);
+				cursor_position = C_cursor.position();
 				QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
 				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
 				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
@@ -166,6 +166,7 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
 				/////QObject::connect(_d, SIGNAL(undoAvailable(bool)),this, SIGNAL(undoAvailable(bool)));
         ///////QObject::connect(_d, SIGNAL(redoAvailable(bool)),this, SIGNAL(redoAvailable(bool)));
 				_d->setUndoRedoEnabled(true);
+				_d->documentLayout()->registerHandler(QTextCharFormat::UserObject + 1,span_border);
 						if (nondoc) {
 							/* no document  set plain text or html not doc precision format as default color */
 							
@@ -905,7 +906,7 @@ void TextWriter::tmouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const
 						const int position = C_cursor.selectionStart();
             const int anchor = C_cursor.selectionEnd();
 						
-						qDebug() << "selectedText " << C_cursor.selectedText();
+						///////////qDebug() << "selectedText " << C_cursor.selectedText();
 						
 						
 						const QTextCursor oldSelection = C_cursor;
@@ -1109,7 +1110,7 @@ void TextWriter::GrepCursorData()
 	   cursor_position = textCursor().position();
 		 X_Pos_Cursor = paragraphrect.x();  //////DDline.cursorToX(cursor_position);
 	   Y_Pos_Cursor =  qBound (0.,paragraphrect.y(),boundingRect().bottom());
-		 qDebug() << "### mouse data  Ln." << Y_Pos_Cursor << " Cp." << cursor_position  << "|" << textCursor().position();
+		 ///////////////qDebug() << "### mouse data  Ln." << Y_Pos_Cursor << " Cp." << cursor_position  << "|" << textCursor().position();
 		 CursorDrawLine = QLineF(QPointF(X_Pos_Cursor,Y_Pos_Cursor),QPointF(X_Pos_Cursor,paragraphrect.bottom()));
 }
 
@@ -1183,10 +1184,12 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 			  QMenu *charsfo = TextMenu(inparent);
         QMenu *blockfo = BlockMenu(inparent);
 				QMenu *tablesfo = TableMenu(inparent);
+			  QMenu *framefo = FrameMenu(inparent);
 			
          menu->addAction(charsfo->menuAction()); 
          menu->addAction(blockfo->menuAction()); 
 			   menu->addAction(tablesfo->menuAction()); 
+			   menu->addAction(framefo->menuAction()); 
 			   menu->addSeparator();
 			
 			
@@ -1217,7 +1220,7 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 			  a = menu->addAction(tr("Layer margin"), this, SLOT(SetLayerMargin()));
 			  a->setIcon(QIcon(":/img/view_top_bottom.png"));
 			  
-				a = menu->addAction(tr("Insert frame"), this, SLOT(FosInsertFrame()));
+				
 			
 			
     }

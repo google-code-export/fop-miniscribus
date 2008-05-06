@@ -2,6 +2,7 @@
     <qresource prefix="/" >
         <file>img/_default_layer.layer</file>
         <file>img/1day.png</file>
+        <file>img/frame.png</file>
         <file>img/1leftarrow.png</file>
         <file>img/1rightarrow.png</file>
         <file>img/3floppy-unmount-48x48.png</file>

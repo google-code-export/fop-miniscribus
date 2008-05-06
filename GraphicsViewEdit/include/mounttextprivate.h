@@ -93,6 +93,10 @@ private:
     /////int cursor_position;
     int position_selection_start;
     QObject *bridge;
+    /* extra format documents */
+    SpanBorder *span_border;
+
+
     //////QTextCursor C_cursor;
     //////QTextDocument *_d;
     QBasicTimer cursorTimeLine;
