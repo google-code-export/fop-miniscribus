@@ -40,7 +40,13 @@ class GraphicsView : public QGraphicsView
 //
 public:
   GraphicsView( QWidget * parent  = 0 );
+  TextLayer *CurrentActive;
+  QRectF boundingRect();
+  qreal NextfromY();
 protected:
+    QList<TextLayer*> items;
+    QSettings setter;
+    void contextMenuEvent ( QContextMenuEvent * e );
     void resizeEvent(QResizeEvent *event);
     void wheelEvent (QWheelEvent * event);
     void drawBackground(QPainter *painter, const QRectF &rect);
@@ -51,15 +57,22 @@ protected:
   uint layercount;
   QWidget *BigParent;
   QPixmap chessgrid;
-  TextLayer *CurrentActive;
 private:
   void fillNullItem();
 signals:
+   void active_items(bool);
 public slots:
     void AppendDemo();
     void WorksOn(QGraphicsItem * item , qreal zindex );
     void notselect();
     void DisplayTop();
+    void sceneScaleChanged(const QString &scale);
+    void GoEditCurrentLayer();
+    void NewLayer();
+    void updateauto();
+    void CloneCurrent();
+    void removelayer( const int idx );
+    void PasteLayer();
 
 };
 //

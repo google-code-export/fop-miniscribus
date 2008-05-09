@@ -21,7 +21,7 @@
 
 #include "GraphicsItemEdit.h"
 #include "mounttextprivate.h"
-
+#include "GraphicsView.h"
 
 
 
@@ -35,10 +35,9 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     history.clear();
     id = layer_id;
     setAcceptDrops(true);
-    ///////setAcceptHoverEvents(true);
-    setFlag(QGraphicsItem::ItemIsMovable,true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
+    setFlag(QGraphicsItem::ItemIsMovable,false);
     setSelected(false);
     _doc = new QTextDocument();  
     _doc->setHtml(tr("<p>Write your text<p>"));
@@ -51,7 +50,7 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
         DLayout = _doc->documentLayout();
     setDocument(_doc);
     mount->txtControl()->document()->toHtml().size();  /* connect all */
-    setZValue(0.99999);
+    setZValue(1.99999);
     RestoreMoveAction();
     init();
 }
@@ -62,13 +61,39 @@ QList<QAction *> TextLayer::MainActions()
     
 }
 
+qreal TextLayer::pointnext()
+{
+  LayerHightChecks();
+	if (Ltype() != DIV_ABSOLUTE) {
+		return hi;
+	} else {
+		return 0;
+	}
+  update();
+}
+
+
+bool TextLayer::editable()
+{
+    return mount->txtControl()->editable();
+}
+
 
 void TextLayer::LayerHightChecks() 
 {
-        qreal txthight = mount->txtControl()->boundingRect().height();
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    QRectF Srect = sc->sceneRect();
+    if (Ltype() == DIV_AUTO || Ltype() == DIV_HEADER || Ltype() == DIV_FOOTER) {
+    wi = Srect.width();
+    }
+    
+    if (Ltype() != DIV_ABSOLUTE) {
+        qreal txthight = mount->txtControl()->boundingRect().height() + 5;
         if (txthight > hi) {
         SetDimension(wi,txthight);
         }
+    }  
+        
         QTextFrame  *Tframe = document()->rootFrame();
         QTextFrameFormat rootformats = Tframe->frameFormat();
         rootformats.setWidth(wi);
@@ -138,6 +163,15 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     QAction *a;
     RootMenu = mount->txtControl()->StandardMenu(event->widget());
+    if (format == DIV_ABSOLUTE && modus != Lock) {
+         a = RootMenu->addAction(tr("Send Front"), this, SLOT(seTFront()));
+         a->setIcon(QIcon(":/img/sendtoback.png"));
+         a = RootMenu->addAction(tr("Send Back"), this, SLOT(seTBack()));
+         a->setIcon(QIcon(":/img/bringtofront.png")); 
+        
+    }
+    
+    
     
         actionSwapEdit = new QAction(tr("Edit modus"),this);
         actionSwapEdit->setIcon(QIcon(":/img/icon.png"));
@@ -157,6 +191,8 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         widgetslider->setDefaultWidget(slider);
         RootMenu->addAction(widgetslider); 
         connect(slider, SIGNAL(rotater(int)),this, SLOT(RotateLayer(int)));
+            
+        
         }
         
         actionSwapLock = new QAction(tr("Lock Unlock Layer"),this);
@@ -224,8 +260,8 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy full text plain" ), this , SLOT( Copy_Text_Plain() ) );
     RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy xhtml text plain" ), this , SLOT( Copy_Html_Plain() ) );
     RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy current Layer" ), this , SLOT( copyLayer() ) );
-    
-    
+    RootMenu->addAction(QIcon(QString::fromUtf8(":/img/alayer_clone.png")),tr( "Clone this Layer" ), this , SLOT( CloneLayer() ) );
+    RootMenu->addAction(QIcon(QString::fromUtf8(":/img/button_cancel.png")),tr( "Remove Layer" ), this , SLOT( Removehere() ) );
     RootMenu->exec(event->screenPos());
     
     
@@ -241,6 +277,39 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
 }
 
+
+
+void TextLayer::seTBack()
+{
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    qreal backs = qBound(0.01,sc->zmin() - 1,1000.00);
+    setZValue(backs);
+    update();
+    
+}
+void TextLayer::seTFront()
+{
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    qreal top = qBound(0.01,sc->zmax() - 1,1000.00);
+    setZValue(top); 
+    update();
+}
+
+
+
+
+
+
+
+void TextLayer::Removehere()
+{
+   emit remid(id);
+}
+
+void TextLayer::CloneLayer()
+{
+   emit clonehere(); 
+}
 
 void TextLayer::Copy_Html_Plain()
 {
@@ -273,6 +342,11 @@ void  TextLayer::copyLayer()
 
 void TextLayer::SwapEdit()
 {
+    if (modus == Lock) {
+    QMessageBox::information(0,tr("Layer status"),tr("Unlock first the layer to edit."));
+    return;
+    }
+    
     bool canedit = mount->txtControl()->editable();
     if (canedit) {
         mount->txtControl()->edit(false);
@@ -291,7 +365,9 @@ void TextLayer::SwapLockmodus()
     if (modus == Lock) {
         modus = Show;
         mount->txtControl()->edit(false);
-        setFlag(QGraphicsItem::ItemIsMovable,false);
+         if (format == DIV_ABSOLUTE) {
+         ///////
+         }
         setFlag(QGraphicsItem::ItemIsSelectable,true);
         setFlag(QGraphicsItem::ItemIsFocusable,true);
         RestoreMoveAction();
@@ -299,7 +375,6 @@ void TextLayer::SwapLockmodus()
     } else {
         modus = Lock;
         mount->txtControl()->edit(false);
-        setFlag(QGraphicsItem::ItemIsMovable,false);
         setFlag(QGraphicsItem::ItemIsSelectable,true);
         setFlag(QGraphicsItem::ItemIsFocusable,true);
     }
@@ -315,27 +390,6 @@ void TextLayer::RotateLayer( const int ro )
    update();
 }
     
-
-/*
-
-void TextLayer::RestoreMoveAction() 
-{
-    modus == Show;
-    QGraphicsItem::setCursor(Qt::ArrowCursor);
-    QApplication::restoreOverrideCursor();
-    setSelected(true);
-    mount->txtControl()->edit(false);
-    setFlag(QGraphicsItem::ItemIsMovable,true);
-    setFlag(QGraphicsItem::ItemIsSelectable,true);
-    setFlag(QGraphicsItem::ItemIsFocusable,true);
-    update();
-    //////////////////qDebug() << "### reset ";
-}
-
-*/
-
-
-
 
 void TextLayer::Borderwidht()
 {
@@ -385,6 +439,8 @@ void TextLayer::InsertRevision()
 
 void TextLayer::insert( RichDoc Rdoc )
 {
+    RestoreMoveAction();
+    
     _doc = Rdoc.todoc();
     setStyle(Rdoc.style.split(";"),false);
     mount->txtControl()->setDocument(_doc,this);
@@ -392,12 +448,12 @@ void TextLayer::insert( RichDoc Rdoc )
     LayerHightChecks();
     update(boundingRect());
     guiwait = Rdoc;
-    QTimer::singleShot(300, this, SLOT(E_Reload())); 
+    LayerHightChecks();
 }
 
 void TextLayer::E_Reload()
 {
-    mount->txtControl()->RegisterResource(guiwait.resource);
+    ///////mount->txtControl()->RegisterResource(guiwait.resource);
     LayerHightChecks();
 }
 
@@ -463,6 +519,11 @@ void TextLayer::read()
 
 void TextLayer::updatearea( const QRectF areas )
 {
+    if (format != DIV_ABSOLUTE) {
+    setFlag(QGraphicsItem::ItemIsMovable,false);
+    emit recalcarea();
+    }
+    
     const qreal limits = boundingRect().width() + 20;
     if (areas.width() > limits) {
     return;
@@ -564,7 +625,7 @@ int TextLayer::type() const
     return Type;
 }
 
-LAYERTYPE TextLayer::Ltype() const
+int TextLayer::Ltype() const
 {
     return format;
 }
@@ -572,8 +633,21 @@ LAYERTYPE TextLayer::Ltype() const
 void TextLayer::setSelected( bool selected ) 
 {
     if (!selected) {
-      modus = Show;
+         if (format != DIV_ABSOLUTE) {
+         RestoreMoveAction();
+         }
+         
+    } else {
+        if (format != DIV_ABSOLUTE && modus != Lock) {
+        EditModus(); 
+        } else {
+            if ( modus == Lock) {
+            setFlag(QGraphicsItem::ItemIsMovable,false); 
+            }
+        }
     }
+    
+    
   IsSelectActive = selected;
   QGraphicsItem::setSelected(selected);
   update();
@@ -590,9 +664,7 @@ void TextLayer::RestoreMoveAction()
     modus == Show;
     QGraphicsItem::setCursor(Qt::ArrowCursor);
     QApplication::restoreOverrideCursor();
-    setSelected(true);
     mount->txtControl()->edit(false);
-    setFlag(QGraphicsItem::ItemIsMovable,true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
     update(boundingRect());
@@ -604,7 +676,6 @@ void TextLayer::EditModus()
 {
     modus == Edit;
     mount->txtControl()->edit(true);
-    setFlag(QGraphicsItem::ItemIsMovable,false);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
     update(boundingRect());
@@ -617,12 +688,14 @@ void TextLayer::EditModus()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (!isSelected()) {
-    setSelected(true);   /* scene attension auto select ! */
+    if (!IsSelectActive) {
+    return;
     }
+    
     if (modus == Lock) {
     return;
     }
+    
     if (event->buttons() == Qt::LeftButton && event->modifiers() == Qt::ControlModifier &&
         mount->txtControl()->editable()) {
     RestoreMoveAction(); 
@@ -635,23 +708,28 @@ void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     EditModus();
     return;
     }
+    
+    
     if (mount->txtControl()->editable()) {
     mount->txtControl()->procesevent(event);
     }
+    
+    
+    
     QGraphicsItem::mouseDoubleClickEvent(event);  
 }
 
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (!isSelected()) {
+    if (!IsSelectActive) {
     return;
     }
     
     if (modus == Lock) {
     return;
     }
-    
-    if (modus == Move) {
+    if (format == DIV_ABSOLUTE) {
+    if (modus == Move ) {
         bool ChangeXY;
         QGraphicsItem::setCursor(Qt::SizeAllCursor);
         /* move from stop xy */
@@ -673,11 +751,14 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
              }
          }
    
-    } else { 
+    } else if ( modus == MoveAll ) { 
         if (!mount->txtControl()->editable()) {
          QGraphicsItem::setCursor(Qt::ClosedHandCursor);  
+         setPos(event->scenePos() - event->lastPos());
+         event->accept();
         }
     }
+   }
     
     ShowInfos();
     
@@ -691,12 +772,13 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::ShowInfos()
 {
-    
-   setToolTip(QString("Layer %1mm x %2mm X=%4 mm Y=%3 mm")
+   
+   QString infoPart = QString("Zindex %1 type %2 ID = %3").arg(zValue()).arg(Ltype()).arg(id);
+   setToolTip(QString("Layer %1mm x %2mm X=%4 mm Y=%3 mm %5")
                                 .arg(ToUnit(wi,"mm"))
                                 .arg(ToUnit(hi,"mm"))
                                 .arg(ToUnit(pos().y(),"mm"))
-                                .arg(ToUnit(pos().x(),"mm"))); 
+                                .arg(ToUnit(pos().x(),"mm")).arg(infoPart)); 
     
 }
 
@@ -705,7 +787,7 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::setCursor(Qt::ArrowCursor);
     QApplication::restoreOverrideCursor();
     
-    if (!isSelected()) {
+    if (!IsSelectActive) {
     return;
     }
     
@@ -713,7 +795,7 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     return;
     }
     
-    if (modus == Move) {
+    if (modus == Move || modus == MoveAll ) {
     modus = Show;
     RestoreMoveAction();
     return;
@@ -740,7 +822,16 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->modifiers() == Qt::ControlModifier  &&  
         modus == Show && !mount->txtControl()->editable()) {
         modus = Move; 
-        setFlag(QGraphicsItem::ItemIsMovable,false);            
+        mount->txtControl()->procesevent(event);            
+        /* start to move item size hi x wi  */
+        return;
+    }
+    
+    if (format == DIV_ABSOLUTE && event->buttons() == Qt::LeftButton && 
+        event->modifiers() == Qt::NoModifier  &&  
+        modus == Show && !mount->txtControl()->editable()) {
+        modus = MoveAll; 
+        mount->txtControl()->procesevent(event);            
         /* start to move item size hi x wi  */
         return;
     }
@@ -867,7 +958,13 @@ RichDoc TextLayer::ReadActualItem()
 
 void TextLayer::setStyle( QStringList syle , bool fromclone )
 {
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    QRectF Srect = sc->sceneRect();
     #define ALPHAHTML(alpha) ((alpha)*254.99999999)
+    format = DIV_AUTO;  /* default go auto and wi from scene rect */
+    wi = Srect.width();
+    setPos(QPointF(0,0));  /* next Y from scene */
+    setZValue(0.);  /* auto default zero */
     QStringList find;
     find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     QMap<QString,QVariant> incss; 

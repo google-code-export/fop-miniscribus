@@ -49,7 +49,7 @@ void Layoutpainter::cursorPosition( const QTextCursor curs )
 		 cursor_position = C_cursor.position();
 	}
 	////////qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor << C_cursor.position();
-	NewCharformat(C_cursor);
+	
 }
 
 void Layoutpainter::undo()
@@ -590,23 +590,7 @@ void Layoutpainter::TXcolor()
 
 
 
-/* wake up new format from current text !!!! */
-void Layoutpainter::NewCharformat( QTextCursor cursor )
-{
-    QTextCursor c = textCursor();
-    QTextCharFormat format = c.charFormat();
-    ////////QTextBlock bf = textCursor().block();
-    QFont f = format.font();
-     ///////////qDebug() << "### Layoutpainter cursor in .........." << f.bold() << " .............................................";
-    actionBold->setChecked( f.bold() );
-    actionItalic->setChecked( f.italic() );
-    actionUnderline->setChecked(f.underline() );
-    MakealignmentChanged(textCursor().block().blockFormat().alignment());
-    ///////actionOverline->setChecked( f.overline() );
-    actionStricktext->setChecked( f.strikeOut() );
-    actionTextColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.foreground().color()));
-    actionBackColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.background().color()));
-}
+
 
 
 void Layoutpainter::MakealignmentChanged(Qt::Alignment a)
