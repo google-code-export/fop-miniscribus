@@ -63,9 +63,16 @@ public:
     dial->setMaximum(360);
     dial->setValue(rotaten);
     gridLayout->addWidget(dial, 1, 0, 1, 1);
-    QObject::connect(dial, SIGNAL(dialMoved(int)),this, SLOT(NewValue(int)));
+    connect(dial, SIGNAL(dialMoved(int)),this, SLOT(NewValue(int)));
   
 }
+
+~Rotater()
+{
+ dial->disconnect(this);
+}
+
+
     QGridLayout *gridLayout;
     QHBoxLayout *hboxLayout;
     QLabel *label;
@@ -87,7 +94,7 @@ void NewValue( const int x )
 
 };
 
-typedef enum {DIV_ABSOLUTE = 50,DIV_AUTO,/* 51 */DIV_FLOAT,/* 52 */DIV_HEADER,DIV_FOOTER} LAYERTYPE;
+
 
 
 
@@ -99,13 +106,15 @@ class TextLayer : public QObject, public QGraphicsItem
    Q_OBJECT 
 
 public:
-    enum CurrentModus{ Show, Edit, Move , Lock };
+    enum CurrentModus{ Show, Edit, Move , MoveAll ,  Lock };
+    enum LAYERTYPE{DIV_ABSOLUTE = 50,DIV_AUTO,/* 51 */DIV_FLOAT,/* 52 */DIV_HEADER,DIV_FOOTER};
     TextLayer(const int layer_id , QGraphicsItem *parent = 0 , QGraphicsScene *scene = 0);
     ~TextLayer();
     QList<QAction *> MainActions();
+    bool editable();
     void setSelected( bool selected );
     void setModus( CurrentModus  e);
-   
+    qreal pointnext();
     QRectF boundingRect() const;
     QTextDocument *document();
     void setDocument ( QTextDocument * document );
@@ -118,7 +127,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     enum { Type = 22 };
     int type() const;
-    LAYERTYPE Ltype() const;
+    int Ltype() const;
     void setStyle( QStringList syle , bool fromclone );
     QTextDocument *_doc;
     bool currentprintrender;
@@ -126,7 +135,6 @@ public:
     wi = w;
     hi = h;
     LayerHightChecks();
-    
     }
 protected:
     RichDoc guiwait;
@@ -165,6 +173,10 @@ private:
     qreal text_width;
     QRectF TextboundingRect;
     QTransform ActualMatrixe( int r );
+signals:
+    void recalcarea();
+    void clonehere();
+    void remid(int);
 public slots:
     void updatearea( const QRectF areas );
     void cursor_wake_up();
@@ -185,6 +197,10 @@ public slots:
     void Copy_Html_Plain();
     void Copy_Text_Plain();
     void copyLayer();
+    void CloneLayer();
+    void Removehere();
+    void seTBack();
+    void seTFront();
 };
 
 Q_DECLARE_METATYPE(TextLayer *)

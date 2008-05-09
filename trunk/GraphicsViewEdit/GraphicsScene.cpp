@@ -75,7 +75,7 @@ bool GraphicsScene::WakeUp( const QPointF incomming )
        /* activate item at top z-index zValue  /  not the down not visible!!!! */
        for (int e=0;e<listing.size();e++) {
            if (listing[e]->zValue() == thebest) {
-             listing[e]->setFlag(QGraphicsItem::ItemIsSelectable);
+             listing[e]->setFlag(QGraphicsItem::ItemIsSelectable,true);
              emit SelectOn(listing[e],thebest);
              return true;
            }
@@ -139,7 +139,7 @@ void GraphicsScene::remid( const int id )
         
         if (listing[o]->data(ObjectNameEditor).toInt() == id) {
             QGraphicsScene::removeItem(listing[o]);  
-            delete listing[o];
+            //////delete listing[o];
         }
     }
     reload();

@@ -146,6 +146,7 @@ public slots:
      void  ImageonCursor( QString file );
      void  InsertImageonCursor();
      void  RegisterImage( SPics e , bool insert );
+     void NewCharformat( QTextCursor cursor );
 };
 
 Q_DECLARE_METATYPE(TextWriter *)

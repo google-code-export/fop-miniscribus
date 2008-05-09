@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = xx
+TARGET = Layeredit
 DEPENDPATH += . include
 INCLUDEPATH += . include
 
@@ -14,7 +14,7 @@ QT += xml
 QT += network
 QT += svg 
 
-CONFIG   += qt warn_off release console
+CONFIG   += qt warn_off release
 LANGUAGE	= C++
 
 MOC_DIR	= build/.moc

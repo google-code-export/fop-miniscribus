@@ -36,6 +36,25 @@ TextWriter::TextWriter(QObject *parent )
 	clipboard = QApplication::clipboard();
 }
 
+/* wake up new format from current text !!!! */
+void TextWriter::NewCharformat( QTextCursor cursor )
+{
+    QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    ////////QTextBlock bf = textCursor().block();
+    QFont f = format.font();
+     ///////////qDebug() << "### Layoutpainter cursor in .........." << f.bold() << " .............................................";
+    actionBold->setChecked( f.bold() );
+    actionItalic->setChecked( f.italic() );
+    actionUnderline->setChecked(f.underline() );
+    MakealignmentChanged(textCursor().block().blockFormat().alignment());
+    ///////actionOverline->setChecked( f.overline() );
+    actionStricktext->setChecked( f.strikeOut() );
+    actionTextColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.foreground().color()));
+    actionBackColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.background().color()));
+}
+
+
 void TextWriter::setDocument ( QTextDocument * document , QObject *parent )
 {
 	bridge = parent;
@@ -92,11 +111,11 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
 																	 QTextImageFormat pico = base.toImageFormat();
 																				if (pico.isValid()) {
 																						const QString hrefadress = pico.name();
-																					  qDebug() << "### hrefadress register " << hrefadress;
+																					  //////qDebug() << "### hrefadress register " << hrefadress;
 																					  QVariant xx = pico.property(_IMAGE_PICS_ITEM_); 
 																					   if (!xx.isNull()) {
                                                 SPics pic = xx.value<SPics>();
-																							  qDebug() << "### TextWriter insert 1 " << pic.name;
+																							  //////////qDebug() << "### TextWriter insert 1 " << pic.name;
 																							  imagemaps.insert(pic.name,pic);
                                              }
 																					
@@ -118,7 +137,7 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
                  while (i.hasNext()) {
                      i.next();
 									    SPics e  = i.value();
-									    qDebug() << "### TextWriter insert 2 addResource " << e.name << e.pix().isNull();
+									   /////////// qDebug() << "### TextWriter insert 2 addResource " << e.name << e.pix().isNull();
 						         _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
 								 }
 						
@@ -160,6 +179,8 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
 				QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
 				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
 				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
+				QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(NewCharformat(QTextCursor) ));
+						
 	      ////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(NewCharformat(QTextCursor) ));
 				//////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ),bridge, SLOT(cursorPositionChanged(QTextCursor) ));
 				QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)),this,SIGNAL(updateRequest(QRectF)));
@@ -861,7 +882,7 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	qDebug() << "### mousePressEvent in ";
+	/////////////qDebug() << "### mousePressEvent in ";
 	lastrect = boundingRect();
 	setCursorPosition(pos);
 	cursortime = true;
@@ -889,7 +910,7 @@ void TextWriter::tmouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPo
 
 void TextWriter::tmouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	qDebug() << "### MouseButtonDblClick 1 ############################################";
+	//////////qDebug() << "### MouseButtonDblClick 1 ############################################";
 	
 	if (button != Qt::LeftButton) {
 		e->ignore();
@@ -1126,6 +1147,12 @@ void TextWriter::insertFromMimeData(const QMimeData *source)
     bool hasData = false;
     QTextDocumentFragment fragment;
 		
+		/* check image */
+		
+		
+		
+		
+		
     if (source->hasFormat(QLatin1String("application/x-qrichtext")) ) {
         // x-qrichtext is always UTF-8 (taken from Qt3 since we don't use it anymore).
         fragment = QTextDocumentFragment::fromHtml(QString::fromUtf8(source->data(QLatin1String("application/x-qrichtext"))), _d );
@@ -1143,7 +1170,7 @@ void TextWriter::insertFromMimeData(const QMimeData *source)
 		
     fragment = QTextDocumentFragment::fromPlainText(source->text());
 		
-		qDebug() << "### insertFromMimeData " << hasData;
+		///////////qDebug() << "### insertFromMimeData " << hasData;
 		
     if (hasData) {
         C_cursor.insertFragment(fragment);
@@ -1161,7 +1188,88 @@ QMimeData *TextWriter::createMimeDataFromSelection() const
 
 QList<QAction *> TextWriter::MainActions()
 {
+	///7 action ! 
+	QList<QAction *> flyactions;
+	                 flyactions.clear();
+
+	  actionUndo = new QAction(tr("&Undo") + ACCEL_KEYL(Z), this);
+    actionUndo->setIcon(QIcon(":/img/undo.png"));
+	  actionUndo->setEnabled(_d->isUndoAvailable());
+	  connect(actionUndo, SIGNAL(triggered()),this,SLOT(undo()));
 	
+	  actionRedo = new QAction(tr("&Undo") + ACCEL_KEYL(Z), this);
+    actionRedo->setIcon(QIcon(":/img/redo.png"));
+	  actionRedo->setEnabled(_d->isRedoAvailable());
+	  connect(actionRedo, SIGNAL(triggered()),this,SLOT(redo()));
+
+		actionBold = new QAction(tr("Bold text CTRL+B"),this);
+    const QIcon icon = QIcon(QString::fromUtf8(":/img/textbold.png"));
+    actionBold->setIcon(icon);
+    actionBold->setCheckable(true);
+	  connect(actionBold, SIGNAL(triggered()),this,SLOT(BoldText()));
+    
+    actionFonts = new QAction(tr("Text Font"),this);
+    const QIcon icon9 = QIcon(QString::fromUtf8(":/img/textpointer.png"));
+    actionFonts->setIcon(icon9);
+	  connect(actionFonts, SIGNAL(triggered()),this,SLOT(FontText()));
+		
+    actionItalic = new QAction(tr("Italic Text CTRL+I"),this);
+    const QIcon icon1 = QIcon(QString::fromUtf8(":/img/textitalic.png"));
+    actionItalic->setIcon(icon1);
+	  actionItalic->setCheckable(true);
+	  connect(actionItalic, SIGNAL(triggered()),this,SLOT(ItalicText()));
+    
+    actionUnderline = new QAction(tr("Text underline CTRL+U"),this);
+    const QIcon icon2 = QIcon(QString::fromUtf8(":/img/textunder.png"));
+    actionUnderline->setIcon(icon2);
+	  actionUnderline->setCheckable(true);
+	  connect(actionUnderline, SIGNAL(triggered()),this,SLOT(UnderlineText()));
+		
+		actionBackColor = new QAction(tr("Text background color"),this);
+    actionBackColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",Qt::white));
+	  connect(actionBackColor, SIGNAL(triggered()),this,SLOT(BGcolor()));
+    
+    actionTextColor = new QAction(tr("Text color"),this);
+    actionTextColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",Qt::black));
+	  connect(actionTextColor, SIGNAL(triggered()),this,SLOT(TXcolor()));
+		
+		actionBlockMargin = new QAction(tr("Block paragraph margin"),this);
+    actionBlockMargin->setIcon(QIcon(QString::fromUtf8(":/img/view_text.png")));
+    connect(actionBlockMargin, SIGNAL(triggered()),this,SLOT(SetTextBlockMargin()));
+		
+		
+		grp = new QActionGroup(this);
+    connect(grp, SIGNAL(triggered(QAction *)), this, SLOT(MaketextAlign(QAction *)));
+    
+    actionAlignLeft = new QAction(QIcon(":/img/textleft.png"), tr("Text align left"),grp);
+    actionAlignLeft->setCheckable(true);
+    actionAlignRight = new QAction(QIcon(":/img/textright.png"), tr("Text align right"),grp);
+    actionAlignRight->setCheckable(true);
+    actionAlignCenter = new QAction(QIcon(":/img/textcenter.png"), tr("Text align center"),grp);
+    actionAlignCenter->setCheckable(true);
+    actionAlignJustify = new QAction(QIcon(":/img/textjustify.png"), tr("Text align Justify"),grp);
+    actionAlignJustify->setCheckable(true);
+		
+		NewCharformat(textCursor());
+		NewCharformat(textCursor());
+		
+		flyactions.append(actionUndo);
+		flyactions.append(actionRedo);
+		flyactions.append(actionBold);
+		flyactions.append(actionItalic);
+		flyactions.append(actionUnderline);
+		flyactions.append(actionFonts);
+		flyactions.append(actionBackColor);
+		flyactions.append(actionTextColor);
+		flyactions.append(actionBlockMargin);
+		
+		flyactions.append(actionAlignLeft);
+		flyactions.append(actionAlignRight);
+		flyactions.append(actionAlignCenter);
+		flyactions.append(actionAlignJustify);
+		
+		
+	  return flyactions;
 }
 
 
@@ -1191,7 +1299,8 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 			   menu->addAction(tablesfo->menuAction()); 
 			   menu->addAction(framefo->menuAction()); 
 			   menu->addSeparator();
-			
+			  
+				 NewCharformat(textCursor());
 			
 			
 			  a = menu->addAction(tr("Cu&t") + ACCEL_KEYL(X), this, SLOT(cut()));

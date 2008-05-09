@@ -258,6 +258,8 @@ public:
 Layoutpainter( QObject *parent );
 ~Layoutpainter();
 QTextCursor textCursor();
+QAction *actionUndo;
+QAction *actionRedo;
 QAction *actionBold;
 QAction *actionItalic;
 QAction *actionUnderline;
@@ -289,7 +291,7 @@ qreal Get_Cell_Width( QTextTableFormat TableFormat , int position );
 signals:
   void updateRequest(QRectF);
 public slots:
- void NewCharformat(QTextCursor cursor);
+ //////////////void NewCharformat(QTextCursor cursor);
  /* on qmenu */
  /* txt op */
  void FontText();
