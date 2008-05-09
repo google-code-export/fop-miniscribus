@@ -166,6 +166,7 @@ private:
     QColor bgcolor;
     QColor bordercolor;
     qreal border;
+    qreal wisub_border;
     qreal wi;
     qreal hi;
     int Rotate;

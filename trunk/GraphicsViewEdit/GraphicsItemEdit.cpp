@@ -32,6 +32,7 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     format(DIV_ABSOLUTE),mount(new TextController)
 {
     mount->q = this;
+    wisub_border = wi + border;
     history.clear();
     id = layer_id;
     setAcceptDrops(true);
@@ -87,6 +88,8 @@ void TextLayer::LayerHightChecks()
     wi = Srect.width();
     }
     
+    wisub_border = wi + border;
+    
     if (Ltype() != DIV_ABSOLUTE) {
         qreal txthight = mount->txtControl()->boundingRect().height() + 5;
         if (txthight > hi) {
@@ -99,6 +102,19 @@ void TextLayer::LayerHightChecks()
         rootformats.setWidth(wi);
         Tframe->setFrameFormat(rootformats);
         document()->setPageSize(QSizeF(wi,hi));
+    
+        if ( rootformats.topMargin() < border ) {
+        border = 0;    
+        }
+        if (rootformats.bottomMargin() < border) {
+        border = 0;
+        }
+            
+    
+    
+    
+    
+    
 }
 
 
@@ -529,16 +545,19 @@ void TextLayer::read()
 
 void TextLayer::updatearea( const QRectF areas )
 {
-    if (format != DIV_ABSOLUTE) {
-    setFlag(QGraphicsItem::ItemIsMovable,false);
-    emit recalcarea();
-    }
+    
     
     const qreal limits = boundingRect().width() + 20;
     if (areas.width() > limits) {
     return;
     }
     evesum++;
+    
+    if (format != DIV_ABSOLUTE) {
+    emit recalcarea();
+    }
+    
+    
     //////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
     ///////////qDebug() << "### area top left " << areas.topLeft();
     update(areas);
@@ -555,6 +574,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED(widget);
     bool canedit = mount->txtControl()->editable();
+    wisub_border = wi + border;
     
      /* Layer Background draw! */
 		qreal hightlengh =  mount->txtControl()->boundingRect().height();
@@ -574,7 +594,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     
     QPen BorderPaint;
     if (border > 0) {
-        BorderPaint = QPen(QBrush(bordercolor),border);
+        BorderPaint = QPen(QBrush(bordercolor),border,Qt::SolidLine,Qt::SquareCap,Qt::MiterJoin);
     } else {
         BorderPaint = QPen(Qt::NoPen);
     }

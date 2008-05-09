@@ -215,8 +215,9 @@ void TextWriter::paint_doc(  QPainter * painter ,
                          const QRectF fulllayer , QPen BorderFiller ,
                          bool currentprintrender )
 {
-	
+	  bool makeborder = false;
 	  qreal borderWWI = 0.;
+	  qreal halfborder;
 	
 	  const QColor backcolor = BGpage.color();
     const QColor contrastbackcolor(
@@ -227,39 +228,32 @@ void TextWriter::paint_doc(  QPainter * painter ,
 	
 	         if (BorderFiller.widthF() > 0) {
            borderWWI	= BorderFiller.widthF();
+					 halfborder =  borderWWI / 2;
 					 }
 					 
-		QPen line_pen(QBrush(Qt::red),1,Qt::DotLine,Qt::RoundCap);
-					 
+		
+		QPen line_pen(QBrush(Qt::red),1,Qt::DotLine,Qt::RoundCap);		 
 	  painter->save();
+		if (halfborder > 1.1) {	
+    painter->setPen(Qt::NoPen);
+		makeborder = true;
+		} else {			
 		painter->setPen(BorderFiller);
+		}		 
 		painter->setBrush(BGpage);
 		painter->drawRect(fulllayer);
 		painter->restore();
-					 
 	  painter->save();
-	
 		
-	 
 	  /* rect from frame root QTextDocument*/
 	  const  QRectF doc_rect = boundingRect();
-		QRectF Docrect = boundingRect(); //////_d->documentLayout()->frameBoundingRect(_d->rootFrame());
-    QRectF BorderCorrects(borderWWI,borderWWI,Docrect.width() - ( borderWWI * 2),Docrect.height() - ( borderWWI * 2) ); 
-					 
-					 if (borderWWI < 1) {
-						 BorderCorrects = boundingRect();
-					 }
-					 
-					 
 		QColor BackHightlight("#a6ffc7");
 					 BackHightlight.setAlpha(140);
 		QAbstractTextDocumentLayout::PaintContext CTX;    
 		CTX.selections;
-		
-		 if (BorderCorrects.isValid()) {
-					painter->setClipRect(BorderCorrects, Qt::IntersectClip);
-					CTX.clip = BorderCorrects;
-		 }
+		painter->setClipRect(fulllayer, Qt::IntersectClip);
+		CTX.clip = doc_rect;
+	
 		 
 		CTX.palette.setColor(QPalette::Highlight,BackHightlight);
 		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
@@ -285,19 +279,37 @@ void TextWriter::paint_doc(  QPainter * painter ,
     _d->documentLayout()->draw(painter,CTX);
 		painter->restore();
 				
+			if (makeborder) {
+				/* draw dick border  BorderFiller.brush()  width()  height() */
+				QRectF smalit = fulllayer;
+				       smalit.setWidth(  fulllayer.width() - halfborder  );
+				       smalit.setHeight ( fulllayer.height() - halfborder  );
+				       smalit.setTopLeft(QPointF(halfborder,halfborder));
+				painter->save();
+				painter->setPen(BorderFiller);
+				painter->setBrush(Qt::NoBrush);
+				painter->drawRect(smalit);
+				painter->restore();
+			}
+				
+				
+				
+				
+				
+				
+				
+				
+				
 			if (editable() && !currentprintrender ) {  /* writteln modus icon */
 				QPixmap pixbg(":/img/icon.png");
 				painter->save();
 				painter->drawPixmap(QPointF(fulllayer.width() - 40,8),pixbg);
-				
-				/* left border from active paragraph */
-				
-				//////if (!CursorDrawLine.isNull()) {
-				///////painter->setPen(line_pen);
-				////////painter->drawLine(CursorDrawLine);
-				//////////}
 				painter->restore();
 			}
+			
+			
+			
+			
 			
 			//////////////painter->save();
 			/////////painter->setBrush(QBrush(Qt::white));
@@ -552,6 +564,8 @@ void TextWriter::tkeyPressEvent(QKeyEvent *e)
 		if (C_cursor.isNull())  {
 			return;
 		}
+		QTextCharFormat format = C_cursor.charFormat();
+		
 		bool navigatelink = false;
 		
 		
@@ -572,21 +586,34 @@ void TextWriter::tkeyPressEvent(QKeyEvent *e)
 #endif
 		
 		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_B) {
-            e->accept();
-			//////////qDebug() << "### a BoldText / BoldText " << textCursor().position();
-            BoldText();
+						format.setFontWeight(!format.font().bold()  ? QFont::Bold : QFont::Normal);
+						C_cursor.setCharFormat(format);
+						e->accept();
+						repaintCursor();
 						return;
 		}
 		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_I) {
+			      format.setFontItalic(!format.font().italic() ? true : false );
+			      C_cursor.setCharFormat(format);
             e->accept();
-            ItalicText();
+            repaintCursor();
 						return;
 		}
 		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_U) {
+            format.setUnderlineStyle(!format.font().underline() ? QTextCharFormat::SingleUnderline : QTextCharFormat::NoUnderline );
+			      C_cursor.setCharFormat(format);
             e->accept();
-            UnderlineText();
+            repaintCursor();
 						return;
 		}
+		
+		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_H) {
+            C_cursor.insertFragment(QTextDocumentFragment::fromHtml("<hr>"));
+            e->accept();
+            repaintCursor();
+						return;
+		}
+		
 		if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Z) {
             e->accept();
             undo();

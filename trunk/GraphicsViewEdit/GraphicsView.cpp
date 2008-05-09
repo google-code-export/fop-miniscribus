@@ -62,7 +62,7 @@ void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 
 	
 	
-	menu->exec(e->pos());
+	menu->exec(QCursor::pos());
 	delete menu;
 }
 
