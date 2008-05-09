@@ -281,16 +281,26 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
 void TextLayer::seTBack()
 {
+    qreal minimums = 0.0;
+    if (format == DIV_ABSOLUTE ) {
+      minimums = 1.0;  
+    }
+    
     GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    qreal backs = qBound(0.01,sc->zmin() - 1,1000.00);
+    qreal backs = qBound(minimums,sc->zmin() - 1,1000.00);
     setZValue(backs);
     update();
     
 }
 void TextLayer::seTFront()
 {
+     qreal minimums = 0.0;
+    if (format == DIV_ABSOLUTE ) {
+      minimums = 1.0;  
+    }
+    
     GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    qreal top = qBound(0.01,sc->zmax() - 1,1000.00);
+    qreal top = qBound(minimums,sc->zmax() - 1,1000.00);
     setZValue(top); 
     update();
 }
