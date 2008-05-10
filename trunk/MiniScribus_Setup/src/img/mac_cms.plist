@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+        <dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pcms</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>zzz.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>applications/pi.cms</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Text File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+            <key>LSIsAppleDefaultForType</key>
+			<true/>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>Pcms</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Pcms 1.4,  2007 -  PPK-Webprogramm dev on qt4.2</string>
+	<key>CFBundleIconFile</key>
+	<string>zzz.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>pcms.ciz.ch</string>
+	<key>CFBundleName</key>
+	<string>Pcms</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.4</string>
+	<key>CFBundleSignature</key>
+	<string>!Rch</string>
+</dict>
+</plist>
