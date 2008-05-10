@@ -87,6 +87,8 @@
 
 #include "DataStructures.h"
 #include "getmargin.h"
+#include "table_setting.h"
+
 
 
 class FrameStyler : public QWidget
@@ -313,7 +315,7 @@ public slots:
  void FosInsertFrame();
 
  void MaketableColorBG();
- void MaketableBorder();
+ ///////void MaketableBorder();
  void CreateanewTable();
  void SetTableCellColor();
  void AppendTableCools();
@@ -324,6 +326,7 @@ public slots:
  void SetColumLarge();
  void SetFrameBGColor();
  void SetFrameMargin();
+ void MakeTableFormat();
 
 };
 

@@ -151,12 +151,13 @@ QMenu *Layoutpainter::TableMenu( QWidget * inparent )
     MenuTables->setIcon(QIcon(QString::fromUtf8(":/img/newtodo.png")));
     QAction *a;
     a = MenuTables->addAction(tr("Insert new Table"), this, SLOT(CreateanewTable()));
-    a->setIcon(QIcon(QString::fromUtf8(":/img/newtodo.png")));
+    a->setIcon(QIcon(QString::fromUtf8(":/img/table.png")));
     
     if (textCursor().currentTable()) {
         
         
-        a = MenuTables->addAction(tr("Table border"), this, SLOT(MaketableBorder()));
+        a = MenuTables->addAction(tr("Table format"), this, SLOT(MakeTableFormat()));
+        a->setIcon(QIcon(QString::fromUtf8(":/img/table.png")));
     
         
         a = MenuTables->addAction(tr("Table background color"), this, SLOT(MaketableColorBG()));
@@ -452,17 +453,18 @@ void Layoutpainter::MaketableColorBG()
     }
 }
 
-void Layoutpainter::MaketableBorder()
+void Layoutpainter::MakeTableFormat()
 {
     if (!textCursor().currentTable()) { 
        return; 
     }
-    bool ok;
-    int i = QInputDialog::getInteger(0, tr("Table Border"),tr("Pt units:"), 0, 0, 10, 1, &ok);
     
-       QTextTableFormat taform = textCursor().currentTable()->format(); 
-       taform.setBorder(i);
-       textCursor().currentTable()->setFormat(taform);
+                Table_Setting::self(0)->SetFormat(textCursor().currentTable());
+                const int xx = Table_Setting::self(0)->exec();
+                QTextTableFormat newformine = Table_Setting::self(0)->GetNewFormats();
+                if (newformine.isValid() && xx == 1) {
+                    textCursor().currentTable()->setFormat(newformine);
+                }
 }
 
 
