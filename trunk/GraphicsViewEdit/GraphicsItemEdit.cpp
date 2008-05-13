@@ -71,6 +71,7 @@ bool TextLayer::sceneEvent(QEvent *event)
         QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
         if (Canedit) {
         qDebug() << "### lascia 1 ";
+        mount->txtControl()->setCursorPosition(e->pos());
         mount->txtControl()->insertFromMime(e->mimeData());
         qDebug() << "### lascia 0 ";
         }
