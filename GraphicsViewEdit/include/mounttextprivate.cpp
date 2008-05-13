@@ -769,6 +769,20 @@ void TextWriter::procesevent( QEvent *e )
 	
 	   switch (e->type()) {
 			 
+					case QEvent::GraphicsSceneDrop: {
+						if (edit_enable) { 
+						             QGraphicsSceneDragDropEvent *ed = static_cast<QGraphicsSceneDragDropEvent *>(e);
+							           ClearSelections();
+							           repaintCursor();
+                         setBlinkingCursorEnabled(true);
+                         setCursorPosition(ed->pos());
+												 insertFromMime(ed->mimeData());
+							           repaintCursor();
+							
+						return;
+						}
+					break; }
+			 
 			    case QEvent::GraphicsSceneMouseMove: {
 						if (edit_enable) { 
 						QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
@@ -839,7 +853,7 @@ QTextTableCell TextWriter::OnPosition( const int posi )
 
 void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	  const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit);
+	  const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit) + 1;
 	  const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
 	  const int stopat = qMax(StartSelectionMouse,cursorPos); 
 		const int startat = qMin(StartSelectionMouse,cursorPos);
@@ -906,6 +920,7 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 			}
 		}
 }
+
 
 
 

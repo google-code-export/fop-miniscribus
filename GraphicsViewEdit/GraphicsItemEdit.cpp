@@ -70,17 +70,17 @@ bool TextLayer::sceneEvent(QEvent *event)
         bool Canedit = mount->txtControl()->editable();
         QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
         if (Canedit) {
-        mount->txtControl()->insertFromMime(e->mimeData());
-        /////////qDebug() << "### lascia ";
+        qDebug() << "### lascia 1 ";
+        mount->txtControl()->procesevent(e); 
+        qDebug() << "### lascia 0 ";
         }
-        
     } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
-        ///////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        ////qDebug() << "### muove ";
+        ///////QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
+        qDebug() << "### muove ";
         
     } else if (event->type() == QEvent::DragEnter ) {
         ////////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        //////qDebug() << "### entra ";
+        qDebug() << "### entra ";
     }
     
     
@@ -584,12 +584,7 @@ void TextLayer::updatearea( const QRectF areas )
     return;
     }
     evesum++;
-    
-    if (format != DIV_ABSOLUTE) {
     emit recalcarea();
-    }
-    
-    
     //////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
     ///////////qDebug() << "### area top left " << areas.topLeft();
     update(areas);
@@ -875,6 +870,8 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
     return;
     }
     
+    bool cursordrag = textCursor().hasSelection();
+    
     if (format == DIV_ABSOLUTE && event->buttons() == Qt::LeftButton && 
         event->modifiers() == Qt::ControlModifier  &&  
         modus == Show && !mount->txtControl()->editable()) {
@@ -892,8 +889,48 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
         /* start to move item size hi x wi  */
         return;
     }
-    mount->txtControl()->procesevent(event);
-    QGraphicsItem::mousePressEvent(event); 
+    
+    if ( cursordrag && mount->txtControl()->editable() ) {
+        qDebug() << "### ipotesi drag  ";
+        QMimeData *DDmime = mount->txtControl()->createMimeDataFromSelection();
+        QApplication::clipboard()->setMimeData(DDmime);
+        
+        QStringList dli = DDmime->formats();
+        bool imageDD = false;
+        QPixmap ddpic;
+        QMimeData *mimeData = new QMimeData;
+        qDebug() << "### dli  " << dli;
+        if (dli.contains("text/html") )  {
+        mimeData->setData("text/html",DDmime->data("text/html"));
+        } else if (dli.contains("application/x-picslists")) {
+            
+            QByteArray dd = DDmime->data("application/x-picslists"); 
+            QList<SPics> li = OpenImageGroup(QString(dd));
+            SPics primoi = li.first();
+            ddpic = primoi.pix();
+            
+        mimeData->setData("application/x-picslists",dd);
+        imageDD = true;;
+        }  else {
+        mount->txtControl()->procesevent(event);
+        return;
+        }  
+
+        /* launch drag */   
+        QDrag *drag = new QDrag(event->widget());
+        drag->setMimeData(mimeData); 
+        if (imageDD) {
+         drag->setPixmap(ddpic);   
+        }
+        if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
+                      
+        }  
+    } else {
+        mount->txtControl()->procesevent(event);
+        QGraphicsItem::mousePressEvent(event);  
+    }
+
+   
 }
 
 void TextLayer::keyPressEvent( QKeyEvent * event ) 
