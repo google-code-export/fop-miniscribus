@@ -71,7 +71,7 @@ bool TextLayer::sceneEvent(QEvent *event)
         QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
         if (Canedit) {
         qDebug() << "### lascia 1 ";
-        mount->txtControl()->procesevent(e); 
+        mount->txtControl()->insertFromMime(e->mimeData());
         qDebug() << "### lascia 0 ";
         }
     } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
@@ -890,47 +890,7 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
     
-    if ( cursordrag && mount->txtControl()->editable() ) {
-        qDebug() << "### ipotesi drag  ";
-        QMimeData *DDmime = mount->txtControl()->createMimeDataFromSelection();
-        QApplication::clipboard()->setMimeData(DDmime);
-        
-        QStringList dli = DDmime->formats();
-        bool imageDD = false;
-        QPixmap ddpic;
-        QMimeData *mimeData = new QMimeData;
-        qDebug() << "### dli  " << dli;
-        if (dli.contains("text/html") )  {
-        mimeData->setData("text/html",DDmime->data("text/html"));
-        } else if (dli.contains("application/x-picslists")) {
-            
-            QByteArray dd = DDmime->data("application/x-picslists"); 
-            QList<SPics> li = OpenImageGroup(QString(dd));
-            SPics primoi = li.first();
-            ddpic = primoi.pix();
-            
-        mimeData->setData("application/x-picslists",dd);
-        imageDD = true;;
-        }  else {
-        mount->txtControl()->procesevent(event);
-        return;
-        }  
-
-        /* launch drag */   
-        QDrag *drag = new QDrag(event->widget());
-        drag->setMimeData(mimeData); 
-        if (imageDD) {
-         drag->setPixmap(ddpic);   
-        }
-        if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
-                      
-        }  
-    } else {
-        mount->txtControl()->procesevent(event);
-        QGraphicsItem::mousePressEvent(event);  
-    }
-
-   
+    mount->txtControl()->procesevent(event);
 }
 
 void TextLayer::keyPressEvent( QKeyEvent * event ) 

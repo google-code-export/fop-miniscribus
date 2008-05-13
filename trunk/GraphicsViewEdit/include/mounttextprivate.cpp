@@ -769,19 +769,7 @@ void TextWriter::procesevent( QEvent *e )
 	
 	   switch (e->type()) {
 			 
-					case QEvent::GraphicsSceneDrop: {
-						if (edit_enable) { 
-						             QGraphicsSceneDragDropEvent *ed = static_cast<QGraphicsSceneDragDropEvent *>(e);
-							           ClearSelections();
-							           repaintCursor();
-                         setBlinkingCursorEnabled(true);
-                         setCursorPosition(ed->pos());
-												 insertFromMime(ed->mimeData());
-							           repaintCursor();
-							
-						return;
-						}
-					break; }
+			
 			 
 			    case QEvent::GraphicsSceneMouseMove: {
 						if (edit_enable) { 
