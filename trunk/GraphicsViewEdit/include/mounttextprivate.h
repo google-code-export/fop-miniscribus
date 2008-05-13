@@ -74,6 +74,7 @@ public:
     inline QMap<QString,SPics> imglist() { return imagemaps; }
     void insertFromMime( const QMimeData * source );  /* insert extra elements */
     void insertPixmap( QPixmap p );   /* mime data + insert special build icons or text !!! */
+    QMimeData *createMimeDataFromSelection() const;
 private:
     QSettings setter;
     void GrepCursorData();
@@ -116,7 +117,7 @@ private:
     QAbstractTextDocumentLayout *_layout_1;
     bool cursorIsFocusIndicator;
     
-QMimeData *createMimeDataFromSelection() const;
+
 void insertFromMimeData(const QMimeData *source);
 
     
