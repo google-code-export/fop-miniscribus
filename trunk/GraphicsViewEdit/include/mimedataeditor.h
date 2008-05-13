@@ -88,7 +88,46 @@
 #include "getmargin.h"
 #include "table_setting.h"
 
+#include <QHttp>
+#include <QThread>
 
+class LoadGetImage : public QHttp
+{
+    Q_OBJECT
+//
+public: 
+     LoadGetImage( int nr , QUrl url_send );
+     void Start();
+     inline int Get_id() { return cid; }
+     inline int Htpp_id() { return Http_id; } 
+     inline QPixmap pics() { return resultimage; } 
+     int cid;
+     int Http_id;
+    QHttpRequestHeader header;
+    QUrl url;
+    QPixmap resultimage;
+    signals:
+      void take(int);
+    public slots:
+     void ImageReady( bool error );
+};
+
+
+class Gloader : public QThread
+{
+    Q_OBJECT
+     
+public:
+  void Setting( QObject *parent , int id , QUrl url_send ); 
+protected:
+  void run();
+  signals:
+private:
+    int cid;
+    QUrl url;
+    LoadGetImage *Rhttp;
+    QObject* receiver;
+};
 
 class FrameStyler : public QWidget
 {

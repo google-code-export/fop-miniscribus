@@ -72,6 +72,8 @@ public:
     void ClearSelections();
     void RegisterResource( QMap<QString,SPics> list );
     inline QMap<QString,SPics> imglist() { return imagemaps; }
+    void insertFromMime( const QMimeData * source );  /* insert extra elements */
+    void insertPixmap( QPixmap p );   /* mime data + insert special build icons or text !!! */
 private:
     QSettings setter;
     void GrepCursorData();
@@ -116,6 +118,8 @@ private:
     
 QMimeData *createMimeDataFromSelection() const;
 void insertFromMimeData(const QMimeData *source);
+
+    
     
     /* events */
 void setCursorPosition(const QPointF &pos);
@@ -147,6 +151,7 @@ public slots:
      void  InsertImageonCursor();
      void  RegisterImage( SPics e , bool insert );
      void NewCharformat( QTextCursor cursor );
+     void in_image( int id );  /* remote image from http */
 };
 
 Q_DECLARE_METATYPE(TextWriter *)

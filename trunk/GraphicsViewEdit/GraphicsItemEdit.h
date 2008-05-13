@@ -28,6 +28,8 @@
 #include <QGraphicsItem>
 #include <QSharedData>
 #include "GraphicsScene.h"
+#define _SET_SELECTION_BY_SCENE_ 0
+
 
 class Rotater : public QWidget
 {

@@ -498,6 +498,9 @@ void TextWriter::copy()
     if (!C_cursor.hasSelection()) {
 	    return;
 		}
+		
+		/* test if a image !!!! */
+		
     QMimeData *data = createMimeDataFromSelection();
     QApplication::clipboard()->setMimeData(data);
 }
@@ -1176,7 +1179,12 @@ void TextWriter::insertFromMimeData(const QMimeData *source)
 		
 		/* check image */
 		
-		
+		if ( source->hasImage() || source->hasFormat(QLatin1String("application/x-picslists")) ) {
+			  insertFromMime(source);  /* image handler */
+			  ClearSelections();
+        repaintCursor(true);
+			 return;
+		}
 		
 		
 		
@@ -1209,8 +1217,31 @@ void TextWriter::insertFromMimeData(const QMimeData *source)
 
 QMimeData *TextWriter::createMimeDataFromSelection() const
 {
-    const QTextDocumentFragment fragment(C_cursor);
-    return new QTextEditMimeData(fragment);    /////QTextDocumentFragment::fromHtml(md->html())
+	 QTextCharFormat base = C_cursor.charFormat();
+	 QTextImageFormat pico = base.toImageFormat(); 
+	 if (pico.isValid()) { 
+		           QVariant xx = pico.property(_IMAGE_PICS_ITEM_); 
+		           if (!xx.isNull()) {
+								   SPics pic = xx.value<SPics>();
+								   QList<SPics> li;
+								                li.append(pic);
+								   QString Sdd = SaveImageGroup(li);
+								   QMimeData *mimeData = new QMimeData;
+                   mimeData->setData("application/x-picslists",Sdd.toUtf8());
+								   return mimeData;
+							 }
+							 
+				     const QString hrefadress = pico.name();
+				      /* grab pixmap */
+				     /////QVariant x2 = _d->loadResource(QTextDocument::ImageResource,QUrl(hrefadress));
+            /////if (!x2.isNull()) {
+               //// QMimeData *mimeData = new QMimeData;
+							 //// mimeData->setImageData(x2);
+							  /////return mimeData;
+						 /////}
+	 }
+	const QTextDocumentFragment fragment(C_cursor);
+	return new QTextEditMimeData(fragment);    /////QTextDocumentFragment::fromHtml(md->html())
 }
 
 QList<QAction *> TextWriter::MainActions()
@@ -1487,15 +1518,19 @@ void  TextWriter::ImageonCursor( QString file )
 void  TextWriter::RegisterImage( SPics e , bool insert )
 {
     QApplication::restoreOverrideCursor();
+	  SPics base;
+	
     bool ok;
-    QString txtinfo = QInputDialog::getText(0, tr("Image Description to blind people."),tr("Description:"), QLineEdit::Normal,e.name, &ok);
-    if (txtinfo.size() > 0) {
-    e.info = txtinfo.left(110);
-    }
-		/////////  QMap<QString,SPics> imagemaps;
+	  if (e.info == base.info) {
+       QString txtinfo = QInputDialog::getText(0, tr("Image Description to blind people."),tr("Description:"), QLineEdit::Normal,e.name, &ok);
+       if (txtinfo.size() > 0) {
+       e.info = txtinfo.left(110);
+       }
+	  } else {
+			/* having desc  !!!  */
+		}
     imagemaps.insert(e.name,e);
     _d->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
-		
     if (insert) {
         QTextImageFormat format;
         format.setName( e.name );
@@ -1505,8 +1540,134 @@ void  TextWriter::RegisterImage( SPics e , bool insert )
         format.setProperty(_IMAGE_PICS_ITEM_,e);
         textCursor().insertImage( format );
     }
+}
+
+
+
+
+
+void TextWriter::insertPixmap( QPixmap p )
+{
+        QPixmap scaledsimage;
+        QTextFrame  *Tframe = _d->rootFrame();
+        QTextFrameFormat rootformat= Tframe->frameFormat();
+				const int margininside = rootformat.leftMargin() + rootformat.rightMargin() + rootformat.padding();
+        int limitwiimage = _MAXIEDITWI_;
+    
+				 if (limitwiimage > boundingRect().width()) {
+					  limitwiimage = boundingRect().width() - margininside ;
+				 }
+         
+         if (p.width() > limitwiimage) {
+             /* question widht */
+					   bool ok;
+             int iw = QInputDialog::getInteger(0, tr("Image to width in layer dimension!"),
+                                      tr("Point:"), limitwiimage, 20, limitwiimage, 1, &ok);
+					if (iw > 0 && ok) {
+						scaledsimage = p.scaledToWidth( iw );
+					} else {
+					return;
+					}
+          
+          
+        } else {
+           scaledsimage = p; 
+        }
+        
+         QByteArray bytes;
+         QBuffer buffer(&bytes);
+         buffer.open(QIODevice::WriteOnly);
+         if (_DRAWMODUS_WEB_ == 1) {
+				 scaledsimage.save(&buffer,"JPG",70);
+				 } else {
+         scaledsimage.save(&buffer,"PNG",100);
+				 }
+        
+         QDateTime timer1( QDateTime::currentDateTime() );
+         const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
+				
+         if (!scaledsimage.isNull()) {
+         const QString nami = Imagename(TimestampsMs);
+         SPics  xpix;
+         xpix.name = nami;
+				 if (_DRAWMODUS_WEB_ == 1) {
+				 xpix.extension = QByteArray("JPG");
+				 } else {
+         xpix.extension = QByteArray("PNG");
+				 }
+				 /* bytes having data images */
+				 xpix.set_pics(scaledsimage);
+				 RegisterImage(xpix,true);
+			   }
+}
+
+void TextWriter::in_image( int id )
+{
+	   QApplication::restoreOverrideCursor();
+	   LoadGetImage *ht = qobject_cast<LoadGetImage *>(sender());
+	   QPixmap  imagen = ht->pics();
+	   insertPixmap(imagen);
+}
+
+
+void TextWriter::insertFromMime( const QMimeData * source )
+{
+	
+	  if ( source->formats().contains("application/x-picslists") ) {
+			 QByteArray dd = source->data("application/x-picslists"); 
+			 QList<SPics> li = OpenImageGroup(QString(dd));
+			      for (int i=0; i<li.size(); i++) {
+                 SPics conni = li[i];
+							   RegisterImage(conni,true);
+             }
+			return;
+		}
+	
+    if ( source->hasImage() ) {
+         QDateTime timer1( QDateTime::currentDateTime() );
+         const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
+         QPixmap aspixmape = qvariant_cast<QPixmap>(source->imageData());
+                if (!aspixmape.isNull()) {
+                insertPixmap(aspixmape);
+                }
+         return;
+    }
+    /* external html  */
+
+    if ( source->formats().contains("text/html") ) {
+         QString draghtml = source->html();
+         QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(draghtml);
+         textCursor().insertFragment(fragment);
+         return;
+    }
+    /* external plain text incomming   */
+      if ( source->hasText() )  {
+        textCursor().insertText(source->text());
+        return;
+      }
+      if ( source->hasUrls() )  {
+          QList<QUrl> urls = source->urls();
+          for ( int i = 0; i < urls.size(); ++i ) { 
+          QUrl gettyurl(urls.at(i));
+				  qDebug() << "### gettyurl " << gettyurl.toString();
+              if (gettyurl.scheme() == "file") {
+                  ImageonCursor(gettyurl.toLocalFile()); 
+              } else if (gettyurl.scheme() == "http") {
+                            Gloader *grephttp = new Gloader();
+							              grephttp->Setting(this,i,gettyurl); 
+							              grephttp->start(QThread::LowPriority);
+                  
+              }
+              
+          }
+         
+        return;          
+      }
+    
     
 }
+
+
 
 
 
