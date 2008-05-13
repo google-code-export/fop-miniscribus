@@ -75,6 +75,7 @@ public:
     void insertFromMime( const QMimeData * source );  /* insert extra elements */
     void insertPixmap( QPixmap p );   /* mime data + insert special build icons or text !!! */
     QMimeData *createMimeDataFromSelection() const;
+    void setCursorPosition(const QPointF &pos);
 private:
     QSettings setter;
     void GrepCursorData();
@@ -123,7 +124,7 @@ void insertFromMimeData(const QMimeData *source);
     
     
     /* events */
-void setCursorPosition(const QPointF &pos);
+
 void repaintCursor( bool allrect = false );  
 void timerEvent(QTimerEvent *event);
 bool cursorMoveKeyEvent(QKeyEvent *e);
