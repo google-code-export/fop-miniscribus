@@ -56,6 +56,38 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     init();
 }
 
+bool TextLayer::sceneEvent(QEvent *event)
+{
+    evesum++;
+    if (_SET_SELECTION_BY_SCENE_ !=1) {
+    setSelected(true); 
+    } else {
+    ////////scenemake job select by zvalue > 
+    }
+    /* drag here */
+    
+    if ( event->type() == QEvent::GraphicsSceneDrop) {
+        bool Canedit = mount->txtControl()->editable();
+        QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
+        if (Canedit) {
+        mount->txtControl()->insertFromMime(e->mimeData());
+        /////////qDebug() << "### lascia ";
+        }
+        
+    } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
+        ///////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
+        ////qDebug() << "### muove ";
+        
+    } else if (event->type() == QEvent::DragEnter ) {
+        ////////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
+        //////qDebug() << "### entra ";
+    }
+    
+    
+    return QGraphicsItem::sceneEvent(event);
+}
+
+
 QList<QAction *> TextLayer::MainActions()
 {
    return mount->txtControl()->MainActions();
@@ -632,12 +664,7 @@ QTransform TextLayer::ActualMatrixe( int r )
 }
 
 
-bool TextLayer::sceneEvent(QEvent *event)
-{
-    evesum++;
-    setSelected(true);
-    return QGraphicsItem::sceneEvent(event);
-}
+
 
 bool TextLayer::contains(const QPointF &point) const
 {
