@@ -248,12 +248,12 @@ inline QString SaveImageGroup( QList<SPics> li  )
 	ds << (quint32)SPics::MAGICNUMBER;
 	ds << (quint32)SPics::VERSION;
 	/* place header */
-             QApplication::setOverrideCursor(Qt::WaitCursor);
+             ///////QApplication::setOverrideCursor(Qt::WaitCursor);
              for (int i=0; i<li.size(); i++) {
                  SPics conni = li[i];
                  ds << conni;
              }   
-             QApplication::restoreOverrideCursor();
+             //////QApplication::restoreOverrideCursor();
 	buffer.close();
 	return bytes.toBase64();
 }
@@ -289,12 +289,10 @@ inline QList<SPics> OpenImageGroup( const QString datastream_base64   )
 	}
   SPics appoint;
 	/* place header */
-  QApplication::setOverrideCursor(Qt::WaitCursor);
     while (!ds.atEnd()) {
          ds >> appoint;
          li.append(appoint);
     }
-   QApplication::restoreOverrideCursor();
 	buffer.close();
 	return li;
 }
