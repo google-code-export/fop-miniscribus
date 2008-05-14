@@ -926,7 +926,7 @@ QPixmap TextWriter::PicfromMime( QMimeData *mime )
 	QStringList dli = mime->formats();
 	if (dli.contains("application/x-picslists")) {
 		        QByteArray dd = mime->data("application/x-picslists"); 
-            QList<SPics> li = OpenImageGroup(QString(dd));
+            QList<SPics> li = OpenImageGroup(QString(dd.data()));
 		        if (li.size() > 0) {
             SPics primoi = li.first();
             return primoi.pix();
@@ -935,10 +935,17 @@ QPixmap TextWriter::PicfromMime( QMimeData *mime )
 	}
 	
 	if (dli.contains("text/html")) {
-		
 		QByteArray dd = mime->data("text/html"); 
 		QTextDocument *picdoc = new QTextDocument();
-		picdoc->setHtml ( QString(dd) );
+		picdoc->setHtml ( QString(dd.data()) );
+		
+		           QMapIterator<QString,SPics> i(imglist());
+                 while (i.hasNext()) {
+                     i.next();
+									    SPics e  = i.value();
+						         picdoc->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
+								 }
+		
 		
 		    QTextFrame  *Tframe = picdoc->rootFrame();
 				QTextFrameFormat rootformats = Tframe->frameFormat();
@@ -953,6 +960,7 @@ QPixmap TextWriter::PicfromMime( QMimeData *mime )
 		    QAbstractTextDocumentLayout *Layout = picdoc->documentLayout();
 	      QRectF docirec = Layout->frameBoundingRect(picdoc->rootFrame()); 
 		    QPixmap PicsDocument(docirec.size().toSize());
+				PicsDocument.fill(Qt::white);
 		    QRectF clip(0, 0,PicsDocument.width(),PicsDocument.height());
 				QPainter *p = new QPainter(&PicsDocument);
         p->setRenderHint(QPainter::Antialiasing, true);
@@ -970,7 +978,6 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 {
 	///////////qDebug() << "### mousePressEvent in ";
 	///////qDebug() << "### Press drag   " << DragFill << " mouse selection " << C_cursor.hasSelection();
-	
 	if (C_cursor.hasSelection() && modifiers == Qt::AltModifier && edit_enable) {
 							   DragFill = true;
 		             cursortime = false;
@@ -982,13 +989,12 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 		             QDrag *drag = new QDrag(Fevent);
                  drag->setMimeData(DDmime); 
 		             if (!ddpic.isNull()) {
-                 drag->setPixmap(ddpic);   
+                 drag->setPixmap(ddpic); 
+                 	delete &ddpic;								 
                  }
 								 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
 								 return;
-                 } 
-		
-		
+                 }
 		
 	} else {
 		setCursorPosition(pos);
