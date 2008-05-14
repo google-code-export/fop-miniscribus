@@ -51,10 +51,13 @@ void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 	
 	QAction *a;
 	QMenu *menu = new QMenu(this);
+	
+	a = menu->addAction(tr("New flow text Layer"), this, SLOT(NewLayer()));
+	a->setData(51);
+	
 	a = menu->addAction(tr("New absolute Layer"), this, SLOT(NewLayer()));
 	a->setData(50);
-	a = menu->addAction(tr("New Auto format Layer"), this, SLOT(NewLayer()));
-	a->setData(51);
+	
 	
 	a = menu->addAction(tr("Paste Layer from clipboard"), this, SLOT(PasteLayer()));
 	a->setIcon(QIcon(":/img/paste.png"));
