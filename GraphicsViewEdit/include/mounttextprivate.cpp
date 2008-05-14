@@ -978,7 +978,7 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 {
 	///////////qDebug() << "### mousePressEvent in ";
 	///////qDebug() << "### Press drag   " << DragFill << " mouse selection " << C_cursor.hasSelection();
-	if (C_cursor.hasSelection() && modifiers == Qt::AltModifier && edit_enable) {
+	if (C_cursor.hasSelection() && modifiers == Qt::ShiftModifier && edit_enable) {
 							   DragFill = true;
 		             cursortime = false;
 							   //////////qDebug() << "### drag can fill  ";
