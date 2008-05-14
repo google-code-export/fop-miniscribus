@@ -24,7 +24,7 @@
 
 TextWriter::TextWriter(QObject *parent )
   : Layoutpainter(this),cursorIsFocusIndicator(false),edit_enable(false),cursorOn(false),timeline(0),
-	overwriteMode(false),StartSelectionMouse(-1),Ram_Dat(false)
+	overwriteMode(false),StartSelectionMouse(-1),Ram_Dat(false),DragFill(false)
 {
 	bridge = parent;
 	_d = new QTextDocument;
@@ -441,17 +441,12 @@ void TextWriter::setBlinkingCursorEnabled(bool enable)
         cursorTimeLine.stop();
         
 		}
-		
-		if (!edit_enable) {
-			if (cursorIsFocusIndicator) {   /* leave by release */
-				////ClearSelections();
-	     }
-			
-		}
 }
 
 void TextWriter::ClearSelections()
 {
+	   qDebug() << "### ClearSelections call " << cursorIsFocusIndicator;
+	
 	  cursorIsFocusIndicator = false;
     TextHighlightSelect = QRectF();
 	  C_cursor.setPosition(C_cursor.position());
@@ -795,6 +790,7 @@ void TextWriter::procesevent( QEvent *e )
 						
 				case QEvent::GraphicsSceneMouseDoubleClick: {
             QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
+					  Fevent = ev->widget();
 					  ///////////qDebug() << "### 1 MouseButtonDblClick";
 					  if (  ev->modifiers() == Qt::NoModifier ) {
             tmouseDoubleClickEvent(e, ev->button(), ev->pos() );
@@ -804,12 +800,14 @@ void TextWriter::procesevent( QEvent *e )
 					}
 				case QEvent::GraphicsSceneMouseRelease: {
              QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
+					   Fevent = ev->widget();
              tmouseReleaseEvent(e, ev->button(), ev->pos() );
 					break; }
 				
 				case QEvent::GraphicsSceneMousePress: {
             QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
 					  ///////////////qDebug() << "### 1 GraphicsSceneMousePress";
+					  Fevent = ev->widget();
 					  if (ev->buttons() == Qt::LeftButton) {
             tmousePressEvent(ev->button(), ev->pos() , ev->modifiers(), ev->buttons(),ev->screenPos());
 						return;
@@ -842,10 +840,22 @@ QTextTableCell TextWriter::OnPosition( const int posi )
 
 void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	  const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit) + 1;
-	  const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
-	  const int stopat = qMax(StartSelectionMouse,cursorPos); 
-		const int startat = qMin(StartSelectionMouse,cursorPos);
+	qDebug() << "### mouseMoveEvent in ";
+	qDebug() << "### move drag   " << DragFill;
+	const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit) + 1;
+	
+	if (C_cursor.hasSelection() && DragFill) {
+		qDebug() << "### move drag on  " << cursorPos;
+		//////setCursorPosition(pos);
+		////////repaintCursor();
+		cursortime = false;
+		repaintCursor();
+		return;
+	}
+
+	const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
+	const int stopat = qMax(StartSelectionMouse,cursorPos); 
+	const int startat = qMin(StartSelectionMouse,cursorPos);
 	  ////////////qDebug() << "### start/stop cell position " << StartSelectionMouse << cursorPos << cursorPosFozze;
 	 
 	
@@ -910,41 +920,116 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 		}
 }
 
-
+QPixmap TextWriter::PicfromMime( QMimeData *mime )
+{
+	QPixmap one;
+	QStringList dli = mime->formats();
+	if (dli.contains("application/x-picslists")) {
+		        QByteArray dd = mime->data("application/x-picslists"); 
+            QList<SPics> li = OpenImageGroup(QString(dd));
+		        if (li.size() > 0) {
+            SPics primoi = li.first();
+            return primoi.pix();
+						}
+		
+	}
+	
+	if (dli.contains("text/html")) {
+		
+		QByteArray dd = mime->data("text/html"); 
+		QTextDocument *picdoc = new QTextDocument();
+		picdoc->setHtml ( QString(dd) );
+		
+		    QTextFrame  *Tframe = picdoc->rootFrame();
+				QTextFrameFormat rootformats = Tframe->frameFormat();
+				rootformats.setBottomMargin (0); 
+				rootformats.setTopMargin(0); 
+				rootformats.setRightMargin (0); 
+				rootformats.setLeftMargin (0); 
+				rootformats.setPadding (0); 
+				Tframe->setFrameFormat ( rootformats );
+		    picdoc->adjustSize();
+		    /* paint doc */
+		    QAbstractTextDocumentLayout *Layout = picdoc->documentLayout();
+	      QRectF docirec = Layout->frameBoundingRect(picdoc->rootFrame()); 
+		    QPixmap PicsDocument(docirec.size().toSize());
+		    QRectF clip(0, 0,PicsDocument.width(),PicsDocument.height());
+				QPainter *p = new QPainter(&PicsDocument);
+        p->setRenderHint(QPainter::Antialiasing, true);
+        picdoc->drawContents(p,clip);
+				p->end();
+				return PicsDocument;
+	}
+	
+	return one;
+}
 
 
 void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	/////////////qDebug() << "### mousePressEvent in ";
+	///////////qDebug() << "### mousePressEvent in ";
+	///////qDebug() << "### Press drag   " << DragFill << " mouse selection " << C_cursor.hasSelection();
+	
+	if (C_cursor.hasSelection() && modifiers == Qt::AltModifier && edit_enable) {
+							   DragFill = true;
+		             cursortime = false;
+							   //////////qDebug() << "### drag can fill  ";
+		             setBlinkingCursorEnabled(false);
+								 repaintCursor();
+		             QMimeData *DDmime = createMimeDataFromSelection();
+								 QPixmap ddpic = PicfromMime(DDmime);
+		             QDrag *drag = new QDrag(Fevent);
+                 drag->setMimeData(DDmime); 
+		             if (!ddpic.isNull()) {
+                 drag->setPixmap(ddpic);   
+                 }
+								 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
+								 return;
+                 } 
+		
+		
+		
+	} else {
+		setCursorPosition(pos);
+	}
+	
 	lastrect = boundingRect();
-	setCursorPosition(pos);
+	
 	cursortime = true;
 	
+	
+	
 	if (StartSelectionMouse == cursor_position) {
+		  /////////////qDebug() << "### =========================  start pos  ";
 		  ClearSelections();
 		  setBlinkingCursorEnabled(true);
 		  repaintCursor();
-		  
 		  return;
 	} else {
 		setBlinkingCursorEnabled(false);
+		StartSelectionMouse = cursor_position;
+		repaintCursor();
 	}
-	StartSelectionMouse = cursor_position;
+	
 	   /* fast  display not alternate */
-	repaintCursor();
+	
 }
 
 void TextWriter::tmouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	 ////////////qDebug() << "### tmouseReleaseEvent 1 ############################################";
+	 /////////qDebug() << "### tmouseReleaseEvent 1 ############################################";
+	///////////// qDebug() << "### Release drag   " << DragFill;
+	 
+	
 	 StartSelectionMouse = -1;
+	 DragFill = false;
 }
 
 
 void TextWriter::tmouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	//////////qDebug() << "### MouseButtonDblClick 1 ############################################";
+	//////////////qDebug() << "### MouseButtonDblClick 1 ############################################";
 	
 	if (button != Qt::LeftButton) {
 		e->ignore();

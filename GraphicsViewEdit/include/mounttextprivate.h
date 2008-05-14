@@ -117,6 +117,7 @@ private:
     uint timeline;
     QAbstractTextDocumentLayout *_layout_1;
     bool cursorIsFocusIndicator;
+    bool DragFill;
     
 
 void insertFromMimeData(const QMimeData *source);
@@ -134,7 +135,8 @@ void tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardMo
 void tmouseReleaseEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos);
 void tmouseDoubleClickEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos);
 void tkeyPressEvent(QKeyEvent *e);
-
+QPixmap PicfromMime( QMimeData *mime );
+QWidget *Fevent;
     /* events */
 signals:
     void docselectionChanged();
