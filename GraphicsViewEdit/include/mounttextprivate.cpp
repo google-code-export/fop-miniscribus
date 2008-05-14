@@ -24,7 +24,7 @@
 
 TextWriter::TextWriter(QObject *parent )
   : Layoutpainter(this),cursorIsFocusIndicator(false),edit_enable(false),cursorOn(false),timeline(0),
-	overwriteMode(false),StartSelectionMouse(-1)
+	overwriteMode(false),StartSelectionMouse(-1),Ram_Dat(false)
 {
 	bridge = parent;
 	_d = new QTextDocument;
@@ -207,6 +207,7 @@ void TextWriter::setContent(Qt::TextFormat format, QString text, QTextDocument *
 void TextWriter::int_clipboard_new()
 {
 	///////////qDebug() << "### clipboard in ";
+	Ram_Dat = true;
 }
 
 void TextWriter::paint_doc(  QPainter * painter ,
@@ -1378,7 +1379,7 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 		
 		if (editable()) {
 				a = menu->addAction(tr("&Paste") + ACCEL_KEYL(V), this, SLOT(paste()));
-        a->setEnabled(clipboard->text().size() > 1);
+        a->setEnabled(Ram_Dat);
 			  a->setIcon(QIcon(":/img/editpaste.png"));
         a = menu->addAction(tr("Delete"), this, SLOT(deleteSelected()));
         a->setEnabled(C_cursor.hasSelection());

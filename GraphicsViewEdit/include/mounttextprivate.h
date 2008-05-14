@@ -99,7 +99,7 @@ private:
     QObject *bridge;
     /* extra format documents */
     SpanBorder *span_border;
-
+    bool Ram_Dat;
 
     //////QTextCursor C_cursor;
     //////QTextDocument *_d;
