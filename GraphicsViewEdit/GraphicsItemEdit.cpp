@@ -70,18 +70,18 @@ bool TextLayer::sceneEvent(QEvent *event)
         bool Canedit = mount->txtControl()->editable();
         QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
         if (Canedit) {
-        qDebug() << "### lascia 1 ";
+        //////qDebug() << "### lascia 1 ";
         mount->txtControl()->setCursorPosition(e->pos());
         mount->txtControl()->insertFromMime(e->mimeData());
-        qDebug() << "### lascia 0 ";
+        ///////////qDebug() << "### lascia 0 ";
         }
     } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
         ///////QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        qDebug() << "### muove ";
+        /////////qDebug() << "### muove ";
         
     } else if (event->type() == QEvent::DragEnter ) {
         ////////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        qDebug() << "### entra ";
+        //////////qDebug() << "### entra ";
     }
     
     
@@ -445,7 +445,7 @@ void TextLayer::SwapLockmodus()
 void TextLayer::RotateLayer( const int ro ) 
 { 
    Rotate = ro;
-    qDebug() << "### RotateLayer " << ro;
+    ////////////qDebug() << "### RotateLayer " << ro;
    update();
 }
     

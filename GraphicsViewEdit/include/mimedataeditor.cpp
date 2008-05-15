@@ -57,7 +57,7 @@ void Layoutpainter::undo()
     if (!_d) {
     return;
     }
-	   qDebug() << "### undo stack go ..... ";
+	   ////////qDebug() << "### undo stack go ..... ";
     ////_d->undo(&C_cursor);
 	  _d->undo();
 }
@@ -68,7 +68,7 @@ void Layoutpainter::redo()
     return;
     }
     
-	  qDebug() << "### redo stack go ..... ";
+	  ////////qDebug() << "### redo stack go ..... ";
     ///_d->redo(&C_cursor);
 	  _d->redo();
 }
@@ -746,7 +746,7 @@ QString Layoutpainter::ImageFilterHaving() const
   filter += ");;";
   QString filterSimple;
   double gsversion = getGSVersion();
-  qDebug() << "### args " << gsversion;
+  //////qDebug() << "### args " << gsversion;
   filterSimple += tr( "Scalable Vector Graphics" ) + " (*.svg *.svg.gz);;";
   if (gsversion > 6.5) {
    filterSimple += tr( "PostScript Vector Graphics" ) + " (*.ps *.eps);;"; 
@@ -817,7 +817,7 @@ QSizeF SpanBorder::intrinsicSize(QTextDocument* doc, int posInDoc, const QTextFo
       QTextCursor c(doc);
       c.setPosition(posInDoc);
       const QRectF xx = currentTextLine(c).rect();
-      qDebug() << " xx " << xx;
+      //////////////qDebug() << " xx " << xx;
       return xx.size();
 }
 
@@ -842,7 +842,7 @@ void SpanBorder::drawObject(QPainter* p, const QRectF &rect, QTextDocument* doc,
     Q_UNUSED(posInDoc)
     QTextCharFormat formats = fmt.toCharFormat();
     QVariant v = formats.property(6001);
-    qDebug() << " border .. " << v.isNull();
+   ////////////// qDebug() << " border .. " << v.isNull();
     if (!v.isNull()) {
         QPen borderG = v.value<QPen>();
         if (borderG.style() != Qt::NoPen) {

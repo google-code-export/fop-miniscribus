@@ -219,11 +219,12 @@ qreal GraphicsView::NextfromY()
 	qreal fromtop = 0;
 	qreal bigYall = 0;
 	for (int e=0;e<items.size();e++) {
-		qDebug() << "### tipo " << items[e]->type();
+		////////qDebug() << "### tipo " << items[e]->type();
 		if (items[e]->Ltype() != TextLayer::DIV_ABSOLUTE ) {
 			fromtop += items[e]->pointnext();
 		}
-		   bigYall = qMax(bigYall,items[e]->pos().y() + items[e]->boundingRect().height());
+	 /* height total all elemenst absolute */
+	 bigYall = qMax(bigYall,items[e]->pos().y() + items[e]->boundingRect().height());
 		
 	}
     QRectF resc = scene->sceneRect();
