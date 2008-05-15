@@ -26,6 +26,45 @@
 #include "richdoc_structure.h"
 
 
+#include <QPixmap>   /* find dpi actual to faktor 72 */
+
+/* 
+  default translate units to 72 DPI find difference 
+  faktor to real DPI !
+  #define INCH_TO_POINT(inch) ((inch)*72.0)  
+  #include <QPixmap>
+ */
+ 
+/* fix from Peter Hohl to make image running on dpi unit! */
+static inline qreal DPIactualDiff()
+{
+    QPixmap pixmap(50, 80);
+    pixmap.fill(Qt::transparent);
+    int hi = qMax(pixmap.logicalDpiY(),72);
+    int mi = qMin(pixmap.logicalDpiY(),72);
+    if (hi == mi) {
+    return 1; /* no difference increase or degrease 1:1 running 72 DPI  */
+    }
+    const qreal precision = 0.09741;   /* gimp precision to image */
+    ////////return 1;   /* 1:1 to test */
+    int diff = hi - mi;
+    qreal increments = 1.;
+    if (mi == 72) {  //////  more >>>
+    return increments + (diff / 100.0) + precision;
+    } else {   ///////////// down <<<
+    return increments - (diff / 100.0) + precision;
+    }
+}
+
+#define PDIFIX(ii) ((ii)*DPIactualDiff())
+#define BDIFIX(ii) ((ii)/DPIactualDiff())
+
+
+
+
+
+
+
 #define POINT_TO_CM(cm) ((cm)/28.3465058)
 #define POINT_TO_PX(px) ((px)*1.3333333)   /* error dpi problem */
 #define POINT_TO_MM(mm) ((mm)/2.83465058)
@@ -74,6 +113,7 @@ static inline qreal FopInt( const QString datain )
   }
   if ( data.endsWith( "pt" ))  {
     points = data.left( data.length() - 2 ).toDouble();
+    return points;
   }  else if ( data.endsWith( "px" ) ) {
     double value = data.left( data.length() - 2 ).toDouble();
     points = PX_TO_POINT( value );
@@ -106,7 +146,10 @@ static inline qreal FopInt( const QString datain )
   } else {
     points = 0;
   }
-  return points;
+  
+  
+  return PDIFIX(points);
+  
 } 
 
 
@@ -116,6 +159,8 @@ static inline qreal Pointo( qreal unit , const QString unita )  {
     ri = POINT_TO_CM( unit );
     } else if (unita == "pt") {
     ri = unit;
+    return ri;
+        
     } else if (unita == "mm") {
     ri = POINT_TO_MM( unit );
     } else if (unita == "px") {
@@ -133,7 +178,7 @@ static inline qreal Pointo( qreal unit , const QString unita )  {
     } else {
     ri = 10;
     }
-    return ri;
+    return BDIFIX(ri);
 }
 
 
@@ -143,6 +188,7 @@ static inline qreal ToPoint( qreal unit , const QString unita )  {
     ri = CM_TO_POINT( unit );
     } else if (unita == "pt") {
     ri = unit;
+    return ri;
     } else if (unita == "mm") {
     ri = MM_TO_POINT( unit );
     } else if (unita == "px") {
@@ -160,7 +206,7 @@ static inline qreal ToPoint( qreal unit , const QString unita )  {
     } else {
     ri = 10;
     }
-    return ri;
+    return PDIFIX(ri);
 }
 
 
