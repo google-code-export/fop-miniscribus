@@ -24,9 +24,9 @@
 GraphicsView::GraphicsView(  QWidget * parent )
 	: QGraphicsView( parent ),width(16.),height(9.),layercount(10)
 {
-	  chessgrid = BruschChess(Metric("25mm"));
+	  chessgrid = BruschChess(Metric("50mm"));
 	  QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
-		QRectF PaperA4(0,0,Metric("200mm"),Metric("200mm"));
+		QRectF PaperA4(0,0,Metric("210mm"),Metric("297mm"));
 	  scene = new GraphicsScene(PaperA4,this);
 	  setCacheMode(CacheBackground);
 	  setScene(scene);

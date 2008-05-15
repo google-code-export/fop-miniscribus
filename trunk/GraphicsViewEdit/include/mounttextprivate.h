@@ -156,6 +156,7 @@ public slots:
      void  RegisterImage( SPics e , bool insert );
      void NewCharformat( QTextCursor cursor );
      void in_image( int id );  /* remote image from http */
+     void ImageInfo();
 };
 
 Q_DECLARE_METATYPE(TextWriter *)

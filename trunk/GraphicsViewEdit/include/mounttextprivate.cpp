@@ -1487,6 +1487,17 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 			
 			  a = menu->addAction(tr("Insert image"), this, SLOT(InsertImageonCursor()));
 			  a->setIcon(QIcon(":/img/thumbnail.png"));
+			  
+			
+			  QTextImageFormat img = textCursor().charFormat().toImageFormat();
+        if (img.isValid()) { 
+				a = menu->addAction(tr("Image Info"), this, SLOT(ImageInfo()));
+				a->setIcon(QIcon(":/img/thumbnail.png"));
+				}
+			
+			  
+			  
+			
 			
 			  a = menu->addAction(tr("Layer margin"), this, SLOT(SetLayerMargin()));
 			  a->setIcon(QIcon(":/img/view_top_bottom.png"));
@@ -1500,6 +1511,48 @@ QMenu *TextWriter::StandardMenu( QWidget * inparent )
 
 }
 
+
+
+void  TextWriter::ImageInfo()
+{
+	QTextImageFormat img = textCursor().charFormat().toImageFormat();
+	if (img.isValid()) { 
+		QVariant xx = img.property(_IMAGE_PICS_ITEM_); 
+		if (!xx.isNull()) {
+		       SPics pic = xx.value<SPics>();
+			     const QString hrefadress = img.name();
+           QPixmap rec = pic.pix();
+			     QPixmap simgs  = rec.scaledToWidth( 50 );
+			     QString msg = QString("Name=%3\nPoint=%1x%2\n").arg(rec.width()).arg(rec.height()).arg(hrefadress);
+			     QString msg1 = QString("Description=%1\nSuffix=%2\n").arg(pic.info).arg(QString(pic.extension.data()));
+			     QString msg2 = QString("Monitor DPI=%1\n").arg(rec.logicalDpiY());
+			     QString msg3 = QString("Dimension= width=%1 height=%2 mm\n").arg(ToUnit(rec.width(),"mm")).arg(ToUnit(rec.height(),"mm"));
+			     QString msg4 = QString("Dimension= width=%1 height=%2 cm\n").arg(ToUnit(rec.width(),"cm")).arg(ToUnit(rec.height(),"cm"));
+			     QString msg5 = QString("Dimension= width=%1 height=%2 inch\n").arg(ToUnit(rec.width(),"inch")).arg(ToUnit(rec.height(),"inch"));
+			     QString msg6 = QString("Dimension= width=%1 height=%2 em\n").arg(ToUnit(rec.width(),"em")).arg(ToUnit(rec.height(),"em"));
+			     QString msg7 = QString("Dimension= width=%1 height=%2 px\n").arg(ToUnit(rec.width(),"px")).arg(ToUnit(rec.height(),"px"));
+			     QString msg8 = QString("Dimension= width=%1 height=%2 dm\n").arg(ToUnit(rec.width(),"dm")).arg(ToUnit(rec.height(),"dm"));
+			
+			     msg.append(msg1);
+			     msg.append(msg2);
+			     msg.append(msg3);
+			msg.append(msg4);
+			msg.append(msg5);
+			msg.append(msg6);
+			msg.append(msg7);
+			msg.append(msg8);
+			
+			     QMessageBox msgBox;
+           msgBox.setStandardButtons(QMessageBox::Ok);
+					 msgBox.setWindowTitle (tr("Image info %1").arg(hrefadress));
+			     msgBox.setIconPixmap ( simgs );
+			     msgBox.setText ( msg );
+			     msgBox.exec();
+			     /////msgBox.setDetailedText ( msg );
+			     
+		}
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                          EVENTS                                                 */
