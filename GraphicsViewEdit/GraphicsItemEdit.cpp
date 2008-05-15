@@ -56,6 +56,13 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     init();
 }
 
+TextLayer::~TextLayer()
+{
+   _doc->clear();
+   _doc = 0;
+    mount = 0;
+}
+
 bool TextLayer::sceneEvent(QEvent *event)
 {
     evesum++;
@@ -582,10 +589,6 @@ void TextLayer::updatearea( const QRectF areas )
     update(areas);
 }
 
-TextLayer::~TextLayer()
-{
-    delete _doc;
-}
 
 
 void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
