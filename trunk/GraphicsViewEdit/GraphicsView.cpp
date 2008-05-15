@@ -84,7 +84,8 @@ void GraphicsView::NewLayer()
 		
 		    QFile f(QString(":/img/layerabsolute.layer")); 
 				if (f.open(QFile::ReadOnly | QFile::Text)) {
-        RichDoc addoc = OpenRichDoc(QString::fromUtf8(f.readAll())); 
+        RichDoc addoc = OpenRichDoc(QString::fromUtf8(f.readAll()));
+				Adoc.margin(false);
 				f.close();
 				TextLayer *ioq = new TextLayer(layercount,0,scene);
 				ioq->insert(addoc);
@@ -98,7 +99,7 @@ void GraphicsView::NewLayer()
 				}
 		
 	} else {
-	
+	      Adoc.margin(true);
 	      TextLayer *ioq2 = new TextLayer(layercount,0,scene);
 				ioq2->insert(Adoc);
 				ioq2->setModus(TextLayer::Show);
@@ -134,27 +135,38 @@ void GraphicsView::CloneCurrent()
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
 }
 
-void GraphicsView::PasteLayer()
+QMap<int,RichDoc> GraphicsView::read()
 {
-	QClipboard *ramclip = QApplication::clipboard();
-	
-	if (ramclip->mimeData()->hasFormat("application/x-layerrichdoc")) {
-			QByteArray itemData = ramclip->mimeData()->data("application/x-layerrichdoc");
-		  QString daten = QString::fromUtf8(itemData.data());
-		
-		  layercount++;
-		
-				RichDoc rdoc = OpenRichDoc(daten);
-				TextLayer *ioq2 = new TextLayer(layercount,0,scene);
-				ioq2->insert(rdoc);
+	   QMap<int,RichDoc> pages;
+     for (int e=0;e<items.size();e++) {
+			    const int Nid = items[e]->data(ObjectNameEditor).toInt();
+		      RichDoc doc = items[e]->ReadActualItem();
+			    pages.insert(Nid,doc);
+	   }
+		 return pages; 
+}
+
+void GraphicsView::insert( RichDoc e )
+{
+	      layercount++;
+	      TextLayer *ioq2 = new TextLayer(layercount,0,scene);
+				ioq2->insert(e);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
 	      items.append(ioq2);
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
-		
-		
+}
+
+void GraphicsView::PasteLayer()
+{
+	QClipboard *ramclip = QApplication::clipboard();
+	if (ramclip->mimeData()->hasFormat("application/x-layerrichdoc")) {
+			QByteArray itemData = ramclip->mimeData()->data("application/x-layerrichdoc");
+		  QString daten = QString::fromUtf8(itemData.data());
+			RichDoc rdoc = OpenRichDoc(daten);
+			insert(rdoc);
 	} else {
 		QMessageBox::information(0, tr("Error Layer"),tr("No Layer on clipboard"));
 		
@@ -293,22 +305,13 @@ void GraphicsView::WorksOn(QGraphicsItem * item , qreal zindex )
 
 void GraphicsView::AppendDemo()
 {
-	      layercount++;
         QString inside;
         QFile f(QString(":/img/_default_layer.layer")); 
 				if (f.open(QFile::ReadOnly | QFile::Text)) {
 				inside = QString::fromUtf8(f.readAll());
 				f.close();
         RichDoc addoc = OpenRichDoc(inside); 
-				TextLayer *ioq = new TextLayer(layercount,0,scene);
-				ioq->insert(addoc);
-				ioq->setModus(TextLayer::Show);
-				ioq->setData (ObjectNameEditor,layercount);
-	      items.append(ioq);
-				ioq->setZValue(9.9); 
-				connect(ioq, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
-				connect(ioq, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
-				connect(ioq, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
+				insert(addoc);
 				}
 				
 }
