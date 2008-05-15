@@ -46,7 +46,9 @@ static inline qreal DPIactualDiff()
     return 1; /* no difference increase or degrease 1:1 running 72 DPI  */
     }
     const qreal precision = 0.09741;   /* gimp precision to image */
-    ////////return 1;   /* 1:1 to test */
+    /////////return 1;   /* 1:1 to test */
+    
+    
     int diff = hi - mi;
     qreal increments = 1.;
     if (mi == 72) {  //////  more >>>
