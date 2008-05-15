@@ -45,6 +45,7 @@ void TextWriter::NewCharformat( QTextCursor cursor )
     QFont f = format.font();
      ///////////qDebug() << "### Layoutpainter cursor in .........." << f.bold() << " .............................................";
     actionBold->setChecked( f.bold() );
+	  actionLink->setChecked( format.anchorHref().size() > 0 );
     actionItalic->setChecked( f.italic() );
     actionUnderline->setChecked(f.underline() );
     MakealignmentChanged(textCursor().block().blockFormat().alignment());

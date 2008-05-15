@@ -87,6 +87,7 @@
 #include "DataStructures.h"
 #include "getmargin.h"
 #include "table_setting.h"
+#include "href_gui.h"
 
 #include <QHttp>
 #include <QThread>
@@ -308,7 +309,7 @@ QAction *actionOverline;
 QAction *actionBackColor;
 QAction *actionTextColor;
 QAction *actionBlockMargin;
-
+QAction *actionLink;
 QAction *actionstretchfont;
 QAction *actionAlignLeft,
         *actionAlignCenter,
@@ -365,6 +366,7 @@ public slots:
  void SetFrameBGColor();
  void SetFrameMargin();
  void MakeTableFormat();
+ void LinkText();
 
 };
 
