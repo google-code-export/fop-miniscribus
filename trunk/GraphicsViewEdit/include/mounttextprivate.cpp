@@ -445,7 +445,7 @@ void TextWriter::setBlinkingCursorEnabled(bool enable)
 
 void TextWriter::ClearSelections()
 {
-	   qDebug() << "### ClearSelections call " << cursorIsFocusIndicator;
+	   //////////qDebug() << "### ClearSelections call " << cursorIsFocusIndicator;
 	
 	  cursorIsFocusIndicator = false;
     TextHighlightSelect = QRectF();
@@ -840,12 +840,12 @@ QTextTableCell TextWriter::OnPosition( const int posi )
 
 void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
-	qDebug() << "### mouseMoveEvent in ";
-	qDebug() << "### move drag   " << DragFill;
+	///////////qDebug() << "### mouseMoveEvent in ";
+	///////////////qDebug() << "### move drag   " << DragFill;
 	const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit) + 1;
 	
 	if (C_cursor.hasSelection() && DragFill) {
-		qDebug() << "### move drag on  " << cursorPos;
+		/////////////qDebug() << "### move drag on  " << cursorPos;
 		//////setCursorPosition(pos);
 		////////repaintCursor();
 		cursortime = false;
@@ -1744,7 +1744,7 @@ void TextWriter::insertFromMime( const QMimeData * source )
           QList<QUrl> urls = source->urls();
           for ( int i = 0; i < urls.size(); ++i ) { 
           QUrl gettyurl(urls.at(i));
-				  qDebug() << "### gettyurl " << gettyurl.toString();
+				 //////////// qDebug() << "### gettyurl " << gettyurl.toString();
               if (gettyurl.scheme() == "file") {
                   ImageonCursor(gettyurl.toLocalFile()); 
               } else if (gettyurl.scheme() == "http") {

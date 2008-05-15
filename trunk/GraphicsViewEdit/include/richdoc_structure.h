@@ -124,8 +124,8 @@ class RichDoc
 													      if (pico.isValid()) {
 																		const QString hrefadress = pico.name();
 																		SPics spico = resource[hrefadress];
-																		qDebug() << "### from RichDoc add resource " << hrefadress;
-																		qDebug() << "### from RichDoc info " << spico.info;
+																		////////////qDebug() << "### from RichDoc add resource " << hrefadress;
+																		//////////////qDebug() << "### from RichDoc info " << spico.info;
 																		pico.setToolTip(spico.info);
 																		pico.setProperty(_IMAGE_PICS_ITEM_,spico);
 																		helper.setPosition(fr.position());
@@ -204,13 +204,13 @@ inline RichDoc OpenRichDoc( const QString datastream_base64   )
 	ds.setVersion(QDataStream::Qt_4_2);
 	ds >> magic;
 	if ( (quint32)RichDoc::MAGICNUMBER != magic ) {
-  qDebug() << "######## RichDoc::MAGICNUMBER not ok  " << magic;
+  qWarning() << "######## RichDoc::MAGICNUMBER not ok  " << magic;
 	buffer.close();
 	return li;
 	}
 	ds >> version;
 	if ( (quint32)RichDoc::VERSION != version ) {
-	qDebug() << "######## RichDoc::VERSION not ok  " << version;
+	qWarning() << "######## RichDoc::VERSION not ok  " << version;
 	buffer.close();
 	return li;
 	}
