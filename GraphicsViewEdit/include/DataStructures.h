@@ -16,7 +16,7 @@
 
 #include <QPixmap>
 
-#define _DRAWMODUS_WEB_ 1
+#define _DRAWMODUS_WEB_ 1    /* make 0 to save more quality image PNG s */
 
 #define _GSCACHE_ \
              QString("%1/.ghosti_CACHE/").arg(QDir::homePath())    /* gs tmp */
