@@ -766,8 +766,16 @@ void TextWriter::procesevent( QEvent *e )
 	
 	   switch (e->type()) {
 			 
-			
-			 
+			     case QEvent::QEvent::GraphicsSceneDrop: {
+						if (edit_enable) { 
+						QGraphicsSceneDragDropEvent *edd = static_cast<QGraphicsSceneDragDropEvent *>(e);
+						setCursorPosition(edd->pos());
+						insertFromMime(edd->mimeData());
+						return;
+							
+						}
+						return;
+						break; }
 			    case QEvent::GraphicsSceneMouseMove: {
 						if (edit_enable) { 
 						QGraphicsSceneMouseEvent *ev = static_cast<QGraphicsSceneMouseEvent *>(e);
@@ -994,7 +1002,7 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
                  	delete &ddpic;								 
                  }
 								 if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
-								 return;
+								 return;         /* */
                  }
 		
 	} else {

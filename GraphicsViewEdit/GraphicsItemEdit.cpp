@@ -67,14 +67,8 @@ bool TextLayer::sceneEvent(QEvent *event)
     /* drag here */
     
     if ( event->type() == QEvent::GraphicsSceneDrop) {
-        bool Canedit = mount->txtControl()->editable();
-        QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        if (Canedit) {
-        //////qDebug() << "### lascia 1 ";
-        mount->txtControl()->setCursorPosition(e->pos());
-        mount->txtControl()->insertFromMime(e->mimeData());
-        ///////////qDebug() << "### lascia 0 ";
-        }
+        mount->txtControl()->procesevent(event);
+        return true;
     } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
         ///////QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
         /////////qDebug() << "### muove ";
