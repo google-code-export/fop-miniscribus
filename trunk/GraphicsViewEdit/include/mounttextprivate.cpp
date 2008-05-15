@@ -1530,7 +1530,7 @@ void  TextWriter::ImageInfo()
 			     QString msg4 = QString("Dimension= width=%1 height=%2 cm\n").arg(ToUnit(rec.width(),"cm")).arg(ToUnit(rec.height(),"cm"));
 			     QString msg5 = QString("Dimension= width=%1 height=%2 inch\n").arg(ToUnit(rec.width(),"inch")).arg(ToUnit(rec.height(),"inch"));
 			     QString msg6 = QString("Dimension= width=%1 height=%2 em\n").arg(ToUnit(rec.width(),"em")).arg(ToUnit(rec.height(),"em"));
-			     QString msg7 = QString("Dimension= width=%1 height=%2 px\n").arg(ToUnit(rec.width(),"px")).arg(ToUnit(rec.height(),"px"));
+			     QString msg7 = QString("Dimension= width=%1 height=%2 dd\n").arg(ToUnit(rec.width(),"dd")).arg(ToUnit(rec.height(),"dd"));
 			     QString msg8 = QString("Dimension= width=%1 height=%2 dm\n").arg(ToUnit(rec.width(),"dm")).arg(ToUnit(rec.height(),"dm"));
 			
 			     msg.append(msg1);
