@@ -1353,16 +1353,22 @@ QList<QAction *> TextWriter::MainActions()
 	///7 action ! 
 	QList<QAction *> flyactions;
 	                 flyactions.clear();
-
-	  actionUndo = new QAction(tr("&Undo") + ACCEL_KEYL(Z), this);
-    actionUndo->setIcon(QIcon(":/img/undo.png"));
-	  actionUndo->setEnabled(_d->isUndoAvailable());
-	  connect(actionUndo, SIGNAL(triggered()),this,SLOT(undo()));
 	
-	  actionRedo = new QAction(tr("&Undo") + ACCEL_KEYL(Z), this);
-    actionRedo->setIcon(QIcon(":/img/redo.png"));
-	  actionRedo->setEnabled(_d->isRedoAvailable());
-	  connect(actionRedo, SIGNAL(triggered()),this,SLOT(redo()));
+	
+
+	  actionNewtable = new QAction(tr("Insert new Table"), this);
+	  actionNewtable->setIcon(QIcon(":/img/table.png"));
+	  connect(actionNewtable, SIGNAL(triggered()),this,SLOT(CreateanewTable()));
+	
+	  actionNewimage = new QAction(tr("Insert image"), this);
+	  actionNewimage->setIcon(QIcon(":/img/thumbnail.png"));
+	  connect(actionNewimage, SIGNAL(triggered()),this,SLOT(InsertImageonCursor()));
+	
+	
+	
+	
+	
+	
 
 		actionBold = new QAction(tr("Bold text CTRL+B"),this);
     const QIcon icon = QIcon(QString::fromUtf8(":/img/textbold.png"));
@@ -1415,8 +1421,9 @@ QList<QAction *> TextWriter::MainActions()
 		NewCharformat(textCursor());
 		NewCharformat(textCursor());
 		
-		flyactions.append(actionUndo);
-		flyactions.append(actionRedo);
+		flyactions.append(actionNewtable);
+		flyactions.append(actionNewimage);
+		
 		flyactions.append(actionBold);
 		flyactions.append(actionItalic);
 		flyactions.append(actionUnderline);

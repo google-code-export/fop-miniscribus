@@ -21,20 +21,43 @@
 
 #include "GraphicsView.h"
 
+GraphicsView::~GraphicsView()
+{
+	pageclear();
+	layercount = 0;
+}
+
+
 GraphicsView::GraphicsView(  QWidget * parent )
 	: QGraphicsView( parent ),width(16.),height(9.),layercount(10)
 {
-	  chessgrid = BruschChess(Metric("50mm"));
-	  QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
-		QRectF PaperA4(0,0,Metric("210mm"),Metric("297mm"));
-	  scene = new GraphicsScene(PaperA4,this);
-	  setCacheMode(CacheBackground);
+	  if (Metric(setter.value("gview/chess").toString()) > 0) {
+			chessgrid = BruschChess(Metric(setter.value("gview/chess").toString()));
+		} else {
+			chessgrid = BruschChess(Metric("50mm"));
+		}
+		QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
+		QRectF Paper;
+		if (Metric(setter.value("gview/wi").toString()) > 0) {
+		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
+		} else {
+		Paper = QRectF(0,0,Metric("140mm"),Metric("140mm"));
+		}
+	  scene = new GraphicsScene(Paper,this);
+	  setCacheMode(CacheNone);
 	  setScene(scene);
 	  fillNullItem();
 	  connect(scene, SIGNAL(SelectOn(QGraphicsItem*,qreal)), this, SLOT(WorksOn(QGraphicsItem*,qreal)));
 	  connect(scene, SIGNAL(nullitem()), this, SLOT(notselect()));
 	  AppendDemo();
 	  
+}
+
+
+void GraphicsView::pageclear()
+{
+		items.clear();
+		scene->clear();
 }
 
 void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
@@ -63,7 +86,8 @@ void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 	a->setIcon(QIcon(":/img/paste.png"));
 	a->setEnabled(layeronram);
 
-	
+	a = menu->addAction(tr("Page clear"), this, SLOT(pageclear()));
+	a->setIcon(QIcon(":/img/filenew.png"));
 	
 	menu->exec(QCursor::pos());
 	delete menu;
