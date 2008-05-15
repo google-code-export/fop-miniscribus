@@ -29,6 +29,7 @@ HEADERS += GraphicsItemEdit.h \
            include/table_setting.h \
            include/getmargin.h \
            include/mimedataeditor.h \
+           include/href_gui.h \
            include/mounttextprivate.h \
            include/pics_structure.h \
            include/richdoc_structure.h
@@ -36,6 +37,7 @@ SOURCES += GraphicsItemEdit.cpp \
            GraphicsScene.cpp \
            GraphicsView.cpp \
            main.cpp \
+           include/href_gui.cpp \
            include/table_setting.cpp \
            include/getmargin.cpp \
            include/mimedataeditor.cpp \
