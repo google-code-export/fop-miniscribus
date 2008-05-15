@@ -317,6 +317,10 @@ QAction *actionAlignLeft,
         *actionFonts,
         *actionAlignJustify;
 
+
+QAction *actionNewtable;
+QAction *actionNewimage;
+
 QActionGroup *grp;
 int cursor_position;
 QTextCursor C_cursor;

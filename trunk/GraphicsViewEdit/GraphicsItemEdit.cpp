@@ -198,6 +198,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     return;
     }
     Rotater *slider;
+    QWidgetAction *widgetslider;
     /////GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
     /* zvalue up and down   zmax()   zmin() */
     bool activeedit = canedit ?  true : false;
@@ -230,7 +231,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         if (canedit && format == DIV_ABSOLUTE ) {
         slider = new Rotater(Rotate,event->widget());
-        QWidgetAction *widgetslider = new QWidgetAction(event->widget());
+        widgetslider = new QWidgetAction(event->widget());
         widgetslider->setDefaultWidget(slider);
         RootMenu->addAction(widgetslider); 
         connect(slider, SIGNAL(rotater(int)),this, SLOT(RotateLayer(int)));
@@ -308,16 +309,12 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     RootMenu->exec(event->screenPos());
     
     
-    if (canedit && format == DIV_ABSOLUTE ) {
-     slider->disconnect(this);
-     slider->deleteLater(); 
-    }
-    
-    
-    delete RootMenu;
-    
-    
-    
+   
+    /////delete slider;
+    slider = 0;
+    //////delete widgetslider;
+    widgetslider = 0;
+    delete RootMenu; 
 }
 
 

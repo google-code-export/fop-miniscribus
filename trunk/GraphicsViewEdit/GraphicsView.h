@@ -40,6 +40,7 @@ class GraphicsView : public QGraphicsView
 //
 public:
   GraphicsView( QWidget * parent  = 0 );
+  ~GraphicsView();
   TextLayer *CurrentActive;
   QRectF boundingRect();
   qreal NextfromY();
@@ -75,6 +76,7 @@ public slots:
     void CloneCurrent();
     void removelayer( const int idx );
     void PasteLayer();
+    void pageclear();
 
 };
 //
