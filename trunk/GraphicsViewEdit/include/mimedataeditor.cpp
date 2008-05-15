@@ -77,8 +77,8 @@ void Layoutpainter::ComposeAction()
 {
     
     actionLink = new QAction(tr("Link text"),this);
-    const QIcon icon = QIcon(QString::fromUtf8(":/img/web-48x48.png"));
-    actionLink->setIcon(icon);
+    const QIcon iconl = QIcon(QString::fromUtf8(":/img/web-48x48.png"));
+    actionLink->setIcon(iconl);
     actionLink->setCheckable(true);
 	  connect(actionLink, SIGNAL(triggered()),this,SLOT(LinkText()));
     
