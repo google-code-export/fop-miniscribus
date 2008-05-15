@@ -43,6 +43,8 @@ public:
   TextLayer *CurrentActive;
   QRectF boundingRect();
   qreal NextfromY();
+  void insert( RichDoc e );  /* one layer insert */
+  QMap<int,RichDoc> read();  /* read full pages */
 protected:
     QList<TextLayer*> items;
     QSettings setter;
