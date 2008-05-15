@@ -486,6 +486,9 @@ QMenu *Layoutpainter::TextMenu( QWidget * inparent )
     QMenu *MenuText = new QMenu(tr("Text Format"),inparent);
     MenuText->setIcon(QIcon(QString::fromUtf8(":/img/textpointer.png")));
     MenuText->addAction(actionFonts);
+    MenuText->addAction(actionLink);
+    
+    
     MenuText->addAction(actionBold);
     MenuText->addAction(actionItalic);
     MenuText->addAction(actionUnderline);
