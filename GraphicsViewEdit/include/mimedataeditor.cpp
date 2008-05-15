@@ -76,6 +76,13 @@ void Layoutpainter::redo()
 void Layoutpainter::ComposeAction()
 {
     
+    actionLink = new QAction(tr("Link text"),this);
+    const QIcon icon = QIcon(QString::fromUtf8(":/img/web-48x48.png"));
+    actionLink->setIcon(icon);
+    actionLink->setCheckable(true);
+	  connect(actionLink, SIGNAL(triggered()),this,SLOT(LinkText()));
+    
+    
     actionBold = new QAction(tr("Bold text CTRL+B"),this);
     const QIcon icon = QIcon(QString::fromUtf8(":/img/textbold.png"));
     actionBold->setIcon(icon);
@@ -262,6 +269,12 @@ void Layoutpainter::FosInsertFrame()
     
     
 }
+
+
+
+
+
+
 
 void  Layoutpainter::SetFrameMargin()
 {
@@ -709,6 +722,76 @@ void Layoutpainter::FontText()
       
   }
 }
+
+void  Layoutpainter::LinkText()
+{
+    QTextCursor c = textCursor();
+    if (!c.hasSelection()) {
+    QMessageBox::information(0, tr("Link text"),tr("Select text to link internal or external."));
+    return;  
+    }
+    
+    QTextCharFormat format = c.charFormat();
+    bool havinglinkleave = format.anchorHref().size() > 0;
+    QString sthtml = c.selectedText();
+    
+    if (havinglinkleave)  {
+        /* unlink text */ 
+    QString msgDB =tr("Unlink current text?");
+    int removeyes = QMessageBox::question(0, tr("Confirm please"),msgDB,
+                                                            tr("&Yes"), tr("&No"),
+                                                             QString(),8888,9999);
+        if (removeyes == 0) {
+        QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(sthtml);
+        textCursor().insertFragment(fragment);   
+        return;
+        }
+    }
+    /* else normal link make !!! */
+    QString ltext, linkerma, hrefprimo, satarget;
+    
+      if (sthtml.size() < 1) {
+           sthtml= "Text to link";  
+      }
+      Href_Gui::self( 0 )->text_href->setText(sthtml);
+      Href_Gui::self( 0 )->exec();
+      
+        if (Href_Gui::self) {
+              QStringList data = Href_Gui::_self->GetUserConfig();
+               if (data.count() > 0) {
+               /*qDebug() << "### linerr rrr   " << QString(data.at(0));
+               qDebug() << "### linerr rrr   " << QString(data.at(1));
+               qDebug() << "### linerr rrr   " << QString(data.at(2));*/
+                hrefprimo = QString(data.at(1));
+                satarget = QString(data.at(2));
+                   
+                   if (hrefprimo.startsWith("#")) {
+                      linkerma = hrefprimo; 
+                   } else {
+                       if (!hrefprimo.contains("@") or !hrefprimo.contains("mailto:") ) {
+                        linkerma = hrefprimo +"#target="+ satarget;
+                       } else {
+                        linkerma = hrefprimo; 
+                       }
+                   }
+                if (satarget !="#name") {
+                ltext ="<a href=\""+linkerma+"\">"+QString(data.at(0))+"</a>";
+                } else {
+                hrefprimo.replace("#","");
+                hrefprimo.replace(" ","");
+                    
+                ltext ="<a name=\""+hrefprimo+"\"></a> "+QString(data.at(0));   
+                }
+                QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(ltext);
+                textCursor().insertFragment(fragment);
+                }
+          }
+    
+
+    
+}
+
+
 
 
  void Layoutpainter::OverlineText()
