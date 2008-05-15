@@ -38,7 +38,12 @@ class RichDoc
     RichDoc() {
     html = QByteArray("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Your text</p>");
 		style = QString("min-height:300px;padding:0px 0px 0px 0px;background-color:#ffffff;");
+		nullmargin = false;
     }
+		void margin( bool e )
+		{
+		nullmargin = e;
+		}
     RichDoc& operator=( const RichDoc& d )
     {
       resource.clear();
@@ -100,6 +105,17 @@ class RichDoc
 				   d->addResource( QTextDocument::ImageResource,QUrl(record.name),record.pix());
          }
 				 QTextFrame  *Tframe = d->rootFrame();
+				 if (nullmargin) {
+					 
+					       QTextFrameFormat Ftf = Tframe->frameFormat();
+					       Ftf.setLeftMargin(0);
+                 Ftf.setBottomMargin(0);
+                 Ftf.setTopMargin(0);
+                 Ftf.setRightMargin(0);
+					       Tframe->setFrameFormat(Ftf);
+				 }
+				 
+				 
 				 QTextFrame::iterator it;
          for (it = Tframe->begin(); !(it.atEnd()); ++it) {
 					 QTextBlock para = it.currentBlock();
@@ -144,6 +160,10 @@ class RichDoc
 
         return d;
     }
+		
+		bool nullmargin;
+		
+		
     QString style;
     QMap<QString,SPics> resource;
     QByteArray html;  /* qCompress */
