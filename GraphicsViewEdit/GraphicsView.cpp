@@ -34,14 +34,14 @@ GraphicsView::GraphicsView(  QWidget * parent )
 	  if (Metric(setter.value("gview/chess").toString()) > 0) {
 			chessgrid = BruschChess(Metric(setter.value("gview/chess").toString()));
 		} else {
-			chessgrid = BruschChess(Metric("50mm"));
+			chessgrid = BruschChess(Metric("20mm"));
 		}
 		QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
 		QRectF Paper;
 		if (Metric(setter.value("gview/wi").toString()) > 0) {
 		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
 		} else {
-		Paper = QRectF(0,0,Metric("140mm"),Metric("140mm"));
+		Paper = QRectF(0,0,Metric("220mm"),Metric("350mm"));
 		}
 	  scene = new GraphicsScene(Paper,this);
 	  setCacheMode(CacheNone);
@@ -246,8 +246,12 @@ void GraphicsView::updateauto()
 		}
 	}
 	
-	NextfromY();
+	NextfromY();  /* make rect scene big as needed */
 	
+	TextLayer *layer = qobject_cast<TextLayer *>(sender());
+	if (layer) {
+	ensureVisible(layer->viewport_need(),100,30);
+	}
 }
 
 qreal GraphicsView::NextfromY()

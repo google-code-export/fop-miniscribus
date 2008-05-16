@@ -335,6 +335,7 @@ QString ImageFilterHaving() const;
 qreal Get_Cell_Width( QTextTableFormat TableFormat , int position ); 
 signals:
   void updateRequest(QRectF);
+  void q_cursor_newPos();
 public slots:
  //////////////void NewCharformat(QTextCursor cursor);
  /* on qmenu */

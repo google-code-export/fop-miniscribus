@@ -48,6 +48,7 @@ void Layoutpainter::cursorPosition( const QTextCursor curs )
 		 C_cursor.setPosition(curs.position());
 		 cursor_position = C_cursor.position();
 	}
+  emit q_cursor_newPos();
 	////////qDebug() << "X-Y_Pos_Cursor ->" << X_Pos_Cursor  << "x" << Y_Pos_Cursor << C_cursor.position();
 	
 }

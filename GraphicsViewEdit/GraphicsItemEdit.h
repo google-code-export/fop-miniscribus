@@ -114,6 +114,7 @@ public:
     ~TextLayer();
     QList<QAction *> MainActions();
     bool editable();
+    QRectF viewport_need();
     void setSelected( bool selected );
     void setModus( CurrentModus  e);
     qreal pointnext();
@@ -139,6 +140,9 @@ public:
     LayerHightChecks();
     }
 protected:
+    bool AlertSize;
+    QPointF lastclick;
+    uint check_view_area_time;
     RichDoc guiwait;
     QSettings setter;
     QAction *actionSwapEdit,

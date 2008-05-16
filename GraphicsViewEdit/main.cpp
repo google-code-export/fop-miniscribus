@@ -158,7 +158,7 @@ void MainStart()
     /* QSetting setup to access */
     setOrganizationName("CrossKern");
     setOrganizationDomain("crosskern.com");
-    setApplicationName("Layer Handler Sample");
+    setApplicationName("Layer Handler DEMO Sample 2");
     
     panel = new GraphicsView;
     panel->setWindowTitle(windowTitle); 
