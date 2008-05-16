@@ -30,6 +30,8 @@
 #include "GraphicsScene.h"
 #define _SET_SELECTION_BY_SCENE_ 0
 
+#define _DEBUGRANGE_WI_ 40
+
 
 class Rotater : public QWidget
 {
@@ -140,6 +142,7 @@ public:
     LayerHightChecks();
     }
 protected:
+    int getXcursor();
     bool AlertSize;
     QPointF lastclick;
     uint check_view_area_time;
@@ -155,6 +158,10 @@ protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void timerEvent(QTimerEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event); 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+
+    bool ActionHover;
     ////void inputMethodEvent(QInputMethodEvent *event);
     void keyPressEvent( QKeyEvent * event );
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
@@ -178,6 +185,7 @@ private:
     int Rotate;
     qreal text_hight;
     qreal text_width;
+    QRectF CurrentCursorboundingRect;  /* repaint cursor area */
     QRectF TextboundingRect;
     QTransform ActualMatrixe( int r );
 signals:
@@ -208,6 +216,7 @@ public slots:
     void Removehere();
     void seTBack();
     void seTFront();
+    void cursor_area( const QRectF areas , const qreal ip );
 };
 
 Q_DECLARE_METATYPE(TextLayer *)

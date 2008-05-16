@@ -76,6 +76,7 @@ bool GraphicsScene::WakeUp( const QPointF incomming )
        for (int e=0;e<listing.size();e++) {
            if (listing[e]->zValue() == thebest) {
              listing[e]->setFlag(QGraphicsItem::ItemIsSelectable,true);
+             listing[e]->setSelected(true); 
              emit SelectOn(listing[e],thebest);
              return true;
            }
