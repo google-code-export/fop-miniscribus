@@ -53,6 +53,7 @@ void TextWriter::NewCharformat( QTextCursor cursor )
     actionStricktext->setChecked( f.strikeOut() );
     actionTextColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.foreground().color()));
     actionBackColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",format.background().color()));
+	  emit q_cursor_newPos();
 }
 
 
@@ -525,6 +526,7 @@ void TextWriter::setCursorPosition(const QPointF &pos)
 		 cursor_position = C_cursor.position();
 		 ////////qDebug() << "### cursor_" << cursorPos << "position hit to from pos " << _c.position() << " l.rect->" << line_rect << " l.nr." << line_nummer;
 		 //////GrepCursorData();
+		 emit q_cursor_newPos();
 	 }
 }
 
@@ -546,7 +548,7 @@ void TextWriter::timerEvent(QTimerEvent *event)
 			
             if (timeline%2) {
 							cursortime = true; 
-							emit q_cursor_newPos();
+							///////emit q_cursor_newPos();
             } else {
 							cursortime = false;
             }

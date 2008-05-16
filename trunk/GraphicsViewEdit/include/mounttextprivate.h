@@ -140,7 +140,6 @@ QWidget *Fevent;
     /* events */
 signals:
     void docselectionChanged();
-    void q_cursor_newPos();
     void q_update(QRectF);
 public slots:
      void updateRequest( QRectF area );

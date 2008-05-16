@@ -28,7 +28,7 @@
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
     : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
     hi(Metric("22mm")),wi(Metric("55mm")),bgcolor(QColor(Qt::white)),
-    bordercolor(QColor(Qt::red)),Rotate(0),
+    bordercolor(QColor(Qt::red)),Rotate(0),check_view_area_time(0),
     format(DIV_ABSOLUTE),mount(new TextController)
 {
     mount->q = this;
@@ -62,6 +62,49 @@ TextLayer::~TextLayer()
    _doc = 0;
     mount = 0;
 }
+
+QRectF TextLayer::viewport_need()
+{
+    QRectF showme(-20,0,wi,qBound(350.0,hi / 2.0,hi - 50));   
+    const int textpos = textCursor().position();
+    qreal fromtopY = 0;
+    QTextLine foline;
+    for(QTextBlock block = document()->begin(); block.isValid(); block = block.next()) {
+      fromtopY += block.layout()->boundingRect().height();
+      if(block.contains(textpos)) {
+      const int relativePos = textpos - block.position();
+      foline = block.layout()->lineForTextPosition(relativePos);
+      }
+    }
+    fromtopY += pos().y() + 50;
+    if (!lastclick.isNull() ) {
+    showme.moveTo(0,fromtopY);
+    }
+    if ( foline.isValid()  ) {
+    ///////qDebug() << "### foline rect " << showme << " ftop->" << fromtopY; 
+    }
+    return showme;
+}
+
+
+void TextLayer::cursor_wake_up()
+{
+    QDateTime timer1( QDateTime::currentDateTime() );
+    const uint now = timer1.toTime_t();
+    evesum++;
+    if (check_view_area_time == 0) {
+       check_view_area_time = now;  /* first run */ 
+    }
+    if ( now > (check_view_area_time + 1) ) {
+    check_view_area_time = now;
+    LayerHightChecks();
+    /////GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    /* not faster as 1000 ms */
+    qDebug() << "### cursor_wake_up " << evesum; 
+    emit recalcarea();
+    }
+}
+
 
 bool TextLayer::sceneEvent(QEvent *event)
 {
@@ -540,11 +583,7 @@ void TextLayer::init()
 {
     read();
 }
-void TextLayer::cursor_wake_up()
-{
-    ///////////qDebug() << "### cursor_wake_up ";
-    update();
-}
+
 
 
 TextController::TextController()
@@ -583,7 +622,7 @@ void TextLayer::updatearea( const QRectF areas )
     return;
     }
     evesum++;
-    emit recalcarea();
+    
     //////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
     ///////////qDebug() << "### area top left " << areas.topLeft();
     update(areas);
@@ -597,19 +636,28 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(widget);
     bool canedit = mount->txtControl()->editable();
     wisub_border = wi + border;
+    const qreal maximumhiht = Metric("297mm") + 5;
     
      /* Layer Background draw! */
 		qreal hightlengh =  mount->txtControl()->boundingRect().height();
     if (format != Lock )  {  
+        
                 if (hightlengh > hi ) {
                   hi = hightlengh + 5;
                 }
+                
                 if (format == DIV_AUTO ) {
-                   hi = qBound(Metric("18mm"), hightlengh + 10,Metric("297mm"));
-                   if (hi > Metric("297mm") ) {
-                       RestoreMoveAction();
-                   }
+                   hi = qBound(Metric("18mm"), hightlengh + 10,maximumhiht);
                 }
+                   if (hi > maximumhiht ) {
+                       AlertSize = true;
+                       RestoreMoveAction();
+                   } else {
+                       AlertSize = false;
+                   }
+                
+                
+                
                 
     } 
     
@@ -620,6 +668,11 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     } else {
         BorderPaint = QPen(Qt::NoPen);
     }
+    
+    if (AlertSize) {
+    BorderPaint = QPen(QBrush(Qt::red),4,Qt::SolidLine,Qt::SquareCap,Qt::MiterJoin);
+    }
+    
     
      if (mount) {
     mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),BorderPaint,currentprintrender);
@@ -708,6 +761,9 @@ QRectF TextLayer::boundingRect() const
 /* proprieta oggetto QRectF docrect = DLayout->frameBoundingRect(_doc->rootFrame()) */
 void TextLayer::RestoreMoveAction() 
 {
+    if ( mount->txtControl()->editable() && AlertSize ) {
+        QApplication::beep();
+    }
     modus == Show;
     QGraphicsItem::setCursor(Qt::ArrowCursor);
     QApplication::restoreOverrideCursor();
@@ -735,6 +791,8 @@ void TextLayer::EditModus()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
+    lastclick = event->scenePos();
+    
     if (!IsSelectActive) {
     return;
     }
@@ -768,6 +826,8 @@ void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    lastclick = event->scenePos();
+    
     if (!IsSelectActive) {
     return;
     }
@@ -834,6 +894,8 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::setCursor(Qt::ArrowCursor);
     QApplication::restoreOverrideCursor();
     
+    lastclick = event->scenePos();
+    
     if (!IsSelectActive) {
     return;
     }
@@ -857,6 +919,9 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    
+    lastclick = event->scenePos();
+    
     if (!isSelected()) {
     return;
     }
@@ -890,6 +955,8 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::keyPressEvent( QKeyEvent * event ) 
 {
+    
+    
     if (!isSelected()) {
     return;
     }
