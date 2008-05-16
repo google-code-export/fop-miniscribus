@@ -1201,7 +1201,7 @@ void TextLayer::cursor_area( const QRectF areas , const qreal ip )
             if (ip > 0 && evesum%3 && areas.y() > 0) {
             CurrentCursorboundingRect = QRectF(Xpos,areas.y(),300,300);
             //////////////CurrentCursorboundingRect = boundingRect();
-            qDebug() << "### TextLayer CurrentCursorboundingRect x." << Xpos << "y." << areas.y();
+            /////////////////////////qDebug() << "### TextLayer CurrentCursorboundingRect x." << Xpos << "y." << areas.y();
             emit recalcarea(); 
             }
     
