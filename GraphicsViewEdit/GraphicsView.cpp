@@ -429,7 +429,7 @@ void GraphicsView::updateauto()
 	TextLayer *layer = qobject_cast<TextLayer *>(sender());
 	if (layer) {
 		 const QRectF needview = layer->viewport_need();
-		 qDebug() << "### view needview " << needview;
+		/////////////////qDebug() << "### view needview " << needview;
 		
 		if (needview.isValid() && needview != viewportLayer) {
 			  ///////ensureVisible(needview,100,100);
