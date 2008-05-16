@@ -34,6 +34,10 @@
 #include "GraphicsScene.h"
 #include <math.h>
 
+#define QGRAPHICSVIEW_DEBUG
+
+
+
 class GraphicsView : public QGraphicsView
 {
      Q_OBJECT
@@ -52,7 +56,8 @@ protected:
     void contextMenuEvent ( QContextMenuEvent * e );
     void resizeEvent(QResizeEvent *event);
     void wheelEvent (QWheelEvent * event);
-    void drawBackground(QPainter *painter, const QRectF &rect);
+    ///////void drawForeground ( QPainter * painter, const QRectF & rect );
+    void drawBackground( QPainter * painter, const QRectF & rect );
     void scaleView (qreal scaleFactor);
   GraphicsScene *scene;
   qreal width;
@@ -60,6 +65,7 @@ protected:
   uint layercount;
   QWidget *BigParent;
   QPixmap chessgrid;
+  QRectF viewportLayer;   ////// viewportLayer.isNull()
 private:
   void fillNullItem();
 signals:

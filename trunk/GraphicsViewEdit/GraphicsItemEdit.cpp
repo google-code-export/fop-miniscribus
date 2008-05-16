@@ -28,10 +28,11 @@
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
     : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
     hi(Metric("22mm")),wi(Metric("55mm")),bgcolor(QColor(Qt::white)),
-    bordercolor(QColor(Qt::red)),Rotate(0),check_view_area_time(0),
+    bordercolor(QColor(Qt::red)),Rotate(0),check_view_area_time(0),ActionHover(false),
     format(DIV_ABSOLUTE),mount(new TextController)
 {
     mount->q = this;
+    setAcceptsHoverEvents(true);
     wisub_border = wi + border;
     history.clear();
     id = layer_id;
@@ -65,44 +66,13 @@ TextLayer::~TextLayer()
 
 QRectF TextLayer::viewport_need()
 {
-    QRectF showme(-20,0,wi,qBound(350.0,hi / 2.0,hi - 50));   
-    const int textpos = textCursor().position();
-    qreal fromtopY = 0;
-    QTextLine foline;
-    for(QTextBlock block = document()->begin(); block.isValid(); block = block.next()) {
-      fromtopY += block.layout()->boundingRect().height();
-      if(block.contains(textpos)) {
-      const int relativePos = textpos - block.position();
-      foline = block.layout()->lineForTextPosition(relativePos);
-      }
-    }
-    fromtopY += pos().y() + 50;
-    if (!lastclick.isNull() ) {
-    showme.moveTo(0,fromtopY);
-    }
-    if ( foline.isValid()  ) {
-    ///////qDebug() << "### foline rect " << showme << " ftop->" << fromtopY; 
-    }
-    return showme;
+    return CurrentCursorboundingRect;
 }
 
 
 void TextLayer::cursor_wake_up()
 {
-    QDateTime timer1( QDateTime::currentDateTime() );
-    const uint now = timer1.toTime_t();
-    evesum++;
-    if (check_view_area_time == 0) {
-       check_view_area_time = now;  /* first run */ 
-    }
-    if ( now > (check_view_area_time + 1) ) {
-    check_view_area_time = now;
-    LayerHightChecks();
-    /////GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    /* not faster as 1000 ms */
-    qDebug() << "### cursor_wake_up " << evesum; 
-    emit recalcarea();
-    }
+   
 }
 
 
@@ -157,42 +127,7 @@ bool TextLayer::editable()
 }
 
 
-void TextLayer::LayerHightChecks() 
-{
-    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    QRectF Srect = sc->sceneRect();
-    if (Ltype() == DIV_AUTO || Ltype() == DIV_HEADER || Ltype() == DIV_FOOTER) {
-    wi = Srect.width();
-    }
-    
-    wisub_border = wi + border;
-    
-    if (Ltype() != DIV_ABSOLUTE) {
-        qreal txthight = mount->txtControl()->boundingRect().height() + 5;
-        if (txthight > hi) {
-        SetDimension(wi,txthight);
-        }
-    }  
-        
-        QTextFrame  *Tframe = document()->rootFrame();
-        QTextFrameFormat rootformats = Tframe->frameFormat();
-        rootformats.setWidth(wi);
-        Tframe->setFrameFormat(rootformats);
-        document()->setPageSize(QSizeF(wi,hi));
-    
-        if ( rootformats.topMargin() < border ) {
-        border = 0;    
-        }
-        if (rootformats.bottomMargin() < border) {
-        border = 0;
-        }
-            
-    
-    
-    
-    
-    
-}
+
 
 
 void TextLayer::setModus( CurrentModus  e)
@@ -203,7 +138,7 @@ void TextLayer::setModus( CurrentModus  e)
 
 void TextLayer::cursorPositionChanged( const QTextCursor cur)
 {
-   update();
+   //////////update();
 }
 
 void TextLayer::SaveFilelayer()
@@ -537,19 +472,7 @@ void TextLayer::InsertRevision()
     update();
 }
 
-void TextLayer::insert( RichDoc Rdoc )
-{
-    RestoreMoveAction();
-    
-    _doc = Rdoc.todoc();
-    setStyle(Rdoc.style.split(";"),false);
-    mount->txtControl()->setDocument(_doc,this);
-    mount->txtControl()->RegisterResource(Rdoc.resource);
-    LayerHightChecks();
-    update(boundingRect());
-    guiwait = Rdoc;
-    LayerHightChecks();
-}
+
 
 void TextLayer::E_Reload()
 {
@@ -591,6 +514,9 @@ TextController::TextController()
 { 
 
 }
+
+
+/* only one connect */
 TextWriter *TextController::txtControl() const
 {
     if (!device) {
@@ -598,6 +524,7 @@ TextWriter *TextController::txtControl() const
        device = new TextWriter(that);
        connect(device, SIGNAL(q_cursor_newPos() ),q, SLOT(cursor_wake_up()));
        connect(device, SIGNAL(q_update(QRectF) ),q, SLOT(updatearea(QRectF)));
+       connect(device, SIGNAL(q_cursor_area(QRectF,qreal) ),q, SLOT(cursor_area(QRectF,qreal)));
     }
     return device;
 }
@@ -628,6 +555,24 @@ void TextLayer::updatearea( const QRectF areas )
     update(areas);
 }
 
+
+
+
+int TextLayer::getXcursor()
+{
+    QTextBlock block = textCursor().block();
+    int pos = textCursor().position() - block.position();
+    const QTextLayout *layout = block.layout();
+    int x = 0;
+    QTextLine line = layout->lineForTextPosition(pos);
+    if (line.isValid()) {
+        x = line.cursorToX(pos);
+    } 
+    else {
+        x = -1; // delayed init.  Makes movePosition() call setX later on again.
+    }
+    return x;
+}
 
 
 void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -689,6 +634,18 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 				painter->restore();
 			}
       
+      int hoverborder = 1;
+      if (border > 1) {
+        hoverborder =  border + 2; 
+      }
+      
+    if (ActionHover) {
+        painter->save();
+        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(QBrush(Qt::red),hoverborder,Qt::SolidLine,Qt::RoundCap)	);
+        painter->drawRect(boundingRect());
+        painter->restore();  
+    }
    
     setTransform(ActualMatrixe(Rotate),false);
     
@@ -791,7 +748,7 @@ void TextLayer::EditModus()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    lastclick = event->scenePos();
+
     
     if (!IsSelectActive) {
     return;
@@ -826,7 +783,6 @@ void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    lastclick = event->scenePos();
     
     if (!IsSelectActive) {
     return;
@@ -894,7 +850,7 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::setCursor(Qt::ArrowCursor);
     QApplication::restoreOverrideCursor();
     
-    lastclick = event->scenePos();
+
     
     if (!IsSelectActive) {
     return;
@@ -919,8 +875,8 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    
-    lastclick = event->scenePos();
+    LayerHightChecks();
+  
     
     if (!isSelected()) {
     return;
@@ -953,6 +909,29 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
     mount->txtControl()->procesevent(event);
 }
 
+void TextLayer::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (modus == Lock) {
+    return;
+    }
+    ActionHover = true;
+    update();
+    QGraphicsItem::hoverEnterEvent(event);
+}
+
+void TextLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (modus == Lock) {
+    return;
+    }
+    ActionHover = false;
+    update();
+    QGraphicsItem::hoverLeaveEvent(event);
+}
+
+
+
+
 void TextLayer::keyPressEvent( QKeyEvent * event ) 
 {
     
@@ -966,6 +945,7 @@ void TextLayer::keyPressEvent( QKeyEvent * event )
     }
     if (mount->txtControl()->editable()) {
     mount->txtControl()->procesevent(event);
+    LayerHightChecks();
     }
     QGraphicsItem::keyPressEvent(event);
 }
@@ -1072,14 +1052,43 @@ RichDoc TextLayer::ReadActualItem()
     return Rdoc;
 }
 
+
+
+void TextLayer::insert( RichDoc Rdoc )
+{
+    RestoreMoveAction();
+    _doc = Rdoc.todoc();
+    setStyle(Rdoc.style.split(";"),false);
+    ///////////mount->txtControl()->RegisterResource(Rdoc.resource);
+    update(boundingRect());
+    guiwait = Rdoc;
+    LayerHightChecks();
+}
+
+
+/*
+QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
+    hi(Metric("22mm")),wi(Metric("55mm")),bgcolor(QColor(Qt::white)),
+    bordercolor(QColor(Qt::red)),Rotate(0),check_view_area_time(0),
+    format(DIV_ABSOLUTE),mount(new TextController)
+
+*/
+
+
 void TextLayer::setStyle( QStringList syle , bool fromclone )
 {
-    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    QRectF Srect = sc->sceneRect();
     #define ALPHAHTML(alpha) ((alpha)*254.99999999)
+    QRectF Srect = scene()->sceneRect();
+    if (_doc) {
+    mount->txtControl()->setDocument(_doc,this);
+    }
+    bgcolor = QColor(Qt::white);
+    bgcolor.setAlpha(0);
+    border = 0;
+    currentprintrender = false;
     format = DIV_AUTO;  /* default go auto and wi from scene rect */
-    wi = Srect.width();
-    setPos(QPointF(0,0));  /* next Y from scene */
+    wi = Srect.width() - _DEBUGRANGE_WI_;
+    setPos(QPointF(_DEBUGRANGE_WI_,0));  /* next Y from scene */
     setZValue(0.);  /* auto default zero */
     QStringList find;
     find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
@@ -1147,15 +1156,51 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     if (incss.value("degree-rotation").toInt() !=0) {
        Rotate =  incss.value("degree-rotation").toInt();
     }
-    
+    wisub_border = wi - (border * 2);
+    if (document()) {
+    document()->setTextWidth(wisub_border);
+    }
+    TextboundingRect = mount->txtControl()->boundingRect();
     modus = Show;
     update();
       
 }
 
+void TextLayer::LayerHightChecks() 
+{
+    wisub_border = wi + border;
+    qreal txthight = mount->txtControl()->boundingRect().height() + 5;
+        if (txthight > hi) {
+        SetDimension(wi,txthight);
+        emit recalcarea();
+        }
+}
 
 
-
+void TextLayer::cursor_area( const QRectF areas , const qreal ip )
+{
+    QDateTime timer1( QDateTime::currentDateTime() );
+    const uint now = timer1.toTime_t();
+    
+    if (check_view_area_time == 0) {
+       check_view_area_time = now;  /* first run */ 
+    }
+    
+    if ( now > (check_view_area_time + 1) ) { 
+    check_view_area_time = now;
+    LayerHightChecks();
+        
+            const int Xpos = getXcursor();
+            evesum++;
+            if (ip > 0 && evesum%3 && areas.y() > 0) {
+            CurrentCursorboundingRect = QRectF(Xpos,areas.y(),300,300);
+            //////////////CurrentCursorboundingRect = boundingRect();
+            qDebug() << "### TextLayer CurrentCursorboundingRect x." << Xpos << "y." << areas.y();
+            emit recalcarea(); 
+            }
+    
+    }
+}
 
 
 

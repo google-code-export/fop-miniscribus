@@ -1258,17 +1258,18 @@ void TextWriter::GrepCursorData()
 	}
 	
 	   paragraphrect = _d->documentLayout()->blockBoundingRect(textCursor().block());
-	   //////qDebug() << "### mouse pararec  " << paragraphrect;
+	   int pos = textCursor().position() - textCursor().block().position();
 		 DDline = currentTextLine(textCursor());
 		 line_rect = DDline.naturalTextRect();
 		 line_rect_out = DDline.rect();
 		 line_nummer = DDline.lineNumber();
 		 linehight = DDline.height();
 	   cursor_position = textCursor().position();
-		 X_Pos_Cursor = paragraphrect.x();  //////DDline.cursorToX(cursor_position);
+		 X_Pos_Cursor = DDline.cursorToX(pos);
 	   Y_Pos_Cursor =  qBound (0.,paragraphrect.y(),boundingRect().bottom());
 		 ///////////////qDebug() << "### mouse data  Ln." << Y_Pos_Cursor << " Cp." << cursor_position  << "|" << textCursor().position();
 		 CursorDrawLine = QLineF(QPointF(X_Pos_Cursor,Y_Pos_Cursor),QPointF(X_Pos_Cursor,paragraphrect.bottom()));
+	   emit q_cursor_area(paragraphrect,X_Pos_Cursor);
 }
 
 

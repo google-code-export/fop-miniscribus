@@ -130,7 +130,7 @@ void GraphicsView::NewLayer()
 				ioq2->setData (ObjectNameEditor,layercount);
 	      items.append(ioq2);
 	      ioq2->setZValue(0.1); 
-	      ioq2->setPos(QPointF(0,gotopX));
+	      ioq2->setPos(QPointF(_DEBUGRANGE_WI_,gotopX));
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 		    connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 		    connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
@@ -181,6 +181,9 @@ void GraphicsView::insert( RichDoc e )
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
+	   
+	      ensureVisible(ioq2,100,100);
+	
 }
 
 void GraphicsView::PasteLayer()
@@ -234,25 +237,7 @@ QRectF GraphicsView::boundingRect()
 	
 }
 
-void GraphicsView::updateauto()
-{
-	qreal fromtop = 0;
-	for (int e=0;e<items.size();e++) {
-		if (items[e]->Ltype() != TextLayer::DIV_ABSOLUTE ) {
-			 items[e]->setPos(QPointF(0,fromtop));
-			 qreal hibecome = items[e]->pointnext();
-			 items[e]->update();
-			 fromtop += hibecome;
-		}
-	}
-	
-	NextfromY();  /* make rect scene big as needed */
-	
-	TextLayer *layer = qobject_cast<TextLayer *>(sender());
-	if (layer) {
-	ensureVisible(layer->viewport_need(),100,30);
-	}
-}
+
 
 qreal GraphicsView::NextfromY()
 {
@@ -342,12 +327,16 @@ void GraphicsView::AppendDemo()
 				insert(addoc);
 				}
 				
+				RichDoc xx;
+				
+				insert(xx);
+				
 }
 
 
 void GraphicsView::wheelEvent (QWheelEvent * event)
 {
-	if (setter.value("wheel/zoom").toInt() == 1) {
+	if (setter.value("wheel/zoom").toInt() == 0) {
   scaleView(pow ((double) 2, event->delta() / 240.0));
 	return;
 	}
@@ -356,12 +345,16 @@ void GraphicsView::wheelEvent (QWheelEvent * event)
 
 void GraphicsView::sceneScaleChanged(const QString &scale)
 {
+	  if (scale.left(scale.indexOf("%")).toDouble() < 20) {
+			fitInView(boundingRect(),Qt::KeepAspectRatioByExpanding);
+			return;
+		}
+	
     double newScale = scale.left(scale.indexOf("%")).toDouble() / 100.0;
     QMatrix oldMatrix = matrix();
     resetMatrix();
     translate(oldMatrix.dx(), oldMatrix.dy());
     QGraphicsView::scale(newScale, newScale);
-	  DisplayTop();
 }
 
 /* scale the scene view */
@@ -397,11 +390,69 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 void GraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 {
 	  painter->save();
-	  painter->setPen( QPen(Qt::darkGray,Metric("1mm")) );
+	  painter->setPen( QPen(Qt::darkGray,1) );
     painter->setBrush(QBrush(chessgrid));  
 		painter->drawRect(scene->sceneRect());  
-	  painter->restore();
+		painter->restore();
 }
+/*
+void GraphicsView::drawForeground ( QPainter * painter, const QRectF & rect )  
+{
+	 if (!viewportLayer.isNull()) {
+		    painter->setPen( QPen(Qt::red,6,Qt::DashLine) );
+			  painter->setBrush(Qt::NoBrush);
+			  painter->drawRect(viewportLayer); 
+		}
+}
+*/
+
+
+
+
+
+
+
+void GraphicsView::updateauto()
+{
+	qreal fromtop = 0;
+	for (int e=0;e<items.size();e++) {
+		if (items[e]->Ltype() != TextLayer::DIV_ABSOLUTE ) {
+			 items[e]->setPos(QPointF(_DEBUGRANGE_WI_,fromtop));
+			 qreal hibecome = items[e]->pointnext();
+			 items[e]->update();
+			 fromtop += hibecome;
+		}
+	}
+	
+	NextfromY();  /* make rect scene big as needed */
+	
+	TextLayer *layer = qobject_cast<TextLayer *>(sender());
+	if (layer) {
+		 const QRectF needview = layer->viewport_need();
+		 qDebug() << "### view needview " << needview;
+		
+		if (needview.isValid() && needview != viewportLayer) {
+			  ///////ensureVisible(needview,100,100);
+			  viewportLayer = needview;
+			  layer->setFocus(Qt::MouseFocusReason);
+		}
+	 
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
