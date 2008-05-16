@@ -1161,6 +1161,8 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     document()->setTextWidth(wisub_border);
     }
     TextboundingRect = mount->txtControl()->boundingRect();
+    LayerHightChecks();
+    document()->setPageSize(QSizeF(wi,hi));
     modus = Show;
     update();
       
@@ -1168,12 +1170,15 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
 
 void TextLayer::LayerHightChecks() 
 {
-    wisub_border = wi + border;
     qreal txthight = mount->txtControl()->boundingRect().height() + 5;
         if (txthight > hi) {
         SetDimension(wi,txthight);
+        wisub_border = wi - (border * 2);
+        document()->setTextWidth(wisub_border);
         emit recalcarea();
         }
+        wisub_border = wi - (border * 2);
+        document()->setPageSize(QSizeF(wi,hi));
 }
 
 
@@ -1188,6 +1193,7 @@ void TextLayer::cursor_area( const QRectF areas , const qreal ip )
     
     if ( now > (check_view_area_time + 1) ) { 
     check_view_area_time = now;
+    document()->setPageSize(QSizeF(wi,hi));
     LayerHightChecks();
         
             const int Xpos = getXcursor();
