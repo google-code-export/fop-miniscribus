@@ -275,8 +275,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         
         
-        a = RootMenu->addAction(tr("Save as Layer file"), this, SLOT(SaveFilelayer()));
-        a->setIcon(QIcon(":/img/bringtofront.png"));
+        
         
         a = RootMenu->addAction(tr("Open Layer file"), this, SLOT(OpenFilelayer()));
         a->setIcon(QIcon(":/img/bringtofront.png"));
@@ -285,6 +284,9 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         
         
     }
+    
+    a = RootMenu->addAction(tr("Save as Layer file"), this, SLOT(SaveFilelayer()));
+    a->setIcon(QIcon(":/img/bringtofront.png"));
     
     RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy full text plain" ), this , SLOT( Copy_Text_Plain() ) );
     RootMenu->addAction(QIcon(QString::fromUtf8(":/img/copy.png")),tr( "Copy xhtml text plain" ), this , SLOT( Copy_Html_Plain() ) );
@@ -1047,6 +1049,12 @@ RichDoc TextLayer::ReadActualItem()
     styles.append(QString("z-index:%1;").arg(qRound(zValue())));
     }
     
+    
+    if (modus = Lock ) {
+    styles.append(QString("l-lock:1; ") );
+    }
+    
+    
     RichDoc Rdoc;
             Rdoc.Register(document(),mount->txtControl()->imglist(),styles);
     return Rdoc;
@@ -1091,7 +1099,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     setPos(QPointF(_DEBUGRANGE_WI_,0));  /* next Y from scene */
     setZValue(0.);  /* auto default zero */
     QStringList find;
-    find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
+    find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     QMap<QString,QVariant> incss; 
     for (int o = 0; o < find.size(); ++o)  {
          incss.insert(find.at(o),QString("0"));
@@ -1156,6 +1164,13 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     if (incss.value("degree-rotation").toInt() !=0) {
        Rotate =  incss.value("degree-rotation").toInt();
     }
+    
+    
+    const int lockstatus = incss.value("l-lock").toInt();
+    
+    
+    
+    
     wisub_border = wi - (border * 2);
     if (document()) {
     document()->setTextWidth(wisub_border);
@@ -1165,6 +1180,12 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     document()->setPageSize(QSizeF(wi,hi));
     modus = Show;
     update();
+    
+    
+    if (lockstatus !=0 ) {
+    QTimer::singleShot(600, this, SLOT(SwapLockmodus()));
+    }
+    
       
 }
 
