@@ -320,6 +320,8 @@ QAction *actionAlignLeft,
 
 QAction *actionNewtable;
 QAction *actionNewimage;
+QTextBlockFormat pf;
+void defalut_style();
 
 QActionGroup *grp;
 int cursor_position;
