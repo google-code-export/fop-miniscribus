@@ -643,7 +643,9 @@ void TextWriter::tkeyPressEvent(QKeyEvent *e)
            paste();
 			     position_selection_start = 0;
     } else if (e->key() == Qt::Key_Backspace && !(e->modifiers() & ~Qt::ShiftModifier)) {
+			
         QTextBlockFormat blockFmt = C_cursor.blockFormat();
+			
         QTextList *list = C_cursor.currentList();
         if (list && C_cursor.atBlockStart()) {
             list->remove(C_cursor.block());
@@ -655,10 +657,11 @@ void TextWriter::tkeyPressEvent(QKeyEvent *e)
         }
         goto accept;
     } else if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
-        if (e->modifiers() & Qt::ControlModifier)
+        if (e->modifiers() & Qt::ControlModifier) {
             C_cursor.insertText(QString(QChar::LineSeparator));
-        else
-            C_cursor.insertBlock();
+        } else {
+            C_cursor.insertBlock(pf);   /* default format can take from setting */
+				}
         e->accept();
         goto accept;
     } else if (navigatelink) {

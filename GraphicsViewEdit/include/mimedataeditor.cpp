@@ -27,6 +27,16 @@ Layoutpainter::Layoutpainter(QObject *parent)
     ComposeAction();
 }
 
+void Layoutpainter::defalut_style()
+{
+ /* i not find on qt to remove default 12point defalut space !!! */
+ pf.setBottomMargin(0);
+ pf.setTopMargin(0);
+ pf.setRightMargin(0);
+ pf.setIndent(0);
+ pf.setLeftMargin(0);
+}
+
 /*
 
 QAction *actionBold;
