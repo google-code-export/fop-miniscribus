@@ -1050,7 +1050,7 @@ RichDoc TextLayer::ReadActualItem()
     }
     
     
-    if (modus = Lock ) {
+    if (modus == Lock ) {
     styles.append(QString("l-lock:1; ") );
     }
     
