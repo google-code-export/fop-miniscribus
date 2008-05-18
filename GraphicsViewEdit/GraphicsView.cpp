@@ -36,12 +36,12 @@ GraphicsView::GraphicsView(  QWidget * parent )
 		} else {
 			chessgrid = BruschChess(Metric("20mm"));
 		}
-		QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
+		///////////QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
 		QRectF Paper;
 		if (Metric(setter.value("gview/wi").toString()) > 0) {
 		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
 		} else {
-		Paper = QRectF(0,0,Metric("220mm"),Metric("350mm"));
+		Paper = QRectF(0,0,Metric("170mm"),Metric("170mm"));
 		}
 	  scene = new GraphicsScene(Paper,this);
 	  setCacheMode(CacheNone);
@@ -149,11 +149,11 @@ void GraphicsView::CloneCurrent()
 	layercount++;
 	      RichDoc rdoc = CurrentActive->ReadActualItem();
 				TextLayer *ioq2 = new TextLayer(layercount,0,scene);
-				ioq2->insert(rdoc);
+				ioq2->insert(rdoc,true);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
 	      items.append(ioq2);
-	      ioq2->setStyle(rdoc.style.split(";"),true);  /* clone pos ++ */
+	      ///////////ioq2->setStyle(rdoc.style.split(";"),true);  /* clone pos ++ */
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
