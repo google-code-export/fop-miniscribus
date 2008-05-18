@@ -30,7 +30,7 @@
 #include "GraphicsScene.h"
 #define _SET_SELECTION_BY_SCENE_ 0
 
-#define _DEBUGRANGE_WI_ 40
+#define _DEBUGRANGE_WI_ 1
 
 
 class Rotater : public QWidget
@@ -126,7 +126,7 @@ public:
     QTextCursor textCursor();
     void LayerHightChecks();
     RichDoc ReadActualItem();
-    void insert( RichDoc Rdoc );
+    void insert( RichDoc Rdoc , bool clone = false );
     void setZValue(qreal index );
     bool contains(const QPointF &point) const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -139,6 +139,7 @@ public:
     inline void SetDimension( qreal w , qreal h ) { 
     wi = w;
     hi = h;
+    document()->setPageSize(QSizeF(wi,hi));
     LayerHightChecks();
     }
 protected:

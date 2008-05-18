@@ -583,20 +583,21 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(widget);
     bool canedit = mount->txtControl()->editable();
     wisub_border = wi + border;
-    const qreal maximumhiht = Metric("297mm") + 5;
+    const qreal minimumHi = Metric("15mm");
+    const qreal maximHi = Metric("210mm");
     
      /* Layer Background draw! */
-		qreal hightlengh =  mount->txtControl()->boundingRect().height();
+		const qreal hightlengh =  mount->txtControl()->boundingRect().height() + 5;
     if (format != Lock )  {  
         
                 if (hightlengh > hi ) {
-                  hi = hightlengh + 5;
+                  hi = hightlengh;
                 }
                 
                 if (format == DIV_AUTO ) {
-                   hi = qBound(Metric("18mm"), hightlengh + 10,maximumhiht);
+                   hi = qMax(minimumHi, hightlengh);
                 }
-                   if (hi > maximumhiht ) {
+                   if (hi > maximHi ) {
                        AlertSize = true;
                        RestoreMoveAction();
                    } else {
@@ -645,7 +646,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->save();
         painter->setBrush(Qt::NoBrush);
         painter->setPen(QPen(QBrush(Qt::red),hoverborder,Qt::SolidLine,Qt::RoundCap)	);
-        painter->drawRect(boundingRect());
+        painter->drawRect(mount->txtControl()->boundingRect());    ////////  boundingRect() 
         painter->restore();  
     }
    
@@ -1062,11 +1063,11 @@ RichDoc TextLayer::ReadActualItem()
 
 
 
-void TextLayer::insert( RichDoc Rdoc )
+void TextLayer::insert( RichDoc Rdoc , bool clone )
 {
     RestoreMoveAction();
     _doc = Rdoc.todoc();
-    setStyle(Rdoc.style.split(";"),false);
+    setStyle(Rdoc.style.split(";"),clone);
     ///////////mount->txtControl()->RegisterResource(Rdoc.resource);
     update(boundingRect());
     guiwait = Rdoc;
@@ -1088,6 +1089,15 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     #define ALPHAHTML(alpha) ((alpha)*254.99999999)
     QRectF Srect = scene()->sceneRect();
     if (_doc) {
+        
+            QTextFrame  *Tframe1 = _doc->rootFrame();
+            QTextFrameFormat rootformats1 = Tframe1->frameFormat();
+            rootformats1.setWidth(Srect.width()); 
+            Tframe1->setFrameFormat(rootformats1);
+        
+        
+    //////_doc->setTextWidth(Srect.width());
+   ///////_doc->setPageSize(QSizeF(Srect.width(),Srect.width() / 2));
     mount->txtControl()->setDocument(_doc,this);
     }
     bgcolor = QColor(Qt::white);
@@ -1096,6 +1106,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     currentprintrender = false;
     format = DIV_AUTO;  /* default go auto and wi from scene rect */
     wi = Srect.width() - _DEBUGRANGE_WI_;
+    
     setPos(QPointF(_DEBUGRANGE_WI_,0));  /* next Y from scene */
     setZValue(0.);  /* auto default zero */
     QStringList find;
@@ -1195,11 +1206,11 @@ void TextLayer::LayerHightChecks()
         if (txthight > hi) {
         SetDimension(wi,txthight);
         wisub_border = wi - (border * 2);
-        document()->setTextWidth(wisub_border);
+        document()->setTextWidth(wi);
         emit recalcarea();
         }
         wisub_border = wi - (border * 2);
-        document()->setPageSize(QSizeF(wi,hi));
+        ///////document()->setPageSize(QSizeF(wi,hi));
 }
 
 
