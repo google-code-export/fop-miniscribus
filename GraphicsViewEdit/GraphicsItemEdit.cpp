@@ -646,7 +646,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->save();
         painter->setBrush(Qt::NoBrush);
         painter->setPen(QPen(QBrush(Qt::red),hoverborder,Qt::SolidLine,Qt::RoundCap)	);
-        painter->drawRect(mount->txtControl()->boundingRect());    ////////  boundingRect() 
+        painter->drawRect(boundingRect());    ////////  mount->txtControl()->boundingRect() 
         painter->restore();  
     }
    
