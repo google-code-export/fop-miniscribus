@@ -36,6 +36,26 @@
 
 #define QGRAPHICSVIEW_DEBUG
 
+/* work on layer ID edit enable */
+class LayerEvent : public QEvent
+{
+	//QEvent::User==1000
+    
+public:
+    LayerEvent(int s, bool d)
+	: QEvent( QEvent::User ),lid(s),dn(d)
+    {  }
+ int name() const { return lid; }
+ bool done() const { return dn; }
+
+private:
+    int lid;
+    bool dn;
+
+};
+
+/* qApp->postEvent(this, new LayerEvent(int,bool)); */
+
 
 
 class GraphicsView : public QGraphicsView
@@ -45,11 +65,14 @@ class GraphicsView : public QGraphicsView
 public:
   GraphicsView( QWidget * parent  = 0 );
   ~GraphicsView();
-  TextLayer *CurrentActive;
+  inline TextLayer *LayerModel() { return CurrentActive; }
+  inline int LayerID() { return layerNr; } 
   QRectF boundingRect();
   qreal NextfromY();
   void insert( RichDoc e );  /* one layer insert */
   QMap<int,RichDoc> read();  /* read full pages */
+  TextLayer *CurrentActive;
+  void NewLayer( const int type );
 protected:
     QList<TextLayer*> items;
     QSettings setter;
@@ -60,6 +83,7 @@ protected:
     void drawBackground( QPainter * painter, const QRectF & rect );
     void scaleView (qreal scaleFactor);
   GraphicsScene *scene;
+  int layerNr;
   qreal width;
   qreal height;
   uint layercount;
@@ -69,7 +93,8 @@ protected:
 private:
   void fillNullItem();
 signals:
-   void active_items(bool);
+   void LayerEditor(bool,int);
+   void GrepLayer(int);
 public slots:
     void AppendDemo();
     void WorksOn(QGraphicsItem * item , qreal zindex );

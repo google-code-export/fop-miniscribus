@@ -30,7 +30,7 @@
 #include "GraphicsScene.h"
 #define _SET_SELECTION_BY_SCENE_ 0
 
-#define _DEBUGRANGE_WI_ 5
+#define _DEBUGRANGE_WI_ 2
 
 
 class Rotater : public QWidget
@@ -99,7 +99,7 @@ void NewValue( const int x )
 };
 
 
-
+typedef qreal DpIPoint;
 
 
 class TextController;
@@ -110,8 +110,22 @@ class TextLayer : public QObject, public QGraphicsItem
    Q_OBJECT 
 
 public:
-    enum CurrentModus{ Show, Edit, Move , MoveAll ,  Lock };
-    enum LAYERTYPE{DIV_ABSOLUTE = 50,DIV_AUTO,/* 51 */DIV_FLOAT,/* 52 */DIV_HEADER,DIV_FOOTER};
+    
+    enum CurrentModus { 
+        Show, 
+        Edit, 
+        Move , 
+        MoveAll,  
+        Lock };
+        
+    enum LAYERTYPE {
+        DIV_ABSOLUTE = 50,
+        DIV_AUTO,/* 51 */
+        DIV_FLOAT,/* 52 */
+        DIV_HEADER, /* 53 */
+        DIV_FOOTER /* 54 */
+        };
+        
     TextLayer(const int layer_id , QGraphicsItem *parent = 0 , QGraphicsScene *scene = 0);
     ~TextLayer();
     QList<QAction *> MainActions();
@@ -142,6 +156,7 @@ public:
     document()->setPageSize(QSizeF(wi,hi));
     LayerHightChecks();
     }
+    inline CurrentModus W_modus() { return modus; }
 protected:
     int getXcursor();
     bool AlertSize;
@@ -172,6 +187,7 @@ protected:
     CurrentModus modus;
     uint evesum;
     bool IsSelectActive;
+    bool SwapLockBreak;
     int id;
     bool sceneEvent(QEvent *event);
 private:
@@ -197,7 +213,6 @@ public slots:
     void updatearea( const QRectF areas );
     void cursor_wake_up();
     void cursorPositionChanged( const QTextCursor cur);
-    void CommitLayer();
     void InsertRevision();
     void EditModus();
     void SetNewBGColor();
@@ -207,7 +222,7 @@ public slots:
     void SwapEdit();
     void Borderwidht();
     void SwapLockmodus();
-    void ShowInfos();
+    
     void E_Reload();
     void RotateLayer( const int ro );
     void Copy_Html_Plain();
@@ -218,6 +233,15 @@ public slots:
     void seTBack();
     void seTFront();
     void cursor_area( const QRectF areas , const qreal ip );
+    void undo();
+    void redo();
+    
+private slots: 
+void BreakRem();
+void ShowInfos();
+void CommitLayer();
+    
+    
 };
 
 Q_DECLARE_METATYPE(TextLayer *)
