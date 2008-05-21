@@ -159,11 +159,10 @@ void GraphicsView::CloneCurrent()
 	layercount++;
 	      RichDoc rdoc = CurrentActive->ReadActualItem();
 				TextLayer *ioq2 = new TextLayer(layercount,0,scene);
-				ioq2->insert(rdoc);
+				ioq2->insert(rdoc,true);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
 	      items.append(ioq2);
-	      ioq2->setStyle(rdoc.style.split(";"),true);  /* clone pos ++ */
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
@@ -180,11 +179,11 @@ QMap<int,RichDoc> GraphicsView::read()
 		 return pages; 
 }
 
-void GraphicsView::insert( RichDoc e )
+void GraphicsView::insert( RichDoc e , bool cloned )
 {
 	      layercount++;
 	      TextLayer *ioq2 = new TextLayer(layercount,0,scene);
-				ioq2->insert(e);
+				ioq2->insert(e,cloned);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
 	      items.append(ioq2);
