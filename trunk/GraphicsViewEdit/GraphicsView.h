@@ -69,7 +69,7 @@ public:
   inline int LayerID() { return layerNr; } 
   QRectF boundingRect();
   qreal NextfromY();
-  void insert( RichDoc e );  /* one layer insert */
+  void insert( RichDoc e , bool cloned = false );  /* one layer insert */
   QMap<int,RichDoc> read();  /* read full pages */
   TextLayer *CurrentActive;
   void NewLayer( const int type );
