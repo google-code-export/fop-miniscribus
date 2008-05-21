@@ -34,14 +34,14 @@ GraphicsView::GraphicsView(  QWidget * parent )
 	  if (Metric(setter.value("gview/chess").toString()) > 0) {
 			chessgrid = BruschChess(Metric(setter.value("gview/chess").toString()));
 		} else {
-			chessgrid = BruschChess(Metric("20mm"));
+			chessgrid = BruschChess(Metric("10mm"));
 		}
-		///////////QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
+		QRectF bounds((-width / 2.0) * 150, (-height / 2.0) * 150, width * 150, height * 150);
 		QRectF Paper;
 		if (Metric(setter.value("gview/wi").toString()) > 0) {
 		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
 		} else {
-		Paper = QRectF(0,0,Metric("170mm"),Metric("170mm"));
+		Paper = QRectF(0,0,Metric("220mm"),Metric("350mm"));
 		}
 	  scene = new GraphicsScene(Paper,this);
 	  setCacheMode(CacheNone);
@@ -58,6 +58,7 @@ void GraphicsView::pageclear()
 {
 		items.clear();
 		scene->clear();
+	  emit LayerEditor(false,0);
 }
 
 void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
@@ -93,16 +94,11 @@ void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 	delete menu;
 }
 
-void GraphicsView::NewLayer()
+
+void GraphicsView::NewLayer( const int type )
 {
-	updateauto();
-	const int gotopX = NextfromY();
-	
-	QAction *invoice = qobject_cast<QAction *>(sender());
-	const int type = invoice->data().toInt();
-	qDebug() << "### new layer type  " << type;
-	layercount++;
 	RichDoc Adoc;
+	const int gotopX = NextfromY();
 	
 	if (type == 50) {
 		
@@ -135,6 +131,20 @@ void GraphicsView::NewLayer()
 		    connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 		    connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
 	}
+	
+	
+}
+
+
+
+void GraphicsView::NewLayer()
+{
+	updateauto();
+	QAction *invoice = qobject_cast<QAction *>(sender());
+	const int type = invoice->data().toInt();
+	qDebug() << "### new layer type  " << type;
+	layercount++;
+	NewLayer(type);
 }
 
 void GraphicsView::CloneCurrent()
@@ -149,11 +159,11 @@ void GraphicsView::CloneCurrent()
 	layercount++;
 	      RichDoc rdoc = CurrentActive->ReadActualItem();
 				TextLayer *ioq2 = new TextLayer(layercount,0,scene);
-				ioq2->insert(rdoc,true);
+				ioq2->insert(rdoc);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
 	      items.append(ioq2);
-	      ///////////ioq2->setStyle(rdoc.style.split(";"),true);  /* clone pos ++ */
+	      ioq2->setStyle(rdoc.style.split(";"),true);  /* clone pos ++ */
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
@@ -183,6 +193,7 @@ void GraphicsView::insert( RichDoc e )
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
 	   
 	      ensureVisible(ioq2,100,100);
+	      emit LayerEditor(false,0);
 	
 }
 
@@ -198,6 +209,8 @@ void GraphicsView::PasteLayer()
 		QMessageBox::information(0, tr("Error Layer"),tr("No Layer on clipboard"));
 		
 	}
+	
+	emit LayerEditor(false,0);
 }
 
 
@@ -225,6 +238,8 @@ void GraphicsView::removelayer( const int idx )
 	}
 	
 	updateauto();
+	emit LayerEditor(false,0);
+	fillNullItem();
 }
 
 
@@ -279,14 +294,15 @@ void GraphicsView::fillNullItem()
 		 items[e]->setSelected(false);
 	 }
 	 
-	 emit active_items(false);
+	 emit LayerEditor(false,0);
+	 qApp->postEvent(this,new LayerEvent(0,false));
 }
 
 
 void GraphicsView::GoEditCurrentLayer()
 {
     const int idax = CurrentActive->data(ObjectNameEditor).toUInt();
-    qDebug() << "### activlayer  " << idax;
+    ////////////qDebug() << "### activlayer  " << idax;
     if (idax < 1) {
     QMessageBox::information(0,tr("Layer status"),tr("Select a layer to begin edit."));
     return;
@@ -299,21 +315,22 @@ void GraphicsView::GoEditCurrentLayer()
 void GraphicsView::WorksOn(QGraphicsItem * item , qreal zindex )
 {
 	/////qDebug() << "### WorksOn " << zindex ;
-	//////qDebug() << "### data " << item->data(ObjectNameEditor).toInt();  
-	if (item->data(ObjectNameEditor).toUInt() < 1) {
-	return;
+	bool canEditLayer = false;
+	layerNr  = item->data(ObjectNameEditor).toInt();
+	//////////qDebug() << "### WorksOn data " << layerNr;  
+	if (layerNr > 0) {
+			if (CurrentActive = qgraphicsitem_cast<TextLayer *>(item)) {
+				 for (int e=0;e<items.size();e++) {
+				 items[e]->setSelected(false);
+				 }
+				 CurrentActive->setSelected(true);
+				 canEditLayer = true;
+				 qApp->postEvent(this,new LayerEvent(layerNr,canEditLayer));
+			}
 	}
-	if (CurrentActive = qgraphicsitem_cast<TextLayer *>(item)) {
-		 scene->clearSelection();
-		 for (int e=0;e<items.size();e++) {
-		 items[e]->setSelected(false);
-	   }
-		 CurrentActive->setSelected(true);
-		 emit active_items(true);
-		 return;
-	} else {
-		fillNullItem();
-	}
+	
+	emit LayerEditor(canEditLayer,layerNr);
+	/////////////qDebug() << "### emit bool " << canEditLayer;  
 }
 
 void GraphicsView::AppendDemo()
@@ -347,6 +364,7 @@ void GraphicsView::sceneScaleChanged(const QString &scale)
 {
 	  if (scale.left(scale.indexOf("%")).toDouble() < 20) {
 			fitInView(boundingRect(),Qt::KeepAspectRatioByExpanding);
+			DisplayTop();
 			return;
 		}
 	
@@ -355,6 +373,7 @@ void GraphicsView::sceneScaleChanged(const QString &scale)
     resetMatrix();
     translate(oldMatrix.dx(), oldMatrix.dy());
     QGraphicsView::scale(newScale, newScale);
+		DisplayTop();
 }
 
 /* scale the scene view */

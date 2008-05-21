@@ -1427,6 +1427,12 @@ QList<QAction *> TextWriter::MainActions()
 		NewCharformat(textCursor());
 		NewCharformat(textCursor());
 		
+		
+		   
+			 
+			 
+		
+
 		flyactions.append(actionNewtable);
 		flyactions.append(actionNewimage);
 		
@@ -1442,6 +1448,10 @@ QList<QAction *> TextWriter::MainActions()
 		flyactions.append(actionAlignRight);
 		flyactions.append(actionAlignCenter);
 		flyactions.append(actionAlignJustify);
+		
+		
+		///////flyactions.append(actionUndo);
+		///////flyactions.append(actionRedo);
 		
 		
 	  return flyactions;

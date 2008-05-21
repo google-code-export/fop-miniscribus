@@ -107,18 +107,12 @@ class RichDoc
 				 QTextFrame  *Tframe = d->rootFrame();
 				 if (nullmargin) {
 					 
-					 qDebug() << "### go margin null yes  " << nullmargin; 
-					 
 					       QTextFrameFormat Ftf = Tframe->frameFormat();
 					       Ftf.setLeftMargin(0);
                  Ftf.setBottomMargin(0);
                  Ftf.setTopMargin(0);
                  Ftf.setRightMargin(0);
 					       Tframe->setFrameFormat(Ftf);
-					    
-					       
-					 
-					 
 				 }
 				 
 				 
@@ -127,19 +121,13 @@ class RichDoc
 					 QTextBlock para = it.currentBlock();
 					 if (para.isValid()) {
 						QTextBlockFormat Parformat = para.blockFormat();
-						  /* deafault margin qt !!!! */
 						if (Parformat.bottomMargin() == 12 && Parformat.topMargin() == 12) {
-							   if (nullmargin) {
-							
-							     Parformat.setBottomMargin(0); 
-                   Parformat.setTopMargin(0);
-                   Parformat.setRightMargin(0);
-                   Parformat.setLeftMargin(0);
-							     helper.setPosition(para.position(),QTextCursor::MoveAnchor);
-							     helper.setBlockFormat(Parformat);
-									 
-									 
-								 }
+							////////Parformat.setBottomMargin(0); 
+              //////////Parformat.setTopMargin(0);
+              /////////Parformat.setRightMargin(0);
+              ///////////Parformat.setLeftMargin(0);
+							////////////helper.setPosition(para.position(),QTextCursor::MoveAnchor);
+							//////////////helper.setBlockFormat(Parformat);
 						}
 						 
 						 

@@ -27,7 +27,7 @@
 
 TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene *scene )
     : QGraphicsItem(parent,scene),evesum(0),modus(Show),border(1.),currentprintrender(false),
-    hi(Metric("22mm")),wi(Metric("55mm")),bgcolor(QColor(Qt::white)),
+    hi(Metric("30px")),wi(Metric("110px")),bgcolor(QColor(Qt::white)),SwapLockBreak(false),
     bordercolor(QColor(Qt::red)),Rotate(0),check_view_area_time(0),ActionHover(false),
     format(DIV_ABSOLUTE),mount(new TextController)
 {
@@ -56,6 +56,26 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     RestoreMoveAction();
     init();
 }
+
+QList<QAction *> TextLayer::MainActions()
+{
+  return mount->txtControl()->MainActions();
+}
+
+
+void TextLayer::undo()
+{
+   mount->txtControl()->undo();
+   updatearea( boundingRect() );
+}
+
+void TextLayer::redo()
+{
+   mount->txtControl()->redo();
+   updatearea( boundingRect() );
+}
+
+
 
 TextLayer::~TextLayer()
 {
@@ -103,11 +123,7 @@ bool TextLayer::sceneEvent(QEvent *event)
 }
 
 
-QList<QAction *> TextLayer::MainActions()
-{
-   return mount->txtControl()->MainActions();
-    
-}
+
 
 qreal TextLayer::pointnext()
 {
@@ -193,6 +209,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QAction *a;
     RootMenu = mount->txtControl()->StandardMenu(event->widget());
     if (format == DIV_ABSOLUTE && modus != Lock) {
+        
          a = RootMenu->addAction(tr("Send Front"), this, SLOT(seTFront()));
          a->setIcon(QIcon(":/img/sendtoback.png"));
          a = RootMenu->addAction(tr("Send Back"), this, SLOT(seTBack()));
@@ -202,10 +219,10 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     
     
-        actionSwapEdit = new QAction(tr("Edit modus"),this);
+        actionSwapEdit = new QAction(tr("Edit modus"),this); 
         actionSwapEdit->setIcon(QIcon(":/img/icon.png"));
         actionSwapEdit->setCheckable(true);
-        actionSwapEdit->setChecked(activeedit);
+        actionSwapEdit->setChecked(canedit);
 	      connect(actionSwapEdit, SIGNAL(triggered()),this,SLOT(SwapEdit()));
         RootMenu->addAction(actionSwapEdit);
     
@@ -225,14 +242,9 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         }
         
         actionSwapLock = new QAction(tr("Lock Unlock Layer"),this);
-        if (locked) {
-        actionSwapLock->setIcon(QIcon(":/img/encrypted.png"));
-        } else {
-        actionSwapLock->setIcon(QIcon(":/img/unlock.png"));   
-        }
-        
+        actionSwapLock->setIcon( W_modus() == Lock ? QIcon(":/img/encrypted.png") : QIcon(":/img/unlock.png"));
         actionSwapLock->setCheckable(true);
-        actionSwapLock->setChecked(locked);
+        actionSwapLock->setChecked ( W_modus() == Lock ? true : false );
         connect(actionSwapLock, SIGNAL(triggered()),this,SLOT(SwapLockmodus()));
         RootMenu->addAction(actionSwapLock);
         
@@ -380,7 +392,7 @@ void  TextLayer::copyLayer()
 void TextLayer::SwapEdit()
 {
     if (modus == Lock) {
-    QMessageBox::information(0,tr("Layer status"),tr("Unlock first the layer to edit."));
+    ////////////QMessageBox::information(0,tr("Layer status"),tr("Unlock first the layer to edit."));
     return;
     }
     
@@ -397,26 +409,35 @@ void TextLayer::SwapEdit()
 
 void TextLayer::SwapLockmodus()
 {
-    QApplication::restoreOverrideCursor();
-    
-    if (modus == Lock) {
+    QAction *invoice = qobject_cast<QAction *>(sender());
+    if (invoice) {
+        if (invoice->isChecked()) {
+           RestoreMoveAction();
+           modus = Lock;
+           setFlag(QGraphicsItem::ItemIsSelectable,true);
+           setFlag(QGraphicsItem::ItemIsFocusable,true);  
+           update(boundingRect());
+           return;
+        } else {  
         modus = Show;
-        mount->txtControl()->edit(false);
-         if (format == DIV_ABSOLUTE) {
-         ///////
-         }
         setFlag(QGraphicsItem::ItemIsSelectable,true);
         setFlag(QGraphicsItem::ItemIsFocusable,true);
         RestoreMoveAction();
+        update(boundingRect());
         return;
-    } else {
-        modus = Lock;
-        mount->txtControl()->edit(false);
-        setFlag(QGraphicsItem::ItemIsSelectable,true);
-        setFlag(QGraphicsItem::ItemIsFocusable,true);
-    }
-    
+        } 
+    } else {   
+    RestoreMoveAction();
+    modus = Lock;
+    setFlag(QGraphicsItem::ItemIsSelectable,true);
+    setFlag(QGraphicsItem::ItemIsFocusable,true);  
     update(boundingRect());
+    }
+}
+
+void TextLayer::BreakRem()
+{
+  SwapLockBreak = false;  
 }
 
 
@@ -448,6 +469,7 @@ void TextLayer::Borderwidht()
                 ft.setRightMargin(border);
                 ft.setLeftMargin(border);
                 ft.setPadding(0);
+                ft.setWidth(wi);
                 Tframe->setFrameFormat(ft);
         }
         /*
@@ -1000,22 +1022,35 @@ void TextLayer::SetNewBorderColor()
 RichDoc TextLayer::ReadActualItem()
 {
     QString styles;
+    //////QTextFrame  *Tframe = document()->rootFrame();
+    ///////QTextFrameFormat ft = Tframe->frameFormat();
+    ////////int xBottomMargin =  ToUnit(ft.bottomMargin(),"px");
+    //////////int xTopMargin = ToUnit(ft.topMargin(),"px");
+    ////////int xRightMargin = ToUnit(ft.rightMargin(),"px");
+    //////////////int xLeftMargin = ToUnit(ft.leftMargin(),"px");
+    
     QTextFrame  *Tframe = document()->rootFrame();
     QTextFrameFormat ft = Tframe->frameFormat();
-    int xBottomMargin =  ToUnit(ft.bottomMargin(),"mm");
-    int xTopMargin = ToUnit(ft.topMargin(),"mm");
-    int xRightMargin = ToUnit(ft.rightMargin(),"mm");
-    int xLeftMargin = ToUnit(ft.leftMargin(),"mm");
-    const QString margin = QString("padding:%1mm %2mm %3mm %4mm;").arg(xTopMargin).arg(xRightMargin).arg(xBottomMargin).arg(xLeftMargin); 
-    qreal realhightdoc = ToUnit(hi,"mm");
-    qreal realwidhtdoc = ToUnit(wi,"mm");
+    ft.setWidth(wi);
+    Tframe->setFrameFormat(ft);
+    
+    
+    ///////////const QString padding = QString("padding:%1px;").arg(ft.padding());
+    
+    ////////////const QString margin = QString("margin:%1px %2px %3px %4px;").arg(xTopMargin).arg(xRightMargin).arg(xBottomMargin).arg(xLeftMargin); 
+    qreal realhightdoc = ToUnit(hi,"px");
+    qreal realwidhtdoc = ToUnit(wi,"px");
     #define ALPHAHTML(alpha) ((alpha)/254.99999999)
     if (format != DIV_AUTO) {
-    styles = "position:absolute; overflow:hidden; top:"+QString("%1mm").arg(ToUnit(pos().y(),"mm"))+"; left:"+QString("%1mm").arg(ToUnit(pos().x(),"mm"))+"; width:"+QString("%1mm").arg(ToUnit(wi,"mm"))+"; height:"+QString("%1mm").arg(ToUnit(hi,"mm"))+"; ";
+    styles = "position:absolute; overflow:hidden; top:"+QString("%1px").arg(ToUnit(pos().y(),"px"))+"; left:"+QString("%1px").arg(ToUnit(pos().x(),"px"))+"; width:"+QString("%1px").arg(ToUnit(wi,"px"))+"; height:"+QString("%1px").arg(ToUnit(hi,"px"))+"; ";
     } else {
-    styles = "min-height:"+QString("%1mm").arg(hi)+";";   
+    styles = "min-height:"+QString("%1px").arg(hi)+";";   
     }
-    styles.append(margin);
+    ////////styles.append(margin);
+    /////////styles.append(padding);
+    
+   
+    
     int alphacolor = qBound(0,bgcolor.alpha(),255);
     qreal percentos = ALPHAHTML( alphacolor );
     
@@ -1043,7 +1078,7 @@ RichDoc TextLayer::ReadActualItem()
     }
     
     if (border > 0 ) {
-    styles.append(QString("border-width:%2mm;border-style:solid;border-color:%1;").arg(bordercolor.name()).arg(ToUnit(border,"mm")));
+    styles.append(QString("border-width:%2px;border-style:solid;border-color:%1;").arg(bordercolor.name()).arg(ToUnit(border,"px")));
     }
     
     if (zValue() > 1) {
@@ -1092,7 +1127,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
         
             QTextFrame  *Tframe1 = _doc->rootFrame();
             QTextFrameFormat rootformats1 = Tframe1->frameFormat();
-            rootformats1.setWidth(Srect.width()); 
+            rootformats1.setWidth(Srect.width()); /* margin padding on doc */
             Tframe1->setFrameFormat(rootformats1);
         
         
@@ -1100,6 +1135,10 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
    ///////_doc->setPageSize(QSizeF(Srect.width(),Srect.width() / 2));
     mount->txtControl()->setDocument(_doc,this);
     }
+    QTextFrame  *Tframe2 = document()->rootFrame();
+    QTextFrameFormat rootformats2 = Tframe2->frameFormat();
+    
+    
     bgcolor = QColor(Qt::white);
     bgcolor.setAlpha(0);
     border = 0;
@@ -1183,9 +1222,9 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     
     
     wisub_border = wi - (border * 2);
-    if (document()) {
     document()->setTextWidth(wisub_border);
-    }
+    rootformats2.setWidth(wi);
+    Tframe2->setFrameFormat(rootformats2);
     TextboundingRect = mount->txtControl()->boundingRect();
     LayerHightChecks();
     document()->setPageSize(QSizeF(wi,hi));
@@ -1206,7 +1245,14 @@ void TextLayer::LayerHightChecks()
         if (txthight > hi) {
         SetDimension(wi,txthight);
         wisub_border = wi - (border * 2);
-        document()->setTextWidth(wi);
+        document()->setTextWidth(wisub_border);
+            
+            QTextFrame  *Tframe = document()->rootFrame();
+            QTextFrameFormat ft = Tframe->frameFormat();
+            ft.setWidth(wi);
+            Tframe->setFrameFormat(ft);
+            
+            
         emit recalcarea();
         }
         wisub_border = wi - (border * 2);
