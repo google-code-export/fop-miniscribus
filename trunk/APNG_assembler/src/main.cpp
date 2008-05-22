@@ -1,6 +1,9 @@
 #include <QtCore>
 #include <QDebug>
+
+#include <Qt3Support>
 #include <QImage>
+
 
 #define PNG_USER_MEM_SUPPORTED
 
@@ -12,6 +15,7 @@ typedef unsigned char png_byte;
 ////base ref http://www.littlesvr.ca/apng/tutorial/x148.html
 /* png lib from firefox 3 is patch to APNG format! */
 #include "../moz_png/png.h"
+
 void fatalError(char* str)
 {
     fprintf(stderr, "Fatal Error: %s\n", str);
@@ -31,7 +35,7 @@ int main(int argc, char** argv)
     
     QStringList imglist = a.arguments();
     
-    FILE* originalImage;
+    FILE* originalImage;   /* name to compose */
     FILE* newImage;
     int count;
     int count2;
@@ -48,7 +52,7 @@ int main(int argc, char** argv)
     
     
     if(argc == 1)  {
-        fatalError("usage: apng a.png b.png c.png ...\n");
+        fatalError("usage: compose a.png b.png c.png ...\n");
     }
     
     writeSetup(&newImage, &png_ptr_write, &info_ptr_write);
@@ -59,7 +63,14 @@ int main(int argc, char** argv)
     for(count = 1; count < argc; count++)
     {
         const QString imgfile = imglist.at(count);
+        QImage check32(imgfile);
+        QImage aa = check32.convertDepth(32);
+         if (!aa.isNull()) {
+             bool job = aa.save(imgfile,"PNG",100);
+             qDebug() << "### resave 32 depth ->" << job;
+         }
         QImage image(imgfile);
+        QImage frame = image.convertDepth(32);
         
         printf("writing frame from %s (%d of %d)\n", argv[count], count, argc - 1);
         
@@ -114,8 +125,10 @@ int main(int argc, char** argv)
                                  0,       /* y offset */
                                  1, 1,    /* delay numerator and denominator */
                                  PNG_DISPOSE_OP_NONE, /* dispose */
-                                 PNG_BLEND_OP_SOURCE    /* blend */
+                                 0    /* blend */
                                 );
+            ///// https://publicsvn.songbirdnest.com/songbird/client/vendor-binaries/linux-i686/mozilla/debug/include/png/png.h
+            
         }
         png_write_image(png_ptr_write, row_pointers);
         png_write_frame_tail(png_ptr_write, info_ptr_write);
