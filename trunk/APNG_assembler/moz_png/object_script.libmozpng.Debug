@@ -1,0 +1,19 @@
+CREATE ..\lib\libmozpng.a
+ADDMOD debug\png.o
+ADDMOD debug\pngerror.o
+ADDMOD debug\pnggccrd.o
+ADDMOD debug\pngget.o
+ADDMOD debug\pngmem.o
+ADDMOD debug\pngpread.o
+ADDMOD debug\pngread.o
+ADDMOD debug\pngrio.o
+ADDMOD debug\pngrtran.o
+ADDMOD debug\pngrutil.o
+ADDMOD debug\pngset.o
+ADDMOD debug\pngtrans.o
+ADDMOD debug\pngvcrd.o
+ADDMOD debug\pngwio.o
+ADDMOD debug\pngwrite.o
+ADDMOD debug\pngwtran.o
+ADDMOD debug\pngwutil.o
+SAVE
