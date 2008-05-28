@@ -1,22 +1,41 @@
 #include "qdocxhtml.h"
-#include "cmspage_structure.h"
 
-
+/* http://www.bessrc.aps.anl.gov/software/qt4-x11-4.2.2-browser/d0/dbc/qtextdocument_8cpp-source.html */
 
 QdocXhtml::QdocXhtml() 
 { 
 	cleaner = new QTidy();
 	cleaner->Init(QDir::homePath()+"/.qtity/");
+	find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
+	for (int o = 0; o < find.size(); ++o)  {
+	incss.insert(find.at(o),QString("0"));
+	}
 }
 QdocXhtml::~QdocXhtml() { }
-QdocXhtml::QdocXhtml( QTextDocument * docin , LEVEL e )
+QdocXhtml::QdocXhtml( QTextDocument * docin , LEVEL e , QString style )
 {
-	SetDoc(docin,e);
-}
-void QdocXhtml::SetDoc( QTextDocument * docin , LEVEL e )
-{
+	for (int o = 0; o < find.size(); ++o)  {
+	incss.insert(find.at(o),QString("0"));
+	}
 	
-	////////fwriteutf8("tmppaint.html",docin->toHtml("utf-8"));
+	SetDoc(docin,e,style);
+}
+void QdocXhtml::SetDoc( QTextDocument * docin , LEVEL e , QString style )
+{
+	maxtower = 0.;
+	
+	for (int o = 0; o < find.size(); ++o)  {
+	incss.insert(find.at(o),QString("0"));
+	}
+	
+	QStringList option = style.split(";");
+	  for (int o = 0; o < option.size(); ++o)  {
+				QString values = option.at(o).trimmed();
+        QStringList css = values.split(":");
+        if (css.size() == 2) {
+        incss.insert(css.at(0),css.at(1));
+        }
+    }
 	
   BigframeProcessing = 0;
 	doc = docin->clone();
@@ -24,7 +43,39 @@ void QdocXhtml::SetDoc( QTextDocument * docin , LEVEL e )
 	QTextFrame  *Tframe = doc->rootFrame();
 	dom.clear();
 	QDomElement body = dom.createElement("body");
+	if (incss.value("position").toString() == "absolute") {
+	QDomElement panel = dom.createElement("table");
+	body.appendChild(panel);
+	QDomElement tr1 = dom.createElement("tr");
+	QDomElement flowlayout = dom.createElement("td");
+	panel.appendChild(tr1);
+	tr1.appendChild(flowlayout);
+	
+  QTextFrameFormat ft = Tframe->frameFormat();
+	const qreal LayerLarge = Metric(incss.value("width").toString());
+	 
+	int xBottomMargin =  ToUnit(ft.bottomMargin(),"px");
+  int xTopMargin = ToUnit(ft.topMargin(),"px");
+  int xRightMargin = ToUnit(ft.rightMargin(),"px");
+  int xLeftMargin = ToUnit(ft.leftMargin(),"px");
+	int xpadding = ToUnit(ft.padding(),"px");
+	
+	QString tlargo;
+	if (LayerLarge > 0) {
+	maxtower = qMax(maxtower,Metric(incss.value("height").toString()));
+	tlargo = QString("width:%1;height:%2;").arg(incss.value("width").toString()).arg(incss.value("height").toString());
+	}
+	panel.setAttribute ("cellspacing","0"); 
+	panel.setAttribute ("cellpadding","0"); 
+	panel.setAttribute ("border","0");
+	QString margin = QString("margin:%1px %2px %3px %4px;padding:%5px;").arg(xTopMargin).arg(xRightMargin).arg(xBottomMargin).arg(xLeftMargin).arg(xpadding); 
+	margin.append(tlargo);
+	panel.setAttribute ("style",margin); 
+	FrameLoop(doc->rootFrame()->begin(),flowlayout);
+	} else {
 	FrameLoop(doc->rootFrame()->begin(),body);
+	}
+	
 	dom.appendChild(body);
 	QString flat = dom.toString(0);
 	flat = flat.replace("\n","");
@@ -51,6 +102,7 @@ void QdocXhtml::SetHtml( QString html , LEVEL e )
 {
 	QString myxml = cleaner->TidyCleanhtml(html);
 	QTextDocument *docin = new QTextDocument();
+	
 	docin->setHtml(myxml);
 	SetDoc(docin,e);
 }
@@ -105,16 +157,16 @@ void QdocXhtml::PaintFrameFormat(QDomElement e , QTextFrameFormat bf  )
 	    if (bf.hasProperty(QTextFormat::FrameMargin)) {
 				
 					if (bf.topMargin() !=0) {
-					styles.append(QString("margin-top:%1mm;").arg(Pointo(bf.topMargin(),"mm")));
+					styles.append(QString("margin-top:%1px;").arg(Pointo(bf.topMargin(),"px")));
 					}
 					if (bf.bottomMargin() !=0) {
-					styles.append(QString("margin-top:%1mm;").arg(Pointo(bf.bottomMargin(),"mm")));
+					styles.append(QString("margin-top:%1px;").arg(Pointo(bf.bottomMargin(),"px")));
 					}
 					if (bf.rightMargin() !=0) {
-					styles.append(QString("margin-top:%1mm;").arg(Pointo(bf.rightMargin(),"mm")));
+					styles.append(QString("margin-top:%1px;").arg(Pointo(bf.rightMargin(),"px")));
 					}
 					if (bf.leftMargin() !=0) {
-					styles.append(QString("margin-top:%1mm;").arg(Pointo(bf.leftMargin(),"mm")));				
+					styles.append(QString("margin-top:%1px;").arg(Pointo(bf.leftMargin(),"px")));				
 					}
 				
 			}
@@ -122,7 +174,7 @@ void QdocXhtml::PaintFrameFormat(QDomElement e , QTextFrameFormat bf  )
 				styles.append(BorderStyleCss(bf.borderStyle()));
 			}
 			if (bf.hasProperty(QTextFormat::FrameBorder)) {
-			styles.append(QString("border:%1pt;").arg(bf.border()));	
+			styles.append(QString("border:%1px;").arg(bf.border()));	
 			}
 			
 			QBrush boof = bf.borderBrush();
@@ -136,14 +188,14 @@ void QdocXhtml::PaintFrameFormat(QDomElement e , QTextFrameFormat bf  )
 			}
 			
 			if ( bf.padding() > 0) {
-				styles.append(QString("padding:%1;").arg(bf.padding()));
+				styles.append(QString("padding:%1px;").arg(bf.padding()));
 			}
 			
 		  if (TranslateTextLengh(bf.width()).size() > 0) {
-				styles.append(QString("width:%1;").arg(TranslateTextLengh(bf.width())));
+				styles.append(QString("width:%1px;").arg(TranslateTextLengh(bf.width())));
 			}
 			if (TranslateTextLengh(bf.height()).size() > 0) {
-				styles.append(QString("height :%1;").arg(TranslateTextLengh(bf.height())));
+				styles.append(QString("height:%1px;").arg(TranslateTextLengh(bf.height())));
 			}
 	    if (styles.size() > 0) {
 				e.setAttribute ("style",styles); 
@@ -153,13 +205,13 @@ void QdocXhtml::PaintFrameFormat(QDomElement e , QTextFrameFormat bf  )
 QString QdocXhtml::TranslateTextLengh( QTextLength unit ) 
 {
 	
-	  qDebug() << "### TranslateTextLengh  " << unit.rawValue();
+	  ///////////qDebug() << "### TranslateTextLengh  " << unit.rawValue();
 	
 	  if (unit.rawValue() < 1) {
 			return QString();
 		}
 	  if (unit.type() == QTextLength::FixedLength) {
-			return QString("%1mm").arg(Pointo(unit.rawValue(),"mm"));
+			return QString("%1px").arg(Pointo(unit.rawValue(),"px"));
 		} else {
 			return QString("%1\%").arg(unit.rawValue());
 		}
@@ -175,9 +227,9 @@ void QdocXhtml::HandleTable( QTextTable  * childTable , QDomElement appender )
 	}
 	QList<QByteArray> propi = childTable->dynamicPropertyNames();
 	
-	qDebug() << "### table init build ..propi  " << propi.size();
+	////////////qDebug() << "### table init build ..propi  " << propi.size();
 	const int coolsums = childTable->columns();
-	qDebug() << "### coolsums  " << coolsums;
+	////////////qDebug() << "### coolsums  " << coolsums;
 	QTextTableFormat tbforms = childTable->format();
 	
 	
@@ -214,7 +266,7 @@ void QdocXhtml::HandleTable( QTextTable  * childTable , QDomElement appender )
 											 ////////ToUnit(
                     }
 										if (setpoint && tablewithd > 10) {
-											toptable.setAttribute ("width",QString("%1mm").arg(Pointo(tablewithd,"mm")));
+											toptable.setAttribute ("width",QString("%1").arg(Pointo(tablewithd,"px")));
 										} else if (!setpoint && tablewithd > 10) {
 											toptable.setAttribute ("width",QString("%1\%").arg(tablewithd));
 										}
@@ -265,7 +317,7 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
     return;
     }
 		
-		qDebug() << "### block init build ..  ";
+		//////////////qDebug() << "### block init build ..  ";
 		
     const QString Actual_Text_Param = para.text();
     QTextBlockFormat ParaBlockFormat = para.blockFormat();
@@ -287,6 +339,7 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
 			paragraph.setAttribute ("class","Empty");
 			}
 		}
+		TextAlignment(ParaBlockFormat.alignment(),paragraph);
     ParaFormat(paragraph,ParaBlockFormat);  /* block */
 		bool breakline = false;
     PaintLastBlockformat(paragraph,CharFromPara);
@@ -431,7 +484,7 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
 														 QDomElement breakline = dom.createElement("br");
 										         paragraph.appendChild(breakline);
 													 }
-														const QString piece = lines.at(i);
+														QString piece = lines.at(i);
 														paragraph.appendChild(dom.createTextNode(piece));
 													 
 												}
@@ -441,7 +494,7 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
                       
                   }
               } else {
-                 qDebug() << "### unknow out QTextFragment ";
+                 ////////////qDebug() << "### unknow out QTextFragment ";
               }
            
 
@@ -472,13 +525,20 @@ void QdocXhtml::PaintLastBlockformat( QDomElement e , QTextCharFormat bf  )
       styles.append(QString("color:%1;").arg(bf.foreground().color().name()));
       }
 			
-			if (styler == STYLEMEDIUM) {
-			int sizefo = qRound(userfont.pixelSize());
-				if (sizefo > 10) {
-			  styles.append(QString("font-size:%1px;").arg(sizefo));
+			
+			
+			int sizefo = Pointo(userfont.pointSize(),"px");
+			/////////////qDebug() << "### font pix   " << sizefo;
+				if (styler == STYLESIMPLE) {
+					  /* mark only if more as 10 web */
+				    if (sizefo > 10) {
+			      styles.append(QString("font-size:%1pt;").arg(userfont.pointSize()));
+				    }
+			  } else {
+					styles.append(QString("font-size:%1pt;").arg(userfont.pointSize()));
 				}
 				
-			}
+			
 			
 			if (styler == STYLEMEDIUM) {
 			styles.append(QString("font-family:%1;").arg(userfont.family()));
@@ -530,10 +590,17 @@ void QdocXhtml::PaintCharFormat( QDomElement e , QTextCharFormat bf  )
       styles.append(QString("color:%1;").arg(bf.foreground().color().name()));
       }
 			
-			int sizefo = qRound(userfont.pixelSize());
-			if (sizefo > 10) {
-			styles.append(QString("font-size:%1px;").arg(sizefo));
+			int sizefo = Pointo(userfont.pointSize(),"px");
+			//////////////qDebug() << "### font pix   " << sizefo;
+			if (styler == STYLESIMPLE) {
+					  /* mark only if more as 10 web */
+				    if (sizefo > 10) {
+			      styles.append(QString("font-size:%1pt;").arg(userfont.pointSize()));
+				    }
+			} else {
+					styles.append(QString("font-size:%1pt;").arg(userfont.pointSize()));
 			}
+				
 			
 			if (styler == STYLEFULL) {
 			styles.append(QString("font-family:%1;").arg(userfont.family()));
@@ -572,6 +639,19 @@ void QdocXhtml::PaintCharFormat( QDomElement e , QTextCharFormat bf  )
 }
 
 
+
+void QdocXhtml::TextAlignment(Qt::Alignment align , QDomElement e )
+{
+     if (align & Qt::AlignLeft)
+         return;
+    else if (align & Qt::AlignRight)
+         e.setAttribute ("align","right");  
+    else if (align & Qt::AlignHCenter)
+         e.setAttribute ("align","center");  
+     else if (align & Qt::AlignJustify)
+         e.setAttribute ("align","justify"); 
+}
+
 void QdocXhtml::ParaFormat( QDomElement e , QTextBlockFormat bf )
 {
 	         						 
@@ -579,34 +659,28 @@ void QdocXhtml::ParaFormat( QDomElement e , QTextBlockFormat bf )
 			if (e.hasAttribute("style")) {
 			styles = FilterAttribute(e,"style");
 			}
-      if ( bf.alignment() == Qt::AlignRight) {
-      e.setAttribute ("align","right");    
-      }
-      if ( bf.alignment() == Qt::AlignHCenter) {
-      e.setAttribute ("align","center");    
-      }
-      if ( bf.alignment() == Qt::AlignJustify) {
-      e.setAttribute ("align","justify");  
-      }
-      if ( bf.alignment() == Qt::AlignVCenter) {
-      e.setAttribute ("align","center");    
-      }
-      if ( bf.alignment() == Qt::AlignCenter) {
-      e.setAttribute ("align","center");   
-      }
 			
-      if (bf.topMargin() !=0) {
-			styles.append(QString("padding-top:%1mm;").arg(Pointo(bf.topMargin(),"mm")));
-      }
-      if (bf.bottomMargin() !=0) {
-			styles.append(QString("padding-bottom:%1mm;").arg(Pointo(bf.bottomMargin(),"mm")));
-      }
-       if (bf.rightMargin() !=0) {
-			styles.append(QString("padding-right:%1mm;").arg(Pointo(bf.rightMargin(),"mm")));
-      }
-      if (bf.leftMargin() !=0) {
-      styles.append(QString("padding-left:%1mm;").arg(Pointo(bf.leftMargin(),"mm")));				
-      }
+			if (styler != STYLEOLDFORMAT)  {
+					if (bf.topMargin() !=0) {
+					styles.append(QString("padding-top:%1px;").arg(Pointo(bf.topMargin(),"px")));
+					}
+					if (bf.bottomMargin() !=0) {
+					styles.append(QString("padding-bottom:%1px;").arg(Pointo(bf.bottomMargin(),"px")));
+					}
+					 if (bf.rightMargin() !=0) {
+					styles.append(QString("padding-right:%1px;").arg(Pointo(bf.rightMargin(),"px")));
+					}
+					if (bf.leftMargin() !=0) {
+					styles.append(QString("padding-left:%1px;").arg(Pointo(bf.leftMargin(),"px")));				
+					}
+			
+		  } else {
+				styles.append(QString("padding-top:0px;"));
+				styles.append(QString("padding-bottom:0px;"));
+				styles.append(QString("padding-right:0px;"));
+				styles.append(QString("padding-left:0px;"));		
+			}
+			
 			
 			if (bf.foreground().color().name() !="#000000" ) { 
 				styles.append(QString("color:%1;").arg(bf.foreground().color().name()));
@@ -653,7 +727,7 @@ QString QdocXhtml::BorderStyleCss(QTextFrameFormat::BorderStyle style)
 {
     Q_ASSERT(style <= QTextFrameFormat::BorderStyle_Outset);
     QString html ="";
-    html += QLatin1String(" border-style:");
+    html += QLatin1String("border-style:");
 
     switch (style) {
     case QTextFrameFormat::BorderStyle_None:
@@ -716,6 +790,7 @@ void Html_Transformer::work( QMap<int,RichDoc> divs )
 {
 	  xml = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n";
 	  passage = 0;
+	  maximumTower = 0.; 
 		QMapIterator<int,RichDoc> i(divs);
          while (i.hasNext()) {
              i.next();
@@ -723,8 +798,8 @@ void Html_Transformer::work( QMap<int,RichDoc> divs )
 					   const QString stream = WebSource(e);
              xml.append(stream);
 					   passage++;
-					   qDebug() << "### passage   " << passage;
-					   qDebug() << "### stream   " << stream;
+					   ///////////qDebug() << "### passage   " << passage;
+					   /////////qDebug() << "### stream   " << stream;
          }
 				 
 				 
@@ -735,9 +810,11 @@ void Html_Transformer::work( QMap<int,RichDoc> divs )
 QString Html_Transformer::WebSource( RichDoc edoc )
 {
 			QString base = edoc.Hxtml();
-			QdocXhtml *handler = new QdocXhtml(edoc.todoc());
+			QdocXhtml *handler = new QdocXhtml(edoc.todoc(),STYLESIMPLE,edoc.style);
 			base = handler->Docxml();
-			base.prepend(QString("<div class=\"qtpage\" xmlns=\"http://www.w3.org/1999/xhtml\" style=\"%1\">\n").arg(edoc.style));
+	    maximumTower +=handler->maxim();
+	    ///////qreal maximum maxim()
+			base.prepend(QString("<div class=\"qtpage\" xmlns=\"http://www.w3.org/1999/xhtml\" style=\"margin:0;padding:0;%1\">\n").arg(edoc.style));
 			base.append(QString("\n</div>\n"));
 			return base;
 }
