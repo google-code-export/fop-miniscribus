@@ -360,8 +360,11 @@ QRectF TextWriter::boundingRect() const
 	if (_d) {
 	_d->adjustSize();
 	QAbstractTextDocumentLayout *Layout = _d->documentLayout();
-	return Layout->frameBoundingRect(_d->rootFrame());
+	QRectF TxtRect = Layout->frameBoundingRect(_d->rootFrame());
+	const qreal HiText = TxtRect.height() + 10;
+	return TxtRect.adjusted(0,0,0,HiText - TxtRect.height());
 	} else {
+		qApp->beep();
 		return QRectF();
 	}
 }
@@ -771,7 +774,7 @@ void TextWriter::procesevent( QEvent *e )
 	
 	   switch (e->type()) {
 			 
-			     case QEvent::QEvent::GraphicsSceneDrop: {
+			     case QEvent::GraphicsSceneDrop: {
 						if (edit_enable) { 
 						QGraphicsSceneDragDropEvent *edd = static_cast<QGraphicsSceneDragDropEvent *>(e);
 						setCursorPosition(edd->pos());

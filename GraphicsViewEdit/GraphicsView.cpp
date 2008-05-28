@@ -41,7 +41,7 @@ GraphicsView::GraphicsView(  QWidget * parent )
 		if (Metric(setter.value("gview/wi").toString()) > 0) {
 		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
 		} else {
-		Paper = QRectF(0,0,Metric("220mm"),Metric("350mm"));
+		Paper = QRectF(0,0,Metric("150mm"),Metric("200mm"));
 		}
 	  scene = new GraphicsScene(Paper,this);
 	  setCacheMode(CacheNone);
@@ -53,6 +53,11 @@ GraphicsView::GraphicsView(  QWidget * parent )
 	  
 }
 
+void GraphicsView::setGlobalBrush( QPixmap e )
+{
+	chessgrid = e;
+	update();
+}
 
 void GraphicsView::pageclear()
 {

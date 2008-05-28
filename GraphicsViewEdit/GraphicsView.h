@@ -108,6 +108,7 @@ public slots:
     void removelayer( const int idx );
     void PasteLayer();
     void pageclear();
+    void setGlobalBrush( QPixmap e );
 
 };
 //
