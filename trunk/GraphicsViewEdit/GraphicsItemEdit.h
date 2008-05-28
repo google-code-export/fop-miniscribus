@@ -28,7 +28,7 @@
 #include <QGraphicsItem>
 #include <QSharedData>
 #include "GraphicsScene.h"
-#define _SET_SELECTION_BY_SCENE_ 0
+#define _SET_SELECTION_BY_SCENE_ 1
 
 #define _DEBUGRANGE_WI_ 2
 
@@ -129,6 +129,7 @@ public:
     TextLayer(const int layer_id , QGraphicsItem *parent = 0 , QGraphicsScene *scene = 0);
     ~TextLayer();
     QList<QAction *> MainActions();
+    inline bool AlertPage() { return AlertSize; }
     bool editable();
     QRectF viewport_need();
     void setSelected( bool selected );
@@ -235,6 +236,7 @@ public slots:
     void cursor_area( const QRectF areas , const qreal ip );
     void undo();
     void redo();
+    void SetPrintModus( bool e );
     
 private slots: 
 void BreakRem();

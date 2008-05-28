@@ -46,7 +46,7 @@ static inline qreal DPIactualDiff()
     return 1; /* no difference increase or degrease 1:1 running 72 DPI  */
     }
     const qreal precision = 0.09741;   /* gimp precision to image */
-    /////////return 1;   /* 1:1 to test */
+    return 1;   /* 1:1 to test */
     
     
     int diff = hi - mi;
@@ -58,27 +58,23 @@ static inline qreal DPIactualDiff()
     }
 }
 
-#define PDIFIX(ii) ((ii)*DPIactualDiff())
-#define BDIFIX(ii) ((ii)/DPIactualDiff())
+#define DPI_IMPORT(ii) ((ii)*DPIactualDiff())
+#define DPI_EXPORT(ii) ((ii)/DPIactualDiff())
 
+/* set your monitor to 72 DPI on go to */
+/* set your monitor to 92 DPI on go to */
+/*      http://www.unitconversion.org/unit_converter/typography.html            */
 
-
-
-
-
-
-#define POINT_TO_CM(cm) ((cm)/28.3465058)
-#define POINT_TO_PX(px) ((px)*1.3333333)   /* error dpi problem */
-#define POINT_TO_MM(mm) ((mm)/2.83465058)
+#define POINT_TO_CM(cm) ((cm)/28.3465058)  
+#define POINT_TO_MM(mm) ((mm)/2.83465058)     ////////  0.352777778
 #define POINT_TO_DM(dm) ((dm)/283.465058)
 #define POINT_TO_INCH(inch) ((inch)/72.0)
 #define POINT_TO_PI(pi) ((pi)/12)
 #define POINT_TO_DD(dd) ((dd)/154.08124)
 #define POINT_TO_CC(cc) ((cc)/12.840103)
 
-#define PX_TO_POINT(px) ((px)/1.3333333)  /* error dpi problem */
 #define MM_TO_POINT(mm) ((mm)*2.83465058)
-#define CM_TO_POINT(cm) ((cm)*28.3465058)
+#define CM_TO_POINT(cm) ((cm)*28.3465058)     ///// 28.346456693
 #define DM_TO_POINT(dm) ((dm)*283.465058)
 #define INCH_TO_POINT(inch) ((inch)*72.0)
 #define PI_TO_POINT(pi) ((pi)*12)
@@ -113,13 +109,10 @@ static inline qreal FopInt( const QString datain )
   if (datain == "0") {
   return points;
   }
-  if ( data.endsWith( "pt" ))  {
+  if ( data.endsWith( "pt" ) ||  data.endsWith( "px" ) )  {
     points = data.left( data.length() - 2 ).toDouble();
     return points;
-  }  else if ( data.endsWith( "px" ) ) {
-    double value = data.left( data.length() - 2 ).toDouble();
-    points = PX_TO_POINT( value );
-  }  else if ( data.endsWith( "cm" ) ) {
+  } else if ( data.endsWith( "cm" ) ) {
     double value = data.left( data.length() - 2 ).toDouble();
     points = CM_TO_POINT( value );
   } else if ( data.endsWith( "em" ) ) {
@@ -150,23 +143,19 @@ static inline qreal FopInt( const QString datain )
   }
   
   
-  return PDIFIX(points);
+  return points;
   
 } 
-
 
 static inline qreal Pointo( qreal unit , const QString unita )  {
     qreal ri = 0;
     if (unita == "cm") {
     ri = POINT_TO_CM( unit );
-    } else if (unita == "pt") {
+    } else if (unita == "pt" || unita == "px" ) {
     ri = unit;
     return ri;
-        
     } else if (unita == "mm") {
     ri = POINT_TO_MM( unit );
-    } else if (unita == "px") {
-    ri = POINT_TO_PX( unit );
     } else if (unita == "dm") {
     ri = POINT_TO_DM( unit );
     } else if (unita == "inch") {
@@ -180,7 +169,7 @@ static inline qreal Pointo( qreal unit , const QString unita )  {
     } else {
     ri = 10;
     }
-    return BDIFIX(ri);
+    return ri;
 }
 
 
@@ -188,13 +177,11 @@ static inline qreal ToPoint( qreal unit , const QString unita )  {
     qreal ri = 0;
     if (unita == "cm") {
     ri = CM_TO_POINT( unit );
-    } else if (unita == "pt") {
+    } else if (unita == "pt" || unita == "px" ) {
     ri = unit;
     return ri;
     } else if (unita == "mm") {
     ri = MM_TO_POINT( unit );
-    } else if (unita == "px") {
-    ri = PX_TO_POINT( unit );
     } else if (unita == "dm") {
     ri = DM_TO_POINT( unit );
     } else if (unita == "inch") {
@@ -208,7 +195,7 @@ static inline qreal ToPoint( qreal unit , const QString unita )  {
     } else {
     ri = 10;
     }
-    return PDIFIX(ri);
+    return ri;
 }
 
 

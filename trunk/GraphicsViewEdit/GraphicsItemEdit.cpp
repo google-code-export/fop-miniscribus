@@ -56,6 +56,40 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
     RestoreMoveAction();
     init();
 }
+/* on print true dont play hover and icon */
+void TextLayer::SetPrintModus( bool e )
+{
+  currentprintrender = e;
+  update(boundingRect());
+}
+
+void TextLayer::setSelected( bool selected ) 
+{
+    if (id == 0) {
+    IsSelectActive = false;
+    QGraphicsItem::setSelected(false);
+    return;
+    }
+    /////////////qDebug() << "### setSelected  " << selected << " id->" << id << " total event->" << evesum;
+    if (!selected) {
+         if (format != DIV_ABSOLUTE) {
+         RestoreMoveAction();
+         }
+         
+    } else {
+        if (format != DIV_ABSOLUTE && modus != Lock) {
+        EditModus(); 
+        } else {
+            if ( modus == Lock) {
+            ////////setFlag(QGraphicsItem::ItemIsMovable,false); 
+            }
+        }
+    }
+  IsSelectActive = selected;
+  QGraphicsItem::setSelected(selected);
+  update();
+}
+
 
 QList<QAction *> TextLayer::MainActions()
 {
@@ -99,26 +133,23 @@ void TextLayer::cursor_wake_up()
 bool TextLayer::sceneEvent(QEvent *event)
 {
     evesum++;
-    if (_SET_SELECTION_BY_SCENE_ !=1) {
-    setSelected(true); 
-    } else {
-    ////////scenemake job select by zvalue > 
-    }
-    /* drag here */
+    if ( event->type() == QEvent::GraphicsSceneMousePress ||
+        event->type() == QEvent::GraphicsSceneMouseRelease ||
+        event->type() == QEvent::GraphicsSceneMouseDoubleClick ||
+        event->type() == QEvent::GraphicsSceneMouseMove ||
+        event->type() == QEvent::GraphicsSceneDrop ||
+        event->type() == QEvent::KeyPress ) {
+          setSelected(true);   
+        }
     
+    
+    
+    
+    /* drag here */
     if ( event->type() == QEvent::GraphicsSceneDrop) {
         mount->txtControl()->procesevent(event);
         return true;
-    } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
-        ///////QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        /////////qDebug() << "### muove ";
-        
-    } else if (event->type() == QEvent::DragEnter ) {
-        ////////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
-        //////////qDebug() << "### entra ";
     }
-    
-    
     return QGraphicsItem::sceneEvent(event);
 }
 
@@ -564,20 +595,7 @@ void TextLayer::read()
 
 
 
-void TextLayer::updatearea( const QRectF areas )
-{
-    
-    
-    const qreal limits = boundingRect().width() + 20;
-    if (areas.width() > limits) {
-    return;
-    }
-    evesum++;
-    
-    //////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
-    ///////////qDebug() << "### area top left " << areas.topLeft();
-    update(areas);
-}
+
 
 
 
@@ -603,13 +621,18 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                               QWidget *widget)
 {
     Q_UNUSED(widget);
+    
+    if (!mount) {
+        qApp->beep();
+		    qApp->beep();
+    }
+    
     bool canedit = mount->txtControl()->editable();
     wisub_border = wi + border;
     const qreal minimumHi = Metric("15mm");
     const qreal maximHi = Metric("210mm");
-    
      /* Layer Background draw! */
-		const qreal hightlengh =  mount->txtControl()->boundingRect().height() + 5;
+		const qreal hightlengh =  mount->txtControl()->boundingRect().height();
     if (format != Lock )  {  
         
                 if (hightlengh > hi ) {
@@ -621,7 +644,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                 }
                    if (hi > maximHi ) {
                        AlertSize = true;
-                       RestoreMoveAction();
+                       /////////////////RestoreMoveAction();
                    } else {
                        AlertSize = false;
                    }
@@ -630,8 +653,6 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                 
                 
     } 
-    
-    
     QPen BorderPaint;
     if (border > 0) {
         BorderPaint = QPen(QBrush(bordercolor),border,Qt::SolidLine,Qt::SquareCap,Qt::MiterJoin);
@@ -639,17 +660,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         BorderPaint = QPen(Qt::NoPen);
     }
     
-    if (AlertSize) {
-    BorderPaint = QPen(QBrush(Qt::red),4,Qt::SolidLine,Qt::SquareCap,Qt::MiterJoin);
-    }
-    
-    
-     if (mount) {
     mount->txtControl()->paint_doc(painter,option,QBrush(bgcolor),boundingRect(),BorderPaint,currentprintrender);
-    } else {
-        qApp->beep();
-		    qApp->beep();
-    }
     
       
       if (modus == Lock && !canedit && !currentprintrender) {  /* writteln modus icon */
@@ -661,21 +672,17 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
       
       int hoverborder = 1;
       if (border > 1) {
-        hoverborder =  border + 2; 
+        hoverborder =  border + 1; 
       }
       
-    if (ActionHover) {
+    if (ActionHover && !currentprintrender) {
         painter->save();
         painter->setBrush(Qt::NoBrush);
-        painter->setPen(QPen(QBrush(Qt::red),hoverborder,Qt::SolidLine,Qt::RoundCap)	);
+        painter->setPen(QPen(QBrush(Qt::red),hoverborder,Qt::DotLine,Qt::RoundCap)	);
         painter->drawRect(boundingRect());    ////////  mount->txtControl()->boundingRect() 
         painter->restore();  
     }
-   
     setTransform(ActualMatrixe(Rotate),false);
-    
-    
-   ///////QGraphicsItem::paint(painter,option,widget);
 }
 
 
@@ -712,28 +719,7 @@ int TextLayer::Ltype() const
     return format;
 }
 
-void TextLayer::setSelected( bool selected ) 
-{
-    if (!selected) {
-         if (format != DIV_ABSOLUTE) {
-         RestoreMoveAction();
-         }
-         
-    } else {
-        if (format != DIV_ABSOLUTE && modus != Lock) {
-        EditModus(); 
-        } else {
-            if ( modus == Lock) {
-            setFlag(QGraphicsItem::ItemIsMovable,false); 
-            }
-        }
-    }
-    
-    
-  IsSelectActive = selected;
-  QGraphicsItem::setSelected(selected);
-  update();
-}
+
 
 QRectF TextLayer::boundingRect() const
 {
@@ -743,22 +729,32 @@ QRectF TextLayer::boundingRect() const
 /* proprieta oggetto QRectF docrect = DLayout->frameBoundingRect(_doc->rootFrame()) */
 void TextLayer::RestoreMoveAction() 
 {
-    if ( mount->txtControl()->editable() && AlertSize ) {
-        QApplication::beep();
-    }
+    
     modus == Show;
     QGraphicsItem::setCursor(Qt::ArrowCursor);
     QApplication::restoreOverrideCursor();
     mount->txtControl()->edit(false);
+    
+    if (id == 0) {
+    IsSelectActive = false;
+    QGraphicsItem::setSelected(false);
+    setFlag(QGraphicsItem::ItemIsSelectable,false);
+    setFlag(QGraphicsItem::ItemIsFocusable,false);
+    return;
+    }
+    
     setFlag(QGraphicsItem::ItemIsSelectable,true);
     setFlag(QGraphicsItem::ItemIsFocusable,true);
     update(boundingRect());
-    //////////////////qDebug() << "### reset ";
+    //////////qDebug() << "### reset RestoreMoveAction ";
 }
 
 
 void TextLayer::EditModus() 
 {
+    if (id == 0) {
+    return;
+    }
     modus == Edit;
     mount->txtControl()->edit(true);
     setFlag(QGraphicsItem::ItemIsSelectable,true);
@@ -1241,7 +1237,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
 
 void TextLayer::LayerHightChecks() 
 {
-    qreal txthight = mount->txtControl()->boundingRect().height() + 5;
+        qreal txthight = mount->txtControl()->boundingRect().height();
         if (txthight > hi) {
         SetDimension(wi,txthight);
         wisub_border = wi - (border * 2);
@@ -1260,29 +1256,39 @@ void TextLayer::LayerHightChecks()
 }
 
 
+void TextLayer::updatearea( const QRectF areas )
+{
+    const qreal limits = boundingRect().width();
+    if (areas.width() > limits) {
+    return;
+    }
+    evesum++;
+    QRect simprect = areas.toRect();
+    //////////qDebug() << "### area " << areas.width() << "x" << areas.height() << "|" <<  evesum;
+    /////qDebug() << "### updatearea " << simprect;
+    update(areas);
+}
+
+/* CurrentCursorboundingRect   viewport to enable to show! */
+
 void TextLayer::cursor_area( const QRectF areas , const qreal ip )
 {
     QDateTime timer1( QDateTime::currentDateTime() );
     const uint now = timer1.toTime_t();
-    
+    QRect simprect = areas.toRect();
     if (check_view_area_time == 0) {
        check_view_area_time = now;  /* first run */ 
     }
-    
-    if ( now > (check_view_area_time + 1) ) { 
+    if ( now > (check_view_area_time + 2) ) { 
     check_view_area_time = now;
-    document()->setPageSize(QSizeF(wi,hi));
-    LayerHightChecks();
-        
-            const int Xpos = getXcursor();
+            ///////const int Xpos = getXcursor();
             evesum++;
             if (ip > 0 && evesum%3 && areas.y() > 0) {
-            CurrentCursorboundingRect = QRectF(Xpos,areas.y(),300,300);
-            //////////////CurrentCursorboundingRect = boundingRect();
-            /////////////////////////qDebug() << "### TextLayer CurrentCursorboundingRect x." << Xpos << "y." << areas.y();
-            emit recalcarea(); 
+            CurrentCursorboundingRect = QRectF(ip,areas.y(),300,300);
+            ///////qDebug() << "### CurrentCursorboundingRect " << CurrentCursorboundingRect;
             }
-    
+            
+    /////qDebug() << "### cursor_area " << simprect << "," << ip;
     }
 }
 
