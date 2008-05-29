@@ -147,6 +147,11 @@ void GraphicsScene::remid( const int id )
     storno();
 }
 
+void GraphicsScene::clear()
+{
+    allclear();
+}
+
 
 void GraphicsScene::allclear()
 {

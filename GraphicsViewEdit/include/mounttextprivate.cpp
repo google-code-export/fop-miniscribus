@@ -858,59 +858,43 @@ QTextTableCell TextWriter::OnPosition( const int posi )
 void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPointF &pos)
 {
 	///////////qDebug() << "### mouseMoveEvent in ";
-	///////////////qDebug() << "### move drag   " << DragFill;
 	const int cursorPos = _d->documentLayout()->hitTest(pos,Qt::ExactHit) + 1;
-	
+	const int cursornow = cursorPos - 1;
+	/* if drag move mime make and return !!! */
 	if (C_cursor.hasSelection() && DragFill) {
-		/////////////qDebug() << "### move drag on  " << cursorPos;
-		//////setCursorPosition(pos);
-		////////repaintCursor();
 		cursortime = false;
 		repaintCursor();
 		return;
 	}
-
 	const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
 	const int stopat = qMax(StartSelectionMouse,cursorPos); 
 	const int startat = qMin(StartSelectionMouse,cursorPos);
 	  ////////////qDebug() << "### start/stop cell position " << StartSelectionMouse << cursorPos << cursorPosFozze;
-	 
-	
-	
-	
 	  if (StartSelectionMouse != -1 && cursorPos > 0 && !C_cursor.currentTable()) {
 			if (StartSelectionMouse != cursorPos) {
-	       setBlinkingCursorEnabled(false);
-				 
-				 
-				 
+	       /////////setBlinkingCursorEnabled(false);
 				/* selection tracer */
-			   //////////////qDebug() << "### tmouseMoveEvent 1a from-to #######" << StartSelectionMouse << "|" << cursorPos;
-				 cursorIsFocusIndicator = true;
+			  cursorIsFocusIndicator = true;
 				 if (stopat == cursorPos) {
-					   /* direction -> left-right */
+					   /* cursor selection mode start>>>>>>>>>>>>>>>>>stop */
 						 C_cursor.setPosition(StartSelectionMouse);
 						 for (int i = StartSelectionMouse; i < cursorPos; ++i) {
 						 C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
 						 }
-						 
 						 cursor_position = stopat;
-						 
 			   } else {
-					  /* direction <- right-left */
-					    /* not possibel on QGraphicsItem + QTextDocument */
-						  ///////C_cursor.setPosition(qMin(StartSelectionMouse,cursorPos));
-						 ///////for (int i = StartSelectionMouse; i < cursorPos; ++i) {
-						  ///////C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-						//////// }
-					  selectAll();
+					   /* cursor selection mode stop<<<<<<<<start */
+					   C_cursor.setPosition(stopat);
+					   const int diffs = stopat - cursornow;
+					   /////////qDebug() << "### diffs " << diffs << "," << cursornow << "," << stopat;
+					    for (int i = 0; i < diffs; ++i) {
+								C_cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+							}
 					  return;
 				 }
-				 ///////setClipboardSelection();
 				 repaintCursor();
 			}
 		} 
-		
 		
 		 if ( C_cursor.currentTable() ) {
 			QTextTable *table = C_cursor.currentTable();
@@ -919,12 +903,9 @@ void TextWriter::tmouseMoveEvent(QEvent *e, Qt::MouseButton button, const QPoint
 			if ( firstcell.isValid() && lastcell.isValid() ) {
 			int fcellrow = firstcell.row();
 			int fcellcool = firstcell.column();
-			////////////qDebug() << "### row / cool " << fcellrow << fcellcool;
-			/////////////   qBound ( const T & min, const T & value, const T & max ) 
-      ///////////C_cursor.selectedTableCells(fcellrow,lastcell.row() - fcellrow,lastcell.column() -  fcellcool);
 			int numRows = qBound(1,lastcell.row() - fcellrow,table->rows());
 			int numColumns = qBound(1,lastcell.column() - fcellcool,table->columns());
-			//////////////qDebug() << "### nnrow / nncool " << numRows << numColumns;
+			///////qDebug() << "### nnrow / nncool " << numRows << numColumns;
 			C_cursor.selectedTableCells(&fcellrow,&numRows,&fcellcool,&numColumns);
 			C_cursor.setPosition(firstcell.firstPosition());
 			C_cursor.setPosition(lastcell.lastPosition(), QTextCursor::KeepAnchor);
@@ -993,7 +974,7 @@ QPixmap TextWriter::PicfromMime( QMimeData *mime )
 void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt::KeyboardModifiers modifiers,
                                           Qt::MouseButtons buttons, const QPoint &globalPos)
 {
-	///////////qDebug() << "### mousePressEvent in ";
+	/////////////////qDebug() << "### mousePressEvent in ";
 	///////qDebug() << "### Press drag   " << DragFill << " mouse selection " << C_cursor.hasSelection();
 	if (C_cursor.hasSelection() && modifiers == Qt::ShiftModifier && edit_enable) {
 							   DragFill = true;
@@ -1024,16 +1005,19 @@ void TextWriter::tmousePressEvent(Qt::MouseButton button, const QPointF &pos, Qt
 	
 	
 	if (StartSelectionMouse == cursor_position) {
-		  /////////////qDebug() << "### =========================  start pos  ";
 		  ClearSelections();
 		  setBlinkingCursorEnabled(true);
 		  repaintCursor();
+		  ////////////qDebug() << "### ===StartSelectionMouse ->" << StartSelectionMouse << "  cursor_position->" << cursor_position;
 		  return;
 	} else {
 		setBlinkingCursorEnabled(false);
 		StartSelectionMouse = cursor_position;
 		repaintCursor();
+		//////////////qDebug() << "### ===StartSelectionMouse ->" << StartSelectionMouse << "  cursor_position->" << cursor_position;
 	}
+	
+	
 	
 	   /* fast  display not alternate */
 	

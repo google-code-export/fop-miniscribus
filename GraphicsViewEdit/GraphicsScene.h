@@ -38,6 +38,7 @@ class GraphicsScene : public QGraphicsScene
     
 public:
 GraphicsScene( QObject * parent = 0 );
+void clear();
 void storno();
 GraphicsScene( const QRectF & sceneRect, QObject * parent = 0 );
 GraphicsScene( qreal x, qreal y, qreal width, qreal height, QObject * parent = 0 );
