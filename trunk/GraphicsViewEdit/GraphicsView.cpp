@@ -195,9 +195,11 @@ void GraphicsView::insert( RichDoc e , bool cloned )
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
-	   
-	      ensureVisible(ioq2,100,100);
 	      emit LayerEditor(false,0);
+	
+	
+	    
+	     QTimer::singleShot(600, this, SLOT(updateauto()));
 	
 }
 
@@ -273,10 +275,10 @@ qreal GraphicsView::NextfromY()
 	}
     QRectF resc = scene->sceneRect();
 	  if (resc.height() < fromtop) {
-			scene->setSceneRect(0,0,resc.width(),fromtop + 30);
+			scene->setSceneRect(0,0,resc.width(),fromtop + 100);
 		}
 		if (resc.height() < bigYall) {
-			scene->setSceneRect(0,0,resc.width(),bigYall + 30);
+			scene->setSceneRect(0,0,resc.width(),bigYall + 100);
 		}
 	return fromtop;
 }
