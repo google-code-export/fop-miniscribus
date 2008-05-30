@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>img/Kubus.png</file>
+        <file>img/check.png</file>
+        <file>img/next-gray.png</file>
+        <file>img/next.png</file>
+        <file>img/open.png</file>
+        <file>img/pause.png</file>
+        <file>img/play.png</file>
+        <file>img/prev-gray.png</file>
+        <file>img/prev.png</file>
+        <file>img/quit.png</file>
+        <file>img/stop.png</file>
+        <file>img/warning.png</file>
+    </qresource>
+</RCC>
