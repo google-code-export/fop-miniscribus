@@ -78,14 +78,15 @@ void FrameIterator::ReadStream()
     
     Frect = QRect(0,0,info_ptr_read->width,info_ptr_read->height);
     qDebug() << "### Frame rect ->" << Frect;
-    QImage master(Frect.width(),Frect.height(),32);
-    const uchar* const* jt = master.jumpTable();
-    png_bytep* row_pointers;
-    row_pointers=new png_bytep[Frect.height()];
-    uint y;
-    for (y=0; y<Frect.height(); y++) {
-        row_pointers[y]=const_cast<png_byte*>(jt[y]);
-    }
+    QImage master(Frect.width(),Frect.height(),QImage::Format_ARGB32);
+    const uint height = master.height();
+    png_bytep *row_pointers = new png_bytep[height];
+    
+                        for (uint i = 0; i < height; ++i)  {
+                          row_pointers[i] = (png_bytep)master.scanLine(i);
+                        }
+    
+  
     
         
     for(int i = 0; i < png_get_num_frames(png_ptr_read, info_ptr_read); i++)
@@ -146,10 +147,10 @@ void FrameIterator::ReadStream()
         if(png_get_valid(png_ptr_read,info_ptr_read, PNG_INFO_bKGD)) {
             
             /* grab fake background color if having */
-         qDebug() << "### colorrrrrrrrrrrrrrrr  ------------- " << i;
+         qDebug() << "### bg color found  ------------- " << i;
             
         } else {
-            qDebug() << "### color noooooooooo  ------------- " << i;
+            qDebug() << "### no bg color found  ------------- " << i;
         }
         
         
@@ -215,7 +216,7 @@ void FrameIterator::ReadStream()
                     Ftoc.set_pics( myqtchunk.stream() );
                     
                     QImage tmpgd = Ftoc.ipix();
-                    
+                    myqtchunk.clear();
                    
                     
                     /////QRgb* rgb = ((QRgb*)tmpgd.scanLine(1));
@@ -245,7 +246,7 @@ void FrameIterator::ReadStream()
        
     }
     
-  
+  delete [] row_pointers;
   ValidApng = true;
 }
 
@@ -467,6 +468,7 @@ void PMovie::Stop()
   }
   if (capturescreen) {
      capturescreen = false;
+      SaveAsExport();
   }
   setWindowTitle(QString("APNG Label (use ContextMenu to play file)"));
 }
@@ -551,33 +553,29 @@ void PMovie::OpenDemo()
 void PMovie::NextFrame()
 {
     capturescreen = false;
-    
     if (!running) {
     return;
     }
-    
     if ( (current + 1) > movie->framecount() ) {
         current = 0;
     }
     VIFrame record = playmovie[current];
-    
     if (record.mode == 404) {
         /* no background found on frame!!!! pos!! */
         setBackgroundRole(QPalette::Text);
     } else {
-        
        setBackgroundRole(QPalette::Dark); 
     }
+    
     setMinimumSize(record.maxframe.size());
+
     
     setWindowTitle(QString("Play frame nr.%1 / modus %2").arg(record.pos + 1).arg(record.mode));
-    
     running = true;
     setPixmap ( record.videopix() );
     setScaledContents(false);    
     current++;
     QTimer::singleShot(record.play, this, SLOT(NextFrame())); 
-    /////}
 }
 
 
@@ -612,9 +610,17 @@ void PMovie::SaveAsExport()
                                 tr("Movie Images (*.png)"));
     
     if (fileName.size() > 0) {
+        
+        dlg = new QProgressDialog(this,Qt::Popup);
+        dlg->setLabelText (tr("Read && Write Frames..."));
+        dlg->setCancelButton(0);
+        dlg->setMinimumDuration(1000);
+        
+        
         FrameTrade *grephttp = new FrameTrade();
 				grephttp->Setting(this,playmovie,fileName);
 				grephttp->start(QThread::LowPriority);  
+        connect(grephttp,SIGNAL(finished()),dlg, SLOT(deleteLater()));
     }
     
 }
@@ -667,12 +673,37 @@ void PMovie::contextMenuEvent( QContextMenuEvent * e )
     delete Fmenu;
 }
 
+void PMovie::status(uint state , uint tot )
+{
+    qreal cento = 100.0;
+    qreal percentuale = state*cento/tot;
+    //////qDebug() << "### percentuale " << percentuale;
+    dlg->setRange(0,tot);
+    dlg->setValue(state);
+    qApp->processEvents();
+}
+
+
 
 void PMovie::startCapure()
 {
      playmovie.clear();
      capturescreen = true;
      CatScreen();
+}
+
+bool PMovie::event ( QEvent * e )
+{
+    qApp->processEvents();
+    
+   if ( e->type() == QEvent::User ) {
+				    PngEventBuffer *ep = static_cast<PngEventBuffer *>(e);
+            ///////////qDebug() << "### event " << ep->pos() << "," << ep->sum();
+            status(ep->pos(),ep->sum());
+          
+						return true;
+		}
+  QLabel::event(e);   /* cath all not needed */    
 }
 
 
@@ -683,20 +714,30 @@ void PMovie::CatScreen()
     }
     
    QDesktopWidget *desk = qApp->desktop();
-   QPixmap desktopscreen = QPixmap::grabWindow(desk->screen()->winId());
-	 QPixmap small =  desktopscreen.scaledToWidth(500);
-   setPixmap ( small );
+    
+    int nrs = desk->numScreens();
+    
+    /////qDebug() << "### nrs " << nrs;
+    QPixmap ddlabel;
+    ////GreyScale( QImage income )
+    
+   QPixmap small0 = QPixmap::grabWindow(desk->screen()->winId());
+	 QImage small =  small0.scaledToWidth(1000).toImage();
+    //////GreyScale( small0.scaledToWidth(1000).toImage() );
+   setPixmap ( ddlabel.fromImage(small) );
    setScaledContents(false);
     
 VIFrame Ftoc;
 Ftoc.pos = playmovie.size();            
 Ftoc.point = QPoint(0,0);
 Ftoc.set_pics( small );
-Ftoc.play = 300;
+Ftoc.play = 500;
 Ftoc.bg = QColor(Qt::black);
 Ftoc.maxframe = QRect(0,0,small.width(),small.height());
     
-    setMinimumSize(Ftoc.maxframe.size());
+    setMinimumSize(50,50);
+
+    
     
     if (capturescreen) {
     setWindowTitle(QString("Record screen modus frame nr.%1").arg(Ftoc.pos + 1));
@@ -705,7 +746,7 @@ Ftoc.maxframe = QRect(0,0,small.width(),small.height());
     } else {
     setWindowTitle(QString("APNG Label (use ContextMenu to play file)")); 
     }
-	 delete &desktopscreen; 
+	 ////////delete &small; 
 }
 
 

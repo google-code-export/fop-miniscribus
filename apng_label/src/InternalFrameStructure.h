@@ -3,7 +3,6 @@
 
 #include <QtCore>
 #include <QDebug>
-#include <Qt3Support>
 #include <QImage>
 #include <QPixmap>
 #include <QtGui>
@@ -15,9 +14,11 @@
 #include "PngAConfig.h"
 
 
-class APNGwrittelStream {
+class APNGwrittelStream
+{
+  
   public:
-  APNGwrittelStream(QObject *o) :d(new QBuffer()),creator(o)
+  APNGwrittelStream(QObject *o) :d(new QBuffer()),creator(o),xin(0)
   {
   d->open(QIODevice::ReadWrite);
   start();
@@ -25,17 +26,31 @@ class APNGwrittelStream {
   ~APNGwrittelStream()
   {
    d->close();
+   ////deleteLater();
   }
   bool clear()
   {
     d->write(QByteArray()); 
     return d->bytesAvailable() == 0 ? true : false;
   }
-  void start() { d->seek(0); }
+  void start() { 
+    d->seek(0);
+    xin = 0;
+  }
+  uint take( const uint i )
+  {
+    xin +=i;
+    return xin;
+  }
+  uint target()
+  {
+    return qAbs(d->bytesAvailable() - xin);
+  }
   QBuffer *device() { return d; }
   bool isValid() { return img.loadFromData(stream()); }
   QByteArray stream() { return d->data(); }
   QImage img;
+  uint xin;
   QBuffer *d;
   QObject *creator;
 }; 
@@ -64,9 +79,10 @@ static void EncoderWriteCallback(png_structp png, png_bytep data,
                                  png_size_t size) {
   APNGwrittelStream *state = static_cast<APNGwrittelStream*>(png_get_io_ptr(png));
   Q_ASSERT(state->device());
-  state->device()->writeBlock((char*)data,size);                              
-  ///////qDebug() << "### pos  ->" << state->device()->pos();
-  ///////qApp->postEvent(state->creator,new PngEventBuffer(state->device()->pos(),0));
+  const uint grabytes = state->device()->write((char*)data,size);                              
+  const uint s1 = state->take(grabytes);
+  const uint s2 = state->target();
+  qApp->postEvent(state->creator,new PngEventBuffer( qMin(s2,s1) , qMax(s2,s1) ));
 
 }
 
@@ -76,10 +92,10 @@ static void EncoderReaderCallback(png_structp png, png_bytep data,
 {
   APNGwrittelStream *state = static_cast<APNGwrittelStream*>(png_get_io_ptr(png));
   Q_ASSERT(state->device());
-  state->device()->readBlock((char*)data,size);                              
-  /////////qDebug() << "### pos  ->" << state->device()->pos();
-  qApp->postEvent(state->creator,new PngEventBuffer(state->device()->pos(),
-                                   state->device()->bytesAvailable()));
+  const uint grabytes = state->device()->read((char*)data,size);                              
+  const uint s1 = state->take(grabytes);
+  const uint s2 = state->target();
+  qApp->postEvent(state->creator,new PngEventBuffer( qMin(s2,s1) , qMax(s2,s1) ));
 }
 
 static void ng_warning(png_structp /*png_ptr*/, png_const_charp message)
@@ -135,6 +151,7 @@ class VIFrame
     void set_pics( const QByteArray bytes ); 
     void set_pics( QPixmap barcode ); 
     void set_pics( const QPixmap * barcode );
+    void set_pics( QImage barcode );
     
 QRect maxframe;
 QByteArray dimg;    /* png stream original from libpng! loading show QPixmap VIFrame::pix()  &&  videopix(); */
@@ -375,19 +392,14 @@ protected:
                   if(setjmp(png_ptr_read->jmpbuf))
                      fatalError("something didn't work while reading");
              
-                png_read_info(png_ptr_read, info_ptr_read);
+                      png_read_info(png_ptr_read, info_ptr_read);
+                      const uint height = imageios.height();
                   
-                      uint height = imageios.height();
-                      const uchar* const* jt = imageios.jumpTable();
-                      row_pointers=new png_bytep[height];
-                      uint y;
-                      for (y=0; y<height; y++) {
-                                // PNG lib has const issue with the write image function
-                                row_pointers[y]=const_cast<png_byte*>(jt[y]);
-                      }
-                  
-                  
-                      
+                        png_bytep *row_pointers = new png_bytep[height];
+                        for (uint i = 0; i < height; ++i)  {
+                          row_pointers[i] = (png_bytep)imageios.scanLine(i);
+                        }
+                        
              
                if(!globalsSet)
                 {
@@ -423,7 +435,7 @@ protected:
     
        
            
-         
+    delete [] row_pointers;
     png_write_end(png_ptr_write, NULL);
     png_destroy_write_struct(&png_ptr_write, &info_ptr_write);
     fclose(newImage);

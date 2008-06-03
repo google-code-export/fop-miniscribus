@@ -3,7 +3,6 @@
 #include <QtCore>
 #include <QDebug>
 #include <QApplication>
-#include <Qt3Support>
 #include <QImage>
 #include <QPixmap>
 #include <QtGui>
@@ -360,12 +359,14 @@ public:
   QMenu *MovieMenu();
 protected:
   void contextMenuEvent( QContextMenuEvent * e );
+  bool event ( QEvent * e );
   FrameIterator *movie;
   QMap<int,VIFrame> playmovie;
   int current;
   bool running;
   bool capturescreen;
-  
+  QProgressDialog *dlg;
+
 private:
 signals:
 public slots:
@@ -379,6 +380,7 @@ void LaunchFile( const QString file );
 void ComposeFrame();
 void SaveAsExport();
 void startCapure();
+void status(uint state , uint tot );
 private slots:
 void NextFrame();
 void CatScreen();
