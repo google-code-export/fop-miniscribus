@@ -7,11 +7,24 @@ TARGET = apnglabel
 DEPENDPATH += . ui ../moz_png ../zlib
 INCLUDEPATH += ui ../moz_png ../zlib
 
+
+include( ../option.pri )
+
 message(Qt version: $$[QT_VERSION])
 message("Alert usage from Mozilla dev PNG LIBs")
 message("Alert usage from Mozilla dev PNG LIBs")
 message("Alert usage from Mozilla dev PNG LIBs")
 message("Alert usage from Mozilla dev PNG LIBs")
+
+
+contains(CONFIG, qtcamview ) {
+DEFINES += OPCAMENABLE
+
+message("Alert webcam view option ACTIVE")
+
+include( ./localcam.pri )
+}
+
 
 
 
