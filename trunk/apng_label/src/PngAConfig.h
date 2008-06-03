@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-static QImage* IplImageToQImage(const IplImage  *iplImage, uchar **data)
+static QImage IplImageToQImage(const IplImage  *iplImage, uchar **data , bool mirroRimage = true )
 {
   uchar *qImageBuffer = NULL;
   int    width        = iplImage->width;
@@ -156,9 +156,32 @@ static QImage* IplImageToQImage(const IplImage  *iplImage, uchar **data)
   }
   else
     qImage = new QImage(qImageBuffer, width, height, QImage::Format_RGB32);
-
-  *data = qImageBuffer;
-  return qImage;
+    QImage gd0 = qImage->mirrored(false,mirroRimage);
+    *data = qImageBuffer;
+    QColor textColor = Qt::black;
+    QColor fillrectcolor = Qt::red;
+    QColor shapepicture = Qt::white;
+    QImage gd = gd0.scaledToWidth(350);
+    QDateTime now = QDateTime::currentDateTime ();
+    QString selectionText = now.toString("dd.MM.yyyy hh:mm:ss");
+    QPainter p(&gd);
+    p.setRenderHint(QPainter::Antialiasing, true);
+  
+    QFontMetrics fm( qApp->font() );
+    int stringWidth = fm.width(selectionText);
+    int stringHeight = fm.ascent();
+    const int sx = gd.width() - stringWidth - 5;
+    QPen pen;
+    pen.setStyle( Qt::SolidLine );
+    pen.setWidth( 2 );
+    pen.setColor( textColor );
+    p.setPen( pen);
+    p.drawText(QPointF(sx - 1 ,gd.height() - 2 - stringHeight - 1),selectionText);
+    pen.setColor( fillrectcolor );
+    p.setPen( pen);
+    p.drawText(QPointF(sx,gd.height() - 2 - stringHeight),selectionText);
+  
+  return gd;
 }
 
 

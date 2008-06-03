@@ -156,7 +156,7 @@ class VIFrame
 QRect maxframe;
 QByteArray dimg;    /* png stream original from libpng! loading show QPixmap VIFrame::pix()  &&  videopix(); */
 uint play;
-quint32 mode;  /* default 5= progressive encoding to web  */
+quint32 mode;  /* default 5= progressive encoding to web  | mode 6 = faster save no qpos y,x */
 int pos;   /* frame sequence */
 QColor bg; 
 QStringList option;   /* reserve to other option! */
@@ -377,14 +377,21 @@ protected:
          while (i.hasNext()) {
                 i.next();
                 framenr++;
+                QImage imageios;
                 APNGwrittelStream myqtchunk(receiver);
                 VIFrame record = i.value();
-                QImage imageios = record.theardpix();
+                if (record.mode !=6) {
+                imageios= record.theardpix();
                 imageios.save(myqtchunk.device(),"PNG",0); // writes image into ba in PNG format
+                } else {
+                /* not having qpos y,x to write special mesure */
+                myqtchunk.device()->write(record.stream());
+                imageios = QImage(record.maxframe.width(),record.maxframe.height(),QImage::Format_ARGB32);
+                }
                 myqtchunk.start();  /* block to begin pointer */
-                qDebug() << "### writing frame from " << framenr << " from " << li.size();
-                qDebug() << "### rect " << record.maxframe;
-                qDebug() << "### rect "  << imageios.width() << "x" << imageios.height();
+                ////////////qDebug() << "### writing frame from " << framenr << " from " << li.size();
+                //////////qDebug() << "### rect " << record.maxframe;
+                /////////////qDebug() << "### rect "  << imageios.width() << "x" << imageios.height();
              
                 PrepareStruct( &png_ptr_read, &info_ptr_read);
                 png_set_read_fn(png_ptr_read,&myqtchunk,EncoderReaderCallback);
