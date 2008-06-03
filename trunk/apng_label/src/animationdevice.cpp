@@ -568,6 +568,7 @@ void PMovie::NextFrame()
         
        setBackgroundRole(QPalette::Dark); 
     }
+    setMinimumSize(record.maxframe.size());
     
     setWindowTitle(QString("Play frame nr.%1 / modus %2").arg(record.pos + 1).arg(record.mode));
     
@@ -695,7 +696,7 @@ Ftoc.play = 300;
 Ftoc.bg = QColor(Qt::black);
 Ftoc.maxframe = QRect(0,0,small.width(),small.height());
     
-    
+    setMinimumSize(Ftoc.maxframe.size());
     
     if (capturescreen) {
     setWindowTitle(QString("Record screen modus frame nr.%1").arg(Ftoc.pos + 1));
