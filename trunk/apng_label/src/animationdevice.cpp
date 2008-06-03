@@ -16,7 +16,7 @@ FrameIterator::~FrameIterator()
 FrameIterator::FrameIterator()
  :qfile(0),default_play_time_ms(0),ValidApng(false) 
 {
-    
+   
 }
 
 FrameIterator::FrameIterator( const QString File_APNG_Format )
@@ -452,14 +452,96 @@ void writeSetup(FILE* image, png_structp* png_ptr_write, png_infop* info_ptr_wri
 
 
 PMovie::PMovie( QWidget* parent )
-	: QLabel( parent ),current(0),running(false),capturescreen(false)
+	: QLabel( parent ),current(0),
+          running(false),
+          capturescreen(false),
+          foundCamera(false)
 {
 	  setAlignment(Qt::AlignCenter);
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     setBackgroundRole(QPalette::Dark);
     setAutoFillBackground(true);
     resize(400, 400);
+    
+    #ifdef OPCAMENABLE
+    capture = cvCaptureFromCAM( CV_CAP_ANY );
+    if (capture) {
+    foundCamera = true; 
+    cvReleaseCapture(&capture);
+    }
+    #endif
 }
+
+void PMovie::StartCam()
+{
+    #ifdef OPCAMENABLE
+    capture = cvCaptureFromCAM( CV_CAP_ANY );
+    IplImage* imgPtr  = cvQueryFrame( capture );
+    int format = imgPtr->nChannels * imgPtr->depth;
+    if( format != 24 )  {
+    qDebug() << "### format error!!  ->" << format;
+    return;
+    }
+    QImage *imgs = IplImageToQImage(imgPtr,(uchar**)imgPtr->imageData);
+    camimage = imgs->mirrored(false,true);
+    setPixmap ( QPixmap::fromImage(camimage,Qt::AutoColor) );
+    setScaledContents(false);
+    capturescreen = true;
+    CatScreen();
+    #endif
+}
+
+
+
+void PMovie::CatScreen()
+{
+    QPixmap smallooooooo;
+    if (running || !capturescreen ) {
+    return;
+    }
+    if (camimage.isNull()) {
+    QDesktopWidget *desk = qApp->desktop();
+    QPixmap small0 = QPixmap::grabWindow(desk->screen()->winId());
+    smallooooooo = small0.scaledToWidth(1000);
+	  ///////QImage small =  smallooooooo.toImage();
+    //////GreyScale( small0.scaledToWidth(1000).toImage() );  QPixmap::fromImage ()
+    } else if (!camimage.isNull()) {
+    #ifdef OPCAMENABLE
+    if (capture) {
+    IplImage* imgPtr  = cvQueryFrame( capture );
+    QImage *imgs = IplImageToQImage(imgPtr,(uchar**)imgPtr->imageData);
+    camimage = imgs->mirrored(false,true);
+    }
+    #endif
+    smallooooooo = QPixmap::fromImage(camimage,Qt::AutoColor);
+    } else {
+      return;
+    }
+    setPixmap ( smallooooooo );
+    setScaledContents(false);
+    VIFrame Ftoc;
+    Ftoc.pos = playmovie.size();            
+    Ftoc.point = QPoint(0,0);
+    Ftoc.set_pics( smallooooooo );
+    Ftoc.play = 500;
+    Ftoc.bg = QColor(Qt::black);
+    Ftoc.maxframe = QRect(0,0,smallooooooo.width(),smallooooooo.height());
+    if (!camimage.isNull()) {
+    setMinimumSize(smallooooooo.width(),smallooooooo.height());
+    } else {
+    setMinimumSize(50,50);   
+    }
+    if (capturescreen) {
+    setWindowTitle(QString("Record screen modus frame nr.%1").arg(Ftoc.pos + 1));
+    playmovie.insert(Ftoc.pos,Ftoc);
+    QTimer::singleShot(Ftoc.play, this, SLOT(CatScreen())); 
+    } else {
+    setWindowTitle(QString("APNG Label (use ContextMenu to play file)")); 
+    }
+	 ////////delete &small; 
+}
+
+
 
 void PMovie::Stop()
 {
@@ -468,7 +550,13 @@ void PMovie::Stop()
   }
   if (capturescreen) {
      capturescreen = false;
-      SaveAsExport();
+    #ifdef OPCAMENABLE
+    if (capture) {
+    cvReleaseCapture(&capture);
+    camimage = QImage();
+    }
+    #endif 
+    SaveAsExport();
   }
   setWindowTitle(QString("APNG Label (use ContextMenu to play file)"));
 }
@@ -662,6 +750,10 @@ QMenu *PMovie::MovieMenu()
     
     a = Me->addAction(tr("Capture screen"), this, SLOT(startCapure()));
     
+    if (foundCamera) {
+    a = Me->addAction(tr("Capture from Cam"), this, SLOT(StartCam()));
+    }
+    
     return Me;
 }
 
@@ -707,47 +799,7 @@ bool PMovie::event ( QEvent * e )
 }
 
 
-void PMovie::CatScreen()
-{
-    if (running) {
-    return;
-    }
-    
-   QDesktopWidget *desk = qApp->desktop();
-    
-    int nrs = desk->numScreens();
-    
-    /////qDebug() << "### nrs " << nrs;
-    QPixmap ddlabel;
-    ////GreyScale( QImage income )
-    
-   QPixmap small0 = QPixmap::grabWindow(desk->screen()->winId());
-	 QImage small =  small0.scaledToWidth(1000).toImage();
-    //////GreyScale( small0.scaledToWidth(1000).toImage() );
-   setPixmap ( ddlabel.fromImage(small) );
-   setScaledContents(false);
-    
-VIFrame Ftoc;
-Ftoc.pos = playmovie.size();            
-Ftoc.point = QPoint(0,0);
-Ftoc.set_pics( small );
-Ftoc.play = 500;
-Ftoc.bg = QColor(Qt::black);
-Ftoc.maxframe = QRect(0,0,small.width(),small.height());
-    
-    setMinimumSize(50,50);
 
-    
-    
-    if (capturescreen) {
-    setWindowTitle(QString("Record screen modus frame nr.%1").arg(Ftoc.pos + 1));
-    playmovie.insert(Ftoc.pos,Ftoc);
-    QTimer::singleShot(Ftoc.play, this, SLOT(CatScreen())); 
-    } else {
-    setWindowTitle(QString("APNG Label (use ContextMenu to play file)")); 
-    }
-	 ////////delete &small; 
-}
 
 
 

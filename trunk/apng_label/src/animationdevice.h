@@ -363,9 +363,15 @@ protected:
   FrameIterator *movie;
   QMap<int,VIFrame> playmovie;
   int current;
+  QImage camimage;
   bool running;
   bool capturescreen;
   QProgressDialog *dlg;
+  #ifdef OPCAMENABLE
+  CvCapture* capture;
+  #endif
+  bool foundCamera;
+ 
 
 private:
 signals:
@@ -384,6 +390,7 @@ void status(uint state , uint tot );
 private slots:
 void NextFrame();
 void CatScreen();
+void StartCam();
 
 };
 
