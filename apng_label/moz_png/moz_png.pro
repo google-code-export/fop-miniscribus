@@ -8,6 +8,18 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../zlib
 
+
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+message("Init build libPNG support APNG....")
+
+
 DESTDIR	= ../lib
 
 
