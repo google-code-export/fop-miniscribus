@@ -42,7 +42,7 @@ FrameIterator::FrameIterator( const QString File_APNG_Format )
     }
 }
 
-
+/* read file qfile and extract any frame */
 void FrameIterator::ReadStream()
 {
     png_structp png_ptr_read;
@@ -77,7 +77,7 @@ void FrameIterator::ReadStream()
     }
     
     Frect = QRect(0,0,info_ptr_read->width,info_ptr_read->height);
-    //////qDebug() << "### Frame rect ->" << Frect;
+    qDebug() << "### Frame rect ->" << Frect;
     QImage master(Frect.width(),Frect.height(),32);
     const uchar* const* jt = master.jumpTable();
     png_bytep* row_pointers;
@@ -90,18 +90,27 @@ void FrameIterator::ReadStream()
         
     for(int i = 0; i < png_get_num_frames(png_ptr_read, info_ptr_read); i++)
     {
-        /////qDebug() << "### frame read  ------------- " << i;
-        QTemporaryFile tmpfile;
-        tmpfile.setAutoRemove ( true );
-        if (tmpfile.open()) {
-        /////////qDebug() << "### file.fileName() " << tmpfile.fileName();
-        ///////sprintf(filename, "extracted-%02d.png",i);
-        newImage = fopen(qPrintable(tmpfile.fileName()), "wb");
-        if(newImage == NULL)  {
-            qWarning("couldn't create png for writing");
-            return;
+        qDebug() << "### frame read  ------------- " << i;
+        // Set our callback for libpng to give us the data.
+        png_ptr_write = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+        if(png_ptr_write == NULL)  {
+        qWarning("unable to create write struct");
+        return;
         }
-        writeSetup(newImage, &png_ptr_write, &info_ptr_write);
+        
+        APNGwrittelStream myqtchunk(this);
+        png_set_write_fn(png_ptr_write,&myqtchunk,EncoderWriteCallback, NULL);
+        
+    
+        info_ptr_write = png_create_info_struct(png_ptr_write);
+        if(info_ptr_write == NULL)  {
+        qWarning("unable to create write struct");
+        return;
+        }
+        
+        
+        //////writeSetup(NULL,&png_ptr_write, &info_ptr_write);
+        /* ##################### alert speed file!##############################################*/
         if(setjmp(png_ptr_write->jmpbuf))  {
             qWarning("something didn't work, jump 2");
             return;
@@ -127,12 +136,26 @@ void FrameIterator::ReadStream()
         if ( Frect.contains(C_frame_rect) )  { 
            ///////qDebug() << "### read in ok   "; 
         }
-        /* ##################### alert speed file!##############################################*/
+        
+     
+        
         AFRAMES FrameInfo = writeSetup2(png_ptr_read, info_ptr_read, png_ptr_write, info_ptr_write,
         next_frame_width, next_frame_height);
-        /* ##################### alert speed file!##############################################*/
-        
         png_write_info(png_ptr_write, info_ptr_write);
+        
+        if(png_get_valid(png_ptr_read,info_ptr_read, PNG_INFO_bKGD)) {
+            
+            /* grab fake background color if having */
+         qDebug() << "### colorrrrrrrrrrrrrrrr  ------------- " << i;
+            
+        } else {
+            qDebug() << "### color noooooooooo  ------------- " << i;
+        }
+        
+        
+        
+        
+        
         png_read_image(png_ptr_read, row_pointers);
         png_write_image(png_ptr_write, row_pointers);
         png_write_end(png_ptr_write, NULL);
@@ -144,38 +167,82 @@ void FrameIterator::ReadStream()
         
         ////png_destroy_write_struct(&png_ptr_write, &info_ptr_write);
         /* ##################### alert speed file!##############################################*/
-        fclose(newImage);
-        /* ##################### alert speed file!##############################################*/
-        /////////////   ### Framebg   1474 39928 34
-        ////QPixmap framimg(tmpfile.fileName());
-        /* direct to QByteArray qpixmap or qimage to long time .... */
-        QFile f(tmpfile.fileName()); 
-        if (f.exists()) {
-                if (f.open(QIODevice::ReadOnly)) {
+        /////fclose(newImage);
+        
+        qDebug() << "stream innnnnn ...." << myqtchunk.isValid() << ".... " << myqtchunk.stream().size();
+        
+        if ( myqtchunk.isValid() ) {
                     VIFrame Ftoc;
-                    //////qDebug() << "### Framebg  " << FrameInfo.bg;
-                    Ftoc.bg = FrameInfo.bg;
-                    if ( next_frame_x_offset !=0 || next_frame_y_offset !=0) {
-                        Ftoc.point = QPoint(next_frame_x_offset,next_frame_y_offset); 
+                    Ftoc.pos = i;
+                   
+                    
+                    Ftoc.point = QPoint(next_frame_x_offset,next_frame_y_offset);
+                    int Blend = next_frame_dispose_op;
+                    int NextBlend = next_frame_blend_op;
+                    QStringList Foption;
+                    Foption << QString("%1").arg(Blend) 
+                            << QString("%1").arg(NextBlend) 
+                            << QString("%1").arg(next_frame_delay_num) 
+                            << QString("%1").arg(next_frame_delay_den) 
+                            << "-end-";
+                    //// next_frame_delay_num /  next_frame_delay_den                   
+                    
+                    Ftoc.option = Foption;   ////// next_frame_delay_num, &next_frame_delay_den
+                    
+                    /*
+                    The `delay_num` and `delay_den` parameters together specify a fraction 
+                    indicating the time to display the current frame, in seconds. 
+                    If the denominator is 0, it is to be treated as if it were 100 
+                    (that is, `delay_num` then specifies 1/100ths of a second). 
+                    If the the value of the numerator is 0 the decoder should render
+                    the next frame as quickly as possible, though viewers may impose a 
+                    reasonable lower bound.
+
+                    Frame timings should be independent of the time required for decoding 
+                    and display of each frame, so that animations will run at the same rate 
+                    regardless of the performance of the decoder implementation. 
+                    */
+                    float Fraction = (float)next_frame_delay_num /  (float)next_frame_delay_den + 0.00;
+                    ////////qDebug() << "### Fraction  " << Fraction;
+                    int PlayGo;
+                    if (Fraction < 0.001 ) {
+                        PlayGo = 100;
+                    } else if (Fraction < 1.010 && Fraction > 0.9) {
+                        PlayGo = 1000;
+                    } else {
+                        PlayGo = Fraction * 1000;
+                    }
+                    Ftoc.set_pics( myqtchunk.stream() );
+                    
+                    QImage tmpgd = Ftoc.ipix();
+                    
+                   
+                    
+                    /////QRgb* rgb = ((QRgb*)tmpgd.scanLine(1));
+                    ///////(0.2125*qRed(*rgb) + 0.7154*qGreen(*rgb) + 0.0721*qBlue(*rgb));
+                    //////QColor backimage(qRed(*rgb),qGreen(*rgb),qBlue(*rgb),qAlpha(*rgb));
+                    /* greb background color of frame .... */
+                    QRgb GrepColor = tmpgd.pixel(QPoint(2,2));
+                    if (FrameInfo.foundcolor) {
+                     Ftoc.bg = FrameInfo.bg;   
+                    } else { 
+                     Ftoc.bg = QColor(GrepColor);
+                     Ftoc.bg.setAlpha(qAlpha(GrepColor));
                     }
                     
-                    Ftoc.set_pics( f.readAll() );
-                    const uint timeframe = qMax (next_frame_delay_num,next_frame_delay_den);
-                    if (timeframe > 1) {
+                    
+                    /* minimum play time ms not accept < 10 */
+                    const uint timeframe = qMax (9,PlayGo);
                     Ftoc.play = timeframe;
-                    } else {
-                    Ftoc.play = default_play_time_ms;
-                    }
                     Ftoc.maxframe = Frect;
+                    Ftoc.colortype = FrameInfo.colortype;
+                    ///////////qDebug() << "### play time MS  " << Ftoc.play;
                     movie.insert(i,Ftoc);
-                    f.close();
-                }  
         }
         png_ptr_write = 0;
         info_ptr_write = 0;
-        ////qDebug() << "### next_frame_delay_num  " << next_frame_delay_num;
-        //////qDebug() << "### next_frame_delay_den  " << next_frame_delay_den;
-       }
+        
+       
     }
     
   
@@ -191,114 +258,6 @@ void FrameIterator::ReadStream()
 
 
 
-/* definition from one qt frame to play */
-
- VIFrame::VIFrame()
- {
-    play = 1000;
-    dimg = QByteArray("error"); 
-    mode = 5;
-    pos = 0;
-    bg = QColor(Qt::black);
-    point = QPoint(0,0);  /* QPoint point */
-}
-VIFrame& VIFrame::operator=( const VIFrame& d )
-{
-      dimg = d.dimg;
-      play = d.play;
-      mode = d.mode;
-      pos = d.pos;
-      maxframe = d.maxframe;
-      return *this;
-}
-    
-QPixmap VIFrame::erno_pix() 
-{
-    maxframe = QRect(0,0,250,250);
-    
-    QPixmap pError = QPixmap(maxframe.width(),maxframe.height());
-    pError.fill( Qt::red  );
-    QPainter pter( &pError );
-    pter.setFont( QFont( "Helvetica", 8 ) );
-    pter.setBrush( Qt::green );
-    pter.drawText( 20, 12 , "Sorry is not APNG image!" );
-    return pError;
-} 
-QPixmap VIFrame::pix() 
-{
-      if (dimg.size() < 1 || dimg == QByteArray("error")) {
-      return erno_pix();
-      }
-      QPixmap resultimage;
-      QByteArray daunq = qUncompress( dimg );
-      resultimage.loadFromData( daunq );
-          if (resultimage.isNull()) {
-            return erno_pix();
-          }  
-    return resultimage;
-} 
-
-QPixmap VIFrame::videopix() 
-{
-    QPixmap base = pix();
-    if (maxframe.width() == base.width() && maxframe.height() == base.width()) {
-    /* equal */
-    return base;
-    }
-    /////maxframe
-    QPixmap Pvidi = QPixmap(maxframe.width(),maxframe.height());
-    Pvidi.fill(bg);
-    QPainter p( &Pvidi );
-    p.drawPixmap(point,base);
-    return Pvidi;
-}
-
-QByteArray VIFrame::stream()
-{
-   return qUncompress( dimg ); 
-}
-
-QImage VIFrame::ipix() 
-{
-    if (dimg.size() < 1) {
-    return erno_pix().toImage();
-    }
-    QImage resultimage;
-    QByteArray daunq = qUncompress( dimg );
-    resultimage.loadFromData( daunq );
-    if (resultimage.isNull()) {
-    return erno_pix().toImage();
-    }  
-    return resultimage;
-}
-    
-void VIFrame::set_pics( const QByteArray bytes )
-{
-     dimg = qCompress(bytes,9);
-}
-void VIFrame::set_pics( const QPixmap * barcode )
-{
-      if (barcode->isNull()) {
-        return;
-      }
-      QByteArray bytes;
-      QBuffer buffer(&bytes);
-      buffer.open(QIODevice::WriteOnly);
-      barcode->save(&buffer,"PNG");
-      dimg = qCompress(bytes,9);
-} 
-
-void VIFrame::set_pics( QPixmap barcode )
-{
-      if (barcode.isNull()) {
-        return;
-      }
-      QByteArray bytes;
-      QBuffer buffer(&bytes);
-      buffer.open(QIODevice::WriteOnly);
-      barcode.save(&buffer,"PNG");
-      dimg = qCompress(bytes,9);
-} 
 
 
 
@@ -309,7 +268,9 @@ void readSetup( const QString file , png_structp* png_ptr_read, png_infop* info_
     int rc;
     png_byte pngSig[8];
     
-    image = fopen(qPrintable(file), "rb");
+    image = fopen(QFile::encodeName(file), "rb");
+    ////image = stdout;
+    
     if(image == NULL)
         qWarning("couldn't open original png");
     
@@ -386,7 +347,12 @@ AFRAMES writeSetup2(png_structp png_ptr_read, png_infop info_ptr_read,
                 default: 
                 return pframe;
     }
-
+    
+    pframe.colortype = colour_type;
+    pframe.bytedep = bpp;
+    pframe.pngBG = trans_values;
+    
+    /////////qDebug() << "### color type  " << colour_type << bpp << num_trans;
     
                  
     
@@ -408,7 +374,7 @@ AFRAMES writeSetup2(png_structp png_ptr_read, png_infop info_ptr_read,
     
     if(png_get_valid(png_ptr_read, info_ptr_read, PNG_INFO_tRNS))
     {
-        /////////qDebug() << "### PNG_INFO_tRNS";
+        //////////qDebug() << "### PNG_INFO_tRNS";
         
         png_get_tRNS(png_ptr_read, info_ptr_read, &trans, &num_trans, &trans_values);
         png_set_tRNS(png_ptr_write, info_ptr_write, trans, num_trans, trans_values);
@@ -416,13 +382,12 @@ AFRAMES writeSetup2(png_structp png_ptr_read, png_infop info_ptr_read,
     
     if(png_get_valid(png_ptr_read, info_ptr_read, PNG_INFO_bKGD))
     {
-        ///////////qDebug() << "### PNG_INFO_bKGD";
+        ////////qDebug() << "### PNG_INFO_bKGD";
         
         png_get_bKGD(png_ptr_read, info_ptr_read, &background);
         png_set_bKGD(png_ptr_write, info_ptr_write, background);
-        
-          png_color_16p bkgd = background;
-
+        png_color_16p bkgd = background;
+        pframe.pngBG = background;
         
         int r = 0, g = 0, b = 0;
         
@@ -446,12 +411,16 @@ AFRAMES writeSetup2(png_structp png_ptr_read, png_infop info_ptr_read,
                 b >>= 8;
                 }
                 
-                //////qDebug() << "### color  " << r << g << b;
+                ////////qDebug() << "### color  " << r << g << b;
                 
                 pframe.bg = QColor(r,g,b);
+                pframe.foundcolor = true; 
         
     } else {
-      pframe.bg = QColor(Qt::black);  
+        
+        ////qDebug() << "### no BGGGG color";
+      pframe.foundcolor = false; 
+      pframe.bg = QColor(Qt::transparent);  
     }
     
     pframe.compression = compression_method;
@@ -482,7 +451,7 @@ void writeSetup(FILE* image, png_structp* png_ptr_write, png_infop* info_ptr_wri
 
 
 PMovie::PMovie( QWidget* parent )
-	: QLabel( parent ),current(0),running(false)
+	: QLabel( parent ),current(0),running(false),capturescreen(false)
 {
 	  setAlignment(Qt::AlignCenter);
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -496,6 +465,10 @@ void PMovie::Stop()
   if (running) {
       running = false;
   }
+  if (capturescreen) {
+     capturescreen = false;
+  }
+  setWindowTitle(QString("APNG Label (use ContextMenu to play file)"));
 }
 
 void PMovie::restart()
@@ -506,6 +479,8 @@ void PMovie::restart()
 
 void PMovie::Play()
 {
+    capturescreen = false;
+    
     if (running) {
       Stop();  
     }
@@ -575,16 +550,27 @@ void PMovie::OpenDemo()
 
 void PMovie::NextFrame()
 {
+    capturescreen = false;
+    
     if (!running) {
     return;
     }
+    
     if ( (current + 1) > movie->framecount() ) {
         current = 0;
     }
-    ///////////qDebug() << "### play  ->" << current;
-    /////if (playmovie[current]) {
     VIFrame record = playmovie[current];
-     ///////////////qDebug() << "### rect  ->" << record.maxframe;
+    
+    if (record.mode == 404) {
+        /* no background found on frame!!!! pos!! */
+        setBackgroundRole(QPalette::Text);
+    } else {
+        
+       setBackgroundRole(QPalette::Dark); 
+    }
+    
+    setWindowTitle(QString("Play frame nr.%1 / modus %2").arg(record.pos + 1).arg(record.mode));
+    
     running = true;
     setPixmap ( record.videopix() );
     setScaledContents(false);    
@@ -613,6 +599,23 @@ void PMovie::ExportFrames()
          }
 
      }
+}
+
+void PMovie::SaveAsExport()
+{
+    Stop();
+    running = false;
+    
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                "",
+                                tr("Movie Images (*.png)"));
+    
+    if (fileName.size() > 0) {
+        FrameTrade *grephttp = new FrameTrade();
+				grephttp->Setting(this,playmovie,fileName);
+				grephttp->start(QThread::LowPriority);  
+    }
+    
 }
 
 void PMovie::ComposeFrame()
@@ -646,7 +649,11 @@ QMenu *PMovie::MovieMenu()
     
     a = Me->addAction(tr("Compose image APNG..."), this, SLOT(ComposeFrame()));
     
+    if (playmovie.size() > 1) {
+    a = Me->addAction(tr("APNG Save As export animation.."), this, SLOT(SaveAsExport()));
+    }
     
+    a = Me->addAction(tr("Capture screen"), this, SLOT(startCapure()));
     
     return Me;
 }
@@ -660,9 +667,45 @@ void PMovie::contextMenuEvent( QContextMenuEvent * e )
 }
 
 
+void PMovie::startCapure()
+{
+     playmovie.clear();
+     capturescreen = true;
+     CatScreen();
+}
 
 
-
+void PMovie::CatScreen()
+{
+    if (running) {
+    return;
+    }
+    
+   QDesktopWidget *desk = qApp->desktop();
+   QPixmap desktopscreen = QPixmap::grabWindow(desk->screen()->winId());
+	 QPixmap small =  desktopscreen.scaledToWidth(500);
+   setPixmap ( small );
+   setScaledContents(false);
+    
+VIFrame Ftoc;
+Ftoc.pos = playmovie.size();            
+Ftoc.point = QPoint(0,0);
+Ftoc.set_pics( small );
+Ftoc.play = 300;
+Ftoc.bg = QColor(Qt::black);
+Ftoc.maxframe = QRect(0,0,small.width(),small.height());
+    
+    
+    
+    if (capturescreen) {
+    setWindowTitle(QString("Record screen modus frame nr.%1").arg(Ftoc.pos + 1));
+    playmovie.insert(Ftoc.pos,Ftoc);
+    QTimer::singleShot(Ftoc.play, this, SLOT(CatScreen())); 
+    } else {
+    setWindowTitle(QString("APNG Label (use ContextMenu to play file)")); 
+    }
+	 delete &desktopscreen; 
+}
 
 
 

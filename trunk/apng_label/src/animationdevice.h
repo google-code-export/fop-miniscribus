@@ -12,16 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
+#include "InternalFrameStructure.h"    /* png lib apng here! */
 #include <QTemporaryFile>
-
-
-typedef struct {
-	int alpha;
-	QColor bg, fg, mg;
-  int colortype;
-	int compression;
-}  AFRAMES;
 
 
 /*
@@ -271,11 +263,9 @@ end;
 
 */
 
-////base ref http://www.littlesvr.ca/apng/tutorial/x148.html
-/* png lib from firefox 3 is patch to APNG format! */
-#include "../moz_png/png.h"
 
-#define PNG_USER_MEM_SUPPORTED
+
+
 
 
 void readSetup(const QString file, png_structp* png_ptr_read, png_infop* info_ptr_read);
@@ -284,55 +274,9 @@ AFRAMES writeSetup2(png_structp png_ptr_read, png_infop info_ptr_read,
                  png_uint_32 width, png_uint_32 height);
 void writeSetup(FILE* image, png_structp* png_ptr_write, png_infop* info_ptr_write);
 
-extern inline bool FillFile( const QString file  , const QByteArray stream )
-{
-  bool xx = false;
-  
-          QFile fxi(file); 
-          if (fxi.open(QIODevice::WriteOnly)) {
-             fxi.write(stream);
-             fxi.close();
-             xx = true;
-          }
-          
-  return xx;
-}
 
-extern inline QString  BiteorMega( int peso  )
-{
-    QString humanread;
-    qreal  faktor = 1024.00;
 
-    qreal bytesizefile = peso / faktor;
-    int kilo = 0;
-    
-    if (bytesizefile > 0) {
-        if (bytesizefile < 1) {
-           kilo = 1; 
-        } else {
-           kilo = bytesizefile;
-        }
-    }
-    
-   if (kilo < 1025) {
-   humanread = QString("Kb.%1").arg(kilo);
-   return humanread;
-   }
-   
-   qreal megad = bytesizefile / faktor;
-   
-   if (megad < 1025) {
-   humanread = QString("MB.%1").arg(megad, 0, 'f', 2);
-   return humanread;
-   } else {
-            qreal gigab = megad / faktor;
-            humanread = QString("GB.%1").arg(gigab, 0, 'f', 2);
-       
-       
-   }
-   
-return humanread;
-}
+
 
 
 static inline void OpenDesk( QUrl loc )
@@ -379,72 +323,16 @@ return;
 
 
 
-class APngDevice {
-  public:
-  APngDevice()
-    :newImage(new QBuffer()) { }
-  bool canread()
+
+
+
+
+
+class FrameIterator : public QObject
   {
-    return img.loadFromData(newImage->data());
-  }
-  QBuffer* device() 
-  { 
-   return newImage; 
-  }
-  ~APngDevice() 
-  {
-   newImage->close(); 
-   newImage->deleteLater();
-  }
-  QImage img;
-  QBuffer *newImage;
-};
-
-
-class VIFrame
-{
-    public:
-    enum { MAGICNUMBER = 0xFFAAAFAA, VERSION = 2 };
-    VIFrame();
-    VIFrame& operator=( const VIFrame& d );
-    operator QVariant() const 
-    {
-    return QVariant::fromValue(*this);
-    } 
-    QPixmap videopix(); /* pixmap to display frame */
-    QPixmap erno_pix();
-    QPixmap pix();
-    QImage ipix();
-    QByteArray stream();
-    void set_pics( const QByteArray bytes ); 
-    void set_pics( QPixmap barcode ); 
-    void set_pics( const QPixmap * barcode );
     
-QRect maxframe;
-QByteArray dimg;
-uint play;
-quint32 mode; 
-int pos;   
-QColor bg; 
-QPoint point;    
+    Q_OBJECT
     
-};
-
-/* APNG frame data & time to play */
-Q_DECLARE_METATYPE(VIFrame); 
-
-inline QDebug operator<<(QDebug debug, VIFrame& udoc)
-{
-  debug.nospace() << "VIFrame(size."
-    << BiteorMega(udoc.dimg.size()) << ",time()"
-    << udoc.play << ",mode()"
-    << udoc.mode << ",rect()"
-    << udoc.maxframe << ")";
-  return debug.space();
-} 
-
-
-class FrameIterator {
   public:
     FrameIterator( const QString File_APNG_Format );
     FrameIterator();
@@ -476,6 +364,8 @@ protected:
   QMap<int,VIFrame> playmovie;
   int current;
   bool running;
+  bool capturescreen;
+  
 private:
 signals:
 public slots:
@@ -487,8 +377,11 @@ void OpenFile();
 void ExportFrames();
 void LaunchFile( const QString file );
 void ComposeFrame();
+void SaveAsExport();
+void startCapure();
 private slots:
 void NextFrame();
+void CatScreen();
 
 };
 
