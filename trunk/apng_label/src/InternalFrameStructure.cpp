@@ -48,14 +48,12 @@ FrameWrite::FrameWrite( QMap<int,VIFrame> li , const QString File_APNG_Format )
              
                 png_read_info(png_ptr_read, info_ptr_read);
                   
-                      uint height = imageios.height();
-                      const uchar* const* jt = imageios.jumpTable();
-                      row_pointers=new png_bytep[height];
-                      uint y;
-                      for (y=0; y<height; y++) {
-                                // PNG lib has const issue with the write image function
-                                row_pointers[y]=const_cast<png_byte*>(jt[y]);
-                      }
+                     const uint height = imageios.height();
+                  
+                     png_bytep *row_pointers = new png_bytep[height];
+                        for (uint i = 0; i < height; ++i)  {
+                          row_pointers[i] = (png_bytep)imageios.scanLine(i);
+                        }
                   
                   
                       
@@ -328,18 +326,18 @@ QImage VIFrame::theardpix()
     QByteArray daunq = qUncompress( dimg );
     base.loadFromData( daunq );
     QRectF target(point.x(),point.y(),base.width(),base.height());
-    QImage Pvidi(maxframe.width(),maxframe.height(),32);
+    QImage Pvidi(maxframe.width(),maxframe.height(),QImage::Format_ARGB32);
     QPainter p( &Pvidi );
     p.setBrush(bg);
     p.drawRect(maxframe);
     p.drawImage(target,base);
-    return Pvidi.convertDepth(32);
+    return Pvidi.convertToFormat(QImage::Format_ARGB32,Qt::ColorOnly);
 }
 
 QImage VIFrame::exportpic()
 {
    QImage alla = videopix().toImage();
-   return alla.convertDepth(32);
+   return alla.convertToFormat(QImage::Format_ARGB32,Qt::ColorOnly);
 }
 
 QByteArray VIFrame::stream()
@@ -360,6 +358,18 @@ QImage VIFrame::ipix()
     }  
     return resultimage;
 }
+
+void VIFrame::set_pics( QImage barcode )
+{
+      if (barcode.isNull()) {
+        return;
+      }
+      QByteArray bytes;
+      QBuffer buffer(&bytes);
+      buffer.open(QIODevice::WriteOnly);
+      barcode.save(&buffer,"PNG");
+      dimg = qCompress(bytes,9);
+} 
     
 void VIFrame::set_pics( const QByteArray bytes )
 {

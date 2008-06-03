@@ -3,7 +3,6 @@
 
 #include <QtCore>
 #include <QDebug>
-#include <Qt3Support>
 #include <QImage>
 #include <QPixmap>
 #include <QtGui>
@@ -20,6 +19,24 @@
 ////base ref http://www.littlesvr.ca/apng/tutorial/x148.html
 /* png lib from firefox 3 is patch to APNG format! */
 #include "../moz_png/png.h" 
+
+
+static  QImage GreyScale( QImage income )
+{
+    
+    QImage base =  income.convertToFormat(QImage::Format_RGB32);
+    for (int y = 0; y < base.height(); ++y) {
+             for (int x = 0; x < base.width(); ++x) {
+                 int pixel = base.pixel(x, y);
+                 int gray = qGray(pixel);
+                 int alpha = qAlpha(pixel);
+                 base.setPixel(x, y, qRgba(gray, gray, gray, alpha));
+             }
+         }
+         
+    return base;
+}
+
 
 
 

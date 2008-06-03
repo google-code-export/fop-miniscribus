@@ -9,8 +9,10 @@ INCLUDEPATH += ui ../moz_png ../zlib
 
 message(Qt version: $$[QT_VERSION])
 message("Alert usage from Mozilla dev PNG LIBs")
+message("Alert usage from Mozilla dev PNG LIBs")
+message("Alert usage from Mozilla dev PNG LIBs")
+message("Alert usage from Mozilla dev PNG LIBs")
 
-QT += qt3support
 
 
 ###############  include zu C:\Qt\4.4.4_src\src\3rdparty
