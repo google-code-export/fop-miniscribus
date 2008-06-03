@@ -482,8 +482,7 @@ void PMovie::StartCam()
     qDebug() << "### format error!!  ->" << format;
     return;
     }
-    QImage *imgs = IplImageToQImage(imgPtr,(uchar**)imgPtr->imageData);
-    camimage = imgs->mirrored(false,true);
+    camimage = IplImageToQImage(imgPtr,(uchar**)imgPtr->imageData);
     setPixmap ( QPixmap::fromImage(camimage,Qt::AutoColor) );
     setScaledContents(false);
     capturescreen = true;
@@ -509,8 +508,7 @@ void PMovie::CatScreen()
     #ifdef OPCAMENABLE
     if (capture) {
     IplImage* imgPtr  = cvQueryFrame( capture );
-    QImage *imgs = IplImageToQImage(imgPtr,(uchar**)imgPtr->imageData);
-    camimage = imgs->mirrored(false,true);
+    camimage = IplImageToQImage(imgPtr,(uchar**)imgPtr->imageData);
     }
     #endif
     smallooooooo = QPixmap::fromImage(camimage,Qt::AutoColor);
@@ -524,6 +522,7 @@ void PMovie::CatScreen()
     Ftoc.point = QPoint(0,0);
     Ftoc.set_pics( smallooooooo );
     Ftoc.play = 500;
+    Ftoc.mode = 6;
     Ftoc.bg = QColor(Qt::black);
     Ftoc.maxframe = QRect(0,0,smallooooooo.width(),smallooooooo.height());
     if (!camimage.isNull()) {
