@@ -27,9 +27,9 @@ RESOURCES += resource.qrc
 CONFIG   += qt warn_off release
 
 # Input
-HEADERS +=   ../moz_png/png.h  animationdevice.h
+HEADERS +=   ../moz_png/png.h  PngAConfig.h animationdevice.h InternalFrameStructure.h
 #########FORMS += ui/gmain.ui
-SOURCES +=  main.cpp  animationdevice.cpp
+SOURCES +=  main.cpp  animationdevice.cpp InternalFrameStructure.cpp
 
 
 

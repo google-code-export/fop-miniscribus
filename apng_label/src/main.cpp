@@ -10,6 +10,7 @@ int main(int argc, char** argv)
     PMovie w;
     w.setWindowTitle(QString("APNG Label (use ContextMenu to play file)"));
     w.show();
+    /////FrameIterator *xdev = new FrameIterator(QString("demo.png"));
     return a.exec();
 }
 
