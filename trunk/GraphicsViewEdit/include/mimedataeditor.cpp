@@ -757,6 +757,7 @@ void  Layoutpainter::LinkText()
            sthtml= "Text to link";  
       }
       Href_Gui::self( 0 )->text_href->setText(sthtml);
+      Href_Gui::self( 0 )->url_href->setText(format.anchorHref());
       Href_Gui::self( 0 )->exec();
       
         if (Href_Gui::self) {
@@ -786,7 +787,7 @@ void  Layoutpainter::LinkText()
                 ltext ="<a name=\""+hrefprimo+"\"></a> "+QString(data.at(0));   
                 }
                 QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(ltext);
-                textCursor().insertFragment(fragment);
+                c.insertFragment(fragment);
                 }
           }
     
