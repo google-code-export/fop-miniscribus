@@ -1,0 +1,3 @@
+6.6.08 make image visible from base base.xsl qdir current path is application path.
+       append DESTDIR on all pro file otherwise window not find static libs reference
+       insert reference to qvariant compilation error on window Mingw by moc file

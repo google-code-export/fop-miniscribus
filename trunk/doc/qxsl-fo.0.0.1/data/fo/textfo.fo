@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format"
+  font-family="Times New Roman, serif" font-size="11pt" language="cs"
+  hyphenate="true">
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="my-page" page-height="297mm"
+      page-width="210mm" margin="1in">
+      <fo:region-body margin-bottom="10mm"/>
+      <fo:region-after extent="5mm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+  <fo:page-sequence master-reference="my-page">
+    <fo:static-content flow-name="xsl-region-after">
+      <fo:block>Strana <fo:page-number/></fo:block>
+    </fo:static-content>
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block text-align="center" space-before="20pt" space-after="14pt"
+        font-family="Arial, sans-serif" hyphenate="false">
+        <fo:block font-size="6pt" text-align="end">Rubrika: <fo:inline
+            font-weight="bold">Aktuality</fo:inline></fo:block>
+        <fo:block font-size="24pt" font-weight="bold" space-before="6pt"
+          space-after="4pt">EU chce použít XML při rozvoji
+        e-businessu</fo:block>
+      </fo:block>
+      <fo:block text-align="justify" font-style="italic" font-weight="bold"
+        >Evropská komise si nechala vypracovat zprávu, která se zabývá možnostmi
+        rozvoje elektronického obchodování zejména pro malé a střední
+        podnikatele. Výsledky studie možná někoho překvapí – e-business se bude
+        rozvíjet díky použití XML a lepších vyhledávacích technologií.</fo:block>
+      <fo:block text-indent="20pt" text-align="justify">Studii pro Evropskou
+        komisi vypracovala společnost InfoConsult, která sdružuje několik
+        předních evropských konzultantů, kteří se nezaměřují jen na podnikání,
+        ale i na informační a komunikační technologie. Podle nich je dnes
+        největší překážkou pro uplatnění e-businessu <fo:inline
+          font-style="italic">obtížné vyhledávání informací</fo:inline>. Pokud
+        hledáme na Internetu určitý výrobek, službu či firmu, musíme použít
+        klasické vyhledávací služby, které nás zahltí stovkami, mnohdy
+        neužitečných, odkazů.</fo:block>
+      <fo:block text-indent="20pt" text-align="justify">Studie navrhuje
+        vytvoření sady XML tagů, kterými by se na webových stránkách označovaly
+        jednotlivé údaje o firmě, jejích výrobcích a službách. Současně by se
+        měla vytvořit nová vyhledávací služba, která by „rozuměla“ nově
+        definovaným tagům. Pomocí této služby by pak každý mohl velice snadno
+        nalézt informace nebo výrobek, který potřebuje.</fo:block>
+      <fo:block text-indent="20pt" text-align="justify">Jistě krásná idea však
+        vyvolává mnoho praktických otázek a problémů. První překážkou je zatím
+        slabá podpora XML v běžně používaných prohlížečích. Doplnění speciálních
+        tagů do současných webových stránek by nemuselo dělat dobře některým
+        starším prohlížečům. Aby byl celý systém opravdu užitečný, musela by
+        speciální tagy na svých stránkách používat většina firem. Jazyk XML
+        zatím však autoři webových stránek neovládají a dosud není na trhu
+        cenově dostupný WYSIWYG editor pro XML.</fo:block>
+      <fo:block font-style="italic" text-align="end" space-before="6pt">— Jiří
+        Kosek — </fo:block>
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

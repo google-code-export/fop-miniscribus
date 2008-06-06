@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="my-page" 
+                           page-height="297mm" 
+                           page-width="210mm" 
+                           margin="1in">
+      <fo:region-body margin-bottom="15mm"/>
+      <fo:region-after extent="10mm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="my-page" language="cs">
+    <fo:static-content flow-name="xsl-region-after">
+      <fo:block>Strana <fo:page-number/></fo:block>
+    </fo:static-content>
+    <fo:flow flow-name="xsl-region-body">
+      <fo:list-block provisional-distance-between-starts="1em">
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>První položka seznamu</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>Druhá položka seznamu</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+      </fo:list-block>    
+
+      <fo:block space-before="1cm"/>
+
+      <fo:list-block provisional-distance-between-starts="1em" provisional-label-separation="0.4em">
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()" text-align="end">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>První položka seznamu</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()" text-align="end">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>Druhá položka seznamu</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+      </fo:list-block>    
+
+      <fo:block space-before="1cm"/>
+
+      <fo:list-block provisional-distance-between-starts="1em">
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>První položka seznamu</fo:block>
+            <fo:list-block provisional-distance-between-starts="1em">
+              <fo:list-item>
+                <fo:list-item-label end-indent="label-end()">
+                  <fo:block>&#x2022;</fo:block>
+                </fo:list-item-label>
+                <fo:list-item-body start-indent="body-start()">
+                  <fo:block>První položka seznamu</fo:block>
+                </fo:list-item-body>
+              </fo:list-item>
+              <fo:list-item>
+                <fo:list-item-label end-indent="label-end()">
+                  <fo:block>&#x2022;</fo:block>
+                </fo:list-item-label>
+                <fo:list-item-body start-indent="body-start()">
+                  <fo:block>Druhá položka seznamu</fo:block>
+                </fo:list-item-body>
+              </fo:list-item>
+            </fo:list-block>    
+          </fo:list-item-body>
+        </fo:list-item>
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>Druhá položka seznamu</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+      </fo:list-block>    
+
+      <fo:block space-before="1cm"/>
+
+      <fo:list-block provisional-distance-between-starts="1em" provisional-label-separation="0.4em">
+        <fo:list-item>
+          <fo:list-item-label text-align="end" end-indent="label-end()">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>První položka seznamu</fo:block>
+            <fo:list-block provisional-distance-between-starts="1em" provisional-label-separation="0.4em">
+              <fo:list-item>
+                <fo:list-item-label text-align="end" end-indent="label-end()">
+                  <fo:block>&#x2022;</fo:block>
+                </fo:list-item-label>
+                <fo:list-item-body start-indent="body-start()">
+                  <fo:block>První položka seznamu</fo:block>
+                </fo:list-item-body>
+              </fo:list-item>
+              <fo:list-item>
+                <fo:list-item-label text-align="end" end-indent="label-end()">
+                  <fo:block>&#x2022;</fo:block>
+                </fo:list-item-label>
+                <fo:list-item-body start-indent="body-start()">
+                  <fo:block>Druhá položka seznamu</fo:block>
+                </fo:list-item-body>
+              </fo:list-item>
+            </fo:list-block>    
+          </fo:list-item-body>
+        </fo:list-item>
+        <fo:list-item>
+          <fo:list-item-label text-align="end" end-indent="label-end()">
+            <fo:block>&#x2022;</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()">
+            <fo:block>Druhá položka seznamu</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+      </fo:list-block>    
+
+      <fo:block space-before="1cm"/>
+
+      <fo:list-block provisional-distance-between-starts="52%" provisional-label-separation="4%" 
+                     font-size="9pt" text-align="justify">
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()">
+            <fo:block>My, občané České republiky v Čechách, na Moravě a ve Slezsku,
+v čase obnovy samostatného českého státu,
+věrni všem dobrým tradicím dávné státnosti zemí Koruny české i státnosti československé,
+odhodláni budovat, chránit a rozvíjet Českou republiku
+v duchu nedotknutelných hodnot lidské důstojnosti a svobody
+jako vlast rovnoprávných, svobodných občanů,
+kteří jsou si vědomi svých povinností vůči druhým a zodpovědnosti vůči celku,
+jako svobodný a demokratický stát, založený na úctě k lidským právům a na zásadách občanské společnosti,
+jako součást rodiny evropských a světových demokracií,
+odhodláni společně střežit a rozvíjet zděděné přírodní a kulturní, hmotné a duchovní bohatství,
+odhodláni řídit se všemi osvědčenými principy právního státu,
+prostřednictvím svých svobodně zvolených zástupců přijímáme tuto Ústavu České republiky.</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()" language="en">
+            
+            <fo:block>We, the citizens of the Czech Republic in Bohemia, Moravia, and Silesia, at the time of the renewal of an independent Czech state, being loyal to all good traditions of the ancient statehood of Czech Crown's Lands and the Czechoslovak State, resolved to build, protect and develop the Czech Republic in the spirit of the inviolable values of human dignity and freedom, as the home of equal and free citizens who are conscious of their duties towards others and their responsibility towards the whole, as a free and democratic state based on the respect for human rights and the principles of civic society, as part of the family of European and world democracies, resolved to jointly protect and develop the inherited natural and cultural, material and spiritual wealth, resolved to abide by all time-tried principles of a law-observing state, through our freely elected representatives, adopt this Constitution of the Czech Republic. </fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+        <fo:list-item>
+          <fo:list-item-label end-indent="label-end()">
+            <fo:block>Česká republika je svrchovaný, jednotný a demokratický právní stát založený na úctě k právům a svobodám člověka a občana.</fo:block>
+          </fo:list-item-label>
+          <fo:list-item-body start-indent="body-start()" language="en">
+            <fo:block>The Czech Republic is a sovereign, unified, and democratic law-observing state, based on the respect for the rights and freedoms of the individual and citizen.</fo:block>
+          </fo:list-item-body>
+        </fo:list-item>
+      </fo:list-block>    
+
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

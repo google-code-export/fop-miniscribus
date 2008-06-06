@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="my-page" page-height="297mm" page-width="210mm">
+	  <fo:region-body margin-bottom="10mm"/> 
+	  <fo:region-after extent="5mm"/> 
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="my-page">
+
+    <fo:static-content flow-name="xsl-region-after">
+      <fo:block>Strana <fo:page-number/></fo:block>
+    </fo:static-content>
+	
+    <fo:flow flow-name="xsl-region-body">
+	
+      <fo:block text-align="left" background-color="red" >
+        Pokusný text.
+      </fo:block>
+      <fo:block text-align="left" background-color="blue" >
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+      </fo:block>
+      <fo:block text-align="right" background-color="red" >
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+      </fo:block>
+      <fo:block text-align="center" space-before="1em" background-color="green" >
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+      </fo:block>
+      <fo:block text-align="justify" space-before="1em" background-color="yellow" >
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+      </fo:block>
+      <fo:block text-align="justify" text-align-last="center" space-before="1em" background-color="red">
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text. 
+      </fo:block>
+      <fo:block-container reference-orientation="0" width="5cm" overflow="error-if-overflow">
+        <fo:block>
+          Pokusný text2-1. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        </fo:block>
+        <fo:block>
+          Pokusný text2-2. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        </fo:block>
+        <fo:block>
+          Pokusný text2-3. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        </fo:block>
+        <fo:block>
+          Pokusný text2-3. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+          Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        </fo:block>
+      </fo:block-container>
+      <fo:block>
+        Pokusný text3. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+        Pokusný text. Pokusný text.Pokusný text.Pokusný text.Pokusný text.  
+      </fo:block>
+      
+      <!-- Odsazení okraje -->
+      <fo:block start-indent="1em" background-color="red">
+        Blok start-indent="1em"
+        <fo:block start-indent="2em" background-color="blue">Vnořený blok se start-indent="2em"</fo:block>
+	aaa
+      </fo:block>
+      
+      <fo:block margin-left="1em">
+        Blok margin-left="1em"<fo:block margin-left="2em">Vnořený blok s margin-left="2em"</fo:block>
+	aa bb cc dd ee <fo:inline font-style="italic"> 11 22 33 44 55 66  </fo:inline> ff gg hh
+      </fo:block>
+
+      <!-- Pozicování -->
+      <fo:block-container absolute-position="fixed" top="2cm" left="10cm" width="6em">
+        <fo:block color="red" background-color="white" border="dotted 1pt red">
+          Absolutně pozicovaný blok (2cm shora, 10cm zleva) "absolute"
+        </fo:block>
+      </fo:block-container>
+      
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

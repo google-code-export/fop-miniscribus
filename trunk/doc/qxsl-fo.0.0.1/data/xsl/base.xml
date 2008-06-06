@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<report>
+	<hlavicka>
+		<logo src="logofri2.bmp" />
+		<skola> Zilinska univerzita </skola>
+		<os_cislo> 3352 </os_cislo>
+	</hlavicka>
+	<telo>
+	    <skrok rok="2002">
+		<predmet>
+			<cis_predm>P102</cis_predm>
+			<nazov>Algebra</nazov>
+			<znamka>A </znamka>
+			<kredit> 4</kredit>
+			<body> 18</body>
+		</predmet>
+		<predmet>
+			<cis_predm>P103</cis_predm>
+			<nazov>Analyza</nazov>
+			<znamka>B </znamka>
+			<kredit> 6</kredit>
+			<body> 18</body>
+		</predmet>
+		<statistika>
+			<priemer_rok> 2.10</priemer_rok>
+			<kredit_rok> 65</kredit_rok>
+		</statistika>
+	    </skrok>
+	    <skrok rok="2003">
+		<predmet>
+			<cis_predm>P202</cis_predm>
+			<nazov>Algebra 2</nazov>
+			<znamka>C </znamka>
+			<kredit> 2</kredit>
+			<body> 18</body>
+		</predmet>
+		<predmet>
+			<cis_predm>P203</cis_predm>
+			<nazov>Analyza 2</nazov>
+			<znamka>D </znamka>
+			<kredit> 3</kredit>
+			<body> 18</body>
+		</predmet>
+		<statistika>
+			<priemer_rok> 1.10</priemer_rok>
+			<kredit_rok> 120</kredit_rok>
+		</statistika>
+	    </skrok>
+	    <spolu>
+		<sta>
+			<priemer_all> 1.66 </priemer_all>
+			<limit1> 180 </limit1>
+		</sta>
+		<neobsolvovane pocet=" 1" povinnych="   ">
+			<cis_predm>v406</cis_predm>
+		</neobsolvovane>
+	    </spolu>
+	</telo>
+	<zaver miesto="v Ziline" datum="27.10.2004" kto="doc. Ing. Karol Matiasko, PhD." funkcia="dekan" />
+</report>

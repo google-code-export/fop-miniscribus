@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<!-- -------------------------------------------------------------------- -->
+  <fo:layout-master-set>
+
+    <!-- -------------------------------------------------------------------- -->
+    <fo:simple-page-master master-name="titlepage" margin="1in">
+      <fo:region-body/>
+    </fo:simple-page-master>
+
+    <fo:simple-page-master master-name="left-master" margin="1in">
+      <fo:region-body margin-top="15mm"/>        
+      <fo:region-before extent="10mm" region-name="xsl-region-before-left"/>
+    </fo:simple-page-master>   
+
+    <fo:simple-page-master master-name="right-master" margin="1in">
+      <fo:region-body margin-top="15mm"/>
+      <fo:region-before extent="10mm" region-name="xsl-region-before-right"/>
+    </fo:simple-page-master>   
+    <!-- -------------------------------------------------------------------- -->
+
+    <fo:page-sequence-master master-name="main-master">
+      <fo:repeatable-page-master-alternatives>
+        <fo:conditional-page-master-reference master-reference="titlepage" page-position="first"/>
+        <fo:conditional-page-master-reference master-reference="left-master" odd-or-even="even"/>
+        <fo:conditional-page-master-reference master-reference="right-master" odd-or-even="odd"/>          
+      </fo:repeatable-page-master-alternatives>        
+    </fo:page-sequence-master>
+
+  </fo:layout-master-set>
+<!-- -------------------------------------------------------------------- -->
+  <fo:page-sequence master-reference="main-master">
+
+    <fo:static-content flow-name="xsl-region-before-right">
+      <fo:block text-align="right">page right:<fo:page-number/></fo:block>
+    </fo:static-content>
+
+    <fo:static-content flow-name="xsl-region-before-left">
+      <fo:block text-align="left">page left:<fo:page-number/></fo:block>
+    </fo:static-content>
+
+
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">------</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>
