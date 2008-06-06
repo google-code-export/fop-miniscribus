@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="my-page" 
+                           page-height="297mm" 
+                           page-width="210mm" 
+                           margin="1in">
+      <fo:region-body margin-bottom="10mm"/>
+      <fo:region-after extent="5mm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="my-page">
+    <fo:static-content flow-name="xsl-region-after">
+      <fo:block>Strana <fo:page-number/></fo:block>
+    </fo:static-content>
+    <fo:flow flow-name="xsl-region-body">
+      
+      <!-- Obyčejné vložení obrázku -->
+      <fo:block>
+        <fo:external-graphic src="url(mzr90.jpg)" 
+          content-width="5cm" 
+          width="100%" 
+          text-align="center"/>
+      </fo:block>
+      
+      <!-- Zvětšení obrázku na dostupnou šířku papíru -->
+      <fo:block>
+        <fo:external-graphic src="url(xslfo-schema.svg)" 
+          width="100%" content-width="scale-to-fit"/>
+      </fo:block>
+
+      <fo:block space-before="1cm"/>
+      
+      <!-- Zarovnání obrázku -->
+      <fo:block text-align="justify">
+        <fo:float float="right">
+          <fo:block>
+            <fo:external-graphic src="url(mzr90.jpg)" width="6cm" height="6cm" content-width="4cm" display-align="center" text-align="center"/>
+          </fo:block>
+        </fo:float>
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam vel ante dapibus eros convallis auctor. In ante purus, iaculis sodales, rhoncus non, rutrum sit amet, dolor. Maecenas lacinia pharetra quam. Sed sagittis commodo tellus. Integer sollicitudin leo sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Nunc laoreet dapibus urna. Sed libero augue, placerat non, faucibus a, accumsan euismod, nunc. Donec id dui et augue sodales accumsan. Sed tincidunt ante non sem. Fusce gravida risus a orci. Nam commodo.        
+        Nulla facilisi. Maecenas pede neque, varius ac, dapibus sed, sagittis sit amet, turpis. Aenean nisi nisi, pretium at, consequat id, vehicula nec, nisi. Nunc euismod dignissim tortor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec hendrerit laoreet ipsum. Etiam lobortis elit nec lacus. Ut eget quam ultricies velit bibendum interdum. Proin tristique lacus in massa. Aenean tempor, leo nec blandit fermentum, dolor magna eleifend risus, lacinia imperdiet mauris lectus non purus.
+      </fo:block>
+      
+      <fo:block space-before="1cm"/>
+      
+      <!-- Neproporcionální zvětšení -->
+      <fo:block text-align="justify">
+        <fo:float float="right">
+          <fo:block>
+            <fo:external-graphic src="url(aa.png)" width="6cm" height="6cm" content-width="4cm" content-height="6cm" display-align="center" text-align="center" scaling="non-uniform"/>
+          </fo:block>
+        </fo:float>
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam vel ante dapibus eros convallis auctor. In ante purus, iaculis sodales, rhoncus non, rutrum sit amet, dolor. Maecenas lacinia pharetra quam. Sed sagittis commodo tellus. Integer sollicitudin leo sed pede. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Nunc laoreet dapibus urna. Sed libero augue, placerat non, faucibus a, accumsan euismod, nunc. Donec id dui et augue sodales accumsan. Sed tincidunt ante non sem. Fusce gravida risus a orci. Nam commodo.        
+        Nulla facilisi. Maecenas pede neque, varius ac, dapibus sed, sagittis sit amet, turpis. Aenean nisi nisi, pretium at, consequat id, vehicula nec, nisi. Nunc euismod dignissim tortor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec hendrerit laoreet ipsum. Etiam lobortis elit nec lacus. Ut eget quam ultricies velit bibendum interdum. Proin tristique lacus in massa. Aenean tempor, leo nec blandit fermentum, dolor magna eleifend risus, lacinia imperdiet mauris lectus non purus.
+      </fo:block>
+      
+      <fo:block space-before="1cm"/>
+      
+      <!-- Vložení SVG obrázku přímo do dokumentu -->
+      <fo:block>
+        <fo:instream-foreign-object content-width="4cm">
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <desc>This is a blue circle with a red outline</desc>
+            <g>
+              <circle style="fill: blue; stroke: red" cx="200" cy="200" r="100"/>
+              <text x="150" y="160" stroke="yellow" fill="white" 
+                    font-weight="bold" font-size="20">Hello World</text>
+            </g>
+          </svg>
+        </fo:instream-foreign-object>
+      </fo:block>
+            
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

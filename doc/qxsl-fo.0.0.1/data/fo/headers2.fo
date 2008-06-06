@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <fo:layout-master-set>
+
+    <fo:simple-page-master master-name="nasirku" margin="1in"
+                           page-width="297mm" page-height="210mm">
+      <fo:region-body/>      
+    </fo:simple-page-master>
+
+    <fo:simple-page-master master-name="navysku" margin="1in"
+                           page-width="210mm" page-height="297mm">
+      <fo:region-body/>      
+    </fo:simple-page-master>
+
+    <!-- První dvě stránky budou na šířku -->
+    <fo:page-sequence-master master-name="my-sequence-master">
+	  <fo:repeatable-page-master-reference master-reference="navysku" maximum-repeats="2"/>
+      <fo:repeatable-page-master-reference master-reference="nasirku" maximum-repeats="5"/>
+    </fo:page-sequence-master>    
+
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="my-sequence-master">
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+      <fo:block font-size="36pt">XXXXXX</fo:block>
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

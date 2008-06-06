@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <fo:layout-master-set>
+
+    <fo:simple-page-master master-name="my-page" 
+                           page-height="297mm" 
+                           page-width="210mm" 
+                           margin="1in">
+      <fo:region-body margin-bottom="15mm"/>
+      <fo:region-after extent="10mm"/>
+    </fo:simple-page-master>
+
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="my-page">
+
+    <fo:static-content flow-name="xsl-region-after">
+      <fo:block>Strana <fo:page-number/></fo:block>
+    </fo:static-content>
+
+    <fo:flow flow-name="xsl-region-body">
+      <fo:block>
+        Pokusný text. 
+        <fo:inline border-style="dotted" border-color="red" border-width="0.8pt">
+          <fo:inline color="blue">Pokusný text</fo:inline>
+          <fo:inline background-color="yellow">Pokusný text</fo:inline>
+        </fo:inline>
+        <fo:inline font-size="200%">Pokusný text</fo:inline>
+        <fo:inline font-size="60%" baseline-shift="super"
+          font-weight="bold" font-style="italic">Pokusný text</fo:inline>
+        C<fo:inline font-size="smaller" baseline-shift="sub">2</fo:inline>H<fo:inline font-size="smaller" baseline-shift="sub">5</fo:inline>OH
+      </fo:block>
+
+      <fo:block space-before="1cm"/>
+
+      <fo:block text-align-last="justify">
+        Úvod
+        <fo:leader leader-pattern="dots"/>
+        42
+      </fo:block>
+
+      <fo:block space-before="1cm"/>
+
+      <fo:block line-stacking-strategy="font-height">
+        <fo:initial-property-set font-weight="bold"/>
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        <fo:footnote>
+          <fo:inline font-size="70%" baseline-shift="super">1</fo:inline>
+          <fo:footnote-body>
+            <fo:block>
+              <fo:inline font-size="70%" baseline-shift="super">1</fo:inline>
+              Text poznámky
+            </fo:block>
+          </fo:footnote-body>
+        </fo:footnote>
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+        Ukázka dlouhého textu.
+      </fo:block>
+
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

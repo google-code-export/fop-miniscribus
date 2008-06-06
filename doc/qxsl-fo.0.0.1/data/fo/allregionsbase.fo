@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <!-- defines page layout -->
+  <fo:layout-master-set>
+
+    <fo:simple-page-master master-name="only" page-height="297mm" page-width="210mm" margin="10mm" margin-top="10mm" margin-bottom="10mm" margin-left="10mm" margin-right="10mm">
+      <fo:region-body margin-top="10mm" margin-bottom="15mm" margin-left="20mm" margin-right="25mm"/>
+      <fo:region-before precedence="false" extent="15mm"/>
+      <fo:region-after precedence="true" extent="10mm"/>
+      <fo:region-start extent="30mm"/>
+      <fo:region-end extent="20mm"/>
+    </fo:simple-page-master>
+
+  </fo:layout-master-set>
+  <!-- end: defines page layout -->
+
+
+  <!-- actual layout -->
+  <fo:page-sequence master-reference="only" initial-page-number="1">
+
+    <!-- usage of page layout -->
+    <!-- header -->
+
+    <fo:static-content flow-name="xsl-region-before">
+    	<fo:block-container border-color="black" border-style="solid" border-width="1pt" position="absolute">
+	    <fo:block text-align="start" font-size="8pt" font-family="serif" line-height="10pt">
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    		XML Recommendation - p. <fo:page-number/> fdf hgg dgdf ggg g df hfd
+    	    </fo:block>
+	</fo:block-container>
+    </fo:static-content> 
+
+    <fo:static-content flow-name="xsl-region-start">
+    <!--	<fo:block-container border-color="black" border-style="solid" border-width="1pt" position="absolute">-->
+	    <fo:block text-align="start" font-size="8pt" font-family="serif" line-height="10pt" background-color="green">
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	      ds dfs sfd sdf   ds dfs sfd sdf
+	    </fo:block>
+<!--	</fo:block-container> -->
+    </fo:static-content> 
+
+    <fo:static-content flow-name="xsl-region-end">
+<!--    	<fo:block-container border-color="black" border-style="solid" border-width="1pt" height="30.2cm" width="1cm" top="0cm" left="0cm" position="absolute">-->
+			<fo:block text-align="start" font-size="8pt" font-family="serif" line-height="10pt" background-color="yellow">
+			  End
+			</fo:block>
+<!--		</fo:block-container> -->
+    </fo:static-content> 
+
+    <fo:static-content flow-name="xsl-region-after">
+	  <fo:block text-align="start" font-size="8pt" font-family="serif" line-height="10pt" background-color="red">
+		  xsl re ion after fdsklk lkdjs lfkjds lkjfdaj fd kdsjf lkdsjl kjdslkj
+		  xsl re ion after fdsklk lkdjs lfkjds lkjfdaj fd kdsjf lkdsjl kjdslkj
+		</fo:block>
+    </fo:static-content> 
+
+    <fo:flow flow-name="xsl-region-body">
+
+      <!-- defines text title level 1-->
+      <fo:block font-size="18pt" font-family="sans-serif" line-height="24pt" background-color="blue" color="white" text-align="center" padding-top="10pt">
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds	
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+        Extensible Markup Language (XML) 1.0 fdklj fkjs lfdjsl kdjsalkjdlkjalfdjlafjdljfldjfldskjflkdsjal kdfjslfkjds
+      </fo:block>
+
+      <fo:block font-size="18pt" font-family="sans-serif" line-height="24pt" background-color="red" color="white" text-align="center" padding-top="10pt">
+	DSJA KDJA DKLJSLK JSLKAJDSLKCJLSK JDLKS JDLSKJ DKLS JLKJA DLKSJ LKSL JSKLD JLK JDSLK JSLKJ LSKJDLKS JLKJDLKS 
+      </fo:block>
+
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>

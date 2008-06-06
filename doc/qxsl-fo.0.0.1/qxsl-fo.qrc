@@ -1,0 +1,22 @@
+<!DOCTYPE RCC><RCC version="1.0">
+	<qresource>
+		<file>images/zoom_in.png</file>
+		<file>images/zoom_out.png</file>
+		<file>images/delete_table_row.png</file>
+		<file>images/insert_table_row.png</file>
+		<file>images/delete_table_col.png</file>
+		<file>images/insert_table_col.png</file>
+		<file>images/undo.png</file>
+		<file>images/redo.png</file>
+		<file>images/file_open.png</file>
+		<file>images/file_save.png</file>
+		<file>images/empty_picture.png</file>
+		<file>images/foobjects/foblock.png</file>
+		<file>images/foobjects/foblockcontainer.png</file>
+		<file>images/foobjects/foexternalgraphics.png</file>
+		<file>images/foobjects/fotable.png</file>
+		<file>images/foobjects/foregion.png</file>
+		<file>images/foobjects/text.png</file>
+		<file>images/foobjects/page.png</file>
+	</qresource>
+</RCC>

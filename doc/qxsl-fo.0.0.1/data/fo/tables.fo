@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="my-page" 
+                           page-height="297mm" 
+                           page-width="210mm" 
+                           margin="1in">
+      <fo:region-body margin-bottom="10mm"/>
+      <fo:region-after extent="5mm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <fo:page-sequence master-reference="my-page" language="cs">
+    <fo:static-content flow-name="xsl-region-after">
+      <fo:block>Strana <fo:page-number/></fo:block>
+    </fo:static-content>
+    <fo:flow flow-name="xsl-region-body">
+      
+      <!-- Velice jednoduchá tabulka -->
+      <fo:table>
+
+        <fo:table-body>
+
+          <fo:table-row>
+            <fo:table-cell>
+              <fo:block>A</fo:block>
+            </fo:table-cell>
+            <fo:table-cell>
+              <fo:block>B</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+
+          <fo:table-row>
+            <fo:table-cell>
+              <fo:block>C</fo:block>
+            </fo:table-cell>
+            <fo:table-cell>
+              <fo:block>D</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+
+        </fo:table-body>
+
+      </fo:table>
+
+      <fo:block space-before="1em"/>
+      
+      <!-- Slučování buněk a rámečky -->
+      <fo:table border-collapse="collapse" border-left-style="solid" border-right-style="solid" border-top-style="solid" border-bottom-style="solid" border-left-width="1.5pt" border-right-width="1.5pt" border-top-width="1.5pt" border-bottom-width="1.5pt" border-left-color="black" border-right-color="black" border-top-color="black" border-bottom-color="black" width="100%">
+
+        <fo:table-column column-number="1" column-width="33%"/>
+        <fo:table-column column-number="2" column-width="34%"/>
+        <fo:table-column column-number="3" column-width="33%"/>
+
+        <fo:table-header>
+
+          <fo:table-row>
+
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" number-rows-spanned="3" display-align="center" text-align="center">
+              <fo:block font-weight="bold">Měsíc</fo:block>
+            </fo:table-cell>
+
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" number-columns-spanned="2" text-align="center">
+              <fo:block font-weight="bold">Prodej zboží</fo:block>
+            </fo:table-cell>
+
+          </fo:table-row>
+
+          <fo:table-row>
+
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="center">
+              <fo:block font-weight="bold">A</fo:block>
+            </fo:table-cell>
+
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" text-align="center">
+              <fo:block font-weight="bold">B</fo:block>
+            </fo:table-cell>
+
+          </fo:table-row>
+
+        </fo:table-header>
+
+        <fo:table-body>
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="left">
+              <fo:block>Leden</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align=",">
+              <fo:block>865,54</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" text-align=",">
+              <fo:block>16,3</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="left">
+              <fo:block>Únor</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align=",">
+              <fo:block>917,7</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" text-align="," background-color="red">
+              <fo:block>8,1</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="left">
+              <fo:block>Březen</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align=",">
+              <fo:block>1036,8</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" text-align=",">
+              <fo:block>18,9</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+      
+      <fo:block space-before="16cm"/>
+      
+      <!-- Automatický layout -->
+      <fo:table border-collapse="collapse" border-left-style="solid" border-right-style="solid" border-top-style="solid" border-bottom-style="solid" border-left-width="1.5pt" border-right-width="1.5pt" border-before-width="1.5pt" border-bottom-width="1.5pt" border-left-color="black" border-right-color="black" border-top-color="black" border-bottom-color="black" table-layout="auto" border-before-width.conditionality="retain">
+        <fo:table-header>
+
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" number-rows-spanned="2" display-align="center" text-align="center">
+              <fo:block font-weight="bold">Měsíc</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" number-columns-spanned="2" text-align="center">
+              <fo:block font-weight="bold">Prodej zboží</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="center">
+              <fo:block font-weight="bold">A</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" text-align="center">
+              <fo:block font-weight="bold">B</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+
+        </fo:table-header>
+        <fo:table-body>
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="left">
+              <fo:block>Leden</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align=",">
+              <fo:block>865,54</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" text-align=",">
+              <fo:block>16,3</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="left">
+              <fo:block>Únor</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align=",">
+              <fo:block>917,7</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-bottom-width="0.5pt" border-bottom-style="solid" border-bottom-color="black" text-align="," background-color="red">
+              <fo:block>8,1</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+          <fo:table-row>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align="left">
+              <fo:block>Březen</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" border-right-width="0.5pt" border-right-style="solid" border-right-color="black" text-align=",">
+              <fo:block>1036,8</fo:block>
+            </fo:table-cell>
+            <fo:table-cell padding-left="2pt" padding-right="2pt" padding-top="2pt" padding-bottom="2pt" keep-together.within-column="always" text-align=",">
+              <fo:block>18,9</fo:block>
+            </fo:table-cell>
+          </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+      
+    </fo:flow>
+  </fo:page-sequence>
+</fo:root>
