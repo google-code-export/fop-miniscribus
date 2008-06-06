@@ -190,7 +190,7 @@ protected:
     bool IsSelectActive;
     bool SwapLockBreak;
     int id;
-    bool sceneEvent(QEvent *event);
+    //////////bool sceneEvent(QEvent *event);
 private:
     TextController *mount;
     QMap<uint,QString> history;

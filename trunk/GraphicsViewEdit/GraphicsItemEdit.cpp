@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *******************************************************************************/
-
+///// isSelected() IsSelectActive
 #include "GraphicsItemEdit.h"
 #include "mounttextprivate.h"
 #include "GraphicsView.h"
@@ -69,25 +69,36 @@ void TextLayer::setSelected( bool selected )
     IsSelectActive = false;
     QGraphicsItem::setSelected(false);
     return;
+    } 
+    
+    IsSelectActive = selected;
+    QGraphicsItem::setSelected(selected);
+    if (modus == Lock) {
+    QApplication::restoreOverrideCursor();
+    return;
     }
-    /////////////qDebug() << "### setSelected  " << selected << " id->" << id << " total event->" << evesum;
-    if (!selected) {
-         if (format != DIV_ABSOLUTE) {
-         RestoreMoveAction();
-         }
-         
-    } else {
+    
+    if (format == DIV_ABSOLUTE) {
+    return;
+    }
+    
+    
+    if (selected) {
+        qDebug() << "### id  " << id << "+" << editable() << format;
         if (format != DIV_ABSOLUTE && modus != Lock) {
         EditModus(); 
         } else {
-            if ( modus == Lock) {
-            ////////setFlag(QGraphicsItem::ItemIsMovable,false); 
-            }
+        /* move able */          
+        return;
         }
+    } else {
+         if (format != DIV_ABSOLUTE) {
+         qDebug() << "### id  " << id << "-";
+         RestoreMoveAction();
+         }
     }
-  IsSelectActive = selected;
-  QGraphicsItem::setSelected(selected);
-  update();
+    QApplication::restoreOverrideCursor();
+    update();
 }
 
 
@@ -128,31 +139,6 @@ void TextLayer::cursor_wake_up()
 {
    
 }
-
-
-bool TextLayer::sceneEvent(QEvent *event)
-{
-    evesum++;
-    if ( event->type() == QEvent::GraphicsSceneMousePress ||
-        event->type() == QEvent::GraphicsSceneMouseRelease ||
-        event->type() == QEvent::GraphicsSceneMouseDoubleClick ||
-        event->type() == QEvent::GraphicsSceneMouseMove ||
-        event->type() == QEvent::GraphicsSceneDrop ||
-        event->type() == QEvent::KeyPress ) {
-          setSelected(true);   
-        }
-    
-    
-    
-    
-    /* drag here */
-    if ( event->type() == QEvent::GraphicsSceneDrop) {
-        mount->txtControl()->procesevent(event);
-        return true;
-    }
-    return QGraphicsItem::sceneEvent(event);
-}
-
 
 
 
@@ -226,7 +212,7 @@ void TextLayer::OpenFilelayer()
 void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     bool canedit = mount->txtControl()->editable();
-    if (!isSelected()) {
+    if (!IsSelectActive) {
     return;
     }
     Rotater *slider;
@@ -351,26 +337,35 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
 void TextLayer::seTBack()
 {
-    qreal minimums = 0.0;
-    if (format == DIV_ABSOLUTE ) {
-      minimums = 1.0;  
+      
+    qreal maxi = 0.1;
+    if (format != DIV_AUTO ) {
+      maxi = 111.1;  
+    }
+    qreal minimums = 0.1;
+    if (format != DIV_AUTO ) {
+      minimums = 10.1;  
     }
     
     GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    qreal backs = qBound(minimums,sc->zmin() - 1,1000.00);
+    qreal backs = qBound(minimums,sc->zmin() - 0.1,maxi);
     setZValue(backs);
     update();
     
 }
 void TextLayer::seTFront()
 {
-     qreal minimums = 0.0;
-    if (format == DIV_ABSOLUTE ) {
-      minimums = 1.0;  
+    qreal maxi = 0.1;
+    if (format != DIV_AUTO ) {
+      maxi = 111.1;  
+    }
+    qreal minimums = 0.1;
+    if (format != DIV_AUTO ) {
+      minimums = 10.1;  
     }
     
     GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
-    qreal top = qBound(minimums,sc->zmax() - 1,1000.00);
+    qreal top = qBound(minimums,sc->zmax() + 0.1,maxi);
     setZValue(top); 
     update();
 }
@@ -899,7 +894,7 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
     LayerHightChecks();
   
     
-    if (!isSelected()) {
+    if (!IsSelectActive) {
     return;
     }
     
@@ -957,7 +952,7 @@ void TextLayer::keyPressEvent( QKeyEvent * event )
 {
     
     
-    if (!isSelected()) {
+    if (!IsSelectActive) {
     return;
     }
     
@@ -1134,6 +1129,14 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     QTextFrame  *Tframe2 = document()->rootFrame();
     QTextFrameFormat rootformats2 = Tframe2->frameFormat();
     
+    qreal maxi = 0.1;
+    if (format != DIV_AUTO ) {
+      maxi = 111.1;  
+    }
+    qreal minimums = 0.1;
+    if (format != DIV_AUTO ) {
+      minimums = 10.1;  
+    }
     
     bgcolor = QColor(Qt::white);
     bgcolor.setAlpha(0);
@@ -1143,7 +1146,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     wi = Srect.width() - _DEBUGRANGE_WI_;
     
     setPos(QPointF(_DEBUGRANGE_WI_,0));  /* next Y from scene */
-    setZValue(0.);  /* auto default zero */
+    setZValue(minimums);  /* auto default zero */
     QStringList find;
     find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     QMap<QString,QVariant> incss; 
@@ -1181,10 +1184,12 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
       }
     
         if (incss.value("z-index").toInt() > 1) {
+            
+            qreal Ziindex = qBound(minimums,incss.value("z-index").toDouble(),maxi);
             if (fromclone) {
-              setZValue(incss.value("z-index").toDouble() + 1);
+              setZValue(Ziindex + 1.1);
             } else {
-               setZValue(incss.value("z-index").toDouble()); 
+               setZValue(Ziindex); 
             }
          }
     }
