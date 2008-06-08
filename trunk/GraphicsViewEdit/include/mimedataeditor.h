@@ -317,6 +317,7 @@ QAction *actionAlignLeft,
         *actionFonts,
         *actionAlignJustify;
 
+QAction *actionListUnlist;
 
 QAction *actionNewtable;
 QAction *actionNewimage;
@@ -375,6 +376,7 @@ public slots:
  void SetFrameMargin();
  void MakeTableFormat();
  void LinkText();
+ void set_unset_Block_List();
 
 };
 
