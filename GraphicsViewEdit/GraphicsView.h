@@ -33,16 +33,17 @@
 #include "mounttextprivate.h"
 #include "GraphicsScene.h"
 #include <math.h>
+#include <QPair>
 
 #define QGRAPHICSVIEW_DEBUG
 
 /* work on layer ID edit enable */
-class LayerEvent : public QEvent
+class LayerTestEvent : public QEvent
 {
 	//QEvent::User==1000
     
 public:
-    LayerEvent(int s, bool d)
+    LayerTestEvent(int s, bool d)
 	: QEvent( QEvent::User ),lid(s),dn(d)
     {  }
  int name() const { return lid; }
@@ -65,6 +66,7 @@ class GraphicsView : public QGraphicsView
 public:
   GraphicsView( QWidget * parent  = 0 );
   ~GraphicsView();
+  QRectF rectToScene();
   inline TextLayer *LayerModel() { return CurrentActive; }
   inline int LayerID() { return layerNr; } 
   QRectF boundingRect();
@@ -73,27 +75,9 @@ public:
   QMap<int,RichDoc> read();  /* read full pages */
   TextLayer *CurrentActive;
   void NewLayer( const int type );
-protected:
-    QList<TextLayer*> items;
-    QSettings setter;
-    void contextMenuEvent ( QContextMenuEvent * e );
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent (QWheelEvent * event);
-    ///////void drawForeground ( QPainter * painter, const QRectF & rect );
-    void drawBackground( QPainter * painter, const QRectF & rect );
-    void scaleView (qreal scaleFactor);
   GraphicsScene *scene;
-  int layerNr;
-  qreal width;
-  qreal height;
-  uint layercount;
-  QWidget *BigParent;
-  QPixmap chessgrid;
-  QRectF viewportLayer;   ////// viewportLayer.isNull()
-private:
-  void fillNullItem();
 signals:
-   void LayerEditor(bool,int);
+   void MenuActivates(bool,QPair<int,int>);
    void GrepLayer(int);
 public slots:
     void AppendDemo();
@@ -110,7 +94,54 @@ public slots:
     void pageclear();
     void setGlobalBrush( QPixmap e );
 
+protected:
+    QList<TextLayer*> items;
+    QSettings setter;
+    void contextMenuEvent ( QContextMenuEvent * e );
+    void resizeEvent(QResizeEvent *event);
+    void wheelEvent (QWheelEvent * event);
+    ///////void drawForeground ( QPainter * painter, const QRectF & rect );
+    void drawBackground( QPainter * painter, const QRectF & rect );
+    void scaleView (qreal scaleFactor);
+  
+  int layerNr;
+  qreal width;
+  qreal height;
+  uint layercount;
+  QWidget *BigParent;
+  QPixmap chessgrid;
+  QRectF viewportLayer;   ////// viewportLayer.isNull()
+private:
+  void fillNullItem();
+
+
+
 };
-//
+
+
 #endif // GRAPHICSVIEW_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+
 

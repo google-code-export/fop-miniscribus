@@ -20,6 +20,8 @@
  *******************************************************************************/
 
 
+
+
 #include "mimedataeditor.h"
 
 Layoutpainter::Layoutpainter(QObject *parent)
@@ -81,6 +83,14 @@ void Layoutpainter::ComposeAction()
     actionLink->setIcon(iconl);
     actionLink->setCheckable(true);
 	  connect(actionLink, SIGNAL(triggered()),this,SLOT(LinkText()));
+    
+    actionListUnlist = new QAction(tr("ListFormat / Block"),this);
+    const QIcon iconLL = QIcon(QString::fromUtf8(":/img/unordered-list.png"));
+    actionListUnlist->setIcon(iconLL);
+    actionListUnlist->setCheckable(true);
+	  connect(actionListUnlist, SIGNAL(triggered()),this,SLOT(set_unset_Block_List()));
+    
+    
     
     
     actionBold = new QAction(tr("Bold text CTRL+B"),this);
@@ -487,6 +497,7 @@ QMenu *Layoutpainter::TextMenu( QWidget * inparent )
     MenuText->setIcon(QIcon(QString::fromUtf8(":/img/textpointer.png")));
     MenuText->addAction(actionFonts);
     MenuText->addAction(actionLink);
+    MenuText->addAction(actionListUnlist);
     
     
     MenuText->addAction(actionBold);
@@ -796,6 +807,21 @@ void  Layoutpainter::LinkText()
 }
 
 
+void Layoutpainter::set_unset_Block_List()
+{
+    QTextCursor cur = textCursor();
+    QTextList *list = textCursor().block().textList();
+    int currentList;
+    if(!list){
+      QTextListFormat listFormat;
+      listFormat.setStyle(QTextListFormat::ListDisc);
+      cur.createList(listFormat);
+    } else {
+      cur.setBlockFormat(QTextBlockFormat());
+      //////setTextCursor(cur);
+      currentList = -1;
+    }
+  }
 
 
  void Layoutpainter::OverlineText()

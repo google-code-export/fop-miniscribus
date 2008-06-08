@@ -43,6 +43,14 @@ void TextWriter::NewCharformat( QTextCursor cursor )
     QTextCharFormat format = c.charFormat();
     ////////QTextBlock bf = textCursor().block();
     QFont f = format.font();
+	  QTextList *list = textCursor().block().textList();
+	  if (list) {
+	  actionListUnlist->setChecked(true);
+		} else {
+		actionListUnlist->setChecked(false);
+		}
+	
+	
      ///////////qDebug() << "### Layoutpainter cursor in .........." << f.bold() << " .............................................";
     actionBold->setChecked( f.bold() );
 	  actionLink->setChecked( format.anchorHref().size() > 0 );
