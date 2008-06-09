@@ -85,6 +85,7 @@ inline QString Docxml() { return stream; }
 void FrameLoop( QTextFrame::Iterator frameIt , QDomElement appender );
 void HandleTable( QTextTable  * childTable , QDomElement appender );
 void HandleBlock( QTextBlock  para  , QDomElement appender ); 
+void HandleFragment( QTextFragment fr  , QDomElement appender );
 void ParaFormat( QDomElement e , QTextBlockFormat bf );
 void PaintCharFormat( QDomElement e , QTextCharFormat bf  );
 void PaintLastBlockformat( QDomElement e , QTextCharFormat bf  );

@@ -269,7 +269,7 @@ void TextWriter::paint_doc(  QPainter * painter ,
 		CTX.palette.setColor(QPalette::Highlight,BackHightlight);
 		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
 		/* blink cursor from timer event ! */
-		if (edit_enable) {
+		if (edit_enable && !currentprintrender ) {
 				if (cursortime) {  /* cursor blink yes vom timer QApplication::cursorFlashTime() */
 				/////////////////painter->setPen(QPen(QBrush(contrastbackcolor),1));
 				CTX.cursorPosition = C_cursor.position();
@@ -278,7 +278,7 @@ void TextWriter::paint_doc(  QPainter * painter ,
 				CTX.cursorPosition = -1;
 				}
 	  }
-		if (C_cursor.hasSelection()) {
+		if (C_cursor.hasSelection() && !currentprintrender ) {
 					QAbstractTextDocumentLayout::Selection Internal_selection;
 					Internal_selection.cursor = C_cursor;
 								QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
@@ -1351,104 +1351,55 @@ QMimeData *TextWriter::createMimeDataFromSelection() const
 
 QList<QAction *> TextWriter::MainActions()
 {
-	///7 action ! 
-	QList<QAction *> flyactions;
+	///6 action ! 
+	 QList<QAction *> flyactions;
 	                 flyactions.clear();
 	
 	
 
-	  actionNewtable = new QAction(tr("Insert new Table"), this);
+	  actionNewtable = new QAction(tr("Insert new Table"), this); /* 0 */
 	  actionNewtable->setIcon(QIcon(":/img/table.png"));
 	  connect(actionNewtable, SIGNAL(triggered()),this,SLOT(CreateanewTable()));
 	
-	  actionNewimage = new QAction(tr("Insert image"), this);
+	  actionNewimage = new QAction(tr("Insert image"), this); /* 1 */
 	  actionNewimage->setIcon(QIcon(":/img/thumbnail.png"));
 	  connect(actionNewimage, SIGNAL(triggered()),this,SLOT(InsertImageonCursor()));
 	
+	  actionListUnlist = new QAction(tr("ListFormat / Block"),this);
+    const QIcon iconLL = QIcon(QString::fromUtf8(":/img/unordered-list.png"));
+    actionListUnlist->setIcon(iconLL);
+    actionListUnlist->setCheckable(true);
+	  connect(actionListUnlist, SIGNAL(triggered()),this,SLOT(set_unset_Block_List()));
 	
-	
-	
-	
-	
-
-		actionBold = new QAction(tr("Bold text CTRL+B"),this);
-    const QIcon icon = QIcon(QString::fromUtf8(":/img/textbold.png"));
-    actionBold->setIcon(icon);
-    actionBold->setCheckable(true);
-	  connect(actionBold, SIGNAL(triggered()),this,SLOT(BoldText()));
     
-    actionFonts = new QAction(tr("Text Font"),this);
+    actionFonts = new QAction(tr("Text Font"),this);  /* 2 */
     const QIcon icon9 = QIcon(QString::fromUtf8(":/img/textpointer.png"));
     actionFonts->setIcon(icon9);
 	  connect(actionFonts, SIGNAL(triggered()),this,SLOT(FontText()));
-		
-    actionItalic = new QAction(tr("Italic Text CTRL+I"),this);
-    const QIcon icon1 = QIcon(QString::fromUtf8(":/img/textitalic.png"));
-    actionItalic->setIcon(icon1);
-	  actionItalic->setCheckable(true);
-	  connect(actionItalic, SIGNAL(triggered()),this,SLOT(ItalicText()));
-    
-    actionUnderline = new QAction(tr("Text underline CTRL+U"),this);
-    const QIcon icon2 = QIcon(QString::fromUtf8(":/img/textunder.png"));
-    actionUnderline->setIcon(icon2);
-	  actionUnderline->setCheckable(true);
-	  connect(actionUnderline, SIGNAL(triggered()),this,SLOT(UnderlineText()));
-		
-		actionBackColor = new QAction(tr("Text background color"),this);
+	
+		actionBackColor = new QAction(tr("Text background color"),this); /* 3 */
     actionBackColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",Qt::white));
 	  connect(actionBackColor, SIGNAL(triggered()),this,SLOT(BGcolor()));
     
-    actionTextColor = new QAction(tr("Text color"),this);
+    actionTextColor = new QAction(tr("Text color"),this);  /* 4 */
     actionTextColor->setIcon(createColorToolButtonIcon(":/img/textpointer.png",Qt::black));
 	  connect(actionTextColor, SIGNAL(triggered()),this,SLOT(TXcolor()));
 		
-		actionBlockMargin = new QAction(tr("Block paragraph margin"),this);
+		actionBlockMargin = new QAction(tr("Block paragraph margin"),this);  /* 5 */
     actionBlockMargin->setIcon(QIcon(QString::fromUtf8(":/img/view_text.png")));
     connect(actionBlockMargin, SIGNAL(triggered()),this,SLOT(SetTextBlockMargin()));
 		
-		
-		grp = new QActionGroup(this);
-    connect(grp, SIGNAL(triggered(QAction *)), this, SLOT(MaketextAlign(QAction *)));
-    
-    actionAlignLeft = new QAction(QIcon(":/img/textleft.png"), tr("Text align left"),grp);
-    actionAlignLeft->setCheckable(true);
-    actionAlignRight = new QAction(QIcon(":/img/textright.png"), tr("Text align right"),grp);
-    actionAlignRight->setCheckable(true);
-    actionAlignCenter = new QAction(QIcon(":/img/textcenter.png"), tr("Text align center"),grp);
-    actionAlignCenter->setCheckable(true);
-    actionAlignJustify = new QAction(QIcon(":/img/textjustify.png"), tr("Text align Justify"),grp);
-    actionAlignJustify->setCheckable(true);
-		
-		NewCharformat(textCursor());
 		NewCharformat(textCursor());
 		
-		
-		   
-			 
-			 
-		
-
 		flyactions.append(actionNewtable);
 		flyactions.append(actionNewimage);
+		flyactions.append(actionListUnlist);
 		
-		flyactions.append(actionBold);
-		flyactions.append(actionItalic);
-		flyactions.append(actionUnderline);
 		flyactions.append(actionFonts);
 		flyactions.append(actionBackColor);
 		flyactions.append(actionTextColor);
 		flyactions.append(actionBlockMargin);
-		
-		flyactions.append(actionAlignLeft);
-		flyactions.append(actionAlignRight);
-		flyactions.append(actionAlignCenter);
-		flyactions.append(actionAlignJustify);
-		
-		
-		///////flyactions.append(actionUndo);
-		///////flyactions.append(actionRedo);
-		
-		
+		 
 	  return flyactions;
 }
 

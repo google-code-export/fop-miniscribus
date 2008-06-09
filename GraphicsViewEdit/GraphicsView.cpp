@@ -51,10 +51,33 @@ GraphicsView::GraphicsView(  QWidget * parent )
 	  fillNullItem();
 	  connect(scene, SIGNAL(SelectOn(QGraphicsItem*,qreal)), this, SLOT(WorksOn(QGraphicsItem*,qreal)));
 	  connect(scene, SIGNAL(nullitem()), this, SLOT(notselect()));
-		
 		AppendDemo();
 	  
 }
+
+void GraphicsView::PrintDoc()
+{
+	//////const QRectF area = boundingRect();
+	PrintSetup(true);
+	PreviewDialog *PrintScene = new PreviewDialog(scene);
+	PrintScene->exec();
+	PrintSetup(false);
+	
+	///////////qDebug() << "### PrintDoc end......... ";
+}
+
+void GraphicsView::PrintSetup( bool enable )
+{
+          QList<QGraphicsItem *> listing = scene->l_items();
+				  for (int e=0;e<listing.size();e++) {
+					TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+						if (it) {
+							it->SetPrintModus(enable);
+						}
+				  }
+	update();
+}
+
 
 QRectF GraphicsView::rectToScene()
 {
@@ -90,7 +113,7 @@ void GraphicsView::setGlobalBrush( QPixmap e )
 
 void GraphicsView::pageclear()
 {
-		items.clear();
+		///////items.clear();
 		scene->clear();
 	  scene->setSceneRect(rectToScene());
 	  emit MenuActivates(false,qMakePair(0,0));
@@ -125,6 +148,9 @@ void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 	a = menu->addAction(tr("Page clear"), this, SLOT(pageclear()));
 	a->setIcon(QIcon(":/img/filenew.png"));
 	
+	a = menu->addAction(tr("Page print"), this, SLOT(PrintDoc()));
+	a->setIcon(QIcon(":/img/fileprint.png"));
+	
 	menu->exec(QCursor::pos());
 	delete menu;
 }
@@ -146,7 +172,7 @@ void GraphicsView::NewLayer( const int type )
 				ioq->insert(addoc);
 				ioq->setModus(TextLayer::Show);
 				ioq->setData (ObjectNameEditor,layercount);
-	      items.append(ioq);
+	      ///////items.append(ioq);
 				ioq->setZValue(scene->zmax()); 
 				connect(ioq, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
@@ -159,7 +185,7 @@ void GraphicsView::NewLayer( const int type )
 				ioq2->insert(Adoc);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
-	      items.append(ioq2);
+	      //////items.append(ioq2);
 	      ioq2->setZValue(0.1); 
 	      ioq2->setPos(QPointF(_DEBUGRANGE_WI_,gotopX));
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
@@ -197,7 +223,7 @@ void GraphicsView::CloneCurrent()
 				ioq2->insert(rdoc,true);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount);
-	      items.append(ioq2);
+	      //////items.append(ioq2);
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
@@ -206,11 +232,15 @@ void GraphicsView::CloneCurrent()
 QMap<int,RichDoc> GraphicsView::read()
 {
 	   QMap<int,RichDoc> pages;
-     for (int e=0;e<items.size();e++) {
-			    const int Nid = items[e]->data(ObjectNameEditor).toInt();
-		      RichDoc doc = items[e]->ReadActualItem();
-			    pages.insert(Nid,doc);
-	   }
+        QList<QGraphicsItem *> listing = scene->l_items();
+				  for (int e=0;e<listing.size();e++) {
+					TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+						if (it) {
+								const int Nid = it->data(ObjectNameEditor).toInt();
+		            RichDoc doc = it->ReadActualItem();
+                pages.insert(Nid,doc);
+						}
+				  }
 		 return pages; 
 }
 
@@ -221,7 +251,7 @@ void GraphicsView::insert( RichDoc e , bool cloned )
 				ioq2->insert(e,cloned);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount+1);
-	      items.append(ioq2);
+	      ////////////items.append(ioq2);
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
@@ -249,26 +279,12 @@ void GraphicsView::PasteLayer()
 
 void GraphicsView::removelayer( const int idx )
 {
-	
-	qDebug() << "### removelayer " << idx;
-	
 	if (idx < 1) {
 	return;
 	}
+	qDebug() << "### removelayer " << idx;
 	scene->clearSelection();
-	
-	   for (int e=0;e<items.size();e++) {
-		 items[e]->setSelected(false);
-	   }
-	
-	
-	for (int e=0;e<items.size();e++) {
-		if (items[e]->data(ObjectNameEditor).toInt() == idx ) {
-			    items.removeAt(e);
-			    scene->remid(idx);
-		}
-	}
-	
+  scene->remid(idx);
 	updateauto();
 	emit MenuActivates(false,qMakePair(0,0));
 	fillNullItem();
@@ -290,15 +306,23 @@ qreal GraphicsView::NextfromY()
 {
 	qreal fromtop = 0;
 	qreal bigYall = 0;
-	for (int e=0;e<items.size();e++) {
+	
+	QList<QGraphicsItem *> listing = scene->l_items();
+	for (int e=0;e<listing.size();e++) {
 		////////qDebug() << "### tipo " << items[e]->type();
-		if (items[e]->Ltype() != TextLayer::DIV_ABSOLUTE ) {
-			fromtop += items[e]->pointnext();
+		TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+		if (it) {
+			           if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
+			            fromtop += it->pointnext();
+		             }
+			           bigYall = qMax(bigYall,it->pos().y() + it->boundingRect().height());
 		}
-	 /* height total all elemenst absolute */
-	 bigYall = qMax(bigYall,items[e]->pos().y() + items[e]->boundingRect().height());
-		
 	}
+		
+	 /* height total all elemenst absolute */
+	 
+		
+	
     QRectF resc = scene->sceneRect();
 	  if (resc.height() < fromtop) {
 			scene->setSceneRect(0,0,resc.width(),fromtop + 100);
@@ -323,9 +347,6 @@ void GraphicsView::fillNullItem()
 	 CurrentActive = new TextLayer(0,0,0);
 	 CurrentActive->setData (ObjectNameEditor,0);
 	 scene->clearSelection();
-	 for (int e=0;e<items.size();e++) {
-		 items[e]->setSelected(false);
-	 }
 	 QApplication::processEvents();
 	 emit MenuActivates(false,qMakePair(0,0));
 	 QApplication::processEvents();
@@ -355,19 +376,31 @@ void GraphicsView::WorksOn(QGraphicsItem * item , qreal zindex )
 	//////////qDebug() << "### WorksOn data " << layerNr;  
 	if (layerNr > 0) {
 			if (CurrentActive = qgraphicsitem_cast<TextLayer *>(item)) {
-				 for (int e=0;e<items.size();e++) {
-				 items[e]->setSelected(false);
-				 }
+				
+					QList<QGraphicsItem *> listing = scene->l_items();
+				  for (int e=0;e<listing.size();e++) {
+					TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+						if (it) {
+								it->setSelected(false);
+						}
+				  }
+	    }
+				 
+				 
+				 
+				 
 				 CurrentActive->setSelected(true);
 				 canEditLayer = true;
 				 //////////////qDebug() << "### layerNr " << layerNr ;
-			}
-	}
-	setProperty("_layer_work_",layerNr);
-	QApplication::processEvents();
-	emit MenuActivates(canEditLayer,qMakePair(layerNr,CurrentActive->textCursor().position()));
-	QApplication::processEvents();
+			
 	
+					setProperty("_layer_work_",layerNr);
+					QApplication::processEvents();
+					emit MenuActivates(canEditLayer,qMakePair(layerNr,CurrentActive->textCursor().position()));
+					QApplication::processEvents();
+			
+			}
+			
 	/////////////qDebug() << "### emit bool " << canEditLayer;  
 }
 
@@ -472,30 +505,34 @@ void GraphicsView::drawForeground ( QPainter * painter, const QRectF & rect )
 void GraphicsView::updateauto()
 {
 	qreal fromtop = 0;
-	for (int e=0;e<items.size();e++) {
-		if (items[e]->Ltype() != TextLayer::DIV_ABSOLUTE ) {
-			 items[e]->setPos(QPointF(_DEBUGRANGE_WI_,fromtop));
-			 qreal hibecome = items[e]->pointnext();
-			 items[e]->update();
-			 fromtop += hibecome;
+	TextLayer *layer = qobject_cast<TextLayer *>(sender());
+	if (!layer) {
+	return;
+	}
+	QList<QGraphicsItem *> listing = scene->l_items();
+	for (int e=0;e<listing.size();e++) {
+		////////qDebug() << "### tipo " << items[e]->type();
+		TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+		if (it) {
+			       if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
+			           qreal hibecome = it->pointnext();
+			           it->update();
+			           fromtop += hibecome;
+						 }
 		}
 	}
-	
 	NextfromY();  /* make rect scene big as needed */
-	
-	TextLayer *layer = qobject_cast<TextLayer *>(sender());
-	if (layer) {
-		 const QRectF needview = layer->viewport_need();
-		/////////////////qDebug() << "### view needview " << needview;
-		
+		const QRectF needview = layer->viewport_need();
 		if (needview.isValid() && needview != viewportLayer) {
-			  ///////ensureVisible(needview,100,100);
 			  viewportLayer = needview;
 			  layer->setFocus(Qt::MouseFocusReason);
 		}
 	 
-	}
+	
 }
+
+
+
 
 
 
