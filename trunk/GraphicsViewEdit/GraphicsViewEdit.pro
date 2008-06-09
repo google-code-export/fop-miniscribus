@@ -4,19 +4,26 @@
 
 TEMPLATE = app
 TARGET = xx
-DEPENDPATH += . include
-INCLUDEPATH += . include
+DEPENDPATH += . include instance
+INCLUDEPATH += . include instance
 
 DESTDIR	+= ./
 QT += xml
 QT += network
 QT += svg 
-CONFIG   += qt warn_off release console
+CONFIG   +=  qt thread warn_off release console
 LANGUAGE	= C++
 
 MOC_DIR	= build/.moc
 RCC_DIR	= build/.rcc
 OBJECTS_DIR = build/.obj
+
+DEFINES		+= SINGLE_APPLICATION_BUILD_INS
+
+HEADERS		+= instance/singleapplication.h \
+		         instance/singleapplication_p.h
+
+SOURCES		+= instance/singleapplication.cpp
 
 
 FORMS +=previewdialogbase.ui

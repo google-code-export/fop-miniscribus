@@ -94,6 +94,7 @@ public slots:
     void pageclear();
     void setGlobalBrush( QPixmap e );
     void PrintDoc();
+    void onOtherInstanceMessage( const QString msg );
 
 protected:
     //////////QList<TextLayer*> items;

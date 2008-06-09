@@ -86,10 +86,12 @@ void GraphicsView::PrintSetup( bool enable )
 QRectF GraphicsView::rectToScene()
 {
 	  QRectF Paper;
-		if (Metric(setter.value("gview/wi").toString()) > 0) {
+	  ///// paperSizeCombo->addItem(tr("A4 (210 x 297 mm, 8.26 x 11.7 inches)"), QPrinter::A4);
+	
+		if (Metric(setter.value("gviewooooooooo/wi").toString()) > 0) {
 		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
 		} else {
-		Paper = QRectF(0,0,Metric("150mm"),Metric("220mm"));
+		Paper = QRectF(0,0,Metric("210mm"),Metric("297mm"));
 		}
 		return Paper;
 }
@@ -540,7 +542,11 @@ void GraphicsView::updateauto()
 }
 
 
-
+void GraphicsView::onOtherInstanceMessage( const QString msg )
+{
+	QApplication::setActiveWindow(this);
+	QMessageBox::warning(this, tr("Application warning..."),msg);
+}
 
 
 
