@@ -38,44 +38,108 @@
 #endif
 
 
+#define osApplication \
+    (static_cast<OS_application*>(QCoreApplication::instance()))
 
-int main(int argc, char* argv[])
+class OS_application : public QApplication
 {
-	QApplication a(argc, argv);
-    a.setOrganizationName("CrossKern");
-    a.setOrganizationDomain("crosskern.com");
-    a.setApplicationName("Layer Handler Sample");
-    const QString titles = QString("Layer edit GraphicsView Demo version (use ContextMenu)");
+    Q_OBJECT
+//
+public:
+ OS_application( int &argc, char **argv )
+  : QApplication(argc, argv),Running(false)
+{
+    setOrganizationName("CrossKern");
+    setOrganizationDomain("crosskern.com");
+    setApplicationName("Layer Handler Demo Mini");
+    titles = QString("Layer edit GraphicsView Demo version (use ContextMenu)");
+    instance = new SingleApplication(titles);
+    if(instance->isRunning())  {
+    Running = true;
+    }
+    const QStringList args = arguments();
+    
+    qDebug() << "### args " << args;
+    
+    
+    
+    
+    if (!Running) {
+    panel = new GraphicsView;
+    panel->setWindowTitle(titles); 
+	  QObject::connect(instance, SIGNAL(messageReceived(const QString&)),panel, SLOT(onOtherInstanceMessage(const QString&)));
+	  panel->showMaximized();
+     
+       for (int i = 1; i < args.count(); ++i)  {
+        if (i > 0) {
+         OpenFile(args.at(i));
+        }
+        }
+        
+    } else {
+     
+          for (int i = 1; i < args.count(); ++i)  {
+           if (i > 0) {
+            OpenFile(args.at(i));
+            }
+          }
+     
+           focusother();
+    }
  
-	 QObject::connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
-	 SingleApplication instance(titles);
- 
- 
-	if(instance.isRunning())
-	{
+}
+
+void OpenFile( const QString file ) 
+{ 
+   if (!Running) {
+     if( panel ) {
+      panel->LaunchFile(file);
+     }
+   } else {
+     instance->sendMessage(file);
+   }
+}
+
+void focusother()
+{
    #if defined Q_WS_WIN
    /* focus this QApplication instance from other QApplication*/
    HWND hWnd = FindWindowW( 0, (LPCWSTR) titles.utf16() );
    ShowWindow( hWnd, SW_RESTORE );
    SetForegroundWindow( hWnd );
    #endif
-   instance.sendMessage(titles +" Application is already open!\n"
-					"PID: " + QString::number(a.applicationPid()));
-		return 0;
-	}
-  
-  GraphicsView *panel = new GraphicsView;
-  panel->setWindowTitle(titles); 
-   
-  
-	 QObject::connect(&instance, SIGNAL(messageReceived(const QString&)),
-       panel, SLOT(onOtherInstanceMessage(const QString&)));
-  
-  
-	 panel->showMaximized();
+   emit lastWindowClosed();
+   QCoreApplication::exit(0);
+   ///////delete this;
+}
 
+bool event(QEvent *ev)
+{
+    if (ev->type() == QEvent::FileOpen) {
+        osfile = static_cast<QFileOpenEvent *>(ev)->file();
+        OpenFile(osfile);
+        return true;
+    }
+    return QApplication::event(ev);
+}
+ bool Running;
+ SingleApplication *instance;
+ QString osfile;
+ QString titles;
+ GraphicsView *panel;
+};
+
+
+
+
+int main(int argc, char* argv[])
+{
+	OS_application a(argc, argv);
+  QObject::connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	return a.exec();
 }
+
+#include "main.moc"
 
 
 
