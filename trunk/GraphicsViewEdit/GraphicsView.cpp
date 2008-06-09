@@ -19,6 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *******************************************************************************/
 
+
+
 #include "GraphicsView.h"
 
 GraphicsView::~GraphicsView()
@@ -87,7 +89,7 @@ QRectF GraphicsView::rectToScene()
 		if (Metric(setter.value("gview/wi").toString()) > 0) {
 		Paper = QRectF(0,0,Metric(setter.value("gview/wi").toString()),Metric(setter.value("gview/hi").toString()));
 		} else {
-		Paper = QRectF(0,0,Metric("150mm"),Metric("200mm"));
+		Paper = QRectF(0,0,Metric("150mm"),Metric("220mm"));
 		}
 		return Paper;
 }
@@ -252,13 +254,13 @@ void GraphicsView::insert( RichDoc e , bool cloned )
 	      TextLayer *ioq2 = new TextLayer(layercount,0,scene);
 				ioq2->insert(e,cloned);
 				ioq2->setModus(TextLayer::Show);
-				ioq2->setData (ObjectNameEditor,layercount+1);
+				ioq2->setData (ObjectNameEditor,layercount+10);
 	      ////////////items.append(ioq2);
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
 	      emit MenuActivates(false,qMakePair(0,0));
-	     QTimer::singleShot(600, this, SLOT(updateauto()));
+	      QTimer::singleShot(0, this, SLOT(updateauto()));
 }
 
 void GraphicsView::PasteLayer()
@@ -268,6 +270,7 @@ void GraphicsView::PasteLayer()
 			QByteArray itemData = ramclip->mimeData()->data("application/x-layerrichdoc");
 		  QString daten = QString::fromUtf8(itemData.data());
 			RichDoc rdoc = OpenRichDoc(daten);
+		  layercount++;
 			insert(rdoc);
 	} else {
 		QMessageBox::information(0, tr("Error Layer"),tr("No Layer on clipboard"));
@@ -415,10 +418,13 @@ void GraphicsView::AppendDemo()
 				f.close();
         RichDoc addoc = OpenRichDoc(inside); 
 				insert(addoc);
+				layercount++;
 				}
-				
+				layercount++;
 				RichDoc xx;
-				
+				xx.html = QByteArray("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Hi everyone! here is a floating text!</p>");
+				xx.margin(true);
+				layercount++;
 				insert(xx);
 				
 }
