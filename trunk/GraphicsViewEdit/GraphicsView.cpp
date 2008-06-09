@@ -413,15 +413,7 @@ void GraphicsView::WorksOn(QGraphicsItem * item , qreal zindex )
 
 void GraphicsView::AppendDemo()
 {
-        QString inside;
-        QFile f(QString(":/img/_default_layer.layer")); 
-				if (f.open(QFile::ReadOnly | QFile::Text)) {
-				inside = QString::fromUtf8(f.readAll());
-				f.close();
-        RichDoc addoc = OpenRichDoc(inside); 
-				insert(addoc);
-				layercount++;
-				}
+				LaunchFile(QString(":/img/_default_layer.layer"));
 				layercount++;
 				RichDoc xx;
 				xx.html = QByteArray("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Hi everyone! here is a floating text!</p>");
@@ -429,6 +421,23 @@ void GraphicsView::AppendDemo()
 				layercount++;
 				insert(xx);
 				
+}
+
+
+void GraphicsView::LaunchFile( const QString islayeror )
+{
+	
+	      qDebug() << "### LaunchFile " << islayeror;
+	
+	      QFile f(islayeror); 
+	      QString inside;
+				if (f.open(QFile::ReadOnly | QFile::Text)) {
+				inside = QString::fromUtf8(f.readAll());
+				f.close();
+        RichDoc addoc = OpenRichDoc(inside); 
+				insert(addoc);
+				layercount++;
+				}
 }
 
 
@@ -545,6 +554,15 @@ void GraphicsView::updateauto()
 void GraphicsView::onOtherInstanceMessage( const QString msg )
 {
 	QApplication::setActiveWindow(this);
+	
+	qDebug() << "### onOtherInstanceMessage " << msg;
+	
+	
+	QFileInfo fix(msg);
+	          if (fix.exists()) {
+							  LaunchFile( fix.absoluteFilePath() );
+						 return;
+						}
 	QMessageBox::warning(this, tr("Application warning..."),msg);
 }
 

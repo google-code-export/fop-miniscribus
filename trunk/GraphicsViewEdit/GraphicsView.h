@@ -95,6 +95,7 @@ public slots:
     void setGlobalBrush( QPixmap e );
     void PrintDoc();
     void onOtherInstanceMessage( const QString msg );
+    void LaunchFile( const QString islayeror );
 
 protected:
     //////////QList<TextLayer*> items;

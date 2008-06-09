@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = xx
+TARGET = MiniLayer
 DEPENDPATH += . include instance
 INCLUDEPATH += . include instance
 
@@ -11,8 +11,21 @@ DESTDIR	+= ./
 QT += xml
 QT += network
 QT += svg 
-CONFIG   +=  qt thread warn_off release console
+CONFIG   +=  qt thread warn_off release
 LANGUAGE	= C++
+
+
+win32:RC_FILE = win.rc
+
+
+macx {
+RC_FILE = zzz.icns
+QTPLUGIN     += qmng qjpeg qgif qtiff
+QMAKE_INFO_PLIST = Info.plist
+QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
+CONFIG+=x86 ppc
+}
+
 
 MOC_DIR	= build/.moc
 RCC_DIR	= build/.rcc
