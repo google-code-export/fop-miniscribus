@@ -8,12 +8,9 @@ DEPENDPATH += . include
 INCLUDEPATH += . include
 
 DESTDIR	+= ./
-
-
 QT += xml
 QT += network
 QT += svg 
-
 CONFIG   += qt warn_off release console
 LANGUAGE	= C++
 
@@ -21,6 +18,8 @@ MOC_DIR	= build/.moc
 RCC_DIR	= build/.rcc
 OBJECTS_DIR = build/.obj
 
+
+FORMS +=previewdialogbase.ui
 # Input
 HEADERS += GraphicsItemEdit.h \
            GraphicsScene.h \

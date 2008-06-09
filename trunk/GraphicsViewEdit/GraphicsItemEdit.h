@@ -101,10 +101,10 @@ void NewValue( const int x )
 
 typedef qreal DpIPoint;
 
+////// TextLayer::Show
 
 class TextController;
 class LogData;
-
 class TextLayer : public QObject, public QGraphicsItem
 {
    Q_OBJECT 
@@ -128,8 +128,11 @@ public:
         
     TextLayer(const int layer_id , QGraphicsItem *parent = 0 , QGraphicsScene *scene = 0);
     ~TextLayer();
+  
     QList<QAction *> MainActions();
     inline bool AlertPage() { return AlertSize; }
+    //////inline TextWriter *dev() { return mount->txtControl(); }
+    /////////  TextWriter *txtControl()TextWriter *txtControl() const;
     bool editable();
     QRectF viewport_need();
     void setSelected( bool selected );
@@ -158,8 +161,10 @@ public:
     LayerHightChecks();
     }
     inline CurrentModus W_modus() { return modus; }
+    void RestoreMoveAction();
 protected:
     int getXcursor();
+    bool sceneEvent(QEvent *event);
     bool AlertSize;
     QPointF lastclick;
     uint check_view_area_time;
@@ -169,7 +174,7 @@ protected:
              *actionSwapLock;
     void init();
     void read();
-    void RestoreMoveAction();
+    
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
@@ -192,8 +197,10 @@ protected:
     int id;
     //////////bool sceneEvent(QEvent *event);
 private:
+    
     TextController *mount;
     QMap<uint,QString> history;
+
     QColor bgcolor;
     QColor bordercolor;
     qreal border;
@@ -261,8 +268,6 @@ public:
 };
 
 Q_DECLARE_METATYPE(TextController *)
-
-
 
 
 

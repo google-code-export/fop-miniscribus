@@ -93,9 +93,10 @@ public slots:
     void PasteLayer();
     void pageclear();
     void setGlobalBrush( QPixmap e );
+    void PrintDoc();
 
 protected:
-    QList<TextLayer*> items;
+    //////////QList<TextLayer*> items;
     QSettings setter;
     void contextMenuEvent ( QContextMenuEvent * e );
     void resizeEvent(QResizeEvent *event);
@@ -103,6 +104,7 @@ protected:
     ///////void drawForeground ( QPainter * painter, const QRectF & rect );
     void drawBackground( QPainter * painter, const QRectF & rect );
     void scaleView (qreal scaleFactor);
+    void PrintSetup( bool enable );
   
   int layerNr;
   qreal width;

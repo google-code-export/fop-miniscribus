@@ -60,8 +60,31 @@ TextLayer::TextLayer(const int layer_id , QGraphicsItem *parent , QGraphicsScene
 void TextLayer::SetPrintModus( bool e )
 {
   currentprintrender = e;
+  if (e) {
+    setSelected(false);
+  } else {
+    setSelected(true);
+  }
   update(boundingRect());
 }
+
+bool TextLayer::sceneEvent(QEvent *event)
+{
+    /* drag here */
+    if ( event->type() == QEvent::GraphicsSceneDrop) {
+        mount->txtControl()->procesevent(event);
+        return true;
+    } else if (event->type() == QEvent::GraphicsSceneDragMove ) {
+        ///////QGraphicsSceneDragDropEvent *e = static_cast<QGraphicsSceneDragDropEvent *>(event);
+        /////////qDebug() << "### muove ";
+        
+    } else if (event->type() == QEvent::DragEnter ) {
+        ////////e = static_cast<QGraphicsSceneDragDropEvent *>(event);
+        //////////qDebug() << "### entra ";
+    }
+    return QGraphicsItem::sceneEvent(event);
+}
+
 
 void TextLayer::setSelected( bool selected ) 
 {
@@ -84,7 +107,7 @@ void TextLayer::setSelected( bool selected )
     
     
     if (selected) {
-        qDebug() << "### id  " << id << "+" << editable() << format;
+        ///////////qDebug() << "### id  " << id << "+" << editable() << format;
         if (format != DIV_ABSOLUTE && modus != Lock) {
         EditModus(); 
         } else {
@@ -93,14 +116,13 @@ void TextLayer::setSelected( bool selected )
         }
     } else {
          if (format != DIV_ABSOLUTE) {
-         qDebug() << "### id  " << id << "-";
+         //////////qDebug() << "### id  " << id << "-";
          RestoreMoveAction();
          }
     }
     QApplication::restoreOverrideCursor();
     update();
 }
-
 
 QList<QAction *> TextLayer::MainActions()
 {
@@ -378,7 +400,10 @@ void TextLayer::seTFront()
 
 void TextLayer::Removehere()
 {
-   emit remid(id);
+    setData (ObjectNameEditor,id);
+    qDebug() << "### TextLayer rem " << id;
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    sc->remid(id);
 }
 
 void TextLayer::CloneLayer()
@@ -622,6 +647,10 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		    qApp->beep();
     }
     
+    if (currentprintrender) {
+        //////qDebug() << "### paint by printer xxxxx ";
+    }
+    
     bool canedit = mount->txtControl()->editable();
     wisub_border = wi + border;
     const qreal minimumHi = Metric("15mm");
@@ -666,7 +695,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 			}
       
       int hoverborder = 1;
-      if (border > 1) {
+      if (border > 1 && !currentprintrender) {
         hoverborder =  border + 1; 
       }
       

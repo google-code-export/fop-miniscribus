@@ -27,9 +27,31 @@ static const int ObjectNameEditor = 400;   /* normal layer div */
 #include "mounttextprivate.h"
 #include <QGraphicsScene>
 
+#include <QLabel>
+#include <QPixmap>
+#include <QSize>
+
 #if QT_VERSION >= 0x040400
 #include <QGraphicsProxyWidget>
 #endif
+
+class QResizeEvent;
+
+class PreviewLabel : public QWidget
+{
+    Q_OBJECT
+
+public:
+    PreviewLabel(QWidget *parent = 0);
+    void setPixmap(const QPixmap &pixmap);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+
+private:
+    QPixmap panello;
+};
+
 
 
 class GraphicsScene : public QGraphicsScene
@@ -40,6 +62,7 @@ public:
 GraphicsScene( QObject * parent = 0 );
 void clear();
 void storno();
+QList<QGraphicsItem *> l_items();
 GraphicsScene( const QRectF & sceneRect, QObject * parent = 0 );
 GraphicsScene( qreal x, qreal y, qreal width, qreal height, QObject * parent = 0 );
 void setSceneRect( qreal x, qreal y, qreal w, qreal h );
@@ -71,6 +94,78 @@ public slots:
     void remid( const int id );
 
 };
+
+
+
+#include "ui_previewdialogbase.h"
+
+
+
+class QTreeWidgetItem;
+typedef QList<QTreeWidgetItem *> StyleItems;
+
+Q_DECLARE_METATYPE(StyleItems);
+
+class PreviewDialog : public QDialog, private Ui::PreviewDialogBase
+{
+    Q_OBJECT
+
+public:
+    PreviewDialog( QGraphicsScene *sceneprint );
+    enum { SmallPreviewLength = 200, LargePreviewLength = 400 };
+    bool isSelected(int index);
+signals:
+    //////void pageRequested(int index, QPainter &painter, QPrinter &printer);
+
+protected:
+    void resizeEvent(QResizeEvent *);
+    void RenderFaktor();
+    void setupComboBoxes();
+    void paintItem(QTreeWidgetItem *item, int index);
+  
+public slots:
+    void on_paperSizeCombo_activated(int index);
+    void on_paperOrientationCombo_activated(int index);
+    void on_pageList_currentItemChanged();
+    void addPage();
+    void setNumberOfPages(int count);
+    void reject();
+    void accept();
+private:
+    ///////void paintItem(QTreeWidgetItem *item, int index);
+    void paintPreview(QPixmap &pixmap, int index );
+    int ActualMaxPreview();
+    QRectF Rscene;
+    QRectF Paper_Rect;
+    QRectF rectScenePiece;
+    QPushButton *pdfButton;
+    PreviewLabel *previewLabel;
+    QGraphicsScene *scene;
+    QPrinter *print;
+    qreal faktor_print;
+    qreal faktor_scene;
+    bool canceled;
+    int currentPage;  /* loop count */
+    int pageCount;   /* summ pages */
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //

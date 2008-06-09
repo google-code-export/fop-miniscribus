@@ -323,6 +323,7 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
     QTextBlockFormat ParaBlockFormat = para.blockFormat();
     const QTextCharFormat CharFromPara = para.charFormat();  
     QDomElement paragraph;
+		QDomElement ulblock;
     QTextImageFormat Pics;
     QTextTableFormat Tabl;
     QTextListFormat Uls;
@@ -339,42 +340,141 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
 			paragraph.setAttribute ("class","Empty");
 			}
 		}
+		
 		TextAlignment(ParaBlockFormat.alignment(),paragraph);
     ParaFormat(paragraph,ParaBlockFormat);  /* block */
-		bool breakline = false;
     PaintLastBlockformat(paragraph,CharFromPara);
-    ///////////////////qDebug() << "### open block para br1->" << breakline << "  txt->" << para.text();
-		QTextBlock::iterator de;
+		
+		QTextList *list = para.textList();
+		if (list) {
+		
+		   if (list->itemNumber(para) == 0) {
+            const QTextListFormat format = list->format();
+            const int style = format.style();
+				 
+            switch (style) {
+                case QTextListFormat::ListDecimal: ulblock = dom.createElement("ol"); break;
+                case QTextListFormat::ListDisc: ulblock = dom.createElement("ul"); break;
+                case QTextListFormat::ListCircle: ulblock = dom.createElement("ul"); break;
+                case QTextListFormat::ListSquare: ulblock = dom.createElement("ul"); break;
+                case QTextListFormat::ListLowerAlpha: ulblock = dom.createElement("ol"); break;
+                case QTextListFormat::ListUpperAlpha: ulblock = dom.createElement("ol"); break;
+                default: 
+                ulblock = dom.createElement("ul");
+            }
+						
+						ParaFormat(ulblock,ParaBlockFormat);  /* block */
+						
+						
+        }
+				
+				const bool prexline = para.blockFormat().nonBreakableLines();
+				
+				QTextBlock::iterator li;
+				for (li = para.begin(); !(li.atEnd()); ++li) {
+					      QTextFragment lifr = li.fragment();
+                if (lifr.isValid()) {
+									        QDomElement list = dom.createElement("li");
+									        PaintCharFormat(list,lifr.charFormat());
+									        if (prexline) {
+													HandleFragment(lifr,list);
+													} else {
+														  QDomElement inlineli = dom.createElement("span");
+														  PaintCharFormat(inlineli,lifr.charFormat());
+														  HandleFragment(lifr,inlineli);
+														  list.appendChild(inlineli);
+													}
+									        ulblock.appendChild(list); 
+								}
+					
+					
+				}
+				appender.appendChild(ulblock);
+				return;
+		}
 
-     
-       for (de = para.begin(); !(de.atEnd()); ++de) {
-                       
-                      //////QTextDocumentFragment 
-           
-          QTextFragment fr = de.fragment();
+		QTextBlock::iterator de;
+    for (de = para.begin(); !(de.atEnd()); ++de) {
+             QTextFragment fr = de.fragment();
               if (fr.isValid()) {
-								  QString ptxt = fr.text();
+								
+								         if (Actual_Text_Param == fr.text()) {
+                         PaintCharFormat(paragraph,fr.charFormat());
+                         HandleFragment(fr,paragraph);
+                         } else {
+													    
+													    if (fr.text().size() > 1) {
+													    QDomElement inlinestyle = dom.createElement("span");
+                              PaintCharFormat(inlinestyle,fr.charFormat());
+														  HandleFragment(fr,inlinestyle);
+														  paragraph.appendChild(inlinestyle); 
+														  } else {
+															HandleFragment(fr,paragraph);
+															}
+													 
+												 }
+								
 								  
-								  int breacks = 0;
-								  const int Marks = fr.position();
-								  ///////qDebug() << "### Marks " << Marks;
-                  positioner++;
-                  bool tisalviono;
-                  const QTextCharFormat base = fr.charFormat();
-                  int staycursorpos =  fr.position();
-                  Pics = base.toImageFormat();
-                  Tabl = base.toTableFormat();
-                  Uls =  base.toListFormat();
-								  Frameinline = base.toFrameFormat();
-                  /* ############################### Image blocks ###########################################*/
-                  /* ############################### Image blocks ###########################################*/
-                  if (Pics.isValid()) {
-                  const QString hrefadress = Pics.name();
-									QString titles;
-										QVariant xx = Pics.property(100); 
-									
-										
-                  QDomElement imagen = dom.createElement("img");
+              }
+							
+							
+		}
+							
+			 if (ParaBlockFormat.hasProperty(QTextFormat::BlockTrailingHorizontalRulerWidth)) {
+			    QDomElement Horizontal = dom.createElement("hr");
+			    paragraph.appendChild(Horizontal);
+		   }
+			 
+	appender.appendChild(paragraph);
+    
+}
+
+void QdocXhtml::HandleFragment( QTextFragment fr  , QDomElement appender ) 
+{
+	QString txt = fr.text();
+	const QTextCharFormat format = fr.charFormat();
+	QDomElement linkers;
+	
+		  /* link create xml */
+		  if (format.isAnchor()) {
+				         const QString name = format.anchorName();
+				         if (!name.isEmpty()) {
+									 linkers = dom.createElement("a");
+									 linkers.setAttribute ("name",name);
+									 appender.appendChild(linkers);
+                 }
+								 const QString href = format.anchorHref();
+								 if (!href.isEmpty()) {
+											linkers = dom.createElement("a");
+									   if (href.trimmed().startsWith("#") ) {
+                            linkers.setAttribute ("href",href);
+											} else if (href.startsWith("http")) {
+														            QUrl gotouri(href);
+												linkers.setAttribute ("href",href);
+												linkers.setAttribute ("target","_blank");
+												linkers.setAttribute ("class","Link_External");
+												linkers.setAttribute ("title",gotouri.host());
+												} else if (href.trimmed().startsWith("mailto:")) {
+												linkers.setAttribute ("href",href);
+												linkers.setAttribute ("class","Link_Mail");
+												linkers.setAttribute ("title",href);
+												} else {
+												linkers.setAttribute ("href",href);
+												linkers.setAttribute ("class","Link_Internal");
+												}
+									  appender.appendChild(linkers);
+								 }
+				
+			}
+			/* image creator xml */
+			if (txt.count() == 1 && txt.at(0) == QChar::ObjectReplacementCharacter) {
+				    if (format.isImageFormat()) {
+							      QTextImageFormat Pics = format.toImageFormat();
+							      const QString hrefadress = Pics.name();
+									  QString titles;
+                    QVariant xx = Pics.property(100); 
+                    QDomElement imagen = dom.createElement("img");
+							
 									            if (Pics.width() > 0) {
                               imagen.setAttribute ("width",QString("%1").arg(Pics.width()));
                               }
@@ -384,132 +484,36 @@ void QdocXhtml::HandleBlock( QTextBlock  para  , QDomElement appender )
 															
 																if (!xx.isNull()) {
 											           SPics pic = xx.value<SPics>();
-											          //////// qDebug() << "### QdocXhtml to web Pics.property found handler ..... " << pic.info;
 											           titles = pic.info;
 																 imagen.setAttribute ("src",pic.indoc().toString());
-																 ////////imagen.setAttribute ("onclick","LiveImage('"+pic.name+"')");
 																 imagen.setAttribute ("id",pic.name);
 																 imagen.setAttribute ("rel","P_img_inline");
-																	
-																	
 										            } else {
 																	imagen.setAttribute ("src",hrefadress);
 																}
-															
-															
-															
-															
-															
 														 if (titles.size() > 0) {
 														  imagen.setAttribute ("alt",titles);
 															imagen.setAttribute ("longdesc",titles);
 														 }
 														 
-									           paragraph.appendChild(imagen);
-                 
-									
-                  /* ############################### Image blocks ###########################################*/
-                  /* ############################### Image blocks ###########################################*/
-                  } else if (Tabl.isValid()) {
-                      //////qDebug() << "### Table ";
-                      ////////QTextTable *childTable = qobject_cast<QTextTable*>(fr);
-										  ////////if (childTable) {
-                      /////HandleTable(childTable,paragraph);
-											/////////}
-                  }  else if (Uls.isValid()) {
-                      ////////qDebug() << "### List ";
-                  }  else if (Frameinline.isValid()) {
-										 //// QTextFrame *Iframe = qobject_cast<QTextFrame*>(fr);
-										  ///if (Iframe) {
-												///FrameLoop(Iframe->begin(),paragraph);
-											////}
-                      ////////qDebug() << "### List  QTextFrame::begin() const ";
-                  }  else if (base.isAnchor() && base.anchorHref() !="" ) {
-                      /* link normal */
-                      QDomElement linkers = dom.createElement("a");
-                         if (base.anchorHref().trimmed().startsWith("#") ) {
-                            linkers.setAttribute ("href",base.anchorHref());
-                           } else if (base.anchorHref().trimmed().startsWith("http")) {
-														QUrl gotouri(base.anchorHref());
-                            linkers.setAttribute ("href",base.anchorHref());
-														linkers.setAttribute ("target","_blank");
-														linkers.setAttribute ("class","Link_External");
-														linkers.setAttribute ("title",gotouri.host());
-													 } else if (base.anchorHref().trimmed().startsWith("mailto:")) {
-                            linkers.setAttribute ("href",base.anchorHref());
-														linkers.setAttribute ("class","Link_Mail");
-														linkers.setAttribute ("title",base.anchorHref());
-													 } else {
-                           linkers.setAttribute ("href",base.anchorHref());
-													 linkers.setAttribute ("class","Link_Internal");
-                         }
-												 QDomText linktext = dom.createTextNode(fr.text());
-												 const QString virtualtext = fr.text();
-												 if (virtualtext.startsWith("http")) {
-													  QUrl xuri(fr.text());
-													  linktext = dom.createTextNode(xuri.host());
-												 }
-                         linkers.appendChild(linktext);
-                         paragraph.appendChild(linkers);
-                  }  else if (CharFromPara !=base) {
-                         /* found diffs from fragment to paragraph ... */
-                         if (Actual_Text_Param == fr.text()) {
-                         PaintCharFormat(paragraph,base);
-                         paragraph.appendChild(dom.createTextNode(fr.text()));
-                         } else {
-													 /* bold underline */
-												 QDomElement inlinestyle = dom.createElement("span");
-                         PaintCharFormat(inlinestyle,base);
-                         inlinestyle.appendChild(dom.createTextNode(fr.text()));
-                         paragraph.appendChild(inlinestyle); 
-                         }
-                  } else  {
-                      /* charformat from block text is same as fragment */
-										
-										
-                      QString txtfrag = fr.text();
-										  QString txt = Qt::escape(txtfrag);
+									           appender.appendChild(imagen);
+							
+						}
+						
+			}  else {
+        Q_ASSERT(!txt.contains(QChar::ObjectReplacementCharacter));
+				
+				              QString txt = Qt::escape(fr.text());
 										  QString forcedLineBreakRegExp = QString::fromLatin1("[\\na]");
 								      forcedLineBreakRegExp[3] = QChar::LineSeparator;
 								      const QStringList lines = txt.split(QRegExp(forcedLineBreakRegExp));
-								      breacks = lines.size();
-										
-										  ////////////////////qDebug() << "### lines.size() " << lines.size(); 
-										
-										
-                      if (lines.size() > 0) {
-												
-												for (int i = 0; i < lines.count(); ++i)  {
-													 if (i > 0) {
-														 QDomElement breakline = dom.createElement("br");
-										         paragraph.appendChild(breakline);
-													 }
-														QString piece = lines.at(i);
-														paragraph.appendChild(dom.createTextNode(piece));
-													 
+												for (int i = 0; i < lines.count(); ++i) {
+														if (i > 0)
+																appender.appendChild(dom.createElement("br"));
+														appender.appendChild(dom.createTextNode(lines.at(i)));
 												}
-                      } else {
-												paragraph.appendChild(dom.createTextNode(txtfrag));
-											}
-                      
-                  }
-              } else {
-                 ////////////qDebug() << "### unknow out QTextFragment ";
-              }
-           
-
-                       
-       }
-
-			 if (ParaBlockFormat.hasProperty(QTextFormat::BlockTrailingHorizontalRulerWidth)) {
-			  QDomElement Horizontal = dom.createElement("hr");
-			  paragraph.appendChild(Horizontal);
-		   }
-       /////////qDebug() << "### close  block fo:block ..................................";
-       appender.appendChild(paragraph); 
-                              
-    ////////////appender.appendChild( param );   /* append result from this block */
-    
+				
+			}
 }
 
 
