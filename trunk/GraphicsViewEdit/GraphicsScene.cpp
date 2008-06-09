@@ -246,12 +246,13 @@ QGraphicsProxyWidget *GraphicsScene::addWidget(QWidget * widget, Qt::WindowFlags
 PreviewDialog::PreviewDialog(QGraphicsScene *sceneprint)
     : QDialog(0),scene(sceneprint),
                 print(new QPrinter(QPrinter::HighResolution)),
-                Rscene(sceneprint->sceneRect())
+                Rscene(sceneprint->sceneRect()),printonpdf(false)
 {
     setupUi(this);
     pdfButton = new QPushButton(tr("Pdf File Print"));
     buttonBox->addButton(pdfButton, QDialogButtonBox::ActionRole);
-    
+    connect(pdfButton, SIGNAL(clicked()), SLOT(pdfsetter()));
+
     currentPage = 0;
     pageCount = 0;
     pageList->setIconSize(QSize(SmallPreviewLength, SmallPreviewLength));
@@ -315,6 +316,11 @@ void PreviewDialog::setNumberOfPages(int count)
     QTimer::singleShot(10, this, SLOT(addPage()));
 }
 
+void PreviewDialog::pdfsetter()
+{
+    printonpdf = true;
+    accept();
+}
 
 void PreviewDialog::accept()
 {
@@ -333,14 +339,30 @@ void PreviewDialog::accept()
     QPrinter::Orientation co = QPrinter::Orientation(paperOrientationCombo->itemData(paperOrientationCombo->currentIndex()).toInt());
     print->setPageSize(QPrinter::PageSize(paperSizeCombo->itemData(paperSizeCombo->currentIndex()).toInt()));
     print->setOrientation(co);
+    print->setOutputFormat(QPrinter::NativeFormat);
     
-   
-
-    
-    QPrintDialog dialog(print, this);
-    if (dialog.exec() != QDialog::Accepted) {
+    if (!printonpdf) {
+        QPrintDialog dialog(print, this);
+        if (dialog.exec() != QDialog::Accepted) {
+            return;
+        }
+    } else {
+       QString fileName = QFileDialog::getSaveFileName(this, "Export PDF",QString(setter.value("LastDir").toString()), "*.pdf");
+       if (fileName.size() > 1) {
+        setter.setValue("LastDir",fileName.left(fileName.lastIndexOf("/"))+"/");
+        print->setOutputFormat(QPrinter::PdfFormat);
+        print->setOutputFileName(fileName); 
+       } else {
         return;
+       }
+        
+        
     }
+    
+    
+    
+    
+    
     print->setFullPage(true);
     bool portrait = print->orientation() == QPrinter::Portrait ? true : false;
     const qreal wit = qMin(print->pageRect().width(),print->paperRect().width());  /* printer border ? */
@@ -388,6 +410,7 @@ void PreviewDialog::accept()
     /* print loop */
     progressBar->setTextVisible(false);
     progressBar->setEnabled(false);
+    printonpdf = false;
     QDialog::accept();
     
 }

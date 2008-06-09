@@ -131,11 +131,15 @@ public slots:
     void setNumberOfPages(int count);
     void reject();
     void accept();
+    void pdfsetter();
 private:
     ///////void paintItem(QTreeWidgetItem *item, int index);
     void paintPreview(QPixmap &pixmap, int index );
     int ActualMaxPreview();
     QRectF Rscene;
+    QSettings setter;
+
+    bool printonpdf;
     QRectF Paper_Rect;
     QRectF rectScenePiece;
     QPushButton *pdfButton;

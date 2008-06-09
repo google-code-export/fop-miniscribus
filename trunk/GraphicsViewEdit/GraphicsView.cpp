@@ -63,6 +63,8 @@ void GraphicsView::PrintDoc()
 	PrintScene->exec();
 	PrintSetup(false);
 	
+	PrintScene->deleteLater();
+	
 	///////////qDebug() << "### PrintDoc end......... ";
 }
 
