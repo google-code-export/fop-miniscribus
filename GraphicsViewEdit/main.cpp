@@ -29,17 +29,52 @@
 #include <QObject>
 #include <QApplication>
 #include <QGraphicsView>
+#include "singleapplication.h"
 
 
-int main(int argc, char *argv[])
+#if defined Q_WS_WIN
+#include "windows.h"
+#include "winerror.h"
+#endif
+
+
+
+int main(int argc, char* argv[])
 {
-    QApplication a(argc, argv);
-    GraphicsView *panel = new GraphicsView;
-    panel->setWindowTitle(QString ( "Layer edit sample" )); 
-    panel->showMaximized();
-    
-    a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
-    return a.exec();
+	QApplication a(argc, argv);
+    a.setOrganizationName("CrossKern");
+    a.setOrganizationDomain("crosskern.com");
+    a.setApplicationName("Layer Handler Sample");
+    const QString titles = QString("Layer edit GraphicsView Demo version (use ContextMenu)");
+ 
+	 QObject::connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+	 SingleApplication instance(titles);
+ 
+ 
+	if(instance.isRunning())
+	{
+   #if defined Q_WS_WIN
+   /* focus this QApplication instance from other QApplication*/
+   HWND hWnd = FindWindowW( 0, (LPCWSTR) titles.utf16() );
+   ShowWindow( hWnd, SW_RESTORE );
+   SetForegroundWindow( hWnd );
+   #endif
+   instance.sendMessage(titles +" Application is already open!\n"
+					"PID: " + QString::number(a.applicationPid()));
+		return 0;
+	}
+  
+  GraphicsView *panel = new GraphicsView;
+  panel->setWindowTitle(titles); 
+   
+  
+	 QObject::connect(&instance, SIGNAL(messageReceived(const QString&)),
+       panel, SLOT(onOtherInstanceMessage(const QString&)));
+  
+  
+	 panel->showMaximized();
+
+	return a.exec();
 }
 
 
