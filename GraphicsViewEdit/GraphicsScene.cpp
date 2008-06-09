@@ -397,12 +397,14 @@ void PreviewDialog::accept()
           InitOnYtop = rectScenePiece.height() * pageIndex;
         } 
         QRectF pagepiece(0,InitOnYtop,rectScenePiece.width(),rectScenePiece.height());
-        if (pageIndex >= currentPage || isSelected(pageIndex)) {
-            scene->render(&painter,painter.viewport(),pagepiece,Qt::KeepAspectRatio);
+        if (isSelected(pageIndex)) {
+            
             if (!firstPage) {
                 print->newPage();
             }
+            
             progressBar->setValue(++printed);
+            scene->render(&painter,print->pageRect(),pagepiece,Qt::IgnoreAspectRatio);
             firstPage = false;
         }
     }
