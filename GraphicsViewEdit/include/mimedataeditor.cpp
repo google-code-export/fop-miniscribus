@@ -745,12 +745,13 @@ void  Layoutpainter::LinkText()
     return;  
     }
     
+    const QTextBlock para =  c.block();
+    ///////const QTextCharFormat format = c.charFormat();
     QTextCharFormat format = c.charFormat();
-    bool havinglinkleave = format.anchorHref().size() > 0;
+    //////bool havinglinkleave = format.anchorHref().size() > 0;
     QString sthtml = c.selectedText();
-    
-    if (havinglinkleave)  {
-        /* unlink text */ 
+    if (HavingLink(para)) {
+        
     QString msgDB =tr("Unlink current text?");
     int removeyes = QMessageBox::question(0, tr("Confirm please"),msgDB,
                                                             tr("&Yes"), tr("&No"),
@@ -790,21 +791,36 @@ void  Layoutpainter::LinkText()
                        }
                    }
                 if (satarget !="#name") {
-                ltext ="<a href=\""+linkerma+"\">"+QString(data.at(0))+"</a>";
+                //////ltext ="<a href=\""+linkerma+"\">"+QString(data.at(0))+"</a>";
+                format.setAnchor(true);
+                format.setAnchorHref(hrefprimo); 
                 } else {
+                    ///// setAnchorNames ( const QStringList & names )
                 hrefprimo.replace("#","");
                 hrefprimo.replace(" ","");
-                    
-                ltext ="<a name=\""+hrefprimo+"\"></a> "+QString(data.at(0));   
+                format.setAnchor(true);
+                format.setAnchorHref(hrefprimo); 
                 }
-                QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(ltext);
-                c.insertFragment(fragment);
+                
+                format.setForeground(QBrush(_LINK_COLOR_));
+                format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+                
+                c.setCharFormat(format);
                 }
           }
     
 
     
 }
+
+
+/*
+
+void setAnchor ( bool anchor )
+void setAnchorHref ( const QString & value )
+void setAnchorNames ( const QStringList & names )
+
+*/
 
 
 void Layoutpainter::set_unset_Block_List()

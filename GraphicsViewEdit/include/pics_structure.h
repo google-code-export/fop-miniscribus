@@ -29,6 +29,10 @@
 #include <QSvgRenderer>
 
 
+#define _LINK_COLOR_ \
+             QColor("#dc0000")
+
+
 static inline QPixmap RenderPixmapFromSvgByte(  QByteArray streams ) 
 {
         QSvgRenderer  svgRenderer( streams );
@@ -37,6 +41,23 @@ static inline QPixmap RenderPixmapFromSvgByte(  QByteArray streams )
         QPainter paint(&pix);
         svgRenderer.render(&paint);
         return pix;
+}
+
+
+/* contains link on block */
+static inline bool HavingLink(  const QTextBlock para )
+{
+        QTextBlock::iterator li;
+				for (li = para.begin(); !(li.atEnd()); ++li) {
+					      QTextFragment lifrag = li.fragment();
+                if (lifrag.isValid()) {
+                       const QTextCharFormat format = lifrag.charFormat();
+                       if (format.isAnchor()) {
+                        return true;
+                       }
+								}
+				}
+        return false;
 }
 
 
@@ -145,8 +166,8 @@ class SPics
     void SavePix( QString dir = QString() )
     {
         QString fullpath = dir + FileName();
-        QPixmap curr = pix();
-        curr.save(fullpath,extension.data());
+        
+        
     }
     void SavePixThread( QString dir = QString() )
     {

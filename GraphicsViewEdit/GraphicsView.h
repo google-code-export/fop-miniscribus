@@ -34,6 +34,10 @@
 #include "GraphicsScene.h"
 #include <math.h>
 #include <QPair>
+#ifndef QT_NO_OPENGL
+#include <QGLWidget>
+#endif
+
 
 #define QGRAPHICSVIEW_DEBUG
 
@@ -73,6 +77,8 @@ public:
   qreal NextfromY();
   void insert( RichDoc e , bool cloned = false );  /* one layer insert */
   QMap<int,RichDoc> read();  /* read full pages */
+  PageDoc getPage();
+  void OpenPage( PageDoc e );
   TextLayer *CurrentActive;
   void NewLayer( const int type );
   GraphicsScene *scene;
@@ -96,9 +102,12 @@ public slots:
     void PrintDoc();
     void onOtherInstanceMessage( const QString msg );
     void LaunchFile( const QString islayeror );
+    void toggleOpenGL();
+    void SaveAsPage();
+    void OpenFilePageGroup();
 
 protected:
-    //////////QList<TextLayer*> items;
+    QAction *openGlaction;
     QSettings setter;
     void contextMenuEvent ( QContextMenuEvent * e );
     void resizeEvent(QResizeEvent *event);
@@ -107,6 +116,7 @@ protected:
     void drawBackground( QPainter * painter, const QRectF & rect );
     void scaleView (qreal scaleFactor);
     void PrintSetup( bool enable );
+    void closeEvent(QCloseEvent *event);
   
   int layerNr;
   qreal width;
@@ -121,6 +131,12 @@ private:
 
 
 };
+
+
+
+
+
+
 
 
 #endif // GRAPHICSVIEW_H

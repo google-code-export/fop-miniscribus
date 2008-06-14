@@ -33,11 +33,28 @@ GraphicsView::~GraphicsView()
 GraphicsView::GraphicsView(  QWidget * parent )
 	: QGraphicsView( parent ),width(16.),height(9.),layercount(10)
 {
+	  #ifndef QT_NO_OPENGL
+    /////////setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+    #endif
+	
+	  setRenderHint(QPainter::Antialiasing,true);
+	  setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+	
 	  if (Metric(setter.value("gview/chess").toString()) > 0) {
 			chessgrid = BruschChess(Metric(setter.value("gview/chess").toString()));
 		} else {
 			chessgrid = BruschChess(Metric("10mm"));
 		}
+		
+		openGlaction = new QAction(tr("Render OpenGL"),this);
+    /////actionLink->setIcon(iconl);
+    openGlaction->setCheckable(true);
+		openGlaction->setChecked( false );
+	  connect(openGlaction, SIGNAL(triggered()),this,SLOT(toggleOpenGL()));
+		
+		
+		
+		
 		const QString backsS = setter.value("gview/backpix").toString();
 		if (backsS.size() > 0) {
 			 QList<SPics> li = OpenImageGroup(backsS);
@@ -59,14 +76,14 @@ GraphicsView::GraphicsView(  QWidget * parent )
 
 void GraphicsView::PrintDoc()
 {
+	#ifndef QT_NO_PRINTER
 	//////const QRectF area = boundingRect();
 	PrintSetup(true);
 	PreviewDialog *PrintScene = new PreviewDialog(scene);
 	PrintScene->exec();
 	PrintSetup(false);
-	
 	PrintScene->deleteLater();
-	
+	#endif
 	///////////qDebug() << "### PrintDoc end......... ";
 }
 
@@ -113,8 +130,12 @@ void GraphicsView::setGlobalBrush( QPixmap e )
 }
 
 
-
-
+void GraphicsView::toggleOpenGL()
+{
+#ifndef QT_NO_OPENGL
+    setViewport(openGlaction->isChecked() ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
+#endif
+}
 
 
 void GraphicsView::pageclear()
@@ -142,20 +163,27 @@ void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 	
 	a = menu->addAction(tr("New flow text Layer"), this, SLOT(NewLayer()));
 	a->setData(51);
-	
 	a = menu->addAction(tr("New absolute Layer"), this, SLOT(NewLayer()));
 	a->setData(50);
-	
-	
+	menu->addSeparator();
+	menu->addAction(openGlaction);
 	a = menu->addAction(tr("Paste Layer from clipboard"), this, SLOT(PasteLayer()));
 	a->setIcon(QIcon(":/img/paste.png"));
 	a->setEnabled(layeronram);
-
+  menu->addSeparator();
 	a = menu->addAction(tr("Page clear"), this, SLOT(pageclear()));
 	a->setIcon(QIcon(":/img/filenew.png"));
 	
 	a = menu->addAction(tr("Page print"), this, SLOT(PrintDoc()));
 	a->setIcon(QIcon(":/img/fileprint.png"));
+	
+	a = menu->addAction(tr("Save as Layer group Page"), this, SLOT(SaveAsPage()));
+	a->setIcon(QIcon(":/img/wp.png"));
+	
+	a = menu->addAction(tr("Open Layer group Page"), this, SLOT(OpenFilePageGroup()));
+	a->setIcon(QIcon(":/img/wp.png"));
+	
+		
 	
 	menu->exec(QCursor::pos());
 	delete menu;
@@ -257,12 +285,17 @@ void GraphicsView::insert( RichDoc e , bool cloned )
 				ioq2->insert(e,cloned);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount+10);
-	      ////////////items.append(ioq2);
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
 	      emit MenuActivates(false,qMakePair(0,0));
 	      QTimer::singleShot(0, this, SLOT(updateauto()));
+	  
+	      if (!e.style.contains("position:absolute")) {
+         ioq2->setZValue(0.1); 
+				}					
+	
+	
 }
 
 void GraphicsView::PasteLayer()
@@ -568,7 +601,69 @@ void GraphicsView::onOtherInstanceMessage( const QString msg )
 
 
 
+ void GraphicsView::closeEvent(QCloseEvent *event)
+ {
+	  scene->deleteLater();
+		event->accept();
 
-
-
+ }
+ 
+ PageDoc GraphicsView::getPage()
+ {
+	 
+	 NextfromY();
+	 NextfromY();
+	 
+	 
+				PageDoc lpage;
+			  lpage.Listening = read();
+			  lpage.rect = boundingRect();
+	      return lpage;
+ }
+ 
+void GraphicsView::OpenPage( PageDoc e )
+{
+	 pageclear();
+	 if (e.Listening.size() > 0) {
+		scene->setSceneRect(e.rect);
+	  QMapIterator<int,RichDoc> o(e.Listening);
+					while (o.hasNext()) {
+                 o.next();
+				         RichDoc record = o.value();
+						     insert(record);
+					}
+	 }
+}
+ 
+void GraphicsView::SaveAsPage()
+{
+    QString file = QFileDialog::getSaveFileName(0, tr("Save as Page Layer group File"),QString(setter.value("LastDir").toString()),tr("Pagelayer File (*.page)"));
+    if (file.size() > 0) {
+        setter.setValue("LastDir",file.left(file.lastIndexOf("/"))+"/");
+				 PageDoc lpage = getPage();
+			   QFile f(file);
+					if (f.open(QFile::WriteOnly)) {
+						  f.write(lpage.save());
+						  f.close();
+					}
+    }
+}
+ 
+ 
+void GraphicsView::OpenFilePageGroup()
+{
+    QString file = QFileDialog::getOpenFileName(0, tr( "Choose Page Layer group File..." ), QString(setter.value("LastDir").toString()) ,tr("Pagelayer File (*.page)"));
+    if (file.size() > 0) {
+        setter.setValue("LastDir",file.left(file.lastIndexOf("/"))+"/");
+        QFile f(file); 
+                if (f.open(QFile::ReadOnly)) {
+									  PageDoc e;
+									  e.open(f.readAll());
+									  OpenPage(e); 
+                    f.close();
+                }
+             
+    }
+}
+ 
 

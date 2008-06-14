@@ -27,7 +27,7 @@
 #include <QtGui>
 #include <QtCore>
 #include "pics_structure.h"
-
+#include <QMetaType>
 #define _IMAGE_PICS_ITEM_ 100
 
 
@@ -81,19 +81,12 @@ class RichDoc
 		{
 		return QString(html.constData());
 		}
-		/*
-		QString WebSource()
-		{
-			QString base = Hxtml();
-			QdocXhtml *handler = new QdocXhtml(todoc());
-			base = handler->Docxml();
-			base.prepend(QString("<div class=\"qtpage\" xmlns=\"http://www.w3.org/1999/xhtml\" style=\"%1\">\n").arg(style));
-			base.append(QString("\n</div>\n"));
-			return base;
-		}
-		*/
+		
     QTextDocument *todoc()
     {
+			
+			///////////qDebug() << "### todoc run ..... ";
+			
 			  QTextCursor helper;
         QTextDocument *d = new QTextDocument();
         d->setHtml(QString(html));
@@ -121,13 +114,13 @@ class RichDoc
 					 QTextBlock para = it.currentBlock();
 					 if (para.isValid()) {
 						QTextBlockFormat Parformat = para.blockFormat();
-						if (Parformat.bottomMargin() == 12 && Parformat.topMargin() == 12) {
-							////////Parformat.setBottomMargin(0); 
-              //////////Parformat.setTopMargin(0);
-              /////////Parformat.setRightMargin(0);
-              ///////////Parformat.setLeftMargin(0);
-							////////////helper.setPosition(para.position(),QTextCursor::MoveAnchor);
-							//////////////helper.setBlockFormat(Parformat);
+						if (Parformat.bottomMargin() == 12 && Parformat.topMargin() == 12 || nullmargin ) {
+							Parformat.setBottomMargin(0); 
+              Parformat.setTopMargin(0);
+              Parformat.setRightMargin(0);
+              Parformat.setLeftMargin(0);
+							helper.setPosition(para.position(),QTextCursor::MoveAnchor);
+							helper.setBlockFormat(Parformat);
 						}
 						 
 						 
@@ -137,17 +130,25 @@ class RichDoc
 											  if (fr.isValid()) {
                            QTextCharFormat base = fr.charFormat();
                            QTextImageFormat pico = base.toImageFormat();
+                                if (base.isAnchor()) {
+																	  //////////////qDebug() << "### link found..... ";
+																	  base.setForeground(QBrush(_LINK_COLOR_));
+                                    base.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+																		helper.setPosition(fr.position());
+                                    helper.setPosition(fr.position() + fr.length(),QTextCursor::KeepAnchor);
+																	  helper.setCharFormat(base);
+																}
+																
 													      if (pico.isValid()) {
 																		const QString hrefadress = pico.name();
 																		SPics spico = resource[hrefadress];
 																		////////////qDebug() << "### from RichDoc add resource " << hrefadress;
-																		//////////////qDebug() << "### from RichDoc info " << spico.info;
+																		////////////////qDebug() << "### from RichDoc info " << spico.info;
 																		pico.setToolTip(spico.info);
 																		pico.setProperty(_IMAGE_PICS_ITEM_,spico);
 																		helper.setPosition(fr.position());
                                     helper.setPosition(fr.position() + fr.length(),QTextCursor::KeepAnchor);
                                     helper.setCharFormat(pico);
-																	  d->addResource( QTextDocument::ImageResource,QUrl(spico.name),spico.pix());
 																}
 												}
 																 
@@ -160,95 +161,173 @@ class RichDoc
 
         return d;
     }
-		
 		bool nullmargin;
-		
-		
     QString style;
     QMap<QString,SPics> resource;
     QByteArray html;  /* qCompress */
     
 };
 
+inline QDataStream& operator<<(QDataStream& out, RichDoc& e) 
+{
+			
+			out << e.html;
+			out << e.style;
+			
+								 QMapIterator<QString,SPics> i(e.resource);
+								 while (i.hasNext()) {
+										 i.next();
+										 SPics record = i.value();
+										 out << record;
+								 } 
+								 
+			return out;
+}
+
+inline QDataStream& operator>>(QDataStream& in, RichDoc& e) 
+{
+			
+				in >> e.html;
+				in >> e.style;
+				while (!in.atEnd()) {
+						 SPics appoint;
+						 in >> appoint;
+						 e.resource.insert(appoint.name,appoint);
+				}
+				return in;
+}
 
 Q_DECLARE_METATYPE(RichDoc);
+typedef QMap<int,RichDoc> LayerList;
+typedef QList<RichDoc> QLayerList;
+Q_DECLARE_METATYPE(LayerList)
+Q_DECLARE_METATYPE(QLayerList)
 
 
-inline QString SaveRichDoc( RichDoc e )
+QString SaveRichDoc( RichDoc e );
+RichDoc OpenRichDoc( const QString datastream_base64 );
+
+QByteArray HeSaveLayer( RichDoc e , const int position );
+QPair<int,RichDoc> HeOpenLayer( const QByteArray stream );
+
+
+
+
+class PageDoc
 {
-	///////////qDebug() << "#### SaveRichDoc " << e.todoc()->toPlainText();
-	
-	QByteArray bytes;
-	QBuffer buffer(&bytes);
-	if (!buffer.open(QIODevice::WriteOnly)) {
-		/////////qDebug() << "#### SaveRichDoc  no buffer fatal error!";
-		return QString();
-	}
-	QDataStream ds(&buffer);
-	/* place header */
-	ds.setVersion(QDataStream::Qt_4_2);
-	ds << (quint32)RichDoc::MAGICNUMBER;
-	ds << (quint32)RichDoc::VERSION;
-	/* place header */
-  ds << e.html;
-  ds << e.style;
-             
-             QMapIterator<QString,SPics> i(e.resource);
-             while (i.hasNext()) {
-                 i.next();
-				         SPics record = i.value();
-                 ds << record;
-             } 
-	buffer.close();
-	return bytes.toBase64();
-}
-
-/* decoded base64 stream to put on mysql row , file or network streams */
-inline RichDoc OpenRichDoc( const QString datastream_base64   )
-{
-	
-	//////////qDebug() << "### OpenRichDoc size " << datastream_base64.size();
-	
-	
-  RichDoc li;
-	QByteArray xcode("");
-	xcode.append(datastream_base64);
-	quint32 magic, version;
-	QByteArray bytes(QByteArray::fromBase64(xcode));   /* decoded base64 string to QByteArray */
-	QBuffer buffer(&bytes);
-	if (!buffer.open(QIODevice::ReadOnly)) {
-		return li;
-	}
-	QDataStream ds(&buffer);
-	/* place header */
-	ds.setVersion(QDataStream::Qt_4_2);
-	ds >> magic;
-	if ( (quint32)RichDoc::MAGICNUMBER != magic ) {
-  qWarning() << "######## RichDoc::MAGICNUMBER not ok  " << magic;
-	buffer.close();
-	return li;
-	}
-	ds >> version;
-	if ( (quint32)RichDoc::VERSION != version ) {
-	qWarning() << "######## RichDoc::VERSION not ok  " << version;
-	buffer.close();
-	return li;
-	}
-  
-  QString s;
-  QByteArray h;
-  ds >> h;
-  ds >> s;
-  li.style = s;
-  li.html = h;
-  SPics appoint;
-    while (!ds.atEnd()) {
-         ds >> appoint;
-         li.resource.insert(appoint.name,appoint);
+    public:
+    enum { MAGICNUMBER = 0xFFFAFFAA, VERSION = 1 };
+    PageDoc() {
+		Listening.clear();
+		binformat.clear();
+		modus = 1;
+		}
+		
+		operator QVariant() const {
+    return QVariant::fromValue(*this);
     }
-	buffer.close();
-	return li;
-}
+		int size()
+		{
+		return Listening.size();
+		}
+		
+		QByteArray save()
+		{
+				 QString line("\n\n");
+			   QByteArray bytes;
+			   QByteArray signature("PAGE\n");
+			   binformat.clear();
+				 QMapIterator<int,RichDoc> o(Listening);
+					while (o.hasNext()) {
+                 o.next();
+				         RichDoc record = o.value();
+							   QByteArray dat = HeSaveLayer(record,o.key());
+							   binformat.append(dat);
+					}
+					
+         	QBuffer buffer(&bytes);
+					if (!buffer.open(QIODevice::WriteOnly)) {
+						return QByteArray();
+					}
+					QDataStream ds(&buffer);
+					/* place header */
+					ds.setVersion(QDataStream::Qt_4_2);
+					ds << signature;
+					ds << (quint32)MAGICNUMBER;
+					ds << (quint32)VERSION;
+					ds << rect;
+					ds << line;
+					for (int i = 0; i < binformat.size(); ++i) {
+						 ds << binformat.at(i);
+				   }
+					buffer.close();
+					QCryptographicHash formats( QCryptographicHash::Md5 );
+          formats.addData(bytes);
+			    smd5 = formats.result();
+	        return bytes;
+		}
+		
+		void open( QByteArray stream )
+		{
+			  QCryptographicHash formats( QCryptographicHash::Md5 );
+        formats.addData(stream);
+			  smd5 = formats.result();
+			  QBuffer buffer(&stream);
+				if (!buffer.open(QIODevice::ReadOnly)) {
+					return;
+				}
+				QString infostream;
+				quint32 magic, version;
+				QByteArray signer;
+				QDataStream ds(&buffer);
+				ds.setVersion(QDataStream::Qt_4_2);
+				ds >> signer;
+				if ( !signer.contains(QByteArray("PAGE")) ) {
+				buffer.close();
+				return;
+				}
+				ds >> magic;
+				if ( (quint32)MAGICNUMBER != magic ) {
+				qWarning() << "######## PageDoc::MAGICNUMBER not ok  " << magic;
+				buffer.close();
+				return;
+				}
+				
+				ds >> version;
+				if ( (quint32)VERSION != version ) {
+				qWarning() << "######## PageDoc::VERSION not ok  " << version;
+				buffer.close();
+				return;
+				}
+				ds >> rect;
+				ds >> infostream;
+				QByteArray daten;
+				Listening.clear();
+				 while (!ds.atEnd()) {
+              ds >> daten;
+							QPair<int,RichDoc> Layers = HeOpenLayer(daten);
+              Listening.insert(Layers.first,Layers.second);
+          }
+				 buffer.close();
+		}
+		QRectF rect;
+		QByteArray smd5; 
+		int modus;
+		QMap<int,RichDoc> Listening;  /* QMap<int,RichDoc> */
+		QList<QByteArray> binformat;
+};
+
+
+
+Q_DECLARE_METATYPE(PageDoc);
+
+
+
+
+
+
+
+
 
 
 
