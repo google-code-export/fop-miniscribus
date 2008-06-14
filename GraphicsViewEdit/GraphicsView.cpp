@@ -256,13 +256,18 @@ void GraphicsView::CloneCurrent()
 QMap<int,RichDoc> GraphicsView::read()
 {
 	   QMap<int,RichDoc> pages;
+	   RecordItem();  /* order ObyektSortingTimeline  first item at y */
+	
         QList<QGraphicsItem *> listing = scene->l_items();
 				  for (int e=0;e<listing.size();e++) {
 					TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
 						if (it) {
-								const int Nid = it->data(ObjectNameEditor).toInt();
+								const int Nid = it->data(ObyektSortingTimeline).toInt(); 
+							  /* order by y top !!!!!  */
 		            RichDoc doc = it->ReadActualItem();
+							  if (Nid > 8) {
                 pages.insert(Nid,doc);
+								}
 						}
 				  }
 		 return pages; 
@@ -547,24 +552,44 @@ void GraphicsView::RecordItem()
 	  
 	  /////SpaceAutoFloatHight = InitTopPositionAfterBorderPlay;
 	  auto_li.clear();
+	  int ordersorting = 10;
+	  int orderabsolutesorting = 800;
 	  QList<QGraphicsItem *> listing = scene->l_items();
 	  for (int e=0;e<listing.size();e++) {
 			TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
 			if (it) {
+				const int idonbegin = it->data(ObjectNameEditor).toInt();
+
+				
 						if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
+							    ///////
 							    const int fromtop = it->pos().y();
 							    qreal hibecome = it->pointnext();
 							    const qreal Linerecthi = hibecome + fromtop;
-							    ///////AreaHiTower = qMax(AreaHiTower,Linerecthi);
 							    if (!auto_li[fromtop]) {
 							    auto_li.insert(fromtop,it);
 									} else {
 									auto_li.insert(fromtop + 1,it);
 									}
-											
+									/////////
+						}  else {
+							  if (idonbegin > 0) {
+							  orderabsolutesorting++;
+							  it->setData(ObyektSortingTimeline,orderabsolutesorting);
+								}
 						}
 			}
 		}
+		
+			QMapIterator<int,TextLayer*> o(auto_li);
+					while (o.hasNext()) {
+                 o.next();
+						     ordersorting++;
+				         TextLayer *ali = o.value();
+						     ali->setData(ObyektSortingTimeline,ordersorting);
+					}
+		
+		
 
 }
 
