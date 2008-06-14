@@ -249,6 +249,8 @@ PreviewDialog::PreviewDialog(QGraphicsScene *sceneprint)
                 Rscene(sceneprint->sceneRect()),printonpdf(false)
 {
     setupUi(this);
+    setWindowFlags ( Qt::Window );
+
     pdfButton = new QPushButton(tr("Pdf File Print"));
     buttonBox->addButton(pdfButton, QDialogButtonBox::ActionRole);
     connect(pdfButton, SIGNAL(clicked()), SLOT(pdfsetter()));
