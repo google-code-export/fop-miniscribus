@@ -352,7 +352,10 @@ void PreviewDialog::accept()
        QString fileName = QFileDialog::getSaveFileName(this, "Export PDF",QString(setter.value("LastDir").toString()), "*.pdf");
        if (fileName.size() > 1) {
         setter.setValue("LastDir",fileName.left(fileName.lastIndexOf("/"))+"/");
+        QString doname = QInputDialog::getText(this, tr("PDF Document Title"),tr("Document title:"), QLineEdit::Normal,"MiniScribus Page Layer");
         print->setOutputFormat(QPrinter::PdfFormat);
+        print->setCreator ( "MiniScribus Layer model by www.crosskern.com" );
+        print->setDocName ( doname );
         print->setOutputFileName(fileName); 
        } else {
         return;
