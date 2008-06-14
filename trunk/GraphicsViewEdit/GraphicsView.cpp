@@ -460,17 +460,24 @@ void GraphicsView::AppendDemo()
 void GraphicsView::LaunchFile( const QString islayeror )
 {
 	
-	      qDebug() << "### LaunchFile " << islayeror;
-	
+	        ////////////qDebug() << "### LaunchFile " << islayeror;
+				QFileInfo fix(islayeror);
 	      QFile f(islayeror); 
 	      QString inside;
+  
 				if (f.open(QFile::ReadOnly | QFile::Text)) {
-				inside = QString::fromUtf8(f.readAll());
-				f.close();
-        RichDoc addoc = OpenRichDoc(inside); 
-				insert(addoc);
-				layercount++;
-				}
+            if (fix.completeSuffix().toLower() == "layer") {
+            inside = QString::fromUtf8(f.readAll());
+            RichDoc addoc = OpenRichDoc(inside); 
+            insert(addoc);
+            } else if (fix.completeSuffix().toLower() == "page") {
+              PageDoc e;
+              e.open(f.readAll());
+              OpenPage(e); 
+            }
+            layercount++;
+            f.close();
+				}  
 }
 
 
