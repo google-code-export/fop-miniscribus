@@ -41,6 +41,7 @@
 
 #define QGRAPHICSVIEW_DEBUG
 
+
 /* work on layer ID edit enable */
 class LayerTestEvent : public QEvent
 {
@@ -108,6 +109,10 @@ public slots:
 
 protected:
     QAction *openGlaction;
+    QMap<int,TextLayer*> auto_li;
+    qreal AreaHiTower;
+    qreal SpaceAutoFloatHight;
+    void RecordItem();
     QSettings setter;
     void contextMenuEvent ( QContextMenuEvent * e );
     void resizeEvent(QResizeEvent *event);

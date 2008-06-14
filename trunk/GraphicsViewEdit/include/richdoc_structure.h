@@ -82,6 +82,11 @@ class RichDoc
 		return QString(html.constData());
 		}
 		
+		bool isAbsolute()
+		{
+			return style.contains("position:absolute;");
+		}
+		
     QTextDocument *todoc()
     {
 			

@@ -404,6 +404,7 @@ void TextLayer::Removehere()
     qDebug() << "### TextLayer rem " << id;
     GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
     sc->remid(id);
+    emit recalcarea();
 }
 
 void TextLayer::CloneLayer()
@@ -1061,10 +1062,10 @@ RichDoc TextLayer::ReadActualItem()
     qreal realhightdoc = ToUnit(hi,"px");
     qreal realwidhtdoc = ToUnit(wi,"px");
     #define ALPHAHTML(alpha) ((alpha)/254.99999999)
-    if (format != DIV_AUTO) {
+    if (format == DIV_ABSOLUTE) {
     styles = "position:absolute; overflow:hidden; top:"+QString("%1px").arg(ToUnit(pos().y(),"px"))+"; left:"+QString("%1px").arg(ToUnit(pos().x(),"px"))+"; width:"+QString("%1px").arg(ToUnit(wi,"px"))+"; height:"+QString("%1px").arg(ToUnit(hi,"px"))+"; ";
     } else {
-    styles = "min-height:"+QString("%1px").arg(hi)+";";   
+    styles = "min-height:"+QString("%1px").arg(hi)+";"+QString("top:%1px").arg(ToUnit(pos().y(),"px"))+";"+QString("left:%1px").arg(ToUnit(pos().x(),"px"))+";";   
     }
     ////////styles.append(margin);
     /////////styles.append(padding);
@@ -1177,7 +1178,7 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
     setPos(QPointF(_DEBUGRANGE_WI_,0));  /* next Y from scene */
     setZValue(minimums);  /* auto default zero */
     QStringList find;
-    find << "position" << "top" << "left" << "width" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
+    find << "position" << "top" << "left" << "width" << "min-height" << "degree-rotation" << "opacity" << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color" << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     QMap<QString,QVariant> incss; 
     for (int o = 0; o < find.size(); ++o)  {
          incss.insert(find.at(o),QString("0"));
@@ -1191,6 +1192,16 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
         incss.insert(css.at(0),css.at(1));
         }
     }
+    
+     if (Metric(incss.value("min-height").toString()) > 10) {
+        hi = Metric(incss.value("min-height").toString());
+      }
+    
+    if (!incss.value("left").toString().isEmpty()) {
+        setPos(QPointF(Metric(incss.value("left").toString()),Metric(incss.value("top").toString())));
+    }
+    
+    
    if (incss.value("position").toString() == "absolute") {
          format = DIV_ABSOLUTE;
          if (fromclone) {  

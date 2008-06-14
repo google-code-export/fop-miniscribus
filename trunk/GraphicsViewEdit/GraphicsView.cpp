@@ -245,22 +245,12 @@ void GraphicsView::NewLayer()
 void GraphicsView::CloneCurrent()
 {
 	const int idax = CurrentActive->data(ObjectNameEditor).toUInt();
-	
-	//////qDebug() << "### idax " << idax;
-	
 	if (idax < 1) {
 	return;
 	}
 	layercount++;
 	      RichDoc rdoc = CurrentActive->ReadActualItem();
-				TextLayer *ioq2 = new TextLayer(layercount,0,scene);
-				ioq2->insert(rdoc,true);
-				ioq2->setModus(TextLayer::Show);
-				ioq2->setData (ObjectNameEditor,layercount);
-	      //////items.append(ioq2);
-	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
-				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
-	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
+				insert(rdoc,true);
 }
 
 QMap<int,RichDoc> GraphicsView::read()
@@ -285,15 +275,17 @@ void GraphicsView::insert( RichDoc e , bool cloned )
 				ioq2->insert(e,cloned);
 				ioq2->setModus(TextLayer::Show);
 				ioq2->setData (ObjectNameEditor,layercount+10);
+	
+	      if (!e.isAbsolute()) {
+	      ioq2->setPos(_DEBUGRANGE_WI_,NextfromY()); 
+				ioq2->setZValue(0.1); 
+				}
+				
 	      connect(ioq2, SIGNAL(recalcarea() ),this, SLOT(updateauto()));
 				connect(ioq2, SIGNAL(clonehere() ),this, SLOT(CloneCurrent()));
 	      connect(ioq2, SIGNAL(remid(int) ),this, SLOT(removelayer(int)));
 	      emit MenuActivates(false,qMakePair(0,0));
 	      QTimer::singleShot(0, this, SLOT(updateauto()));
-	  
-	      if (!e.style.contains("position:absolute")) {
-         ioq2->setZValue(0.1); 
-				}					
 	
 	
 }
@@ -322,7 +314,7 @@ void GraphicsView::removelayer( const int idx )
 	if (idx < 1) {
 	return;
 	}
-	qDebug() << "### removelayer " << idx;
+	//////qDebug() << "### removelayer " << idx;
 	scene->clearSelection();
   scene->remid(idx);
 	updateauto();
@@ -344,33 +336,32 @@ QRectF GraphicsView::boundingRect()
 
 qreal GraphicsView::NextfromY()
 {
-	qreal fromtop = 0;
-	qreal bigYall = 0;
+	updateauto();
+	qreal fromtop = SpaceAutoFloatHight;
+	qreal bigYall = InitTopPositionAfterBorderPlay;
 	
 	QList<QGraphicsItem *> listing = scene->l_items();
 	for (int e=0;e<listing.size();e++) {
 		////////qDebug() << "### tipo " << items[e]->type();
 		TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
 		if (it) {
-			           if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
-			            fromtop += it->pointnext();
-		             }
-			           bigYall = qMax(bigYall,it->pos().y() + it->boundingRect().height());
+					bigYall = qMax(bigYall,it->pos().y() + it->boundingRect().height());
 		}
 	}
-		
 	 /* height total all elemenst absolute */
-	 
-		
-	
     QRectF resc = scene->sceneRect();
 	  if (resc.height() < fromtop) {
-			scene->setSceneRect(0,0,resc.width(),fromtop + 100);
+			scene->setSceneRect(0,0,resc.width(),fromtop + RectoSceneBottomFooterSpace);
 		}
 		if (resc.height() < bigYall) {
-			scene->setSceneRect(0,0,resc.width(),bigYall + 100);
+			scene->setSceneRect(0,0,resc.width(),bigYall + RectoSceneBottomFooterSpace);
 		}
-	return fromtop;
+		
+		if (fromtop < 4) {
+			return InitTopPositionAfterBorderPlay;
+		} else {
+			return fromtop;
+		}
 }
 
 
@@ -390,6 +381,7 @@ void GraphicsView::fillNullItem()
 	 QApplication::processEvents();
 	 emit MenuActivates(false,qMakePair(0,0));
 	 QApplication::processEvents();
+	 updateauto();
 	 //////qApp->postEvent(this,new LayerEvent(0,false));
 }
 
@@ -446,14 +438,7 @@ void GraphicsView::WorksOn(QGraphicsItem * item , qreal zindex )
 
 void GraphicsView::AppendDemo()
 {
-				LaunchFile(QString(":/img/_default_layer.layer"));
-				layercount++;
-				RichDoc xx;
-				xx.html = QByteArray("<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Hi everyone! here is a floating text!</p>");
-				xx.margin(true);
-				layercount++;
-				insert(xx);
-				
+				LaunchFile(QString(":/img/master.page"));
 }
 
 
@@ -556,38 +541,65 @@ void GraphicsView::drawForeground ( QPainter * painter, const QRectF & rect )
 */
 
 
+void GraphicsView::RecordItem()
+{
+	  ///// QMap<int,TextLayer*> auto_li;
+	  
+	  /////SpaceAutoFloatHight = InitTopPositionAfterBorderPlay;
+	  auto_li.clear();
+	  QList<QGraphicsItem *> listing = scene->l_items();
+	  for (int e=0;e<listing.size();e++) {
+			TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+			if (it) {
+						if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
+							    const int fromtop = it->pos().y();
+							    qreal hibecome = it->pointnext();
+							    const qreal Linerecthi = hibecome + fromtop;
+							    ///////AreaHiTower = qMax(AreaHiTower,Linerecthi);
+							    if (!auto_li[fromtop]) {
+							    auto_li.insert(fromtop,it);
+									} else {
+									auto_li.insert(fromtop + 1,it);
+									}
+											
+						}
+			}
+		}
 
+}
 
 
 
 
 void GraphicsView::updateauto()
 {
-	qreal fromtop = 0;
+	RecordItem();
+	qreal ynext = InitTopPositionAfterBorderPlay;
+	SpaceAutoFloatHight = InitTopPositionAfterBorderPlay;
+	QMapIterator<int,TextLayer*> o(auto_li);
+					while (o.hasNext()) {
+                 o.next();
+				         TextLayer *ali = o.value();
+						     ali->setPos(_DEBUGRANGE_WI_,ynext); 
+						     ynext = o.key() + ali->pointnext() + InterSpacingFromAutoFloatLayerElements;
+						     ////////qDebug() << "### updateauto " << ynext <<  " ... " << ali->data(ObjectNameEditor).toInt();
+						     SpaceAutoFloatHight = ynext;
+					}
+					
+					
 	TextLayer *layer = qobject_cast<TextLayer *>(sender());
-	if (!layer) {
-	return;
-	}
-	QList<QGraphicsItem *> listing = scene->l_items();
-	for (int e=0;e<listing.size();e++) {
-		////////qDebug() << "### tipo " << items[e]->type();
-		TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
-		if (it) {
-			       if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
-			           qreal hibecome = it->pointnext();
-			           it->update();
-			           fromtop += hibecome;
-						 }
-		}
-	}
-	NextfromY();  /* make rect scene big as needed */
+	if (layer) {
 		const QRectF needview = layer->viewport_need();
 		if (needview.isValid() && needview != viewportLayer) {
 			  viewportLayer = needview;
 			  layer->setFocus(Qt::MouseFocusReason);
 		}
+		
+	 }
 	 
-	
+	const qreal HIII = qBound (rectToScene().height(),ynext + RectoSceneBottomFooterSpace,rectToScene().height() * 10);
+	scene->setSceneRect(0,0,scene->sceneRect().width(),HIII);
+	AreaHiTower = scene->sceneRect().height();
 }
 
 
@@ -595,7 +607,7 @@ void GraphicsView::onOtherInstanceMessage( const QString msg )
 {
 	QApplication::setActiveWindow(this);
 	
-	qDebug() << "### onOtherInstanceMessage " << msg;
+	//////////qDebug() << "### onOtherInstanceMessage " << msg;
 	
 	
 	QFileInfo fix(msg);
