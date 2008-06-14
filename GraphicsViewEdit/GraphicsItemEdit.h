@@ -30,7 +30,7 @@
 #include "GraphicsScene.h"
 #define _SET_SELECTION_BY_SCENE_ 1
 
-#define _DEBUGRANGE_WI_ 2
+
 
 
 class Rotater : public QWidget

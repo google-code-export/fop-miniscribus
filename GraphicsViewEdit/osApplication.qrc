@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/" >
-        <file>img/_default_layer.layer</file>
+        <file>img/master.page</file>
         <file>img/layerabsolute.layer</file>
         <file>img/1day.png</file>
         <file>img/frame.png</file>

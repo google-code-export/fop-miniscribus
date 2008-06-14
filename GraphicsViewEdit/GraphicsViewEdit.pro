@@ -7,13 +7,13 @@ TARGET = MiniLayer
 DEPENDPATH += . include instance
 INCLUDEPATH += . include instance
 
-////////////TARGET = xx
+############TARGET = xx
 
 DESTDIR	+= ./
 QT += xml
 QT += network
 QT += svg 
-CONFIG   +=  qt thread warn_off release
+CONFIG   +=  qt thread warn_off release console
 LANGUAGE	= C++
 
 contains(QT_CONFIG, opengl):QT += opengl

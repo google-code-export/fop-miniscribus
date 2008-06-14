@@ -24,6 +24,15 @@
 #define GRAPHICSSCENE_H
 
 static const int ObjectNameEditor = 400;   /* normal layer div */
+static const int InitTopPositionAfterBorderPlay = 0;   /* scene initfrom top Y*/
+static const int RectoSceneBottomFooterSpace = 70;   /* border bottom footer */
+static const int InterSpacingFromAutoFloatLayerElements = 4; 
+
+
+#define _DEBUGRANGE_WI_ 4   /* begin draw on scene X position */
+
+
+
 #include "mounttextprivate.h"
 #include <QGraphicsScene>
 
