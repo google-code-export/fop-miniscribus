@@ -13,11 +13,15 @@ Licence: GPL2
 
 #include "singleapplication.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
-#include <QtCore/QThread>
 
-#include <QtNetwork/QLocalServer>
+#include <QThread>
+#include <QtCore>
+#include <QSettings>
+#include <QApplication>
+#include <QTcpSocket>
+#include <QLocalServer>
+
+
 
 class QLocalSocket;
 

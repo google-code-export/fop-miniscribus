@@ -11,8 +11,9 @@ Licence: GPL2
 #ifndef SINGLE_APPLICATION_H
 #define SINGLE_APPLICATION_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QtCore>
+#include <QSettings>
+#include <QApplication>
 
 class SingleApplicationPrivate;
 class SingleApplication : public QObject
