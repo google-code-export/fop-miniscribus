@@ -158,7 +158,9 @@ public:
     wi = w;
     hi = h;
     document()->setPageSize(QSizeF(wi,hi));
+    document()->setTextWidth(wi - border );
     LayerHightChecks();
+    update(boundingRect());
     }
     inline CurrentModus W_modus() { return modus; }
     void RestoreMoveAction();

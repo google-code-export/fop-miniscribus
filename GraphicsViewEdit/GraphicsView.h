@@ -106,9 +106,12 @@ public slots:
     void toggleOpenGL();
     void SaveAsPage();
     void OpenFilePageGroup();
+    void CursorMargins( qreal left ,qreal right );
 
 protected:
     QAction *openGlaction;
+    int InitTopPositionAfterBorderPlay;
+    GMarginScene *MarginController;
     QMap<int,TextLayer*> auto_li;
     qreal AreaHiTower;
     qreal SpaceAutoFloatHight;
@@ -122,7 +125,8 @@ protected:
     void scaleView (qreal scaleFactor);
     void PrintSetup( bool enable );
     void closeEvent(QCloseEvent *event);
-  
+    int Lmm;
+    int Rmm;
   int layerNr;
   qreal width;
   qreal height;

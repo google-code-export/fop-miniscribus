@@ -70,9 +70,59 @@ GraphicsView::GraphicsView(  QWidget * parent )
 	  fillNullItem();
 	  connect(scene, SIGNAL(SelectOn(QGraphicsItem*,qreal)), this, SLOT(WorksOn(QGraphicsItem*,qreal)));
 	  connect(scene, SIGNAL(nullitem()), this, SLOT(notselect()));
+		pageclear();
 		AppendDemo();
 	  
 }
+
+void GraphicsView::pageclear()
+{
+		///////items.clear();
+		scene->clear();
+	  scene->setSceneRect(rectToScene());
+	  MarginController = new GMarginScene(1,1,scene);
+	  MarginController->setPos(0,0);
+	  MarginController->setData(ObjectNameController,1);
+	  InitTopPositionAfterBorderPlay = InitTopPosition + MarginController->boundingRect().height();
+	  connect(MarginController, SIGNAL(CursorMove(qreal,qreal)),this,SLOT(CursorMargins(qreal,qreal)));
+	  emit MenuActivates(false,qMakePair(0,0));
+}
+
+void GraphicsView::CursorMargins( qreal left ,qreal right )
+{
+		if ( Lmm == (int)left && Rmm == (int)right) {
+		return;
+		}
+	
+	const QRect viewRe = viewport()->rect(); 
+	qDebug() << "### viewRe  " << viewRe;
+	
+		QList<QGraphicsItem *> listing = scene->l_items();
+		for (int e=0;e<listing.size();e++) {
+			TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
+			if (it) {
+				         const int idax = it->data(ObjectNameEditor).toUInt();
+				
+				         if (it->Ltype() != TextLayer::DIV_ABSOLUTE ) {
+									 
+						     QTextFrame  *Tframe = it->document()->rootFrame();
+								 QTextFrameFormat rootformats = Tframe->frameFormat();
+								 rootformats.setLeftMargin(left - 1);
+								 rootformats.setRightMargin(scene->sceneRect().width() - right + 1);
+								 Tframe->setFrameFormat(rootformats);
+									if ( viewRe.contains(it->pos().toPoint()) ) {
+								    it->update();
+									} else {
+										qDebug() << "### no update item!! " << idax;
+									}
+								 }
+			}
+		}
+		scene->update(viewRe);
+		Lmm = left;
+		Rmm = right;
+}
+
 
 void GraphicsView::PrintDoc()
 {
@@ -80,6 +130,8 @@ void GraphicsView::PrintDoc()
 	//////const QRectF area = boundingRect();
 	PrintSetup(true);
 	PreviewDialog *PrintScene = new PreviewDialog(scene);
+	///////////connect(PrintScene,SIGNAL(pageRequested(int,int,QPainter &,QPrinter)),scene, SLOT(printPage(int,int, QPainter &, QPrinter)),Qt::DirectConnection);
+	
 	PrintScene->exec();
 	PrintSetup(false);
 	PrintScene->deleteLater();
@@ -89,6 +141,8 @@ void GraphicsView::PrintDoc()
 
 void GraphicsView::PrintSetup( bool enable )
 {
+	MarginController->setVisible(!enable);
+	
           QList<QGraphicsItem *> listing = scene->l_items();
 				  for (int e=0;e<listing.size();e++) {
 					TextLayer *it = qgraphicsitem_cast<TextLayer *>(listing[e]);
@@ -138,13 +192,10 @@ void GraphicsView::toggleOpenGL()
 }
 
 
-void GraphicsView::pageclear()
-{
-		///////items.clear();
-		scene->clear();
-	  scene->setSceneRect(rectToScene());
-	  emit MenuActivates(false,qMakePair(0,0));
-}
+
+
+
+
 
 void GraphicsView::contextMenuEvent ( QContextMenuEvent * e )
 {
@@ -528,11 +579,11 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 
 void GraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
 {
-	  painter->save();
+	  //////////painter->save();
 	  painter->setPen( QPen(Qt::darkGray,1) );
     painter->setBrush(QBrush(chessgrid));  
 		painter->drawRect(scene->sceneRect());  
-		painter->restore();
+		/////////painter->restore();
 }
 /*
 void GraphicsView::drawForeground ( QPainter * painter, const QRectF & rect )  

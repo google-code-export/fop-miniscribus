@@ -85,14 +85,14 @@ static inline qreal DPIactualDiff()
 
 static inline QPixmap BruschChess( qreal chesswidth )  
 {
-    QPixmap m_tile = QPixmap(chesswidth,chesswidth);
-    qreal piece = chesswidth / 2;
+    QPixmap m_tile = QPixmap((int)chesswidth,(int)chesswidth);
+    const qreal piece = chesswidth / 2;
     m_tile.fill(Qt::white);
     QPainter pt(&m_tile);
     QColor color(230, 230, 230);
-    pt.fillRect(0, 0, piece, piece, color);
-    pt.fillRect(piece, piece, piece, piece, color);
-    pt.end();
+    pt.fillRect(QRectF(0.,0.,piece,piece),color);  
+    pt.fillRect(QRectF(piece,piece,piece,piece),color);
+    
     return m_tile;
 }
 
