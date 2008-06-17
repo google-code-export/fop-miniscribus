@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *******************************************************************************/
 
+/* GMarginScene  document margin slider  GraphicsScene  scene subclass PreviewDialog print preview + % to paper */
 
 #ifndef GRAPHICSSCENE_H
 #define GRAPHICSSCENE_H
