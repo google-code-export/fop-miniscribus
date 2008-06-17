@@ -35,7 +35,7 @@ static const int HeaderAndFooterHightSpace = RectoSceneBottomFooterSpace + InitT
 
 static const int ObyektSortingTimeline = 500;   /* display page order... */
 
-#define _DEBUGRANGE_WI_ 4   /* begin draw on scene X position */
+#define _DEBUGRANGE_WI_ 1   /* begin draw on scene X position */
 
 static const int DefaultPrintBorder = 1;   /* default printer border noprint 1% */
 
