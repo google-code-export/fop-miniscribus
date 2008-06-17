@@ -651,6 +651,9 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     if (currentprintrender) {
         //////qDebug() << "### paint by printer xxxxx ";
     }
+    painter->setRenderHint(QPainter::TextAntialiasing);
+    
+    /////QPainter::TextAntialiasing  QPainter::Antialiasing
     
     bool canedit = mount->txtControl()->editable();
     wisub_border = wi + border;
@@ -864,6 +867,7 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         if (!mount->txtControl()->editable()) {
          QGraphicsItem::setCursor(Qt::ClosedHandCursor);  
          setPos(event->scenePos() - event->lastPos());
+         SetDimension(wi,hi);
          event->accept();
         }
     }
@@ -883,6 +887,10 @@ void TextLayer::ShowInfos()
 {
    
    QString infoPart = QString("Zindex %1 type %2 ID = %3").arg(zValue()).arg(Ltype()).arg(id);
+   infoPart.append(QString("\ndocument width = %1p.\n").arg(document()->size().width()));
+    ///////document()->adjustSize()  QSizeF size() const   document()->size().width()
+    
+    
    setToolTip(QString("Layer %1mm x %2mm X=%4 mm Y=%3 mm %5")
                                 .arg(ToUnit(wi,"mm"))
                                 .arg(ToUnit(hi,"mm"))
@@ -1282,22 +1290,22 @@ void TextLayer::setStyle( QStringList syle , bool fromclone )
 
 void TextLayer::LayerHightChecks() 
 {
+    wisub_border = wi - (border * 2);
+    document()->setTextWidth(wisub_border);
+    
         qreal txthight = mount->txtControl()->boundingRect().height();
         if (txthight > hi) {
         SetDimension(wi,txthight);
-        wisub_border = wi - (border * 2);
-        document()->setTextWidth(wisub_border);
-            
-            QTextFrame  *Tframe = document()->rootFrame();
-            QTextFrameFormat ft = Tframe->frameFormat();
-            ft.setWidth(wi);
-            Tframe->setFrameFormat(ft);
-            
-            
+        document()->setTextWidth(wisub_border);   
+        QTextFrame  *Tframe = document()->rootFrame();
+        QTextFrameFormat ft = Tframe->frameFormat();
+        ft.setWidth(wi);
+        Tframe->setFrameFormat(ft);  
+        document()->adjustSize();
         emit recalcarea();
         }
         wisub_border = wi - (border * 2);
-        ///////document()->setPageSize(QSizeF(wi,hi));
+        document()->adjustSize();
 }
 
 

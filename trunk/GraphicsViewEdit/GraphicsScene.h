@@ -24,22 +24,71 @@
 #define GRAPHICSSCENE_H
 
 static const int ObjectNameEditor = 400;   /* normal layer div */
-static const int InitTopPositionAfterBorderPlay = 0;   /* scene initfrom top Y*/
+static const int InitTopPosition = 5;   /* scene initfrom top Y*/
 static const int RectoSceneBottomFooterSpace = 70;   /* border bottom footer */
 static const int InterSpacingFromAutoFloatLayerElements = 4; 
+
+
+static const int ObjectNameController = 300;   /* element button on scene  */
+
+static const int HeaderAndFooterHightSpace = RectoSceneBottomFooterSpace + InitTopPosition;
 
 static const int ObyektSortingTimeline = 500;   /* display page order... */
 
 #define _DEBUGRANGE_WI_ 4   /* begin draw on scene X position */
 
+static const int DefaultPrintBorder = 1;   /* default printer border noprint 1% */
 
-
+#include <QRectF>
 #include "mounttextprivate.h"
 #include <QGraphicsScene>
-
 #include <QLabel>
 #include <QPixmap>
 #include <QSize>
+
+static inline QRectF Reduce( QRectF rect , const int percentual )
+{
+    if (percentual < 1) {
+    return rect;
+    }
+    const int leave_wi = rect.width() * percentual / 100;
+    const int leave_hi = rect.height() * percentual / 100;
+    return QRectF(0,0,rect.width() - leave_wi, rect.height() - leave_hi);
+    /* use CenterRectSlaveFromMaster  to fill on rect target */
+}
+
+static inline QRectF CenterRectSlaveFromMaster( const QRectF Master ,
+                                               QRectF Slave  )
+{
+  QRectF SlaveOnline = Slave.translated(Master.center());
+  const qreal wi = Slave.width() / 2;
+  const qreal hi = Slave.height() / 2;
+  SlaveOnline.translate( 0 - wi , 0 - hi ); 
+  return SlaveOnline;
+}
+
+
+
+static inline QPixmap CacheCursorSlider()
+{
+    QPixmap pixmap(10,26);
+    pixmap.fill(Qt::transparent);  ///Qt::transparent
+    QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+    
+    painter.setPen(QPen(Qt::red,0.5));
+    painter.drawLine(5,0,5, 26);
+    
+    painter.setBrush(Qt::red);
+    painter.setPen(QPen(Qt::darkRed,1));
+    QRect rectangle_0(0,-8,10,15);   //////// QRect ( int x, int y, int width, int height )
+    painter.drawEllipse(rectangle_0);
+    QRect rectangle_1(0,18,10,15); 
+    painter.drawEllipse(rectangle_1);
+    return pixmap;
+}
+
+
 
 #if QT_VERSION >= 0x040400
 #include <QGraphicsProxyWidget>
@@ -102,8 +151,50 @@ public slots:
     void reload();
     void TopFocus();
     void remid( const int id );
+    void printPage(int index, int percentual , QPainter &painter, QPrinter * printer );   /* Preview and printer */
 
 };
+
+
+
+class GMarginScene : public QObject, public QGraphicsItem
+{
+   Q_OBJECT 
+
+public:
+    
+    GMarginScene(qreal left , qreal right , QGraphicsScene *scene );
+    ~GMarginScene();
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                              QWidget *widget);
+    QPainterPath shape() const;
+
+   qreal Cursor_1_X;
+   qreal Cursor_2_X;
+   qreal wi;
+   qreal hi;
+   int MaximumCollisionAllowed;
+
+signals:
+    void CursorMove(qreal,qreal);
+
+protected:
+    QPixmap cursorimg;
+    bool sceneEvent(QEvent *e);
+    void HandleMove(  QPointF point );
+    void HandleMouse(  QPointF point );
+    int lastMove;
+    QString units;
+    QRectF AreaCursor_1;
+    QRectF AreaCursor_2;
+    QColor ColText;
+    int dimfontsize;
+    qreal actual_x;
+};
+
+
+
 
 
 
@@ -121,11 +212,11 @@ class PreviewDialog : public QDialog, private Ui::PreviewDialogBase
     Q_OBJECT
 
 public:
-    PreviewDialog( QGraphicsScene *sceneprint );
+    PreviewDialog( GraphicsScene *sceneprint );
     enum { SmallPreviewLength = 200, LargePreviewLength = 400 };
     bool isSelected(int index);
 signals:
-    //////void pageRequested(int index, QPainter &painter, QPrinter &printer);
+    void pageRequested(int,int,QPainter &,QPrinter*);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -136,6 +227,7 @@ protected:
 public slots:
     void on_paperSizeCombo_activated(int index);
     void on_paperOrientationCombo_activated(int index);
+    void on_scales_valueChanged(int index);
     void on_pageList_currentItemChanged();
     void addPage();
     void setNumberOfPages(int count);
@@ -148,13 +240,13 @@ private:
     int ActualMaxPreview();
     QRectF Rscene;
     QSettings setter;
-
+    int DefaultPrintBorderPercentual;
     bool printonpdf;
     QRectF Paper_Rect;
     QRectF rectScenePiece;
     QPushButton *pdfButton;
     PreviewLabel *previewLabel;
-    QGraphicsScene *scene;
+    GraphicsScene *scene;
     QPrinter *print;
     qreal faktor_print;
     qreal faktor_scene;
