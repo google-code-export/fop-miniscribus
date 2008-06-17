@@ -7,6 +7,9 @@ TARGET = MiniLayer
 DEPENDPATH += . include instance
 INCLUDEPATH += . include instance
 
+
+message("Need QT4.4 > ...............................................................")
+
 ######TARGET = xx
 
 DESTDIR	+= ./
