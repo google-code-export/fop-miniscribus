@@ -25,6 +25,7 @@ ApiSession::ApiSession()
   M_PageSize A4;
   current_Page_Format = A4;
 	history_page_norms.clear();
+  AppendPaper( A4 );  /* append default */
   /* qsetting init to open */
   QCoreApplication::setOrganizationName("CrossKern");
   QCoreApplication::setOrganizationDomain("fop.ciz.ch");
@@ -78,6 +79,11 @@ void ApiSession::FormatRegister( const QString txt , QPrinter::PageSize pp )
 	   M_PageSize Pxx;
 	              Pxx.Register(txt,pp,true);
 	   history_page_norms.insert(history_page_norms.size() + 1,Pxx);
+}
+
+void ApiSession::AppendPaper( M_PageSize cur )
+{
+  history_page_norms.insert(history_page_norms.size() + 1,cur);
 }
 
 

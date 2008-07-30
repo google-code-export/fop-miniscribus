@@ -54,6 +54,12 @@ QTextCursor TextLayer::textCursor()
   return dev->txtControl()->textCursor();
 }
 
+void TextLayer::SwapPageModel( M_PageSize e )
+{
+    dev->txtControl()->SwapPageModel(e);
+    SceneReload();
+}
+
 
 QTextDocument *TextLayer::document() const
 {

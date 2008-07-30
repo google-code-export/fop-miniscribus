@@ -39,7 +39,7 @@ QRectF GraphicsView::rectToScene()
     ApiSession *sx = ApiSession::instance();
     M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
     /* start only one page */
-    return QRectF(0,0,PAGE_MODEL.G_regt.width(),PAGE_MODEL.G_regt.height() * 4);
+    return QRectF(0,0,PAGE_MODEL.G_regt.width(),PAGE_MODEL.G_regt.height() * 8);
 }
 
 void GraphicsView::PrintSetup( bool printok )
@@ -47,6 +47,16 @@ void GraphicsView::PrintSetup( bool printok )
     OnPrintRender = printok;
     update();
 }
+
+void GraphicsView::SwapPaper()
+{
+   const QRectF rectscene = rectToScene();
+   ApiSession *sx = ApiSession::instance();
+   M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
+   scene->setSceneRect( rectscene );
+   BASE_TEXT->SwapPageModel(PAGE_MODEL);
+}
+
 
 
 void GraphicsView::keyPressEvent(QKeyEvent *e )
@@ -69,6 +79,8 @@ void GraphicsView::DisplayTop()
 void GraphicsView::pageclear()
 {
 	  scene->clear();  /*  remove all item */
+    BASE_TEXT = new TextLayer(0);
+    scene->addItem(BASE_TEXT);
 }
 
 GraphicsView::~GraphicsView()
@@ -82,7 +94,7 @@ GraphicsView::~GraphicsView()
 
 
 Panel::Panel( QWidget *parent)
-    : QFrame(parent),tievents(0)
+    : QFrame(parent),tievents(0),NotPaperUpdate(true)
 {
 		setFrameStyle(Sunken | StyledPanel);
     graphicsView = new GraphicsView(this);
@@ -102,8 +114,10 @@ Panel::Panel( QWidget *parent)
     labelLayout->addWidget(openGlButton);
     labelLayout->addStretch();
     
-    
-    
+    PortraitPaper = new QComboBox;
+    /////LandscapePaper = new QComboBox;
+    labelLayout->addWidget(PortraitPaper);
+    FillPaperSize();
     
 
     QToolButton *zoomInIcon = new QToolButton;
@@ -149,9 +163,55 @@ Panel::Panel( QWidget *parent)
     connect(zoomOutIcon, SIGNAL(clicked()), this, SLOT(zoomOut()));
 		///////connect(graphicsView, SIGNAL(SceneSwap()), this, SLOT(SceneChange()));
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
+    connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
+    
 		
 		QTimer::singleShot(10, this, SLOT(DisplayTop()));  
     toggleOpenGL();
+}
+
+void Panel::PaperSwap( const int index )
+{
+   if (NotPaperUpdate) {
+    return;
+   }
+   const int PaperNr = PortraitPaper->itemData(index).toInt();
+   ///////qDebug() << "### PaperSwap  " << index;
+   ApiSession *sx = ApiSession::instance();
+   QMap<int,M_PageSize> allpaper = sx->mpages();
+   M_PageSize OtherFormat = allpaper[PaperNr];
+   sx->SetPageFormat(OtherFormat);
+   //////qDebug() << "### PaperSwap  " << OtherFormat.HName();
+   /////M_PageSize current
+   graphicsView->SwapPaper();
+}
+
+void Panel::FillPaperSize()
+{
+   NotPaperUpdate = true;
+   ApiSession *sx = ApiSession::instance();
+  ///////////// QMap<int,M_PageSize> allpaper = ;
+   PortraitPaper->clear();
+   M_PageSize activeformat = sx->CurrentPageFormat();  /* user define or other */
+   /* to index */
+   const QString currentname = activeformat.HName();
+   int posi = -1;
+   int activeindex = 0;
+ 
+     QMapIterator<int,M_PageSize> i(sx->mpages());
+         while (i.hasNext()) {
+             i.next();
+             posi++;
+             M_PageSize current = i.value();
+             if (currentname == current.HName()) {
+              activeindex = posi;
+             }
+             PortraitPaper->addItem(QIcon(":/img/page.png"),current.HName(),i.key());
+         }
+    PortraitPaper->setCurrentIndex ( activeindex );
+    ///////PortraitPaper = new QComboBox;
+   //////////LandscapePaper = new QComboBox;
+   NotPaperUpdate = false;
 }
 
 

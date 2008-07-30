@@ -34,7 +34,9 @@ public:
   inline QPicture page( const int e) const {
   return pagecache[e];
   }
+	void AppendPaper( M_PageSize cur );
   inline M_PageSize CurrentPageFormat() { return current_Page_Format; }
+	inline void SetPageFormat( M_PageSize e ) { current_Page_Format = e; }
 	void SaveMimeTmp();
 	QPrinter *pdev;
   QRectF SceneViewPort;
@@ -47,10 +49,12 @@ public:
 	QMap<int,QMimeData*> mime_story;
   QSettings setter;
 	int SessionID;
-	M_PageSize current_Page_Format;
+	
+	
   
 private:
 	ApiSession();
+  M_PageSize current_Page_Format;
 	static ApiSession* st_;
   void FormatRegister( const QString txt , QPrinter::PageSize pp );
   QString transfile;

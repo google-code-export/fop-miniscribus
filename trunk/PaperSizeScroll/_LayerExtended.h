@@ -28,6 +28,7 @@ public:
     QString PageName();
     QTextDocument *document() const;
     QTextCursor textCursor();
+    void SwapPageModel( M_PageSize e );
     
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
