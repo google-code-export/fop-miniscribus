@@ -25,11 +25,30 @@ ApiSession::ApiSession()
   M_PageSize A4;
   current_Page_Format = A4;
 	history_page_norms.clear();
-  AppendPaper( A4 );  /* append default */
+  
   /* qsetting init to open */
   QCoreApplication::setOrganizationName("CrossKern");
   QCoreApplication::setOrganizationDomain("fop.ciz.ch");
   QCoreApplication::setApplicationName("Dummy TextApi");
+  
+  AppendPaper( A4 );  /* append default */
+  
+     M_PageSize CDLabel;
+     CDLabel.name = "CD-Label (128 x 128mm)";
+     CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(128),MM_TO_POINT(128));
+     CDLabel.P_rect = QPrinter::Custom;
+     CDLabel.RealSize = CDLabel.G_regt.size();
+     const qreal margindd = MM_TO_POINT(8);
+     /* qtext document minimum size bug not break line at 128mm */
+     CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(200),MM_TO_POINT(200));
+  
+     CDLabel.P_margin = QRectF(margindd,margindd,margindd,margindd);   
+  
+  AppendPaper( CDLabel );  /* append default */
+  
+  
+  
+  
   
     
 	  FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm, 8.26 x 11.7 inches)"), QPrinter::A4);
@@ -63,6 +82,14 @@ ApiSession::ApiSession()
     FormatRegister(QT_TR_NOOP("Letter (8.5 x 11 inches, 216 x 279 mm)"), QPrinter::Letter);
     FormatRegister(QT_TR_NOOP("Tabloid (279 x 432 mm)"), QPrinter::Tabloid);
     FormatRegister(QT_TR_NOOP("US Common #10 Envelope (105 x 241 mm)"), QPrinter::Comm10E);
+    
+    
+    
+    
+    
+    
+    
+    
     
     /* other mesure size go to file and append here on load */
     

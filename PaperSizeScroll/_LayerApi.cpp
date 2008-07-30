@@ -247,8 +247,8 @@ void ScribePage::SwapPageModel( M_PageSize e )
   Q_ASSERT(_d->pageSize().isValid());
 	_d->setUseDesignMetrics (true);
 	Page_Width = PAGE_MODEL.G_regt.width();
-  Page_Height = Page_Width * PAGE_MODEL.faktor();
-  Page_Edit_Rect = QRectF(0,0,Page_Width,Page_Height);
+  Page_Height = PAGE_MODEL.G_regt.height();
+  Page_Edit_Rect = PAGE_MODEL.G_regt;
   _d->setPageSize(QSizeF(Page_Width,Page_Height));
 	Q_ASSERT(_d->pageSize().isValid());
   (void)_d->documentLayout(); /* reform margin wake up */

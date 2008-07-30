@@ -268,6 +268,7 @@ class M_PageSize
 QPrinter::PageSize P_rect;
 QRectF G_regt;
 QRectF P_margin;
+QSizeF RealSize;
 QString name;
 bool landscape;
 int modus;  /* 0 = normal , 1 = book , 2 = 2column */
