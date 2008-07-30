@@ -38,6 +38,7 @@ signals:
 public slots:
    void DisplayTop();
    void  ViewDisplay( const QRectF area );
+   void  SwapPaper();
 private slots:
 
 protected:
@@ -70,9 +71,14 @@ private slots:
     void zoomOut();
     void SceneChange();
     void toggleOpenGL();
+    void PaperSwap( const int index );
 private:
+    void FillPaperSize();
+    bool NotPaperUpdate;
     uint tievents;
     QLabel *label;
+    QComboBox *PortraitPaper;
+    //////QComboBox *LandscapePaper;
     QToolButton *resetButton;
     QSlider *zoomSlider;
     QSlider *rotateSlider;

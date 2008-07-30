@@ -709,9 +709,19 @@ QRectF M_PagesizeMake( QPrinter::PageSize psize , bool landscape)
 	} else {
 	print->setOrientation(QPrinter::Portrait);
 	}
-	QRectF pagere = print->pageRect(QPrinter::Point);
+  
+  const QRectF pa = print->pageRect(QPrinter::Point);
+  const qreal faktor = qMax(pa.width(),pa.height()) / qMin(pa.width(),pa.height());
+  
+	const qreal smaller = qMin(pa.width(),pa.height());
+  const qreal biger = smaller * faktor;
 	delete print;
-	return pagere;
+  
+  if ( landscape ) {
+      return QRectF(0,0,biger,smaller);
+  } else {
+     return QRectF(0,0,smaller,biger); 
+  }
 }
 
 

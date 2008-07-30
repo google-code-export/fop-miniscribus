@@ -235,7 +235,7 @@ void ScribePage::redir_update( QRectF area )
 void ScribePage::SwapPageModel( M_PageSize e )
 {
 	ApiSession *sx = ApiSession::instance();
-	sx->current_Page_Format = e;
+	sx->SetPageFormat(e);
 	PAGE_MODEL = e;
 	QTextOption opt;
 	opt.setUseDesignMetrics(true);
@@ -253,6 +253,7 @@ void ScribePage::SwapPageModel( M_PageSize e )
 	Q_ASSERT(_d->pageSize().isValid());
   (void)_d->documentLayout(); /* reform margin wake up */
 	PageTotal = _d->pageCount();
+	q_update(boundingRect().toRect());
 }
 
 QRectF ScribePage::boundingRect()

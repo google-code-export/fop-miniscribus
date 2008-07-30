@@ -32,7 +32,7 @@
 
 #define FOPIMAGEDIR "Pictures/"
 
-static const int InterSpace = 80;  /* distance from page 1 to 2 */
+static const int InterSpace = 15;  /* distance from page 1 to 2 */
 static const int SliderTopHeight = 28;
 static const int SliderLeftHeight = 28;
 static const int MaximumPages = 99;
