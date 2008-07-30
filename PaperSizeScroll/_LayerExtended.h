@@ -15,6 +15,9 @@
 #include "_LayerApi.h"
 
 
+const int TextTypeFloating = QGraphicsItem::UserType + TextFloatObjectName;
+
+
 class TextMount;
 class TextLayer : public QObject, public QGraphicsRectItem
 {
@@ -24,6 +27,7 @@ public:
     
     TextLayer( QGraphicsItem *parent = 0 );
     ~TextLayer();
+    int type() const {return TextTypeFloating;}
     QRectF boundingRect() const;
     QString PageName();
     QTextDocument *document() const;
