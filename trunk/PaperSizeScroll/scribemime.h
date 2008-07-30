@@ -259,7 +259,7 @@ class M_PageSize
 		/* open or set a qtexdocument from this */
     QTextDocument *nulldoc( QString htm );
 		/* write fop file margins */
-    int M_PageSize::FillFopAttributes( QDomElement e );
+    int FillFopAttributes( QDomElement e );
 		/* form qtexdocument to this margin an papersize */
 		void HandlePrint( QTextDocument *doc );
 		
