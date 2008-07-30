@@ -46,6 +46,9 @@ static const int ObjectName = 853;
 static const int FlashReferenceID = 322;
 
 
+static const int TextFloatObjectName = 20;
+
+
 #define _GSCACHE_ \
              QString("%1/.ghosti_CACHE/").arg(QDir::homePath())    /* gs tmp */
              
