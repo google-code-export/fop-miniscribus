@@ -19,7 +19,7 @@ win32 {
 
 DESTDIR	+= ./
 QT += xml network svg 
-CONFIG   +=  qt debug warn_off console
+CONFIG   +=  qt release warn_off console
 contains(QT_CONFIG, opengl):QT += opengl
 
 # Input
@@ -32,6 +32,7 @@ HEADERS += _Image_Page_Struct.h \
            scribeapi.h \
            scribemime.h \
            SessionManager.h \
+           Layer_CommandStorage.h \
            table_setting.h
 SOURCES += _Image_Page_Struct.cpp \
            _LayerApi.cpp \
@@ -43,6 +44,7 @@ SOURCES += _Image_Page_Struct.cpp \
            scribeapi.cpp \
            scribemime.cpp \
            SessionManager.cpp \
+           Layer_CommandStorage.cpp \
            table_setting.cpp
            
            

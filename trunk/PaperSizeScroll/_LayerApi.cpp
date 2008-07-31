@@ -495,7 +495,6 @@ void TextProcessor::int_clipboard_new()
 {
 	ApiSession *sx = ApiSession::instance();
 	sx->SaveMimeTmp();   /* clone a copy on session before next incomming */
-	/////qDebug() << "### clipboard in ";
 }
 
 void TextProcessor::copy()
@@ -982,8 +981,7 @@ bool TextProcessor::procesevent( QEvent *e )
 	
 	
 	  switch (e->type()) {
-			     ///// case QEvent::UngrabMouse:
-						////////case QEvent::GrabMouse:
+			
             case QEvent::GraphicsSceneMouseMove:
             case QEvent::GraphicsSceneMousePress:
             case QEvent::GraphicsSceneMouseRelease:
