@@ -3,137 +3,51 @@
 #include "_Image_Page_Struct.h"
 
 
-ScribePage::ScribePage( M_PageSize e )
+static QRectF boundingRectOfFrame(const QTextCursor &cursor)
+{
+    QRectF r;
+    QTextFrame *frame = cursor.currentFrame();
+	  return frame->document()->documentLayout()->frameBoundingRect(frame);
+	
+	/*
+    const QList<QTextFrame *> children = frame->childFrames();
+
+    const QList<QTextFrame *>::ConstIterator firstFrame = qLowerBound(children.constBegin(), children.constEnd(),
+                                                                      cursor.selectionStart(), firstFramePosLessThanCursorPos);
+    const QList<QTextFrame *>::ConstIterator lastFrame = qUpperBound(children.constBegin(), children.constEnd(),
+                                                                     cursor.selectionEnd(), cursorPosLessThanLastFramePos);
+    for (QList<QTextFrame *>::ConstIterator it = firstFrame; it != lastFrame; ++it) {
+        if ((*it)->frameFormat().position() != QTextFrameFormat::InFlow)
+            r |= frame->document()->documentLayout()->frameBoundingRect(*it);
+    }
+    return r;
+	*/
+	
+}
+
+
+TextProcessor::TextProcessor( DisplayModus _modus_ )
  : QObject(),_d(new QTextDocument),PageTotal(1),eventline(0),timeline(0),
- OnPageClick(1),cursortime(true),cursorOn(false),overwriteMode(false),FullDocSelect(false)
+ OnPageClick(1),cursortime(true),cursorOn(false),overwriteMode(false),FullDocSelect(false),PlayCursorMode(false)
 {
-	M_PageSize DefaultSizeDoc;
 	SceneTimerLine = 0;
-	QTextDocument *dummy = new QTextDocument();
-	dummy->setHtml ( ReadFile("a.html") );
-	setDocument(dummy,FOP);
-	SwapPageModel(DefaultSizeDoc);  /* dimension of page */
-	Q_ASSERT(_d->pageSize().isValid());
+	_d->setUndoRedoEnabled(false);
+	Modus = _modus_;
+	QTextOption opt;
+	opt.setUseDesignMetrics(true);
+	opt.setTabStop(8);
+	opt.setWrapMode ( QTextOption::WrapAtWordBoundaryOrAnywhere );
+	_d->setDefaultTextOption(opt);
+	ApiSession *sx = ApiSession::instance();
+	Page_Width = sx->CurrentPageFormat().width();
+  Page_Height = 22.5;
+  Page_Edit_Rect =  QRectF(0,0,Page_Width,Page_Height);
 }
+
+
 
 
 /*
-####################################################################################
-################################ Paint section #####################################
-####################################################################################
-*/
-
-void ScribePage::paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   )
-{
-	PageTotal = _d->pageCount();
-	const int PageSumm = qBound (1,_d->pageCount(),MaximumPages);
-	QTextFrame  *Tframe = _d->rootFrame();
-	root_format = Tframe->frameFormat();
-	const QRectF ActiveBlock = CurrentBlockRect();   /* discovery qtextcursor living page  Current_Page_Nr  */
-	
-	  painter->save();
-	  painter->setPen( Qt::NoPen );
-    painter->setBrush(Qt::lightGray);
-		painter->drawRect(boundingRect());
-	  painter->restore();
-	 for (int i = 0; i < PageSumm; ++i)  {
-		 const QPointF topleft = PageIndexTopLeft(i);  /* page top left point */
-		 DrawPage(i,painter,i);
-	 }
-	
-}
-
-void ScribePage::DrawPage( const int index  , QPainter * painter , const int cursorpage )
-{
-		const QPointF topleft = PageIndexTopLeft(index);
-	  QAbstractTextDocumentLayout::PaintContext CTX; 
-	  CTX.palette.setColor(QPalette::Text, Qt::black);
-	  const QRectF body = QRectF(0, topleft.y() ,Page_Edit_Rect.width(),Page_Edit_Rect.height()); /* on view */
-	  QRectF view(0, index * body.height(), body.width(), body.height() );   /* on doc */
-	
-		if (index != cursorpage || !Edit_On()) {
-		painter->save();
-		painter->translate(body.left(), body.top() - index * body.height());
-		painter->setClipRect(view);
-    CTX.clip = view;
-	  _d->documentLayout()->draw(painter,CTX);
-    painter->restore();
-    return;
-		}
-		
-		/* draw cursor active page no !edit no print only display edit! */
-		painter->save();
-		painter->translate(body.left(), body.top() - index * body.height());
-		painter->setClipRect(view);
-    CTX.clip = view;
-		
-		QColor BackHightlight("#0072ab");
-		BackHightlight.setAlpha(180);   /* original 150 */
-
-	  
-		CTX.palette.setColor(QPalette::Text, Qt::black);
-		CTX.palette.setColor(QPalette::Highlight,BackHightlight);
-		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
-		CTX.selections;
-		CTX.clip = view;
-	  CTX.cursorPosition = -1;
-		/* play cursor */
-		
-		  if (cursortime) {
-				CTX.cursorPosition = C_cursor.position();
-			 }
-			 
-			 
-			if ( C_cursor.hasSelection()) {
-				QAbstractTextDocumentLayout::Selection Internal_selection;
-				Internal_selection.cursor = C_cursor;
-				cursorIsFocusIndicator = true;
-				QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
-				Internal_selection.format.setBackground(CTX.palette.brush(cg, QPalette::Highlight));
-				Internal_selection.format.setForeground(CTX.palette.brush(cg, QPalette::HighlightedText));
-				Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-				CTX.selections.append(Internal_selection);
-				
-			}
-			
-		_d->documentLayout()->draw(painter,CTX);
-		painter->restore();
-			
-			/*
-			
-			QLineF cursorLiner = BlinkCursorLine();
-			QLineF cursorLiner2 = ViewBlinkedCursorLine();
-			
-			painter->save();
-			painter->setPen( QPen(Qt::red,3) );
-			painter->setBrush(Qt::red);
-			painter->drawEllipse(cursorLiner.p2(),5,5);
-			
-			painter->setPen( QPen(Qt::green,3) );
-			painter->setBrush(Qt::green);
-			painter->drawEllipse(cursorLiner2.p2(),5,5);
-			
-			painter->restore();
-			*/
-			
-			
-
-			
-			
-}
-
-QPointF ScribePage::PageIndexTopLeft( const int index  )
-{
-	const qreal fromTopY = index * Page_Edit_Rect.height();
-	const qreal spacepage = index * InterSpace;
-	return QPointF(0,fromTopY + spacepage);
-}
-
-/*
-####################################################################################
-################################ Paint section #####################################
-####################################################################################
-
 
 ####################################################################################
 ################################ Ausiliary tool#####################################
@@ -143,58 +57,12 @@ QPointF ScribePage::PageIndexTopLeft( const int index  )
 
 
 
-void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType Type )
-{
-    if (_d) {
-		_d->clear();
-		_d->disconnect(this);
-	  _d->documentLayout()->disconnect(this);
-		_d = 0;
-		} else {
-    _d = new QTextDocument(0);
-    }
-    
-	
-	clipboard = QApplication::clipboard();
-	Op = Type;
-  _d = const_cast<QTextDocument*>(document); 
-  
-        for (QTextBlock srcBlock = document->firstBlock(), dstBlock = _d->firstBlock();
-             srcBlock.isValid() && dstBlock.isValid();
-             srcBlock = srcBlock.next(), dstBlock = dstBlock.next()) {
-            dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
-        }
-				
-	M_PageSize DefaultSizeDoc;
-	SwapPageModel(DefaultSizeDoc);
-  PageTotal = _d->pageCount();
-  Q_ASSERT(PageTotal > 0);	
-  C_cursor = QTextCursor(_d);
-  C_cursor.setPosition(0,QTextCursor::MoveAnchor);
-	setBlinkingCursorEnabled(true);
-  ////////QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
-				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
-  QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
-  ///////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(NewCharformat(QTextCursor) ));
-  ///////QObject::connect(_d, SIGNAL(contentsChanged()), this, SLOT(SessionUserInput()));
-	///////QObject::connect(this, SIGNAL(q_cursor_newPos()), this, SLOT(SessionUserInput()));
-	///////QObject::connect(this, SIGNAL(q_update(QRectF)), this, SLOT(redir_update(QRectF)));
-  //////////QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(SessionUserInput()));
-  /////////QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
-				
-	///////QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)), this, SLOT(LayoutRepaint(QRectF)));
-				
-				
-				////////void QAbstractTextDocumentLayout::  update(QRectF) 
-				
-				
-				
-}
+
 
 
 ///////QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)), this, SLOT(LayoutRepaint(QRectF)));
 /* big rect !!!!! */
-void ScribePage::LayoutRepaint( const QRectF docrect )
+void TextProcessor::LayoutRepaint( const QRectF docrect )
 {
 	return;
 	
@@ -211,7 +79,7 @@ void ScribePage::LayoutRepaint( const QRectF docrect )
 
 
 
-void ScribePage::redir_update( QRectF area )
+void TextProcessor::redir_update( QRectF area )
 {
 	
 	const QRect needed = area.toRect();
@@ -232,60 +100,21 @@ void ScribePage::redir_update( QRectF area )
 }
 
 
-void ScribePage::SwapPageModel( M_PageSize e )
-{
-	ApiSession *sx = ApiSession::instance();
-	sx->SetPageFormat(e);
-	PAGE_MODEL = e;
-	QTextOption opt;
-	opt.setUseDesignMetrics(true);
-	opt.setTabStop(8);
-	opt.setWrapMode ( QTextOption::WrapAtWordBoundaryOrAnywhere );
-	_d->setDefaultTextOption(opt);
-	
-	PAGE_MODEL.HandlePrint(_d); /* set page format margin  */
-  Q_ASSERT(_d->pageSize().isValid());
-	_d->setUseDesignMetrics (true);
-	Page_Width = PAGE_MODEL.G_regt.width();
-  Page_Height = PAGE_MODEL.G_regt.height();
-  Page_Edit_Rect = PAGE_MODEL.G_regt;
-  _d->setPageSize(QSizeF(Page_Width,Page_Height));
-	Q_ASSERT(_d->pageSize().isValid());
-  (void)_d->documentLayout(); /* reform margin wake up */
-	PageTotal = _d->pageCount();
-	q_update(boundingRect().toRect());
-}
 
-QRectF ScribePage::boundingRect()
+
+QRectF TextProcessor::boundingRect()
 {
-	const int page = qBound(1,_d->pageCount(),MaximumPages);
-	const qreal spacer = page + ((page - 1) * InterSpace );
-	const qreal pagesummhi = page * Page_Height;
-	if (PageTotal != page) {
-		PageTotal = page;
-		
-		 for (int i = OnPageClick; i < _d->pageCount(); ++i)  {
-		 const QPointF topleft = PageIndexTopLeft(i);
-     QRectF PaperAreas(topleft,QSizeF(Page_Width,Page_Height));
-			 emit q_update(PaperAreas.toRect());
-	   }
-		 emit q_update_scene();
+	if (Modus == FLAT) {
+		return _d->documentLayout()->frameBoundingRect(_d->rootFrame());
 	}
-	
-	////////////qDebug() << "### OnPageClick  " << OnPageClick;
-	
-  return QRectF(0,0,Page_Width,pagesummhi + spacer);
+	return Page_Edit_Rect;
 }
 
-QRectF ScribePage::GroupboundingRect()
-{
-	const QRectF onlypage = boundingRect();
-	return QRectF(0,0,onlypage.width() + BorderShadow,onlypage.height() + BorderShadow );
-}
+
 
 
 /* new cursor position .....  */
-void ScribePage::cursorPosition( const QTextCursor curs )
+void TextProcessor::cursorPosition( const QTextCursor curs )
 {
 	cursor_position = curs.position();
 	LastCharFormat = curs.charFormat();  
@@ -314,7 +143,7 @@ void ScribePage::cursorPosition( const QTextCursor curs )
 
 
 
-void ScribePage::setBlinkingCursorEnabled( bool enable )
+void TextProcessor::setBlinkingCursorEnabled( bool enable )
 {
      edit_enable = enable;
   
@@ -330,20 +159,20 @@ void ScribePage::setBlinkingCursorEnabled( bool enable )
 }
 
 
-QTextCursor ScribePage::textCursor() 
+QTextCursor TextProcessor::textCursor() 
 {
   return C_cursor;
 }
 
 
-QTextDocument *ScribePage::document() const
+QTextDocument *TextProcessor::document() const
 {
   return _d;
 }
 
 
 
-void ScribePage::timerEvent(QTimerEvent *event)
+void TextProcessor::timerEvent(QTimerEvent *event)
 {
 	
 	if (!edit_enable) {
@@ -376,7 +205,7 @@ void ScribePage::timerEvent(QTimerEvent *event)
 
 
 
-QLineF ScribePage::BlinkCursorLine()
+QLineF TextProcessor::BlinkCursorLine()
 {
 	QLineF CursorDrawLine(QPointF(0,0),QPointF(0,10));  /* error line */
 	/* QTextDocument *_d;  */
@@ -394,8 +223,13 @@ QLineF ScribePage::BlinkCursorLine()
 }
 
 
-QLineF ScribePage::ViewBlinkedCursorLine()
+QLineF TextProcessor::ViewBlinkedCursorLine()
 {
+	if (Modus == FLAT) {
+		return BlinkCursorLine();
+	}
+	
+	
 	(void)CurrentBlockRect();
 	QLineF cursorLiner = BlinkCursorLine();
 	qreal increment = Current_Page_Nr * InterSpace;
@@ -407,9 +241,13 @@ QLineF ScribePage::ViewBlinkedCursorLine()
 }
 
 
-QRectF ScribePage::CurrentBlockRect()
+QRectF TextProcessor::CurrentBlockRect()
 {
 	const QRectF xxtmp = _d->documentLayout()->blockBoundingRect(textCursor().block());
+	if (Modus == FLAT) {
+		return xxtmp;
+	}
+	
 	QLineF cursorLiner = BlinkCursorLine();
 	
 	QTextFrame  *Tframe = _d->rootFrame();
@@ -427,60 +265,63 @@ QRectF ScribePage::CurrentBlockRect()
 	if (isBottomBlock) {
 		spacer = spacer + root_format.bottomMargin() + root_format.padding() + root_format.topMargin();
 	}
-  const qreal largoblocco = qBound (PAGE_MODEL.width(),xxtmp.width(),PAGE_MODEL.width());
+	
+	const qreal InternalSpace = Page_Width - root_format.leftMargin() - root_format.rightMargin();
+	
+	
+  const qreal largoblocco = qBound(InternalSpace,xxtmp.width(),InternalSpace);
 	qreal altoblocco = xxtmp.height() * 1.888888;
 	if (isBottomBlock) {
 		altoblocco = xxtmp.height() + root_format.bottomMargin() + root_format.padding() + root_format.topMargin();
 	}
-	QRectF blockrr(PAGE_MODEL.P_margin.height(),xxtmp.topLeft().y() + spacer , largoblocco , altoblocco );
+	QRectF blockrr(root_format.leftMargin(),xxtmp.topLeft().y() + spacer , largoblocco , altoblocco );
   return blockrr;
 }
 
-qreal ScribePage::SlicedPage( const int page )
+qreal TextProcessor::SlicedPage( const int page )
 {
 	return (page + 1) * Page_Edit_Rect.height();
 	
 }
 
 
-void ScribePage::FrameHandler()
+void TextProcessor::FrameHandler()
 {
 	const qreal spacer =  Current_Page_Nr * InterSpace;
 	QTextFrame  *RootFrame = _d->rootFrame();
-	
 	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
-	
-	//////////qDebug() << "### selectionLength  " << selectionLength;
-	
-	
 	   if (C_cursor.currentTable()) {
         QTextTable *table = C_cursor.currentTable();
         QRectF tre = _d->documentLayout()->frameBoundingRect(table);
 				emit q_update(QRect(tre.left() , tre.top() + spacer , tre.width() , tre.height()));
         return;
 		 } else if ( C_cursor.currentFrame() && C_cursor.currentFrame() != RootFrame ) {
-			  QTextFrame  *inlineFrame = C_cursor.currentFrame();
-			  QRectF tre = _d->documentLayout()->frameBoundingRect(inlineFrame);
-			  emit q_update(QRect(tre.left() , tre.top() + spacer , tre.width() * 1.8 , tre.height()));
+			  QRectF tre = boundingRectOfFrame(textCursor());
+			  emit q_update(QRect(tre.left() , tre.top() + spacer , tre.width() * 1.2 , tre.height()));
 		 } else if (selectionLength > 999 )  {
 		   emit q_update_scene();
 		 } else {
 			 QRectF par = CurrentBlockRect();
 			 /* large paragraph update !!!!!! */
-			 emit q_update(QRect(0,par.top() - par.height(), Page_Width , par.height() * 3 ));
+			 emit q_update(QRect(0,par.top() - par.height(), Page_Width , par.height() * 2.1 ));
 		 }
-
 }
 
-void ScribePage::EnsureVisibleCursor()
+void TextProcessor::EnsureVisibleCursor()
 {
 	const QRectF paragraphrect = CurrentBlockRect();
 	QRectF large(-10,paragraphrect.top() - 25,Page_Width + 10,paragraphrect.height() + 100);
+	if (Modus == PAGES) {
 	emit q_visible(large);
+	} else {
+	emit q_visible(paragraphrect);
+	}
+	
+	
 }
 
 
-QTextLine ScribePage::currentTextLine(const QTextCursor &cursor)
+QTextLine TextProcessor::currentTextLine(const QTextCursor &cursor)
 {
     const QTextBlock block = cursor.block();
     if (!block.isValid())
@@ -493,8 +334,12 @@ QTextLine ScribePage::currentTextLine(const QTextCursor &cursor)
     return layout->lineForTextPosition(relativePos);
 }
 
-QPointF ScribePage::traposin( const QPointF &pos )
+QPointF TextProcessor::traposin( const QPointF &pos )
 {
+	if (Modus == FLAT) {
+		return pos;
+	}
+	
 	if (!boundingRect().contains(pos)) {
 	return QPointF(0,0);
 	}
@@ -509,18 +354,6 @@ QPointF ScribePage::traposin( const QPointF &pos )
 }
 
 
-bool ScribePage::AllowedPosition( const QPointF inpos )
-{
-	bool permission = false;
-	 for (int i = 0; i < _d->pageCount(); ++i)  {
-		 QRectF sssx = PAGE_MODEL.PageInternal(i);
-		 if (sssx.contains(inpos)) {
-			 OnPageClick = i + 1;
-			 return true;
-		 }
-	 }
-	return permission;
-}
 
 
 
@@ -532,7 +365,8 @@ bool ScribePage::AllowedPosition( const QPointF inpos )
 
 
 
-void ScribePage::CursorMovetoPosition( const QPointF &pos )
+
+void TextProcessor::CursorMovetoPosition( const QPointF &pos )
 {
 	const int cursorPosFozze = _d->documentLayout()->hitTest(pos,Qt::FuzzyHit);
 	if (cursorPosFozze != -1) {
@@ -546,6 +380,56 @@ void ScribePage::CursorMovetoPosition( const QPointF &pos )
 
 
 
+void TextProcessor::gotoNextTableCell()
+{
+    QTextTable *table = textCursor().currentTable();
+    if (!table) {
+     return; 
+    }
+    QTextTableCell cell = CellOnPosition(textCursor().position());
+
+    int newColumn = cell.column() + cell.columnSpan();
+    int newRow = cell.row();
+
+    if (newColumn >= table->columns()) {
+        newColumn = 0;
+        ++newRow;
+        if (newRow >= table->rows())
+            table->insertRows(table->rows(), 1);
+    }
+
+    cell = table->cellAt(newRow, newColumn);
+    const int moveto  = cell.firstCursorPosition().position();
+    C_cursor.setPosition(moveto);
+		cursor_position = moveto;
+		cursortime = true; /* fast display */
+}
+
+void TextProcessor::gotoPreviousTableCell()
+{
+    QTextTable *table = textCursor().currentTable();
+    if (!table) {
+     return; 
+    }
+  
+    QTextTableCell cell = CellOnPosition(textCursor().position());
+
+    int newColumn = cell.column() - 1;
+    int newRow = cell.row();
+
+    if (newColumn < 0) {
+        newColumn = table->columns() - 1;
+        --newRow;
+        if (newRow < 0)
+            return;
+    }
+
+    cell = table->cellAt(newRow, newColumn);
+    const int moveto  = cell.firstCursorPosition().position();
+    C_cursor.setPosition(moveto);
+		cursor_position = moveto;
+		cursortime = true; /* fast display */
+}
 
 
 
@@ -563,7 +447,7 @@ void ScribePage::CursorMovetoPosition( const QPointF &pos )
 */
 
 
-void ScribePage::selectAll()
+void TextProcessor::selectAll()
 {
 	 if (position_selection_start == C_cursor.anchor()) {
 		return;
@@ -576,14 +460,14 @@ void ScribePage::selectAll()
 	emit q_update_scene();
 }
 
-void ScribePage::deleteSelected()
+void TextProcessor::deleteSelected()
 {
     if (Edit_On()) {
     C_cursor.removeSelectedText();
 		}
 }
 
-void ScribePage::cut()
+void TextProcessor::cut()
 {
 	if (!Edit_On()) {
 		return;
@@ -598,7 +482,7 @@ void ScribePage::cut()
 	  /////SwapSelectionsCursor();
 }
 
-void ScribePage::paste()
+void TextProcessor::paste()
 {
 	if (!Edit_On()) {
 		return;
@@ -607,14 +491,14 @@ void ScribePage::paste()
 	emit q_update_scene();
 }
 
-void ScribePage::int_clipboard_new()
+void TextProcessor::int_clipboard_new()
 {
 	ApiSession *sx = ApiSession::instance();
 	sx->SaveMimeTmp();   /* clone a copy on session before next incomming */
 	/////qDebug() << "### clipboard in ";
 }
 
-void ScribePage::copy()
+void TextProcessor::copy()
 {
     if (!C_cursor.hasSelection()) {
 			QApplication::beep(); 
@@ -625,7 +509,7 @@ void ScribePage::copy()
 }
 
 
-void ScribePage::undo()
+void TextProcessor::undo()
 {
 	if (!Edit_On()) {
 		return;
@@ -635,18 +519,32 @@ void ScribePage::undo()
 	////////qDebug() << "### undo ";
 }
 
-void ScribePage::redo()
+void TextProcessor::redo()
 {
 	if (!Edit_On()) {
 		return;
 	}
-	
 	  _d->redo();
-	 ////////////qDebug() << "### redo ";
+}
+
+bool TextProcessor::getoverwriteMode() const
+{
+    return overwriteMode;
+}
+/* swap Insert key */
+void TextProcessor::SwapOverwriteMode()
+{
+    overwriteMode = overwriteMode == false ? true : false;
+}
+
+/* swap cursor mode */
+void TextProcessor::SwapCursorMode()
+{
+    PlayCursorMode = PlayCursorMode == false ? true : false;
 }
 
 
-bool ScribePage::cursorMoveKeyEvent(QKeyEvent *e)
+bool TextProcessor::cursorMoveKeyEvent(QKeyEvent *e)
 {
     const QTextCursor oldSelection = C_cursor;
     const int oldCursorPos = oldSelection.position();
@@ -785,30 +683,43 @@ bool ScribePage::cursorMoveKeyEvent(QKeyEvent *e)
 }
 
 /* after key press */
-void ScribePage::Controller_keyReleaseEvent ( QKeyEvent * e )
+void TextProcessor::Controller_keyReleaseEvent ( QKeyEvent * e )
 {
-	/////////qDebug() << "### Controller_keyReleaseEvent";
-	
-	  if (trippleClickTimer.isActive()) {
-		trippleClickTimer.stop();
-	  }
-	
-	
+	if (trippleClickTimer.isActive()) {
+	trippleClickTimer.stop();
+	}
 	FrameHandler();  
 	cursortime = true;
 }
 
-void ScribePage::Controller_keyPressEvent ( QKeyEvent * e )
+void TextProcessor::Controller_keyPressEvent ( QKeyEvent * e )
 {
-	  ///////qDebug() << "### Controller_keyPressEvent ---doc  root   " << e->text();
+	  //////////qDebug() << "### Controller_keyPressEvent  " << e->text() << e->key();
 		DragFill = false;
 	  cursortime = false;
 	  if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_S) {
 		return;
 		}
-	
-	
-	
+		if ( e->key() == Qt::Key_Insert) {
+			SwapOverwriteMode();
+			e->accept();
+			return;
+		}
+		if ( e->key() == Qt::Key_ScrollLock ) {
+			SwapCursorMode();
+			e->accept();
+			return;
+		}
+		if (C_cursor.currentTable() && e->key() == Qt::Key_Tab || C_cursor.currentTable() && e->key() == Qt::Key_Right ) {
+			gotoNextTableCell();
+			e->accept();
+			return;
+		}
+		if (C_cursor.currentTable() && e->key() == Qt::Key_Left ) {
+			gotoPreviousTableCell();
+			e->accept();
+			return;
+		}
 		if (trippleClickTimer.isActive()) {
 		trippleClickTimer.stop();
 	  }
@@ -980,7 +891,7 @@ void ScribePage::Controller_keyPressEvent ( QKeyEvent * e )
         QString text = e->text();
         if (!text.isEmpty() && (text.at(0).isPrint() || text.at(0) == QLatin1Char('\t'))) {
 					
-            if (overwriteMode && !C_cursor.hasSelection() && !C_cursor.atBlockEnd()) {
+            if (getoverwriteMode() && !C_cursor.hasSelection() && !C_cursor.atBlockEnd()) {
 							C_cursor.deleteChar();
 						}
 						
@@ -1036,7 +947,7 @@ void ScribePage::Controller_keyPressEvent ( QKeyEvent * e )
 
 
 
-void ScribePage::repaintCursor( bool allrect )
+void TextProcessor::repaintCursor( bool allrect )
 {
 	
 	////////qDebug() << "### repaintCursor " << __LINE__ << eventline;
@@ -1056,14 +967,14 @@ void ScribePage::repaintCursor( bool allrect )
      if (paragraphrect.isValid()) {
 			 emit q_update(paragraphrect.toRect());
 		 } else {
-			 emit q_update(PAGE_MODEL.PageInternal(OnPageClick).toRect());
+			 emit q_update(_d->documentLayout()->frameBoundingRect(_d->rootFrame()).toRect());
 		 }
      
 }
 
 
 
-bool ScribePage::procesevent( QEvent *e )
+bool TextProcessor::procesevent( QEvent *e )
 {
 	eventline++;
 	bool FoundEvent = false;
@@ -1165,7 +1076,7 @@ bool ScribePage::procesevent( QEvent *e )
 }
 
 
-void ScribePage::BaseDoubleClickEvent( const  QPointF posi , const QGraphicsSceneMouseEvent * event )  
+void TextProcessor::BaseDoubleClickEvent( const  QPointF posi , const QGraphicsSceneMouseEvent * event )  
 {
 	if (event->buttons() != Qt::LeftButton) {
 		return;
@@ -1192,7 +1103,7 @@ void ScribePage::BaseDoubleClickEvent( const  QPointF posi , const QGraphicsScen
 
 }
 
-bool ScribePage::StartDragOperation()
+bool TextProcessor::StartDragOperation()
 {
 	DragFill = false;	
 	if (!C_cursor.hasSelection()) {
@@ -1223,7 +1134,7 @@ bool ScribePage::StartDragOperation()
 }
 
 
-void ScribePage::BaseMousePressEvent( const  QPointF posi , const QGraphicsSceneMouseEvent *epress )  
+void TextProcessor::BaseMousePressEvent( const  QPointF posi , const QGraphicsSceneMouseEvent *epress )  
 {
 	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
 	
@@ -1270,7 +1181,7 @@ void ScribePage::BaseMousePressEvent( const  QPointF posi , const QGraphicsScene
 }
 
 
-void ScribePage::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton button )  
+void TextProcessor::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton button )  
 {
 	////////qDebug() << "### BaseMouseReleaseEvent  ";
 	
@@ -1322,7 +1233,7 @@ void ScribePage::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton bu
 
 
 
-void ScribePage::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )  
+void TextProcessor::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )  
 {
 	const int cursorPosFozze = cursorpos;
 	
@@ -1400,7 +1311,7 @@ void ScribePage::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )
 
 
 
-QTextTableCell ScribePage::CellOnPosition( const int posi )
+QTextTableCell TextProcessor::CellOnPosition( const int posi )
 {
 	////////////qDebug() << "### cell  OnPosition " << posi;
 	       if (posi != -1) {
@@ -1417,7 +1328,7 @@ QTextTableCell ScribePage::CellOnPosition( const int posi )
 
 
 
-QMimeData *ScribePage::createMimeDataFromSelection()
+QMimeData *TextProcessor::createMimeDataFromSelection()
 {
 	 QTextCharFormat base = C_cursor.charFormat();
 	 QString txt;
@@ -1456,7 +1367,7 @@ QMimeData *ScribePage::createMimeDataFromSelection()
 }
 
 
-void ScribePage::InsertMimeDataOnCursor( const QMimeData *md )
+void TextProcessor::InsertMimeDataOnCursor( const QMimeData *md )
 {
 	QTextDocumentFragment fragment;
 	
@@ -1555,7 +1466,7 @@ void ScribePage::InsertMimeDataOnCursor( const QMimeData *md )
 
 
 
-void ScribePage::insertPixmap( QPixmap p )
+void TextProcessor::insertPixmap( QPixmap p )
 {
         QPixmap scaledsimage;
         QTextFrame  *Tframe = _d->rootFrame();
@@ -1613,7 +1524,7 @@ void ScribePage::insertPixmap( QPixmap p )
 
 
 
-void  ScribePage::RegisterImage( SPics e , bool insert )
+void  TextProcessor::RegisterImage( SPics e , bool insert )
 {
     QApplication::restoreOverrideCursor();
 	  SPics base;
@@ -1642,7 +1553,7 @@ void  ScribePage::RegisterImage( SPics e , bool insert )
 }
 
 
-void  ScribePage::InsertImageonCursor()
+void  TextProcessor::InsertImageonCursor()
 {
     QString file = QFileDialog::getOpenFileName(0, tr( "Choose Image to insert..." ), QString(setter.value("LastDir").toString()) , ImageFilterHaving() );
     if ( file.isEmpty() ) {
@@ -1654,7 +1565,7 @@ void  ScribePage::InsertImageonCursor()
 
 
 
-void  ScribePage::ImageonCursor( const QString file )
+void  TextProcessor::ImageonCursor( const QString file )
 {
      QDateTime timer1( QDateTime::currentDateTime() );
      const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
@@ -1756,7 +1667,7 @@ void  ScribePage::ImageonCursor( const QString file )
 
 
 
-QString ScribePage::ImageFilterHaving() const
+QString TextProcessor::ImageFilterHaving() const
 {
   QString filter;
   filter = tr( "All supported Types" ) + " (";
@@ -1825,7 +1736,7 @@ QString ScribePage::ImageFilterHaving() const
 
 
 
-void ScribePage::in_image( int id )
+void TextProcessor::in_image( int id )
 {
 	   QApplication::restoreOverrideCursor();
 	   LoadGetImage *ht = qobject_cast<LoadGetImage *>(sender());
@@ -1837,10 +1748,11 @@ void ScribePage::in_image( int id )
 
 
 
-void ScribePage::showhtml()
+void TextProcessor::showhtml()
 {
 	XMLTextEdit *sHtml = new XMLTextEdit(0);
 	sHtml->setWindowFlags ( Qt::Window );
+	sHtml->setMinimumSize ( 450 , 500 );
 	
 	QDomDocument *fh = new QDomDocument();
 	if (fh->setContent (_d->toHtml("utf-8"),false)) {
@@ -1854,8 +1766,265 @@ void ScribePage::showhtml()
 }
 
 
+ScribePage::ScribePage( M_PageSize e )
+ : TextProcessor(PAGES)
+{
+	PageTotal = 1;
+	QTextDocument *dummy = new QTextDocument();
+	dummy->setHtml ( "<p></p>" ); /////  ReadFile("a.html")
+	setDocument(dummy,FOP);
+	SwapPageModel(e);
+}
 
 
+/*
+####################################################################################
+################################ Paint section #####################################
+####################################################################################
+*/
+
+void ScribePage::paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   )
+{
+	PageTotal = _d->pageCount();
+	const int PageSumm = qBound (1,_d->pageCount(),MaximumPages);
+	QTextFrame  *Tframe = _d->rootFrame();
+	root_format = Tframe->frameFormat();
+	const QRectF ActiveBlock = CurrentBlockRect();   /* discovery qtextcursor living page  Current_Page_Nr  */
+	
+	  painter->save();
+	  painter->setPen( Qt::NoPen );
+    painter->setBrush(Qt::lightGray);
+		painter->drawRect(boundingRect());
+	  painter->restore();
+	 for (int i = 0; i < PageSumm; ++i)  {
+		 const QPointF topleft = PageIndexTopLeft(i);  /* page top left point */
+		 DrawPage(i,painter,i);
+	 }
+	
+}
+
+void ScribePage::DrawPage( const int index  , QPainter * painter , const int cursorpage )
+{
+		const QPointF topleft = PageIndexTopLeft(index);
+	  QAbstractTextDocumentLayout::PaintContext CTX; 
+	  CTX.palette.setColor(QPalette::Text, Qt::black);
+	  const QRectF body = QRectF(0, topleft.y() ,Page_Edit_Rect.width(),Page_Edit_Rect.height()); /* on view */
+	  QRectF view(0, index * body.height(), body.width(), body.height() );   /* on doc */
+	
+		if (index != cursorpage || !Edit_On()) {
+		painter->save();
+		painter->translate(body.left(), body.top() - index * body.height());
+		painter->setClipRect(view);
+    CTX.clip = view;
+	  _d->documentLayout()->draw(painter,CTX);
+    painter->restore();
+    return;
+		}
+		
+		/* draw cursor active page no !edit no print only display edit! */
+		painter->save();
+		painter->translate(body.left(), body.top() - index * body.height());
+		painter->setClipRect(view);
+    CTX.clip = view;
+		
+		QColor BackHightlight("#0072ab");
+		BackHightlight.setAlpha(180);   /* original 150 */
+
+	  
+		CTX.palette.setColor(QPalette::Text, Qt::black);
+		CTX.palette.setColor(QPalette::Highlight,BackHightlight);
+		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
+		CTX.selections;
+		CTX.clip = view;
+	  CTX.cursorPosition = -1;
+		/* play cursor */
+		
+		if (!PlayCursorMode) {
+		
+					if (cursortime) {
+						CTX.cursorPosition = C_cursor.position();
+					 }
+			 
+			 
+					if ( C_cursor.hasSelection()) {
+						QAbstractTextDocumentLayout::Selection Internal_selection;
+						Internal_selection.cursor = C_cursor;
+						cursorIsFocusIndicator = true;
+						QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
+						Internal_selection.format.setBackground(CTX.palette.brush(cg, QPalette::Highlight));
+						Internal_selection.format.setForeground(CTX.palette.brush(cg, QPalette::HighlightedText));
+						Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+						CTX.selections.append(Internal_selection);
+						
+					}
+		}
+			
+			
+		_d->documentLayout()->draw(painter,CTX);
+		painter->restore();
+		
+		
+		 if (PlayCursorMode && !C_cursor.currentTable() && cursortime && Edit_On()) {
+			painter->save();
+			/////////QLineF cursorLiner = BlinkCursorLine();
+			const QLineF cursorLiner2 = ViewBlinkedCursorLine();
+			painter->setPen( QPen(Qt::red,0.6) );
+			painter->setBrush(Qt::red);
+			painter->drawLine(cursorLiner2);
+			/////////////painter->drawEllipse(cursorLiner2.p2(),5,5);
+			painter->restore();
+			
+		}
+		
+		
+		
+		
+		
+			
+			/*
+			
+			QLineF cursorLiner = BlinkCursorLine();
+			QLineF cursorLiner2 = ViewBlinkedCursorLine();
+			
+			painter->save();
+			painter->setPen( QPen(Qt::red,3) );
+			painter->setBrush(Qt::red);
+			painter->drawEllipse(cursorLiner.p2(),5,5);
+			
+			painter->setPen( QPen(Qt::green,3) );
+			painter->setBrush(Qt::green);
+			painter->drawEllipse(cursorLiner2.p2(),5,5);
+			
+			painter->restore();
+			*/
+			
+			
+
+			
+			
+}
+
+QPointF ScribePage::PageIndexTopLeft( const int index  )
+{
+	const qreal fromTopY = index * Page_Edit_Rect.height();
+	const qreal spacepage = index * InterSpace;
+	return QPointF(0,fromTopY + spacepage);
+}
+
+/*
+####################################################################################
+################################ Paint section #####################################
+####################################################################################
+
+*/
+
+
+bool ScribePage::AllowedPosition( const QPointF inpos )
+{
+	bool permission = false;
+	 for (int i = 0; i < _d->pageCount(); ++i)  {
+		 QRectF sssx = PAGE_MODEL.PageInternal(i);
+		 if (sssx.contains(inpos)) {
+			 OnPageClick = i + 1;
+			 return true;
+		 }
+	 }
+	return permission;
+}
+
+QRectF ScribePage::boundingRect()
+{
+	const int page = qBound(1,_d->pageCount(),MaximumPages);
+	const qreal spacer = page + ((page - 1) * InterSpace );
+	const qreal pagesummhi = page * Page_Height;
+	if (PageTotal != page) {
+		PageTotal = page;
+		
+		 for (int i = OnPageClick; i < _d->pageCount(); ++i)  {
+		 const QPointF topleft = PageIndexTopLeft(i);
+     QRectF PaperAreas(topleft,QSizeF(Page_Width,Page_Height));
+			 emit q_update(PaperAreas.toRect());
+	   }
+		 emit q_update_scene();
+	}
+  return QRectF(0,0,Page_Width,pagesummhi + spacer);
+}
+
+QRectF ScribePage::GroupboundingRect()
+{
+	const QRectF onlypage = boundingRect();
+	return QRectF(0,0,onlypage.width() + BorderShadow,onlypage.height() + BorderShadow );
+}
+
+
+
+void ScribePage::SwapPageModel( M_PageSize e )
+{
+	ApiSession *sx = ApiSession::instance();
+	sx->SetPageFormat(e);
+	PAGE_MODEL = e;
+	QTextOption opt;
+	opt.setUseDesignMetrics(true);
+	opt.setTabStop(8);
+	opt.setWrapMode ( QTextOption::WrapAtWordBoundaryOrAnywhere );
+	_d->setDefaultTextOption(opt);
+	
+	PAGE_MODEL.HandlePrint(_d); /* set page format margin  */
+  Q_ASSERT(_d->pageSize().isValid());
+	_d->setUseDesignMetrics (true);
+	Page_Width = PAGE_MODEL.G_regt.width();
+  Page_Height = PAGE_MODEL.G_regt.height();
+  Page_Edit_Rect = PAGE_MODEL.G_regt;
+  _d->setPageSize(QSizeF(Page_Width,Page_Height));
+	Q_ASSERT(_d->pageSize().isValid());
+  (void)_d->documentLayout(); /* reform margin wake up */
+	PageTotal = _d->pageCount();
+	q_update(boundingRect().toRect());
+}
+
+
+
+void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType Type )
+{
+    if (_d) {
+		_d->clear();
+		_d->disconnect(this);
+	  _d->documentLayout()->disconnect(this);
+		_d = 0;
+		} else {
+    _d = new QTextDocument(0);
+    }
+    
+	
+	clipboard = QApplication::clipboard();
+	Op = Type;
+  _d = const_cast<QTextDocument*>(document); 
+  
+        for (QTextBlock srcBlock = document->firstBlock(), dstBlock = _d->firstBlock();
+             srcBlock.isValid() && dstBlock.isValid();
+             srcBlock = srcBlock.next(), dstBlock = dstBlock.next()) {
+            dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
+        }
+	_d->setUndoRedoEnabled(true);
+	M_PageSize DefaultSizeDoc;
+	SwapPageModel(DefaultSizeDoc);
+  PageTotal = _d->pageCount();
+  Q_ASSERT(PageTotal > 0);	
+  C_cursor = QTextCursor(_d);
+  C_cursor.setPosition(0,QTextCursor::MoveAnchor);
+	setBlinkingCursorEnabled(true);
+  QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
+				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
+  QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
+  ///////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(NewCharformat(QTextCursor) ));
+  ///////QObject::connect(_d, SIGNAL(contentsChanged()), this, SLOT(SessionUserInput()));
+	///////QObject::connect(this, SIGNAL(q_cursor_newPos()), this, SLOT(SessionUserInput()));
+	///////QObject::connect(this, SIGNAL(q_update(QRectF)), this, SLOT(redir_update(QRectF)));
+  //////////QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(SessionUserInput()));
+  /////////QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
+	///////QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)), this, SLOT(LayoutRepaint(QRectF)));
+	////////void QAbstractTextDocumentLayout::  update(QRectF) 
+}
 
 
 

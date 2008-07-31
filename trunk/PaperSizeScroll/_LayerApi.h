@@ -8,13 +8,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-class ScribePage : public QObject
-{
-     Q_OBJECT
 
-public:
- 
-/* keyboard swap on depending format */
 
 typedef enum
 {  
@@ -24,10 +18,30 @@ typedef enum
 } FileHandlerType;
 
 
+
+
+
+class TextProcessor : public QObject
+{
+     Q_OBJECT
+
+public:
+ 
 /* keyboard swap on depending format */
 
-  explicit ScribePage( M_PageSize e );
-  void setDocument ( const QTextDocument * document , FileHandlerType Type = FOP );
+
+typedef enum
+{  
+  FLAT = 1,   /* flat normal qtextdocument */
+  PAGES = 2,    /* paginate display pages */
+} DisplayModus;
+
+
+
+
+/* keyboard swap on depending format */
+
+  explicit TextProcessor( DisplayModus _modus_ );
   QTextDocument *document() const;
   QTextCursor textCursor();
 
@@ -36,7 +50,14 @@ typedef enum
   void ImageonCursor( const QString file );
   QString ImageFilterHaving() const;
 
+
+  void gotoNextTableCell();
+  void gotoPreviousTableCell();
+
   QLineF ViewBlinkedCursorLine();
+  
+
+
   void InsertMimeDataOnCursor( const QMimeData *md );
   bool AllowedPosition( const QPointF inpos );
 
@@ -44,21 +65,27 @@ typedef enum
   void Controller_keyPressEvent ( QKeyEvent * e );
   void Controller_keyReleaseEvent ( QKeyEvent * e );
   bool procesevent( QEvent *e );
+  
+  bool getoverwriteMode() const;
+  void SwapOverwriteMode();
+  void SwapCursorMode();  /* same as hide blink cursor */
 
   QRectF CurrentBlockRect();  /* on view !not on document !!!!!! */
-  inline M_PageSize  Model() const { return PAGE_MODEL; }
-  void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   );
+  
+  
   QRectF boundingRect();  /* all page and spacer to x y 00 */
   QRectF GroupboundingRect();  /* + shadow space */
-  void SwapPageModel( M_PageSize e );
+  
   inline bool Edit_On() { return edit_enable; }  /* same as cursor blink true / false */
   void setBlinkingCursorEnabled( bool enable );
-protected:
-  M_PageSize PAGE_MODEL;
+
+  
+  
   int CurrentSessionID;
   bool WorkREvent;
   QClipboard *clipboard;
   bool overwriteMode;  /* overwrite on write by cursor  */
+  bool PlayCursorMode;
   bool edit_enable;
   bool cursorOn;
   bool cursortime;
@@ -75,7 +102,7 @@ protected:
 
   /* function */
   QPointF PageIndexTopLeft( const int index  );
-  void DrawPage( const int index  , QPainter * painter , const int cursorpage );
+  
   QLineF BlinkCursorLine(); /* on doc coordinate */
   QTextLine currentTextLine(const QTextCursor &cursor);
   void CursorMovetoPosition( const QPointF &pos );   /* inside document not view !!!! */
@@ -96,8 +123,6 @@ protected:
   void BaseDoubleClickEvent( const  QPointF position , const QGraphicsSceneMouseEvent * event ); 
 
 
-
-private:
   /* cursor selection */
   int position_selection_start;
   int cursor_position;
@@ -130,7 +155,7 @@ private:
   QRectF Page_Edit_Rect;
   int PageTotal;
   /* draw item */
-  QPicture LayoutDraw;
+  //////////QPicture LayoutDraw;
   QTextCharFormat LastCharFormat;
   /* events */
   ////////////QPointF trapos( const QPointF &pos );   /* translate position from space */
@@ -144,14 +169,10 @@ signals:
   void q_update_scene();  /* page changes ++ or -- */
   
 private slots:
-  ////////void SessionUserInput( int a = -1 , int b = -1 , int newchar = -1 );
   void int_clipboard_new();
   void cursorPosition( const QTextCursor curs );
-  ///////void repaintCursor( bool allrect = false );
-  //////////void WakeUpElasticSize( bool e = false );
   void EnsureVisibleCursor();
   void LayoutRepaint( const QRectF docrect );
-  /* no qreal rect items */
   void redir_update( QRectF area );
   void in_image( int id );  /* remote image incomming */
 
@@ -166,9 +187,36 @@ public slots:
   void selectAll();
   void InsertImageonCursor();
 
+private:
+  /* not possibel to change if launch */
+DisplayModus Modus;
+
+};
 
 
 
+////////class TextProcessor;
+
+class ScribePage : public TextProcessor
+{
+    Q_OBJECT
+//
+public:
+  explicit ScribePage( M_PageSize e );
+  void setDocument ( const QTextDocument * document , FileHandlerType Type = FOP );
+  inline M_PageSize  Model() const { return PAGE_MODEL; }
+  void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   );
+  void SwapPageModel( M_PageSize e );
+  bool AllowedPosition( const QPointF inpos );
+  QRectF GroupboundingRect();
+  QRectF boundingRect();
+protected:
+  void DrawPage( const int index  , QPainter * painter , const int cursorpage );
+  QPointF PageIndexTopLeft( const int index  );
+  M_PageSize PAGE_MODEL;
+private:
+signals:
+public slots:
 };
 
 
