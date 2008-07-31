@@ -37,14 +37,17 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     dev->q = this;
 	  setAcceptsHoverEvents(true);
     setAcceptDrops(true);
+    
+    QTextDocument *dummy = new QTextDocument();
+	  dummy->setHtml(ReadFile("a.html")); /////  
+	  setDocument(dummy,FOP);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
     setZValue (3.555555);
+    
+    
     LastRect = dev->txtControl()->boundingRect();
     QGraphicsRectItem::setRect(LastRect);
-    
-    ////////qDebug() << "### init...." << LastRect;
-    //////////////qDebug() << "### init...." << PageName();
     LastUpdateRequest = LastRect;
     
 }
@@ -64,6 +67,10 @@ void TextLayer::SwapPageModel( M_PageSize e )
 QTextDocument *TextLayer::document() const
 {
   return dev->txtControl()->document();
+}
+void TextLayer::setDocument( const QTextDocument * document , FileHandlerType Type )
+{
+    return dev->txtControl()->setDocument(document,Type);
 }
 
 void TextLayer::updatearea( const QRect areas )

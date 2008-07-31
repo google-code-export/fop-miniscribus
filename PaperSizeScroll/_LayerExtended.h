@@ -31,6 +31,7 @@ public:
     QRectF boundingRect() const;
     QString PageName();
     QTextDocument *document() const;
+    void setDocument( const QTextDocument * document , FileHandlerType Type = FOP );
     QTextCursor textCursor();
     void SwapPageModel( M_PageSize e );
     
