@@ -70,7 +70,8 @@ QTextDocument *TextLayer::document() const
 }
 void TextLayer::setDocument( const QTextDocument * document , FileHandlerType Type )
 {
-    return dev->txtControl()->setDocument(document,Type);
+    dev->txtControl()->setDocument(document,Type);
+    MakeActionHere();
 }
 
 void TextLayer::updatearea( const QRect areas )
@@ -84,9 +85,9 @@ void TextLayer::updatearea( const QRect areas )
 
 void TextLayer::cursor_wake_up()
 {
-    const QRectF rectblock = dev->txtControl()->CurrentBlockRect();
-    updatearea(rectblock.toRect());
-    ///////////////qDebug() << "### cursor....................................................................... ";
+    ////const QRectF rectblock = dev->txtControl()->CurrentBlockRect();
+    /////updatearea(rectblock.toRect());
+    MakeDinamicCommand();
 }
 
 
@@ -201,14 +202,14 @@ QRectF TextLayer::boundingRect() const
 
 void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    //////////// qDebug() << "### mouseDoubleClickEvent...";
+    qDebug() << "### mouseDoubleClickEvent...";
      return QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
 
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    ///////////qDebug() << "### mouseMoveEvent.. ";
+    qDebug() << "### mouseMoveEvent.. ";
     
     if (dev->txtControl()->AllowedPosition(event->pos())) {
     dev->txtControl()->procesevent(event);
@@ -220,7 +221,7 @@ void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  ///////////qDebug() << "### mouseReleaseEvent...";
+  qDebug() << "### mouseReleaseEvent...";
     
     if (dev->txtControl()->AllowedPosition(event->pos())) {
     dev->txtControl()->procesevent(event);
@@ -231,7 +232,7 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    ////qDebug() << "### mousePressEvent...";
+    qDebug() << "### mousePressEvent...";
     if (dev->txtControl()->AllowedPosition(event->pos())) {
     dev->txtControl()->procesevent(event);
     }
@@ -240,26 +241,26 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    ///////qDebug() << "### hoverEnterEvent...";
+    qDebug() << "### hoverEnterEvent...";
     return QGraphicsItem::hoverEnterEvent(event);
 }
 
 void TextLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    ///////////qDebug() << "### hoverLeaveEvent...";
+    qDebug() << "### hoverLeaveEvent...";
     return QGraphicsItem::hoverLeaveEvent(event);
 }
 
 void TextLayer::keyPressEvent( QKeyEvent * event ) 
 {
-   //////////qDebug() << "### keyPressEvent...";
+   qDebug() << "### keyPressEvent...";
    dev->txtControl()->Controller_keyPressEvent(event);
    /////return QGraphicsItem::keyPressEvent(event);
 }
 
 void TextLayer::keyReleaseEvent ( QKeyEvent * event )
 {
-    ///////qDebug() << "### keyReleaseEvent...";
+    qDebug() << "### keyReleaseEvent...";
     dev->txtControl()->Controller_keyReleaseEvent(event);
     //////////return QGraphicsItem::keyReleaseEvent(event);
 }
@@ -267,14 +268,6 @@ void TextLayer::keyReleaseEvent ( QKeyEvent * event )
 
 bool TextLayer::sceneEvent(QEvent *event)
 {
-    /*    buggi qt version 4.4. 4.5 
-    if (event->type() == QEvent::UngrabMouse || 
-        event->type() == QEvent::GrabMouse ) {
-        dev->txtControl()->procesevent(event);
-     return true;   
-    }
-    */
-    
     if (event->type() == QEvent::GraphicsSceneDragEnter || 
         event->type() == QEvent::GraphicsSceneDrop || 
         event->type() == QEvent::GraphicsSceneDragLeave || 
@@ -282,16 +275,130 @@ bool TextLayer::sceneEvent(QEvent *event)
         dev->txtControl()->procesevent(event);
        return true;
      }
-    
-  const int sxa = event->type();
-  if (   sxa != 161 ) {  
-  ///////////qDebug() << "### sceneEvent.... + type   " << event->type();
-  }
+     /* buggi events */
+     if (event->type() == QEvent::UngrabMouse ||
+         event->type() == QEvent::GrabMouse) {
+      return true;    
+     }
   return QGraphicsItem::sceneEvent(event);
 }
 
 void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-   ///////////qDebug() << "### contextMenuEvent....";
+    qDebug() << "### contextMenuEvent....";
+    CommandStorage *dync = CommandStorage::instance();
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_NONE };
+    StaticCommandID DocumentActions[] = { SHOW_SOURCE_HTML , S_NONE };
+    
+    
+    QMenu *rootmenu = new QMenu(event->widget());  
+    /* basic menu */
+          for (int j = 0; BasicActions[j] != D_NONE; j++) {
+			           DynamicCommandID id = BasicActions[j];
+                 QAction* a_1 = CommandStorage::instance()->actD(id);
+						          if (a_1) {
+											rootmenu->addAction(a_1);
+											}
+           }
+           
+           for (int x = 0; DocumentActions[x] != S_NONE; x++) {
+			           StaticCommandID id = DocumentActions[x];
+                 QAction* a_2 = CommandStorage::instance()->actS(id);
+						          if (a_2) {
+											rootmenu->addAction(a_2);
+											}
+           }
+    
+    
+    rootmenu->exec(QCursor::pos());
+	  rootmenu->deleteLater();
+    
 }
+
+void TextLayer::MakeActionHere()
+{
+    CommandStorage *snc = CommandStorage::instance();
+    snc->clearS();
+    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/copy.png"),QKeySequence(),this,SLOT(showhtml())));
+    
+    
+    qDebug() << "### static count " << snc->countS();
+    
+    ///////////  StaticCommandID DocumentActions[] = { SHOW_SOURCE_HTML , S_NONE };
+    
+}
+
+void TextLayer::MakeDinamicCommand()
+{
+    ApiSession *sx = ApiSession::instance();
+    bool canpaste = sx->canmime();
+    
+    CommandStorage *dync = CommandStorage::instance();
+    dync->clearD();
+    dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),this,SLOT(copy()),textCursor().hasSelection()));
+    dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,tr("Paste"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+V"),this,SLOT(paste()),canpaste));
+    dync->registerCommand_D(DinamicCmd(TXTM_CUT,false,tr("Cut"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+X"),this,SLOT(cut()),textCursor().hasSelection()));
+    dync->registerCommand_D(DinamicCmd(TXTM_REDO,false,tr("Redo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Z"),this,SLOT(redo()),true)); ///////  document()->isRedoAvailable()
+    dync->registerCommand_D(DinamicCmd(TXTM_UNDO,false,tr("Undo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Y"),this,SLOT(undo()),true)); /////document()->isUndoAvailable()
+    dync->registerCommand_D(DinamicCmd(TXTM_SELECTALL,false,tr("Select All"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+A"),this,SLOT(selectAll()),true));
+    qDebug() << "### dinamic count " << dync->countD();
+    
+    
+    
+}
+
+
+
+void TextLayer::deleteSelected()
+{
+   dev->txtControl()->deleteSelected(); 
+}
+
+void TextLayer::cut()
+{
+   dev->txtControl()->cut(); 
+}
+void TextLayer::paste()
+{
+    dev->txtControl()->paste(); 
+}
+void TextLayer::copy()
+{
+    dev->txtControl()->copy(); 
+}
+void TextLayer::undo()
+{
+    dev->txtControl()->undo(); 
+}
+void TextLayer::showhtml()
+{
+    dev->txtControl()->showhtml(); 
+}
+void TextLayer::redo()
+{
+    dev->txtControl()->redo(); 
+}
+void TextLayer::selectAll()
+{
+   textCursor().select(QTextCursor::Document);
+	 SceneReload();
+}
+void TextLayer::InsertImageonCursor()
+{
+    dev->txtControl()->InsertImageonCursor(); 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

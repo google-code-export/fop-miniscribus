@@ -38,6 +38,7 @@ public:
   inline M_PageSize CurrentPageFormat() { return current_Page_Format; }
 	inline void SetPageFormat( M_PageSize e ) { current_Page_Format = e; }
 	void SaveMimeTmp();
+	bool canmime() { return mime_story.size() >  0 ? true : false; }
 	QPrinter *pdev;
   QRectF SceneViewPort;
 	int CurrentDocWidth;

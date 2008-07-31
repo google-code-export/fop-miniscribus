@@ -10,9 +10,13 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
+#include "Layer_CommandStorage.h"
+
 #include "scribemime.h"
 #include "SessionManager.h"
 #include "_LayerApi.h"
+
+
 
 
 const int TextTypeFloating = QGraphicsItem::UserType + TextFloatObjectName;
@@ -56,6 +60,9 @@ private:
   TextMount *dev;
   QRectF LastUpdateRequest;
   QRectF LastVisibleRequest;
+  void MakeDinamicCommand();
+  void MakeActionHere();
+
 
 signals:
 
@@ -64,6 +71,16 @@ public slots:
     void ensureVisible( const QRectF areas );
     void updatearea( const QRect areas );
     void cursor_wake_up();
+
+    void deleteSelected();
+    void cut();
+    void paste();
+    void copy();
+    void undo();
+    void showhtml();
+    void redo();
+    void selectAll();
+    void InsertImageonCursor();
     
 
 };
