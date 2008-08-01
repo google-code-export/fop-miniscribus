@@ -2261,22 +2261,15 @@ void TextProcessor::TXcolor()
  
  void TextProcessor::ParaBlockPageBreackPolicyInsert()
  {
-	 
 	 if (Modus != PAGES) {
-		 return;
+		 return;   /* only on pages draw modus not flat */
 	 }
-	 
 	 QTextCursor c = textCursor();
 	 QTextBlock bb = c.block();
 	 QTextBlockFormat bbformat = bb.blockFormat();
-	 
-	 //////void QTextBlockFormat::setPageBreakPolicy ( PageBreakFlags policy )
-	 ////////////PageBreakFlags QTextBlockFormat::pageBreakPolicy () const
-	 
 	 QStringList items;
 	 items << tr("PageBreak Auto") << tr("PageBreak AlwaysBefore") << tr("PageBreak AlwaysAfter");
 	 int index  = 0;
-	 
 	 if (bbformat.pageBreakPolicy () == QTextFormat::PageBreak_AlwaysBefore ) {
 		 index = 1;
 	 } else if (bbformat.pageBreakPolicy () == QTextFormat::PageBreak_AlwaysAfter ) {
@@ -2295,10 +2288,7 @@ void TextProcessor::TXcolor()
 			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
 		 }
 		 c.setBlockFormat(bbformat);
-		 
 		 emit q_pageupdate();
-
-		 
 	 }
 	 /*
 QTextFormat::PageBreak_Auto
