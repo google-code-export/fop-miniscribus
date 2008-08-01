@@ -311,23 +311,36 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
     
     CommandStorage *dync = CommandStorage::instance();
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_NONE };
-    StaticCommandID DocumentActions[] = { SHOW_SOURCE_HTML , S_NONE };
+    StaticCommandID DocumentActions[] = { INSERT_IMAGE , SHOW_SOURCE_HTML , S_NONE };
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SEPARATOR , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , TXT_COLOR ,  D_NONE };
     
     
     QMenu *rootmenu = new QMenu(event->widget());  
     /* basic menu */
           for (int j = 0; BasicActions[j] != D_NONE; j++) {
 			           DynamicCommandID id = BasicActions[j];
+                 if ( id == D_SEPARATOR) {
+                     rootmenu->addSeparator();
+                 }
+              
+              
                  QAction* a_1 = CommandStorage::instance()->actD(id);
 						          if (a_1) {
 											rootmenu->addAction(a_1);
 											}
            }
            
+           rootmenu->addSeparator();
+           
            for (int x = 0; DocumentActions[x] != S_NONE; x++) {
 			           StaticCommandID id = DocumentActions[x];
                  QAction* a_2 = CommandStorage::instance()->actS(id);
+               
+                 if ( id == S_SEPARATOR) {
+                     rootmenu->addSeparator();
+                 }
+               
+               
 						          if (a_2) {
 											rootmenu->addAction(a_2);
 											}
@@ -344,10 +357,10 @@ void TextLayer::MakeActionHere()
 {
     CommandStorage *snc = CommandStorage::instance();
     snc->clearS();
-    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/copy.png"),QKeySequence(),dev->txtControl(),SLOT(showhtml())));
+    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/view-source.png"),QKeySequence("Alt+S"),dev->txtControl(),SLOT(showhtml())));
+    snc->registerCommand_S(StaticCmd(INSERT_IMAGE,tr("Insert image"),QIcon(":/img/pictures.png"),QKeySequence("Ctrl+J"),dev->txtControl(),SLOT(InsertImageonCursor())));
     
-    
-    qDebug() << "### static count " << snc->countS();
+   ////////// qDebug() << "### static count " << snc->countS();
     
     ///////////  StaticCommandID DocumentActions[] = { SHOW_SOURCE_HTML , S_NONE };
     
@@ -358,16 +371,45 @@ void TextLayer::MakeDinamicCommand()
     ApiSession *sx = ApiSession::instance();
     bool canpaste = sx->canmime();
     
+    QTextCursor c = textCursor();
+    QTextCharFormat fo = c.charFormat();
+    QFont f = fo.font();
+    bool isbold = textCursor().charFormat().font().bold() == true ? true : false;
+    bool isunderline = c.charFormat().underlineStyle() == QTextCharFormat::NoUnderline ? false : true;
+    
+    
+    const QIcon TXTcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().foreground().color());
+    const QIcon TXTBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().background().color());
+    
+    
     CommandStorage *dync = CommandStorage::instance();
     dync->clearD();
-    dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),dev->txtControl(),SLOT(copy()),textCursor().hasSelection()));
-    dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,tr("Paste"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+V"),dev->txtControl(),SLOT(paste()),canpaste));
-    dync->registerCommand_D(DinamicCmd(TXTM_CUT,false,tr("Cut"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+X"),dev->txtControl(),SLOT(cut()),textCursor().hasSelection()));
-    dync->registerCommand_D(DinamicCmd(TXTM_REDO,false,tr("Redo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Z"),dev->txtControl(),SLOT(redo()),true)); ///////  document()->isRedoAvailable()
-    dync->registerCommand_D(DinamicCmd(TXTM_UNDO,false,tr("Undo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Y"),dev->txtControl(),SLOT(undo()),true)); /////document()->isUndoAvailable()
-    dync->registerCommand_D(DinamicCmd(TXTM_SELECTALL,false,tr("Select All"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+A"),dev->txtControl(),SLOT(selectAll()),true));
-    qDebug() << "### dinamic count " << dync->countD();
+    dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),dev->txtControl(),SLOT(copy()),textCursor().hasSelection()));
+    dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,false,tr("Paste"),QIcon(":/img/paste.png"),QKeySequence("Ctrl+V"),dev->txtControl(),SLOT(paste()),canpaste));
+    dync->registerCommand_D(DinamicCmd(TXTM_CUT,false,false,tr("Cut"),QIcon(":/img/cut.png"),QKeySequence("Ctrl+X"),dev->txtControl(),SLOT(cut()),textCursor().hasSelection()));
+    dync->registerCommand_D(DinamicCmd(TXTM_REDO,false,false,tr("Redo"),QIcon(":/img/editredo.png"),QKeySequence("Ctrl+Z"),dev->txtControl(),SLOT(redo()),true)); ///////  document()->isRedoAvailable()
+    dync->registerCommand_D(DinamicCmd(TXTM_UNDO,false,false,tr("Undo"),QIcon(":/img/editundo.png"),QKeySequence("Ctrl+Y"),dev->txtControl(),SLOT(undo()),true)); /////document()->isUndoAvailable()
+    dync->registerCommand_D(DinamicCmd(TXTM_SELECTALL,false,false,tr("Select All"),QIcon(":/img/new.png"),QKeySequence("Ctrl+A"),dev->txtControl(),SLOT(selectAll()),true));
     
+    
+    dync->registerCommand_D(DinamicCmd(TXT_BOLD,true,isbold,tr("Text Bold"),QIcon(":/img/textbold.png"),QKeySequence("Ctrl+B"),dev->txtControl(),SLOT(BoldText()),true));
+    dync->registerCommand_D(DinamicCmd(TXT_UNDERLINE,true,isunderline,tr("Text Underline"),QIcon(":/img/textunder.png"),QKeySequence("Ctrl+U"),dev->txtControl(),SLOT(UnderlineText()),true));
+    dync->registerCommand_D(DinamicCmd(TXT_STRIKOUT,true,f.strikeOut(),tr("Text Strikeout "),QIcon(":/img/texstrickout.png"),QKeySequence(),dev->txtControl(),SLOT(StrickText()),true));
+    dync->registerCommand_D(DinamicCmd(TXT_OVERLINE,true,f.overline(),tr("Text Overline"),QIcon(":/img/texoverline.png"),QKeySequence(),dev->txtControl(),SLOT(OverlineText()),true));
+    dync->registerCommand_D(DinamicCmd(TXT_FONTS,false,false,tr("Text Fonts"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontText()),true));
+    
+    
+    dync->registerCommand_D(DinamicCmd(TXT_BG_COLOR,false,false,tr("Text Fragment Background color"),TXTBGcolorico,QKeySequence(),dev->txtControl(),SLOT(BGcolor()),true));
+    dync->registerCommand_D(DinamicCmd(TXT_COLOR,false,false,tr("Text color"),TXTcolorico,QKeySequence(),dev->txtControl(),SLOT(TXcolor()),true));
+ 
+ 
+   
+    
+    
+   /////////// qDebug() << "### dinamic count " << dync->countD();
+    
+    
+   
     
     
 }

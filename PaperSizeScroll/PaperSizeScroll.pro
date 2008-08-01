@@ -48,7 +48,6 @@ SOURCES += _Image_Page_Struct.cpp \
            table_setting.cpp
            
            
-           
-           
+RESOURCES += osApplication.qrc       
            
            
