@@ -45,6 +45,7 @@ void CommandStorage::registerCommand_D(const DinamicCmd& cmd) {
 	action->setData(id);
 	if (cmd.checkaBle_)  {
 		action->setCheckable ( true );
+		action->setChecked( cmd.status );
 	}
 	action->setEnabled ( cmd.enables );
 	action->setIcon(cmd.icon);

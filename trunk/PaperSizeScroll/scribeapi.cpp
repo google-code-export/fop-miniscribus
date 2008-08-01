@@ -22,6 +22,19 @@ GraphicsView::GraphicsView( QWidget * parent )
     
 }
 
+
+void GraphicsView::resizeEvent(QResizeEvent *event)
+{
+    QGraphicsView::resizeEvent(event);
+ 
+    ApiSession *sx = ApiSession::instance();
+	  const qreal Page_Width = sx->CurrentPageFormat().G_regt.width();
+    ////////ensureVisible(QRectF(0, 0, Page_Width, Page_Width / 2));
+    ///////////fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
+   
+}
+
+
 void GraphicsView::ViewDisplay( const QRectF area )
 {
     ////////qDebug() << "### GraphicsView::ViewDisplay -------- " << area;
@@ -100,7 +113,7 @@ Panel::Panel( QWidget *parent)
     graphicsView = new GraphicsView(this);
 	  graphicsView->setObjectName(QString("graphicsView"));
     graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-
+    setMinimumSize(999,508);
     int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
     QSize iconSize(size, size);
     
@@ -134,8 +147,8 @@ Panel::Panel( QWidget *parent)
     zoomOutIcon->setIconSize(iconSize);
     zoomSlider = new QSlider;
     zoomSlider->setMinimum(0);
-    zoomSlider->setMaximum(300);
-    zoomSlider->setValue(150);
+    zoomSlider->setMaximum(400);
+    zoomSlider->setValue(DefaultStartZoom);
     zoomSlider->setTickPosition(QSlider::TicksRight);
 		
 		resetButton = new QToolButton;
@@ -165,9 +178,11 @@ Panel::Panel( QWidget *parent)
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
     connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
     
-		
+		resetView();
 		QTimer::singleShot(10, this, SLOT(DisplayTop()));  
     toggleOpenGL();
+    
+    
 }
 
 void Panel::PaperSwap( const int index )
@@ -240,17 +255,23 @@ void Panel::zoomOut()
 
 void Panel::resetView()
 {
-    zoomSlider->setValue(150);
+ 
+    ApiSession *sx = ApiSession::instance();
+	  const qreal Page_Width = sx->CurrentPageFormat().G_regt.width();
+    zoomSlider->setValue(DefaultStartZoom);
     setupMatrix();
-    graphicsView->ensureVisible(QRectF(0, 0, 0, 0));
+    ///////graphicsView->ensureVisible(QRectF(0, 0, Page_Width,10));
     resetButton->setEnabled(false);
+    ////////////////graphicsView->fitInView(graphicsView->scene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 
 
 void Panel::setupMatrix()
 {
-    qreal scale = ::pow(2.0, (zoomSlider->value() - 150) / 50.0);
+ 
+    qDebug() << "### setupMatrix " << zoomSlider->value();
+    qreal scale = ::pow(2.0, (zoomSlider->value() - DefaultStartZoom) / 50.0);
     QMatrix matrix;
     matrix.scale(scale, scale);
     ///////matrix.rotate(10);

@@ -3,6 +3,32 @@
 #include "scribeapi.h"
 #include "_Image_Page_Struct.h"
 
+
+
+QIcon createColorToolButtonIcon(const QString &imageFile,QColor color)
+{
+    QPixmap pixmap(50, 80);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QPixmap image(imageFile);
+    QRect target(0, 0, 50, 60);
+    QRect source(0, 0, 42, 42);
+    painter.fillRect(QRect(0, 60, 50, 80), color);
+    painter.drawPixmap(target, image, source);
+    return QIcon(pixmap);
+}
+
+QIcon createColorIcon( QColor color )
+{
+    QPixmap pixmap(50, 50);
+    pixmap.fill(color);
+    return QIcon(pixmap);
+}
+
+
+
+
+
 QPixmap BruschChess( qreal chesswidth )  
 {
     QPixmap m_tile = QPixmap((int)chesswidth,(int)chesswidth);

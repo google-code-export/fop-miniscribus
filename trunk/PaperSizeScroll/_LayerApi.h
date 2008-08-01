@@ -10,6 +10,8 @@
 
 
 
+
+
 typedef enum
 {  
   XHTML = 100,   /* normal html tag */
@@ -18,7 +20,11 @@ typedef enum
 } FileHandlerType;
 
 
-
+typedef enum
+{  
+  FLAT = 1,   /* flat normal qtextdocument */
+  PAGES = 2,    /* paginate display pages */
+} DisplayModus;
 
 
 class TextProcessor : public QObject
@@ -30,11 +36,7 @@ public:
 /* keyboard swap on depending format */
 
 
-typedef enum
-{  
-  FLAT = 1,   /* flat normal qtextdocument */
-  PAGES = 2,    /* paginate display pages */
-} DisplayModus;
+
 
 
 
@@ -150,7 +152,9 @@ typedef enum
   qreal Page_Width;
   qreal Page_Height;
   QRectF Page_Edit_Rect;
+  QRectF ALL_Page_Edit_Rect;
   int PageTotal;
+  void ResetClickTimer();
   /* draw item */
   //////////QPicture LayoutDraw;
   private:
@@ -160,7 +164,7 @@ typedef enum
   QBasicTimer cursorTimeLine;  /* blink cursor time line */
   QBasicTimer trippleClickTimer;
   QBasicTimer dragClickTimer;
-  void ResetClickTimer();
+  
   QTextCharFormat LastCharFormat;
   /* events */
   ////////////QPointF trapos( const QPointF &pos );   /* translate position from space */
@@ -175,6 +179,10 @@ signals:
   
 public slots:
   
+  /* internal and frineds */
+  void ChangeFormatDoc( bool e = true );
+  /* internal and frineds */
+
   void int_clipboard_new();
   void cursorPosition( const QTextCursor curs );
   void EnsureVisibleCursor();
@@ -193,6 +201,19 @@ public slots:
   void selectAll();
   void InsertImageonCursor();
 
+  void UnderlineText();
+  void StrickText();
+  void OverlineText();
+  void BoldText();
+  void FontText();
+  void LinkText();
+  
+  void BGcolor();  /* fragment span */
+  void TXcolor();
+  
+  
+  
+
 private:
   /* not possibel to change if launch */
 DisplayModus Modus;
@@ -202,7 +223,7 @@ DisplayModus Modus;
 
 
 ////////class TextProcessor;
-
+/* line 1805 */
 class ScribePage : public TextProcessor
 {
     Q_OBJECT
@@ -221,8 +242,12 @@ protected:
   QPointF PageIndexTopLeft( const int index  );
   M_PageSize PAGE_MODEL;
 private:
-signals:
-public slots:
+  
+
+private slots:
+  void SessionUserInput( int position = 0 , int charsRemoved = 0, int charsAdded  = 0);
+
+
 };
 
 

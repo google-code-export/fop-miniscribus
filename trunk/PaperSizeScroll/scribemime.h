@@ -49,6 +49,12 @@ static const int FlashReferenceID = 322;
 static const int TextFloatObjectName = 20;
 
 
+
+
+#define _BG_CHAR_ALPHA_  425 
+#define _TXT_CHAR_ALPHA_  424
+
+
 #define _GSCACHE_ \
              QString("%1/.ghosti_CACHE/").arg(QDir::homePath())    /* gs tmp */
              
@@ -113,6 +119,9 @@ QRectF M_PagesizeMake( QPrinter::PageSize psize , bool landscape = true );
 QRectF CenterRectSlaveFromMaster( const QRectF Master , QRectF Slave  );
 
 QPixmap ImagefromMime( const QMimeData *mime );
+
+QIcon createColorToolButtonIcon(const QString &imageFile,QColor color);
+QIcon createColorIcon( QColor color );
 
 
 QString getGSLinuxPath( QString apps = QString("gs") );

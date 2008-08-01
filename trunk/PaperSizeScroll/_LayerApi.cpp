@@ -3,6 +3,13 @@
 #include "_Image_Page_Struct.h"
 
 
+#include "table_setting.h"
+#include "href_gui.h"
+#include "getmargin.h"
+
+
+
+
 static QRectF boundingRectOfFrame(const QTextCursor &cursor)
 {
     QRectF r;
@@ -26,6 +33,32 @@ static QRectF boundingRectOfFrame(const QTextCursor &cursor)
 }
 
 
+
+/* contains link on block */
+static bool HavingLink(  const QTextBlock para )
+{
+        QTextBlock::iterator li;
+				for (li = para.begin(); !(li.atEnd()); ++li) {
+					      QTextFragment lifrag = li.fragment();
+                if (lifrag.isValid()) {
+                       const QTextCharFormat format = lifrag.charFormat();
+                       if (format.isAnchor()) {
+                        return true;
+                       }
+								}
+				}
+        return false;
+}
+
+
+
+
+
+
+
+
+
+
 TextProcessor::TextProcessor( DisplayModus _modus_ )
  : QObject(),_d(new QTextDocument),PageTotal(1),eventline(0),timeline(0),
  OnPageClick(1),cursortime(true),cursorOn(false),overwriteMode(false),FullDocSelect(false),PlayCursorMode(false)
@@ -42,6 +75,7 @@ TextProcessor::TextProcessor( DisplayModus _modus_ )
 	Page_Width = sx->CurrentPageFormat().width();
   Page_Height = 22.5;
   Page_Edit_Rect =  QRectF(0,0,Page_Width,Page_Height);
+	ALL_Page_Edit_Rect = Page_Edit_Rect;
 	RangeSelection = qMakePair(0,0);
 }
 
@@ -108,7 +142,7 @@ QRectF TextProcessor::boundingRect()
 	if (Modus == FLAT) {
 		return _d->documentLayout()->frameBoundingRect(_d->rootFrame());
 	}
-	return Page_Edit_Rect;
+	return ALL_Page_Edit_Rect;
 }
 
 
@@ -350,6 +384,10 @@ QTextLine TextProcessor::currentTextLine(const QTextCursor &cursor)
 
 QPointF TextProcessor::traposin( const QPointF &pos )
 {
+	
+	qDebug() << "### traposin  modus  " << Modus;
+	
+	
 	if (Modus == FLAT) {
 		return pos;
 	}
@@ -2017,22 +2055,196 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
   C_cursor.setPosition(0,QTextCursor::MoveAnchor);
 	setBlinkingCursorEnabled(true);
   QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
-				/////QObject::connect(_d, SIGNAL(modificationChanged(bool) ),this, SLOT(update() ));  /* paint area size? */
   QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
-  ///////////QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(NewCharformat(QTextCursor) ));
-  ///////QObject::connect(_d, SIGNAL(contentsChanged()), this, SLOT(SessionUserInput()));
-	///////QObject::connect(this, SIGNAL(q_cursor_newPos()), this, SLOT(SessionUserInput()));
-	///////QObject::connect(this, SIGNAL(q_update(QRectF)), this, SLOT(redir_update(QRectF)));
-  //////////QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(SessionUserInput()));
-  /////////QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
-	///////QObject::connect(_d->documentLayout(), SIGNAL(update(QRectF)), this, SLOT(LayoutRepaint(QRectF)));
-	////////void QAbstractTextDocumentLayout::  update(QRectF) 
+  QObject::connect(_d, SIGNAL(modificationChanged(bool)), this, SLOT(ChangeFormatDoc(bool)));
+  QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(ChangeFormatDoc()));
+  QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
+}
+
+/* story board of text input */
+void ScribePage::SessionUserInput( int position, int charsRemoved, int charsAdded  )
+{
+	
+	ALL_Page_Edit_Rect = this->boundingRect();
+	///////qDebug() << "### SessionUserInput...." << position << charsRemoved << charsAdded;
+	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+	if (charsRemoved > 0 && selectionLength > 0) {
+		/* reformat text before drag clear all drag ! but  not selection */
+		ChangeFormatDoc(true);
+	}
+}
+
+void TextProcessor::ChangeFormatDoc( bool e )
+{
+	///////qDebug() << "### ChangeFormatDoc ...." << e;
+	if (e) {
+		ResetClickTimer();
+		DragFill = false;
+	}
+	/* big modification change ?? */
+	
+}
+
+void TextProcessor::UnderlineText()
+ {
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    format.setUnderlineStyle(c.charFormat().underlineStyle() == QTextCharFormat::NoUnderline ? QTextCharFormat::SingleUnderline : QTextCharFormat::NoUnderline );
+	  c.setCharFormat(format);
+ }
+
+void TextProcessor::StrickText()
+ {
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    QFont f = format.font();
+    f.setStrikeOut(f.strikeOut() == false ? true : false);
+    format.setFont(f);
+	  c.setCharFormat(format);
+ }
+ 
+ 
+ void TextProcessor::OverlineText()
+ {
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    QFont f = format.font();
+    f.setOverline(f.overline() == false ? true : false);
+    format.setFont(f);
+	  c.setCharFormat(format);
+ }
+
+void TextProcessor::BoldText()
+ {
+    QTextCharFormat format = textCursor().charFormat();
+    ///////////format.setFontWeight(actionBold->isChecked() ? QFont::Bold : QFont::Normal);
+	  format.setFontWeight(!textCursor().charFormat().font().bold()  ? QFont::Bold : QFont::Normal);
+	  textCursor().setCharFormat(format);
+ }
+
+void TextProcessor::FontText()
+{
+    QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    QFont f = format.font();
+    
+  bool ok;
+  QFont fontyour = QFontDialog::getFont(&ok,f,0);
+  if (ok) {
+   
+      format.setFont(fontyour);
+	    c.setCharFormat(format);
+      
+  }
+}
+
+void  TextProcessor::LinkText()
+{
+    QTextCursor c = textCursor();
+    if (!c.hasSelection()) {
+    QMessageBox::information(0, tr("Link text"),tr("Select text to link internal or external."));
+    return;  
+    }
+    
+    const QTextBlock para =  c.block();
+    ///////const QTextCharFormat format = c.charFormat();
+    QTextCharFormat format = c.charFormat();
+    //////bool havinglinkleave = format.anchorHref().size() > 0;
+    QString sthtml = c.selectedText();
+    if (HavingLink(para)) {
+        
+    QString msgDB =tr("Unlink current text?");
+    int removeyes = QMessageBox::question(0, tr("Confirm please"),msgDB,
+                                                            tr("&Yes"), tr("&No"),
+                                                             QString(),8888,9999);
+        if (removeyes == 0) {
+        QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(sthtml);
+        textCursor().insertFragment(fragment);   
+        return;
+        }
+    }
+    /* else normal link make !!! */
+    QString ltext, linkerma, hrefprimo, satarget;
+    
+      if (sthtml.size() < 1) {
+           sthtml= "Text to link";  
+      }
+      Href_Gui::self( 0 )->text_href->setText(sthtml);
+      Href_Gui::self( 0 )->url_href->setText(format.anchorHref());
+      Href_Gui::self( 0 )->exec();
+      
+        if (Href_Gui::self) {
+              QStringList data = Href_Gui::_self->GetUserConfig();
+               if (data.count() > 0) {
+               /*qDebug() << "### linerr rrr   " << QString(data.at(0));
+               qDebug() << "### linerr rrr   " << QString(data.at(1));
+               qDebug() << "### linerr rrr   " << QString(data.at(2));*/
+                hrefprimo = QString(data.at(1));
+                satarget = QString(data.at(2));
+                   
+                   if (hrefprimo.startsWith("#")) {
+                      linkerma = hrefprimo; 
+                   } else {
+                       if (!hrefprimo.contains("@") or !hrefprimo.contains("mailto:") ) {
+                        linkerma = hrefprimo +"#target="+ satarget;
+                       } else {
+                        linkerma = hrefprimo; 
+                       }
+                   }
+                if (satarget !="#name") {
+                //////ltext ="<a href=\""+linkerma+"\">"+QString(data.at(0))+"</a>";
+                format.setAnchor(true);
+                format.setAnchorHref(hrefprimo); 
+                } else {
+                    ///// setAnchorNames ( const QStringList & names )
+                hrefprimo.replace("#","");
+                hrefprimo.replace(" ","");
+                format.setAnchor(true);
+                format.setAnchorHref(hrefprimo); 
+                }
+                
+                format.setForeground(QBrush(_LINK_COLOR_));
+                format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+                
+                c.setCharFormat(format);
+                }
+          }
+    
+
+    
 }
 
 
+void TextProcessor::BGcolor()
+ {
+    QRgb col = QColorDialog::getRgba(textCursor().charFormat().background().color().rgb()); 
+    QColor col2 = QColor(col);
+    int trans = qAlpha(col); 
+    col2.setAlpha(trans);
+       if (!col2.isValid()) {
+        return;
+        } 
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    format.setProperty(_BG_CHAR_ALPHA_,trans);
+    format.setBackground(QBrush(col2));
+	  c.setCharFormat(format);
+ }
+ 
 
-
-
-
-
+void TextProcessor::TXcolor()
+ {
+    QRgb col = QColorDialog::getRgba(textCursor().charFormat().foreground().color().rgb()); 
+    QColor col2 = QColor(col);
+    int trans = qAlpha(col); 
+    col2.setAlpha(trans);
+       if (!col2.isValid()) {
+        return;
+        } 
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    format.setProperty(_TXT_CHAR_ALPHA_,trans); 
+    format.setForeground(QBrush(col2));
+	  c.setCharFormat(format);
+ }
 

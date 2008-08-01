@@ -14,6 +14,7 @@ command to reload if cursor change.!
 typedef enum {
 	
 	D_NONE				= 0,
+	D_SEPARATOR				= 1,
 	TXTM_COPY		= 10,
 	TXTM_PASTE		= 11,
 	TXTM_SELECTALL		= 12,
@@ -27,6 +28,7 @@ typedef enum {
 	TXT_STRIKOUT			= 404,
 	TXT_OVERLINE			= 405,
 	TXT_NOBREAKLINE		= 406,
+	TXT_FONTS		= 407,
 	LAYER_BG = 500,
 	LAYER_BORDER_COLOR = 502,
 	FRAME_BGCOLOR			= 407,
@@ -41,12 +43,13 @@ live forever on application instance!
 
 typedef enum {
 	S_NONE				= 0,
+	S_SEPARATOR				= 1,
 	/* open doc */
-	DOC_SAVE_FOP		= 1,
-	DOC_SAVE_RTF		= 2,
-	DOC_SAVE_HTML		= 3,
-	DOC_SAVE_PAGE		= 4,
-	DOC_SAVE_TXT		= 5,
+	DOC_SAVE_FOP		= 2,
+	DOC_SAVE_RTF		= 3,
+	DOC_SAVE_HTML		= 4,
+	DOC_SAVE_PAGE		= 5,
+	DOC_SAVE_TXT		= 6,
 	/* open doc */
 	/* open open */
 	DOC_OPEN_FOP		= 20,
@@ -60,7 +63,7 @@ typedef enum {
 	CLEAR_PAGE = 103,
 	
 	/* TXT group layer */
-	TXT_FONTS = 400,
+	TXT_GLOBALFONTS = 400,
 	FRAME_PARAMS			= 450,
 	
 	
@@ -94,7 +97,7 @@ struct DinamicCmd {
 		id = D_NONE;
 	}
 	
-	DinamicCmd(DynamicCommandID Id, bool e , QString Name, QIcon Icon, 
+	DinamicCmd(DynamicCommandID Id, bool e , bool s ,  QString Name, QIcon Icon, 
 	          QKeySequence Seq, QObject* Reciever, const QString& Slot , bool f = true ) {
 		id = Id;
 		name = Name;
@@ -104,11 +107,13 @@ struct DinamicCmd {
 		slot = Slot;
 		checkaBle_ = e;
 		enables = f;
+		status = s;
 	}
 	
 	DynamicCommandID id;
 	QString name;
 	bool checkaBle_;
+	bool status;
 	bool enables;
 	QIcon icon;
 	QKeySequence shortcut;

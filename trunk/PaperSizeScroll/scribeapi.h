@@ -19,6 +19,8 @@ file to display scene and view !!!
 
 */
 
+static const int DefaultStartZoom = 220;
+
 
 
 class GraphicsView : public QGraphicsView
@@ -46,6 +48,7 @@ protected:
     QPixmap chessgrid;
     void PrintSetup( bool printok );
     void keyPressEvent(QKeyEvent *e );
+    void resizeEvent(QResizeEvent *event);
     QSettings setter;
 private:
     bool OnPrintRender;
