@@ -42,7 +42,7 @@ typedef enum
 /* keyboard swap on depending format */
 
   explicit TextProcessor( DisplayModus _modus_ );
-  QTextDocument *document() const;
+  QTextDocument *document();
   QTextCursor textCursor();
 
   void insertPixmap( QPixmap p );  /* on cursor insert */
@@ -110,7 +110,7 @@ typedef enum
   void FrameHandler();
   QTextTableCell CellOnPosition( const int posi );
   QMimeData *createMimeDataFromSelection();
-  bool StartDragOperation();
+  
 
   QPointF traposin( const QPointF &pos );
 
@@ -140,9 +140,6 @@ typedef enum
   //////////QAbstractTextDocumentLayout *layout;
   QTextDocument *_d;
   QTextCursor C_cursor;
-  QBasicTimer cursorTimeLine;  /* blink cursor time line */
-  QBasicTimer trippleClickTimer;
-  QBasicTimer dragClickTimer;
   FileHandlerType Op;
   
   QRect OverloadRectUpdate;
@@ -156,6 +153,14 @@ typedef enum
   int PageTotal;
   /* draw item */
   //////////QPicture LayoutDraw;
+  private:
+  QPair<int,int> RangeSelection;
+  bool IsSelfPlacePaste();
+  void StartDragOperation();
+  QBasicTimer cursorTimeLine;  /* blink cursor time line */
+  QBasicTimer trippleClickTimer;
+  QBasicTimer dragClickTimer;
+  void ResetClickTimer();
   QTextCharFormat LastCharFormat;
   /* events */
   ////////////QPointF trapos( const QPointF &pos );   /* translate position from space */
@@ -168,7 +173,8 @@ signals:
   void q_startDrag(QPointF);
   void q_update_scene();  /* page changes ++ or -- */
   
-private slots:
+public slots:
+  
   void int_clipboard_new();
   void cursorPosition( const QTextCursor curs );
   void EnsureVisibleCursor();
@@ -176,7 +182,7 @@ private slots:
   void redir_update( QRectF area );
   void in_image( int id );  /* remote image incomming */
 
-public slots:
+
   void deleteSelected();
   void cut();
   void paste();
