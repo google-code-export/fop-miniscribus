@@ -2059,6 +2059,17 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
   QObject::connect(_d, SIGNAL(modificationChanged(bool)), this, SLOT(ChangeFormatDoc(bool)));
   QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(ChangeFormatDoc()));
   QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
+	QObject::connect(_d, SIGNAL(q_pageupdate()), this, SLOT(PageUpdate()));
+				
+				
+}
+
+void ScribePage::PageUpdate()
+{
+	SwapPageModel(PAGE_MODEL);
+	ChangeFormatDoc(true);
+	ALL_Page_Edit_Rect = this->boundingRect();
+	emit q_update_scene();
 }
 
 /* story board of text input */
@@ -2247,4 +2258,64 @@ void TextProcessor::TXcolor()
     format.setForeground(QBrush(col2));
 	  c.setCharFormat(format);
  }
+ 
+ void TextProcessor::ParaBlockPageBreackPolicyInsert()
+ {
+	 
+	 if (Modus != PAGES) {
+		 return;
+	 }
+	 
+	 QTextCursor c = textCursor();
+	 QTextBlock bb = c.block();
+	 QTextBlockFormat bbformat = bb.blockFormat();
+	 
+	 //////void QTextBlockFormat::setPageBreakPolicy ( PageBreakFlags policy )
+	 ////////////PageBreakFlags QTextBlockFormat::pageBreakPolicy () const
+	 
+	 QStringList items;
+	 items << tr("PageBreak Auto") << tr("PageBreak AlwaysBefore") << tr("PageBreak AlwaysAfter");
+	 int index  = 0;
+	 
+	 if (bbformat.pageBreakPolicy () == QTextFormat::PageBreak_AlwaysBefore ) {
+		 index = 1;
+	 } else if (bbformat.pageBreakPolicy () == QTextFormat::PageBreak_AlwaysAfter ) {
+		 index = 2;
+	 }
+	 bool ok;
+	 QString item = QInputDialog::getItem(0, tr("Get PageBreakFlags"), tr("Set Policy:"), items,index, false, &ok);
+	 
+	 if (ok && item.size() > 0) {
+		 int choise = items.indexOf(item);
+		 if (choise == 1) {
+			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysBefore);
+		 } else if (choise == 2) {
+			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysAfter);
+		 } else {
+			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
+		 }
+		 c.setBlockFormat(bbformat);
+		 
+		 emit q_pageupdate();
+
+		 
+	 }
+	 /*
+QTextFormat::PageBreak_Auto
+QTextFormat::PageBreak_AlwaysBefore
+QTextFormat::PageBreak_AlwaysAfter
+	 */
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
