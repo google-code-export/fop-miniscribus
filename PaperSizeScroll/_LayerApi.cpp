@@ -2264,15 +2264,27 @@ void TextProcessor::TXcolor()
 	 if (Modus != PAGES) {
 		 return;   /* only on pages draw modus not flat */
 	 }
+	 
+	 QTextFrame  *RootFrame = document()->rootFrame();
+	 
 	 QTextCursor c = textCursor();
 	 QTextBlock bb = c.block();
 	 QTextBlockFormat bbformat = bb.blockFormat();
+	 QTextFormat::PageBreakFlags actual = bbformat.pageBreakPolicy();
+		 
+	 if (c.currentTable()) {
+		actual = c.currentTable()->format().pageBreakPolicy();
+	 }
+	 if (c.currentFrame() && c.currentFrame() != RootFrame) {
+		 actual = c.currentFrame()->frameFormat().pageBreakPolicy();
+	 }
+	 
 	 QStringList items;
 	 items << tr("PageBreak Auto") << tr("PageBreak AlwaysBefore") << tr("PageBreak AlwaysAfter");
 	 int index  = 0;
-	 if (bbformat.pageBreakPolicy () == QTextFormat::PageBreak_AlwaysBefore ) {
+	 if (actual == QTextFormat::PageBreak_AlwaysBefore ) {
 		 index = 1;
-	 } else if (bbformat.pageBreakPolicy () == QTextFormat::PageBreak_AlwaysAfter ) {
+	 } else if (actual == QTextFormat::PageBreak_AlwaysAfter ) {
 		 index = 2;
 	 }
 	 bool ok;
@@ -2281,13 +2293,25 @@ void TextProcessor::TXcolor()
 	 if (ok && item.size() > 0) {
 		 int choise = items.indexOf(item);
 		 if (choise == 1) {
-			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysBefore);
+			 actual = QTextFormat::PageBreak_AlwaysBefore;
 		 } else if (choise == 2) {
-			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysAfter);
+			 actual = QTextFormat::PageBreak_AlwaysAfter;
 		 } else {
-			 bbformat.setPageBreakPolicy(QTextFormat::PageBreak_Auto);
+			 actual = QTextFormat::PageBreak_Auto;
 		 }
-		 c.setBlockFormat(bbformat);
+		 
+		 if (c.currentTable()) {
+			 QTextTableFormat fotable = c.currentTable()->format();
+			 fotable.setPageBreakPolicy(actual);
+		   c.currentTable()->setFormat(fotable);
+		 } else if (c.currentFrame() && c.currentFrame() != RootFrame) {
+       QTextFrameFormat foframe = c.currentFrame()->frameFormat();
+			 foframe.setPageBreakPolicy(actual);
+		   c.currentFrame()->setFrameFormat(foframe);
+		  }	else {
+			 bbformat.setPageBreakPolicy(actual);
+			 c.setBlockFormat(bbformat); 
+		 }
 		 emit q_pageupdate();
 	 }
 	 /*
