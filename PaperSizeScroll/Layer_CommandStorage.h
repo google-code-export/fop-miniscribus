@@ -65,6 +65,7 @@ typedef enum {
 	/* TXT group layer */
 	TXT_GLOBALFONTS = 400,
 	FRAME_PARAMS			= 450,
+	PARA_BREACK_PAGE_POLICY			= 451,
 	
 	
 	/* TXT group layer */

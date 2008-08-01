@@ -174,6 +174,7 @@ signals:
   void q_cursor_newPos();  /* +++  swap reformat qmenu from session */
   void q_visible(QRectF);
   void q_update(QRect);
+  void q_pageupdate();
   void q_startDrag(QPointF);
   void q_update_scene();  /* page changes ++ or -- */
   
@@ -212,7 +213,7 @@ public slots:
   void TXcolor();
   
   
-  
+  void ParaBlockPageBreackPolicyInsert();
 
 private:
   /* not possibel to change if launch */
@@ -246,6 +247,7 @@ private:
 
 private slots:
   void SessionUserInput( int position = 0 , int charsRemoved = 0, int charsAdded  = 0);
+  void PageUpdate();
 
 
 };
