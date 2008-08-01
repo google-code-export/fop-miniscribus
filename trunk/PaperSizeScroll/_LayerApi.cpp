@@ -42,6 +42,7 @@ TextProcessor::TextProcessor( DisplayModus _modus_ )
 	Page_Width = sx->CurrentPageFormat().width();
   Page_Height = 22.5;
   Page_Edit_Rect =  QRectF(0,0,Page_Width,Page_Height);
+	RangeSelection = qMakePair(0,0);
 }
 
 
@@ -165,7 +166,7 @@ QTextCursor TextProcessor::textCursor()
 }
 
 
-QTextDocument *TextProcessor::document() const
+QTextDocument *TextProcessor::document()
 {
   return _d;
 }
@@ -201,6 +202,19 @@ void TextProcessor::timerEvent(QTimerEvent *event)
 		}
 }
 
+
+void TextProcessor::ResetClickTimer()
+{
+	   if (dragClickTimer.isActive()) {
+		  dragClickTimer.stop();
+			DragFill = false;
+			qDebug() << "### ResetClickTimer DragFill go " << DragFill;
+	   }
+		 if (trippleClickTimer.isActive()) {
+		  trippleClickTimer.stop();
+	   }
+	
+}
 
 
 
@@ -495,6 +509,9 @@ void TextProcessor::int_clipboard_new()
 {
 	ApiSession *sx = ApiSession::instance();
 	sx->SaveMimeTmp();   /* clone a copy on session before next incomming */
+	
+	
+	qDebug() << "### clipboard fill  ";
 }
 
 void TextProcessor::copy()
@@ -694,7 +711,7 @@ void TextProcessor::Controller_keyReleaseEvent ( QKeyEvent * e )
 void TextProcessor::Controller_keyPressEvent ( QKeyEvent * e )
 {
 	  //////////qDebug() << "### Controller_keyPressEvent  " << e->text() << e->key();
-		DragFill = false;
+		ResetClickTimer();
 	  cursortime = false;
 	  if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_S) {
 		return;
@@ -719,13 +736,6 @@ void TextProcessor::Controller_keyPressEvent ( QKeyEvent * e )
 			e->accept();
 			return;
 		}
-		if (trippleClickTimer.isActive()) {
-		trippleClickTimer.stop();
-	  }
-		
-		if (dragClickTimer.isActive()) {
-		dragClickTimer.stop();
-	  }
 	
 		LastCharFormat = C_cursor.charFormat();
 		
@@ -1023,6 +1033,7 @@ bool TextProcessor::procesevent( QEvent *e )
 		 QGraphicsSceneDragDropEvent *prespos = static_cast<QGraphicsSceneDragDropEvent *>(e);
 		 const QPointF posi = traposin(prespos->pos());
 		 CursorMovetoPosition(posi);
+		 ResetClickTimer();
 		 FrameHandler();
 		 FoundEvent = true;
 	 }  else if (ev->type() == QEvent::GraphicsSceneDrop && DragFill) {
@@ -1039,7 +1050,9 @@ bool TextProcessor::procesevent( QEvent *e )
 					position_selection_start = -1;
 					
 		 /* clear selection and paste */
+		 if (!IsSelfPlacePaste()) {
 		 InsertMimeDataOnCursor(prespos->mimeData());
+		 }
 		 FrameHandler();
 		 FoundEvent = true;
 	 }   else if (ev->type() == QEvent::GraphicsSceneMousePress) {
@@ -1076,157 +1089,145 @@ bool TextProcessor::procesevent( QEvent *e )
 
 void TextProcessor::BaseDoubleClickEvent( const  QPointF posi , const QGraphicsSceneMouseEvent * event )  
 {
+	ResetClickTimer();
+	
 	if (event->buttons() != Qt::LeftButton) {
 		return;
 	}
 	const QTextCursor oldSelection = C_cursor;
 	PointPositionOnDoc = posi;
-	
 	CursorMovetoPosition(posi);
 	position_selection_start = -1;
-	DragFill = false;
 	C_cursor.clearSelection();
 	QTextLine line = currentTextLine(C_cursor);
 	bool doEmit = false;
-	
-	
 	if (line.isValid() && line.textLength()) {
-		C_cursor.select(QTextCursor::WordUnderCursor);
-		doEmit = true;
+	C_cursor.select(QTextCursor::WordUnderCursor);
+	doEmit = true;
 	}
-	 trippleClickTimer.start(qApp->doubleClickInterval(),this);
-	 if (doEmit) {
-		 repaintCursor();
-	 }
+	trippleClickTimer.start(qApp->doubleClickInterval(),this);
+	if (doEmit) {
+	repaintCursor();
+	}
 
 }
 
-bool TextProcessor::StartDragOperation()
+bool TextProcessor::IsSelfPlacePaste()
+{
+	const int Sx1 = RangeSelection.first - 2;
+	const int Sx2 = RangeSelection.second + 2;
+	bool goup = false;
+	bool godown = false;
+	const int foundits = C_cursor.position();
+	if (foundits < Sx1 && foundits < Sx2) {
+		 /* go up */
+		 goup = true;
+	}
+	if (foundits > Sx1 && foundits > Sx2) {
+		 /* go down */
+		 godown = true;
+	}
+	if (goup || godown) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+
+
+void TextProcessor::StartDragOperation()
 {
 	DragFill = false;	
 	if (!C_cursor.hasSelection()) {
-	return DragFill;
+	return;
+	}
+	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+	if (selectionLength > 0) {
+	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
 	}
 	
+	
+	qDebug() << "### StartDragOperation->selectionLength" << selectionLength;
 	QMimeData *data = createMimeDataFromSelection();
 	                 if (data) {
 									  QApplication::clipboard()->setMimeData(data);
-                    QDrag *drag = new QDrag(Gwi);
+                    QDrag *drag = new QDrag(Gwi);   /* QWidget *Gwi;  from event */
                     drag->setMimeData(data); 
 										drag->setHotSpot(QPoint(-25,-25));
+										/* try to make a QPixmap from mime html fragment or image drag drop */
                     const QPixmap playdragicon = ImagefromMime(data);
                     if (!playdragicon.isNull()) {
-											drag->setPixmap(playdragicon);
-                          //////drag->setPixmap(playdragicon.scaled(100,100,Qt::IgnoreAspectRatio));
-											///////////drag->setDragCursor(playdragicon, Qt::CopyAction);
-											///////////drag->setDragCursor(playdragicon, Qt::MoveAction);
+										drag->setPixmap(playdragicon);
                     }
-										
 										if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
-                    ////////qDebug() << "### Launch Init Drag xxx " << prespos->pos();
 										DragFill = true;
 										emit q_startDrag(PointPositionOnDoc);
 										}
 									}
-	return DragFill;
 }
 
 
 void TextProcessor::BaseMousePressEvent( const  QPointF posi , const QGraphicsSceneMouseEvent *epress )  
 {
 	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
-	
+	qDebug() << "### BaseMousePressEvent selectionLength->" << selectionLength;
+	if (selectionLength > 0) {
+	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
+	}
 	
 	PointPositionOnDoc = posi;
 	
-	if (trippleClickTimer.isActive() && selectionLength > 0 ) {
-		  /////////
-		  DragFill = StartDragOperation();
-		  if (DragFill)  {
-				if ( epress->modifiers() == Qt::ControlModifier) {
-						C_cursor.removeSelectedText();
-				}
-			 trippleClickTimer.stop();
-			 dragClickTimer.start(qApp->doubleClickInterval(),this);
-	    }
-	}
-	/////////qDebug() << "### BaseMousePressEvent  " << selectionLength;
-	if (dragClickTimer.isActive() && selectionLength > 0) {
-	//////////qDebug() << "### start drag  ";
-		DragFill = StartDragOperation();
-		if (DragFill)  {
-				if ( epress->modifiers() == Qt::ControlModifier) {
-						C_cursor.removeSelectedText();
-				}
-	  } else {
-			position_selection_start = -1;
-			C_cursor.clearSelection();
+	if (trippleClickTimer.isActive() && selectionLength > 0 ||
+		  dragClickTimer.isActive() && selectionLength > 0 ) {
+				
+			trippleClickTimer.stop();
 			dragClickTimer.stop();
-			CursorMovetoPosition(posi);
-		}
-	return;
+				
+		  (void)StartDragOperation();
+		
+		  if (DragFill)  {
+				/* ctrl down? */
+				if ( epress->modifiers() == Qt::ControlModifier) {
+						C_cursor.removeSelectedText();
+				}
+			 
+				
+			 dragClickTimer.start(qApp->doubleClickInterval(),this);
+			 return;
+	    }
+		return;
+			
 	}
-	
-	if (trippleClickTimer.isActive()) {
-		trippleClickTimer.stop();
-	}
-	
 	
 	CursorMovetoPosition(posi);
 	position_selection_start = C_cursor.position();
 	DragFill = false;
 	C_cursor.clearSelection();
 }
-
-
 void TextProcessor::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton button )  
 {
-	////////qDebug() << "### BaseMouseReleaseEvent  ";
 	
-	if (dragClickTimer.isActive()) {
-		  position_selection_start = -1;
-			C_cursor.clearSelection();
-		  dragClickTimer.stop();
-			CursorMovetoPosition(posi);
-		  return;
+	const int TMPCursorPosition = _d->documentLayout()->hitTest(posi,Qt::FuzzyHit);
+	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+	if (selectionLength > 0) {
+	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
 	}
-	
-	
-	
-		const int TMPCursorPosition = _d->documentLayout()->hitTest(posi,Qt::FuzzyHit);
-	  ////////  if ( TMPCursorPosition != C_cursor.position() || TMPCursorPosition != C_cursor.anchor()  ) {
-	  const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
-	  DragFill = false;
-	  PointPositionOnDoc = posi;
-	  
-	
-	  if (button == Qt::MidButton) {
-			/* paste if  having mime data */
-			position_selection_start = -1;
-			C_cursor.clearSelection();
-			CursorMovetoPosition(posi);
-			///// paste();
-			return;
-		} else if (button == Qt::LeftButton) {
-			
-			    if (!C_cursor.hasSelection()) {
+	qDebug() << "### BaseMouseReleaseEvent  " << selectionLength;
+	if (button == Qt::LeftButton) {
+	   LastReleasePoint = posi;
+		 ResetClickTimer();
+		
+					if (!C_cursor.hasSelection()) {
 						position_selection_start = -1;
 					} else {
-						///////////qDebug() << "### selectionLength  " << selectionLength;
-						/* can start drag here ???????? */
-						LastReleasePoint = posi;
+					 /* can start drag here ???????? */
 						dragClickTimer.start(qApp->doubleClickInterval(),this);
 					}
-					
-		///////qDebug() << "### position_selection_start  " << position_selection_start;
-		/////////qDebug() << "### C_cursor.position() " << C_cursor.position();
-		///////////////qDebug() << "### C_cursor.anchor()  " << C_cursor.anchor();
-		} else {
-			C_cursor.clearSelection();
-			CursorMovetoPosition(posi);
-			position_selection_start = -1;
-		}
 		
+		
+		
+	}
 }
 
 
@@ -1234,11 +1235,15 @@ void TextProcessor::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton
 void TextProcessor::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )  
 {
 	const int cursorPosFozze = cursorpos;
-	
 	cursortime = false;
-	
 	const int stopat = qMax(position_selection_start,cursorPosFozze); 
 	const int startat = qMin(position_selection_start,cursorPosFozze);
+	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+	if (selectionLength > 0) {
+	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
+	}
+	
+	qDebug() << "### BaseMoveEvent selectionLength  " << selectionLength;
 	
 	
 	if (position_selection_start >= 0 && cursorPosFozze >= 0 && !C_cursor.currentTable()) {
@@ -1270,7 +1275,7 @@ void TextProcessor::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )
 		
 	}
 	
-	 if ( C_cursor.currentTable() ) {
+	 if ( position_selection_start >= 0 && C_cursor.currentTable() ) {
 			QTextTable *table = C_cursor.currentTable();
 			QTextTableCell firstcell = CellOnPosition(startat);
 			QTextTableCell lastcell = CellOnPosition(stopat);
@@ -1290,9 +1295,10 @@ void TextProcessor::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )
 			}
 		}
 		
-		
+	/* is comming here no selection !!! */
 	position_selection_start =-1;
 	LastReleasePoint = QPointF(-1,-1);
+	C_cursor.clearSelection();
 }
 
 
@@ -1330,6 +1336,7 @@ QMimeData *TextProcessor::createMimeDataFromSelection()
 {
 	 QTextCharFormat base = C_cursor.charFormat();
 	 QString txt;
+	
 	 if (C_cursor.hasSelection()) {
 		 txt = C_cursor.selectedText();
 	 }
@@ -1346,8 +1353,6 @@ QMimeData *TextProcessor::createMimeDataFromSelection()
                    mimeData->setData("application/x-picslists",Sdd.toUtf8());
 								   return mimeData;
 							 }
-							 
-				     ///////const QString hrefadress = pico.name();
 	 }
  
 	const QTextDocumentFragment fragment(C_cursor);
@@ -1368,7 +1373,7 @@ QMimeData *TextProcessor::createMimeDataFromSelection()
 void TextProcessor::InsertMimeDataOnCursor( const QMimeData *md )
 {
 	QTextDocumentFragment fragment;
-	
+	ResetClickTimer();
 	
 	     if ( md->hasUrls() )  {
           QList<QUrl> urls = md->urls();

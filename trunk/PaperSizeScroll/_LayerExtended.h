@@ -34,7 +34,7 @@ public:
     int type() const {return TextTypeFloating;}
     QRectF boundingRect() const;
     QString PageName();
-    QTextDocument *document() const;
+    QTextDocument *document();
     void setDocument( const QTextDocument * document , FileHandlerType Type = FOP );
     QTextCursor textCursor();
     void SwapPageModel( M_PageSize e );
@@ -57,6 +57,7 @@ protected:
 
 private:
   QRectF LastRect;
+  bool ContextOpen;
   TextMount *dev;
   QRectF LastUpdateRequest;
   QRectF LastVisibleRequest;
@@ -71,7 +72,7 @@ public slots:
     void ensureVisible( const QRectF areas );
     void updatearea( const QRect areas );
     void cursor_wake_up();
-
+/*
     void deleteSelected();
     void cut();
     void paste();
@@ -81,7 +82,7 @@ public slots:
     void redo();
     void selectAll();
     void InsertImageonCursor();
-    
+*/ 
 
 };
 

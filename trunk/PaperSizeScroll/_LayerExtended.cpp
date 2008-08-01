@@ -31,7 +31,7 @@ TextLayer::~TextLayer()
 
 
 TextLayer::TextLayer( QGraphicsItem *parent  )
-    : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount)
+    : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount),ContextOpen(false)
 {
     qDebug() << "### init....";
     dev->q = this;
@@ -64,7 +64,7 @@ void TextLayer::SwapPageModel( M_PageSize e )
 }
 
 
-QTextDocument *TextLayer::document() const
+QTextDocument *TextLayer::document()
 {
   return dev->txtControl()->document();
 }
@@ -87,7 +87,7 @@ void TextLayer::cursor_wake_up()
 {
     ////const QRectF rectblock = dev->txtControl()->CurrentBlockRect();
     /////updatearea(rectblock.toRect());
-    MakeDinamicCommand();
+    /////////MakeDinamicCommand();
 }
 
 
@@ -202,66 +202,85 @@ QRectF TextLayer::boundingRect() const
 
 void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "### mouseDoubleClickEvent...";
+    
+     if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
+      qDebug() << "###  mouseDoubleClickEvent... ";
+      if (dev->txtControl()->procesevent(event)) {
+      return;
+      }
+    }
+    
+    
      return QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
 
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "### mouseMoveEvent.. ";
+    qDebug() << "### layer mouseMoveEvent a.. " << event->button() ;  /* no button capture !!!! */
     
     if (dev->txtControl()->AllowedPosition(event->pos())) {
-    dev->txtControl()->procesevent(event);
+      qDebug() << "### layer mouseMoveEvent b .. ";
+      if (dev->txtControl()->procesevent(event)) {
+      return;
+      }
     }
-    
-    ////////return QGraphicsItem::mouseMoveEvent(event);
-    
+    return QGraphicsItem::mouseMoveEvent(event);
 }
 
 void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  qDebug() << "### mouseReleaseEvent...";
+  
     
-    if (dev->txtControl()->AllowedPosition(event->pos())) {
-    dev->txtControl()->procesevent(event);
+    if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
+    qDebug() << "### layer mouseReleaseEvent.. left .";
+      if (dev->txtControl()->procesevent(event)) {
+      return;
+      }
     }
     
-    /////return QGraphicsItem::mouseReleaseEvent(event);
+    return QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "### mousePressEvent...";
-    if (dev->txtControl()->AllowedPosition(event->pos())) {
-    dev->txtControl()->procesevent(event);
+    
+    if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
+        
+        qDebug() << "### layer mousePressEvent left ...";
+        
+       if (dev->txtControl()->procesevent(event)) {
+        return;
+       }
     }
+    
+    
     return QGraphicsItem::mousePressEvent(event);
 }
 
 void TextLayer::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug() << "### hoverEnterEvent...";
+   /////// qDebug() << "### hoverEnterEvent...";
     return QGraphicsItem::hoverEnterEvent(event);
 }
 
 void TextLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug() << "### hoverLeaveEvent...";
+    //////////qDebug() << "### hoverLeaveEvent...";
     return QGraphicsItem::hoverLeaveEvent(event);
 }
 
 void TextLayer::keyPressEvent( QKeyEvent * event ) 
 {
-   qDebug() << "### keyPressEvent...";
-   dev->txtControl()->Controller_keyPressEvent(event);
+   /////////qDebug() << "### keyPressEvent...";
+   return dev->txtControl()->Controller_keyPressEvent(event);
    /////return QGraphicsItem::keyPressEvent(event);
 }
 
 void TextLayer::keyReleaseEvent ( QKeyEvent * event )
 {
-    qDebug() << "### keyReleaseEvent...";
-    dev->txtControl()->Controller_keyReleaseEvent(event);
+    /////////////qDebug() << "### keyReleaseEvent...";
+    return dev->txtControl()->Controller_keyReleaseEvent(event);
     //////////return QGraphicsItem::keyReleaseEvent(event);
 }
 
@@ -276,16 +295,21 @@ bool TextLayer::sceneEvent(QEvent *event)
        return true;
      }
      /* buggi events */
-     if (event->type() == QEvent::UngrabMouse ||
-         event->type() == QEvent::GrabMouse) {
-      return true;    
-     }
+     ///////if (event->type() == QEvent::UngrabMouse ||
+         //////event->type() == QEvent::GrabMouse) {
+      //////return true;    
+     //////}
   return QGraphicsItem::sceneEvent(event);
 }
 
 void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
+    ContextOpen = true;
+    
     qDebug() << "### contextMenuEvent....";
+    MakeDinamicCommand();
+ 
+    
     CommandStorage *dync = CommandStorage::instance();
     DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_NONE };
     StaticCommandID DocumentActions[] = { SHOW_SOURCE_HTML , S_NONE };
@@ -312,6 +336,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     rootmenu->exec(QCursor::pos());
 	  rootmenu->deleteLater();
+    ContextOpen = false;
     
 }
 
@@ -319,7 +344,7 @@ void TextLayer::MakeActionHere()
 {
     CommandStorage *snc = CommandStorage::instance();
     snc->clearS();
-    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/copy.png"),QKeySequence(),this,SLOT(showhtml())));
+    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/copy.png"),QKeySequence(),dev->txtControl(),SLOT(showhtml())));
     
     
     qDebug() << "### static count " << snc->countS();
@@ -335,12 +360,12 @@ void TextLayer::MakeDinamicCommand()
     
     CommandStorage *dync = CommandStorage::instance();
     dync->clearD();
-    dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),this,SLOT(copy()),textCursor().hasSelection()));
-    dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,tr("Paste"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+V"),this,SLOT(paste()),canpaste));
-    dync->registerCommand_D(DinamicCmd(TXTM_CUT,false,tr("Cut"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+X"),this,SLOT(cut()),textCursor().hasSelection()));
-    dync->registerCommand_D(DinamicCmd(TXTM_REDO,false,tr("Redo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Z"),this,SLOT(redo()),true)); ///////  document()->isRedoAvailable()
-    dync->registerCommand_D(DinamicCmd(TXTM_UNDO,false,tr("Undo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Y"),this,SLOT(undo()),true)); /////document()->isUndoAvailable()
-    dync->registerCommand_D(DinamicCmd(TXTM_SELECTALL,false,tr("Select All"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+A"),this,SLOT(selectAll()),true));
+    dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),dev->txtControl(),SLOT(copy()),textCursor().hasSelection()));
+    dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,tr("Paste"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+V"),dev->txtControl(),SLOT(paste()),canpaste));
+    dync->registerCommand_D(DinamicCmd(TXTM_CUT,false,tr("Cut"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+X"),dev->txtControl(),SLOT(cut()),textCursor().hasSelection()));
+    dync->registerCommand_D(DinamicCmd(TXTM_REDO,false,tr("Redo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Z"),dev->txtControl(),SLOT(redo()),true)); ///////  document()->isRedoAvailable()
+    dync->registerCommand_D(DinamicCmd(TXTM_UNDO,false,tr("Undo"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+Y"),dev->txtControl(),SLOT(undo()),true)); /////document()->isUndoAvailable()
+    dync->registerCommand_D(DinamicCmd(TXTM_SELECTALL,false,tr("Select All"),QIcon(":/img/html_div.png"),QKeySequence("Ctrl+A"),dev->txtControl(),SLOT(selectAll()),true));
     qDebug() << "### dinamic count " << dync->countD();
     
     
@@ -348,7 +373,7 @@ void TextLayer::MakeDinamicCommand()
 }
 
 
-
+/*
 void TextLayer::deleteSelected()
 {
    dev->txtControl()->deleteSelected(); 
@@ -388,7 +413,7 @@ void TextLayer::InsertImageonCursor()
     dev->txtControl()->InsertImageonCursor(); 
 }
 
-
+*/
 
 
 
