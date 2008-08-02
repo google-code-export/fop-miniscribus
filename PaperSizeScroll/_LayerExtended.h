@@ -1,7 +1,6 @@
 #ifndef LAYEREXTENDED_H
 #define LAYEREXTENDED_H
 
-
 #include <QtGui>
 #include <QtCore>
 #include <QDebug>
@@ -9,9 +8,8 @@
 #include <QGraphicsView>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
-
 #include "Layer_CommandStorage.h"
-
+#include "_LayerAbsolute_Floating.h"
 #include "scribemime.h"
 #include "SessionManager.h"
 #include "_LayerApi.h"
@@ -54,8 +52,14 @@ protected:
     void focusInEvent ( QFocusEvent * event );
     void focusOutEvent ( QFocusEvent * event );
     void inputMethodEvent ( QInputMethodEvent * event );
+    /* layer floating */
+    void AppendHeader();
 
 private:
+    
+  AbsoluteLayer *Aheader;
+  AbsoluteLayer *Afooter;
+
   QRectF LastRect;
   bool ContextOpen;
   TextMount *dev;

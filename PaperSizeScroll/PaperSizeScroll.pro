@@ -29,6 +29,7 @@ HEADERS += _Image_Page_Struct.h \
            _XML_Editor.h \
            getmargin.h \
            href_gui.h \
+           _LayerAbsolute_Floating.h \
            scribeapi.h \
            scribemime.h \
            SessionManager.h \
@@ -37,6 +38,7 @@ HEADERS += _Image_Page_Struct.h \
 SOURCES += _Image_Page_Struct.cpp \
            _LayerApi.cpp \
            _LayerExtended.cpp \
+           _LayerAbsolute_Floating.cpp \
            _XML_Editor.cpp \
            getmargin.cpp \
            href_gui.cpp \
