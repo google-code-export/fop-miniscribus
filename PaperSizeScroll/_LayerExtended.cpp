@@ -305,21 +305,52 @@ bool TextLayer::sceneEvent(QEvent *event)
 void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     ContextOpen = true;
+    QTextFrame  *RootFrame = document()->rootFrame();
+    FrameStyler *stylerwi = 0;
+    QTextCursor c = textCursor();
+    bool inlineFrameUnderCursor = false;
+    if (c.currentFrame() && c.currentFrame() != RootFrame) {
+        inlineFrameUnderCursor = true;
+    }
     
     qDebug() << "### contextMenuEvent....";
     MakeDinamicCommand();
  
     
     CommandStorage *dync = CommandStorage::instance();
-    StaticCommandID DocumentActions[] = { INSERT_IMAGE , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SEPARATOR , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , TXT_COLOR ,  D_NONE };
+    StaticCommandID DocumentActions[] = { INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , TXT_COLOR  ,  D_NONE };
     
     
     QMenu *rootmenu = new QMenu(event->widget());  
     /* basic menu */
+    /* frame menu */
+    
+    QMenu *MenuFrame = new QMenu(tr("Frame handler"),rootmenu);
+    MenuFrame->setIcon(QIcon(QString::fromUtf8(":/img/frame.png")));
+    MenuFrame->addAction(CommandStorage::instance()->actS(INSERT_FRAME));
+    MenuFrame->addAction(CommandStorage::instance()->actD(FRAME_BGCOLOR));
+    if (inlineFrameUnderCursor) {
+    stylerwi = new FrameStyler(c.currentFrame(),event->widget());
+    QWidgetAction *widgetmenu = new QWidgetAction(event->widget());
+    widgetmenu->setDefaultWidget(stylerwi);
+    MenuFrame->addAction(widgetmenu); 
+    MenuFrame->addAction(CommandStorage::instance()->actS(MARGIN_CURRENT_ELEMENT));
+    }
+    
+    
+    //////rootmenu->addAction(MenuFrame->menuAction()); 
+    
+    
           for (int j = 0; BasicActions[j] != D_NONE; j++) {
 			           DynamicCommandID id = BasicActions[j];
                  if ( id == D_SEPARATOR) {
+                     rootmenu->addSeparator();
+                 }
+                 
+                 if ( id == D_SUBMENUS ) {
+                     rootmenu->addSeparator();
+                     rootmenu->addAction(MenuFrame->menuAction()); 
                      rootmenu->addSeparator();
                  }
               
@@ -329,6 +360,8 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 											rootmenu->addAction(a_1);
 											}
            }
+           
+           
            
            rootmenu->addSeparator();
            
@@ -348,7 +381,10 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     
     rootmenu->exec(QCursor::pos());
-	  rootmenu->deleteLater();
+    if (inlineFrameUnderCursor) {
+    stylerwi->deleteLater();
+    }     
+	  rootmenu->deleteLater();     
     ContextOpen = false;
     
 }
@@ -359,10 +395,12 @@ void TextLayer::MakeActionHere()
     snc->clearS();
     snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/view-source.png"),QKeySequence("Alt+S"),dev->txtControl(),SLOT(showhtml())));
     snc->registerCommand_S(StaticCmd(INSERT_IMAGE,tr("Insert image"),QIcon(":/img/pictures.png"),QKeySequence("Ctrl+J"),dev->txtControl(),SLOT(InsertImageonCursor())));
-    
-    
-    
     snc->registerCommand_S(StaticCmd(PARA_BREACK_PAGE_POLICY,tr("Set Paragraph/Inline Frame/Table Page Breack Policy"),QIcon(":/img/wizard.png"),QKeySequence(),dev->txtControl(),SLOT(ParaBlockPageBreackPolicyInsert())));
+    snc->registerCommand_S(StaticCmd(INSERT_FRAME,tr("Insert inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(FosInsertFrame())));
+    snc->registerCommand_S(StaticCmd(MARGIN_CURRENT_ELEMENT,tr("Set Margin Paragraph/Table/Inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(SetElementMargin())));
+    
+    
+    
     
    ////////// qDebug() << "### static count " << snc->countS();
     
@@ -374,12 +412,17 @@ void TextLayer::MakeDinamicCommand()
 {
     ApiSession *sx = ApiSession::instance();
     bool canpaste = sx->canmime();
+    QTextFrame  *RootFrame = document()->rootFrame();
     
     QTextCursor c = textCursor();
     QTextCharFormat fo = c.charFormat();
     QFont f = fo.font();
     bool isbold = textCursor().charFormat().font().bold() == true ? true : false;
     bool isunderline = c.charFormat().underlineStyle() == QTextCharFormat::NoUnderline ? false : true;
+    bool inlineFrameUnderCursor = false;
+    if (c.currentFrame() && c.currentFrame() != RootFrame) {
+        inlineFrameUnderCursor = true;
+    }
     
     
     const QIcon TXTcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().foreground().color());
@@ -406,8 +449,10 @@ void TextLayer::MakeDinamicCommand()
     dync->registerCommand_D(DinamicCmd(TXT_BG_COLOR,false,false,tr("Text Fragment Background color"),TXTBGcolorico,QKeySequence(),dev->txtControl(),SLOT(BGcolor()),true));
     dync->registerCommand_D(DinamicCmd(TXT_COLOR,false,false,tr("Text color"),TXTcolorico,QKeySequence(),dev->txtControl(),SLOT(TXcolor()),true));
  
- 
-   
+     
+     /* frame menu separat INSERT_FRAME  static */
+    dync->registerCommand_D(DinamicCmd(FRAME_BGCOLOR,false,false,tr("Frame Background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(SetFrameBGColor()),inlineFrameUnderCursor));
+     
     
     
    /////////// qDebug() << "### dinamic count " << dync->countD();

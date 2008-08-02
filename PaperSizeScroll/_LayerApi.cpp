@@ -2059,7 +2059,7 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
   QObject::connect(_d, SIGNAL(modificationChanged(bool)), this, SLOT(ChangeFormatDoc(bool)));
   QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(ChangeFormatDoc()));
   QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
-	QObject::connect(_d, SIGNAL(q_pageupdate()), this, SLOT(PageUpdate()));
+	///////////QObject::connect(_d, SIGNAL(q_pageupdate()), this, SLOT(PageUpdate()));
 				
 				
 }
@@ -2259,11 +2259,77 @@ void TextProcessor::TXcolor()
 	  c.setCharFormat(format);
  }
  
- void TextProcessor::ParaBlockPageBreackPolicyInsert()
+void  TextProcessor::SetElementMargin()
+{
+	  QTextFrame  *RootFrame = document()->rootFrame();
+	  GetMargin *marge = new GetMargin(0);
+	  int caseformat = 0;
+	  marge->setWindowTitle(tr("Set Paragraph BlockFormat margin"));
+	  QTextCursor c = textCursor();
+    QTextBlock textblocc = c.block();
+	  QTextBlockFormat formatibb = textblocc.blockFormat();
+	  QRectF bbmargin(formatibb.topMargin(), formatibb.rightMargin() ,formatibb.bottomMargin() , formatibb.leftMargin() );
+		
+	  if (c.currentFrame() && c.currentFrame() != RootFrame) {
+			QTextFrameFormat form = c.currentFrame()->frameFormat();
+		  bbmargin = QRectF(form.topMargin(),form.rightMargin(),form.bottomMargin(),form.leftMargin());
+			marge->setWindowTitle(tr("Set inline frame margin"));
+			caseformat = 1;
+		}
+		
+		if (c.currentTable()) {
+			QTextTableFormat form = c.currentTable()->format();
+			bbmargin = QRectF(form.topMargin(),form.rightMargin(),form.bottomMargin(),form.leftMargin());
+			marge->setWindowTitle(tr("Set Table margin"));
+			caseformat = 2;
+		}
+	  marge->Set_margin(bbmargin);
+		int faxme = marge->exec();
+		
+		
+             if (faxme == 1) {
+                 QRectF setFrams = marge->Get_margin();
+                 const qreal TopMargin = setFrams.x();
+                 const qreal RightMargin = setFrams.y();
+                 const qreal BottomMargin = setFrams.width();
+                 const qreal LeftMargin = setFrams.height();
+							   if (caseformat == 0) {
+                 formatibb.setLeftMargin(LeftMargin);
+                 formatibb.setBottomMargin(BottomMargin);
+                 formatibb.setTopMargin(TopMargin);
+                 formatibb.setRightMargin(RightMargin);
+                 textCursor().setBlockFormat(formatibb);
+								 } else if (caseformat == 1) {
+									 QTextFrameFormat foframe = c.currentFrame()->frameFormat();
+									 foframe.setLeftMargin(LeftMargin);
+                   foframe.setBottomMargin(BottomMargin);
+                   foframe.setTopMargin(TopMargin);
+                   foframe.setRightMargin(RightMargin);
+		               c.currentFrame()->setFrameFormat(foframe);
+								 } else if (caseformat == 2) {
+									 QTextTableFormat fotable = c.currentTable()->format();
+									 fotable.setLeftMargin(LeftMargin);
+                   fotable.setBottomMargin(BottomMargin);
+                   fotable.setTopMargin(TopMargin);
+                   fotable.setRightMargin(RightMargin);
+		               c.currentTable()->setFormat(fotable);
+								 }
+             }
+             
+         
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ void ScribePage::ParaBlockPageBreackPolicyInsert()
  {
-	 if (Modus != PAGES) {
-		 return;   /* only on pages draw modus not flat */
-	 }
+	 ///////if (Modus != PAGES) {
+		 ////////return;   /* only on pages draw modus not flat */
+	 ////////}
 	 
 	 QTextFrame  *RootFrame = document()->rootFrame();
 	 
@@ -2312,21 +2378,219 @@ void TextProcessor::TXcolor()
 			 bbformat.setPageBreakPolicy(actual);
 			 c.setBlockFormat(bbformat); 
 		 }
-		 emit q_pageupdate();
+		 
+		 PageUpdate();
+		 
 	 }
-	 /*
-QTextFormat::PageBreak_Auto
-QTextFormat::PageBreak_AlwaysBefore
-QTextFormat::PageBreak_AlwaysAfter
-	 */
  }
  
  
+///// ico color textCursor().currentFrame()->frameFormat().background().color()
+ 
+void  TextProcessor::SetFrameBGColor()
+{
+     if (textCursor().currentFrame()) {
+          QTextFrame *frame = textCursor().currentFrame();
+          QTextFrameFormat Ftf = frame->frameFormat();
+          bool ok;
+                     /* get color */
+                     QColor col = QColorDialog::getRgba(Ftf.background().color().rgba(),&ok, 0);
+                     if (!col.isValid()) {
+                        return; 
+                     }
+                        QBrush stylesin(col);
+                        Ftf.setBackground(stylesin);
+                        frame->setFrameFormat(Ftf);
+    }
+}
+ 
+void TextProcessor::FosInsertFrame()
+{
+	  QColor BackHightlight("#0072ab");
+		BackHightlight.setAlpha(60);
+	
+	
+    QTextFrameFormat frame;
+                     frame.setBorder(1);   
+                     frame.setBorderBrush(QBrush(Qt::red));  
+                     frame.setBorderStyle(QTextFrameFormat::BorderStyle_Dotted);
+										 frame.setBackground(BackHightlight);
+										 QTextLength mesure(QTextLength::FixedLength,180); 
+                     frame.setWidth(mesure); 
+                     frame.setPadding(10);    
+                     frame.setPosition(QTextFrameFormat::FloatRight);   
+		textCursor().insertFrame(frame);
+	
+}
+ 
+void  TextProcessor::SetColumLarge()
+{
+    if (textCursor().currentTable()) { 
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    QTextTableFormat tbforms = textCursor().currentTable()->format();
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+        bool ok;
+        int LargeSet = QInputDialog::getInteger(0, tr("Set Cell Width"),
+                                      tr("Point Length:"),Get_Cell_Width(tbforms,cellcoolcursoris), 1, 2000, 1, &ok);
+        if (ok && LargeSet > 0) {
+        QVector<QTextLength> constraints = tbforms.columnWidthConstraints();
+        for (int i = 0; i < constraints.size(); ++i) {
+            if (i == cellcoolcursoris) {
+                constraints.replace(i,QTextLength(QTextLength::FixedLength, LargeSet)); 
+            }
+        }
+        tbforms.setColumnWidthConstraints(constraints);
+        textCursor().currentTable()->setFormat(tbforms);
+        }
+    }
+}
+ 
+qreal TextProcessor::Get_Cell_Width( QTextTableFormat TableFormat , int position )  
+{
+    qreal notfound = 0;
+    QVector<QTextLength> constraints = TableFormat.columnWidthConstraints();
+        for (int i = 0; i < constraints.size(); ++i) {
+            if (i == position) {
+                QTextLength langecell = constraints.value(i);
+                 if (langecell.type() == QTextLength::FixedLength) {
+                  return langecell.rawValue();
+                 }                     
+                                     
+            }
+        }
+   return notfound;
+}
+ 
+void  TextProcessor::MergeCellByCursorPosition()
+{
+    if (textCursor().currentTable()) {  
+       textCursor().currentTable()->mergeCells(textCursor());
+    }  
+}
+
+void TextProcessor::RemoveCoolByCursorPosition()
+{
+    if (textCursor().currentTable()) {  
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+    int cellrowcursoris = existingcell.row(); /* int value start from zero */
+    textCursor().currentTable()->removeColumns(cellcoolcursoris,1);
+    }
+}
+
+void  TextProcessor::RemoveRowByCursorPosition()
+{
+    if (textCursor().currentTable()) {  
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+    int cellrowcursoris = existingcell.row(); /* int value start from zero */
+    textCursor().currentTable()->removeRows(cellrowcursoris,1);
+    }
+}
+ 
+void  TextProcessor::AppendTableRows()
+{
+    bool ok = false;
+    if (textCursor().currentTable()) {
+    QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+    int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+    int cellrowcursoris = existingcell.row(); /* int value start from zero */
+    int approwtot = QInputDialog::getInteger(0, tr("Append NR. line row"),tr("Row:"), 1, 1, 100, 1, &ok);
+        if (ok && approwtot > 0) {
+          textCursor().currentTable()->insertRows(cellrowcursoris + 1,approwtot);
+        }
+    }
+}
+ 
+void  TextProcessor::AppendTableCools()
+{
+    bool ok = false;
+    if (textCursor().currentTable()) {
+        QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+        int cellcoolcursoris = existingcell.column(); /* int value start from zero */
+        int cellrowcursoris = existingcell.row(); /* int value start from zero */
+        int appcooltot = QInputDialog::getInteger(0, tr("Table append Column"),tr("Cool:"), 1, 1, 10, 1, &ok);
+            if (ok && appcooltot > 0) {
+              textCursor().currentTable()->insertColumns(cellcoolcursoris + 1,appcooltot);
+            }
+    }  
+}
+ 
+void  TextProcessor::SetTableCellColor()
+{
+     if (textCursor().currentTable()) { 
+     bool ok;
+     QTextTableCell existingcell =  textCursor().currentTable()->cellAt(textCursor());
+        /* reformat this -> existingcell */
+        QTextCharFormat existformat = existingcell.format();
+                     /* get color */
+                     QColor col = QColorDialog::getRgba(textCursor().currentTable()->cellAt(textCursor()).format().background().color().rgba(),&ok, 0);
+                     if (!col.isValid()) {
+                        return; 
+                     }
+                        QBrush stylesin(col);
+                        existformat.setBackground(stylesin);
+                        existingcell.setFormat(existformat); 
+    }
+}
+void TextProcessor::UpdateTableFormat()
+{
+    if (!textCursor().currentTable()) { 
+       return; 
+    }
+    
+                Table_Setting::self(0)->SetFormat(textCursor().currentTable());
+                const int xx = Table_Setting::self(0)->exec();
+                QTextTableFormat newformine = Table_Setting::self(0)->GetNewFormats();
+                if (newformine.isValid() && xx == 1) {
+                    textCursor().currentTable()->setFormat(newformine);
+                }
+}
  
  
  
+ void  TextProcessor::CreateanewTable()
+{
+
+    QString subtext, collx, rowx,largo;
+    bool ok;
+    int colonne = QInputDialog::getInteger(0, tr("New Table cool"),tr("Cool:"), 3, 1, 10, 1, &ok);
+    int righe = QInputDialog::getInteger(0, tr("New Table row"),tr("Row:"), 3, 1, 100, 1, &ok);
+    largo = "100%";
+    if (colonne > 0 && righe > 0) {
+    QStringList tables;
+    tables.clear();
+    tables.append(QString("<table border=\"1\" align=\"left\" width=\"%1\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\">").arg(largo));
+    for (int i=0;i<righe;i++){
+        tables.append(QString("<tr>")); 
+           for (int o=0;o<colonne;o++){
+               tables.append(QString("<td><p></p></td>")); 
+           }
+        tables.append(QString("</tr>")); 
+    }  
+    tables.append(QString("</table>"));  
+    
+    subtext = tables.join("\n");
+    QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(subtext);
+    textCursor().insertFragment(fragment);
+    }
+}
  
- 
+void TextProcessor::MaketableColorBG()
+{
+    if (!textCursor().currentTable()) { 
+       return; 
+    }
+    bool ok;
+    QColor col = QColorDialog::getRgba(textCursor().currentTable()->format().background().color().rgba(),&ok,0);
+    if (!col.isValid()) {
+        return;
+    } else {
+       QTextTableFormat taform = textCursor().currentTable()->format(); 
+       taform.setBackground ( col ); 
+       textCursor().currentTable()->setFormat(taform);
+    }
+}
  
  
  

@@ -15,6 +15,7 @@ typedef enum {
 	
 	D_NONE				= 0,
 	D_SEPARATOR				= 1,
+	D_SUBMENUS  = 5001,
 	TXTM_COPY		= 10,
 	TXTM_PASTE		= 11,
 	TXTM_SELECTALL		= 12,
@@ -44,6 +45,7 @@ live forever on application instance!
 typedef enum {
 	S_NONE				= 0,
 	S_SEPARATOR				= 1,
+	S_SUBMENUS  = 5000,
 	/* open doc */
 	DOC_SAVE_FOP		= 2,
 	DOC_SAVE_RTF		= 3,
@@ -88,6 +90,8 @@ typedef enum {
 	INSERT_IMAGE = 702,
 	SHOW_SOURCE_HTML = 703,
 	SHOW_SOURCE_FOP = 704,
+	
+	MARGIN_CURRENT_ELEMENT			= 950,
 	/* Page group layer */
 	
 	ID_ABOUT_QT			= 1403
