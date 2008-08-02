@@ -335,7 +335,140 @@ private:
 
 
 
+class FrameStyler : public QWidget
+{
+    Q_OBJECT
+//
+public:
+ FrameStyler( QTextFrame *base , QWidget *parent  )
+ : QWidget( parent ),frame(base)
+{
+    QTextFrameFormat Ftf = frame->frameFormat();
+		QTextDocument *dd = base->document();
+	  /////QTextFrame  *RootFrame = dd->rootFrame();
+	  qreal largoss = dd->pageSize().rwidth();
+	  QTextLength langeframles = Ftf.width();
+    if (langeframles.type() == QTextLength::FixedLength) {
+			largoss = langeframles.rawValue();
+		}
+	  
+	
+ 
+    gridLayout = new QGridLayout(this);
+    hboxLayout = new QHBoxLayout();
+    vboxLayout = new QVBoxLayout();
+    label = new QLabel(tr("Border style:"),this);
+    vboxLayout->addWidget(label);
+    label_3 = new QLabel(tr("Border color:"),this);
+    vboxLayout->addWidget(label_3);
+    label_2 = new QLabel(tr("Float:"),this);
+    vboxLayout->addWidget(label_2);
+    vboxLayout->addWidget(new QLabel(tr("Border width:"),this));
+		vboxLayout->addWidget(new QLabel(tr("Frame width:"),this));
+    vboxLayout->addWidget(new QLabel(tr("Padding:"),this));
+     
+ 
+ 
+    hboxLayout->addLayout(vboxLayout);
+    vboxLayout1 = new QVBoxLayout();
+    comboBox = new QComboBox(this); ///// style
+    comboBox->addItem(tr("Border none"),QTextFrameFormat::BorderStyle_None);
+    comboBox->addItem(tr("Border Dotted"),QTextFrameFormat::BorderStyle_Dotted);
+    comboBox->addItem(tr("Border Double"),QTextFrameFormat::BorderStyle_Double);
+    comboBox->addItem(tr("Border Solid"),QTextFrameFormat::BorderStyle_Solid);
+    comboBox->addItem(tr("Border Dashed"),QTextFrameFormat::BorderStyle_Dashed);
+    comboBox->addItem(tr("Border DotDash"),QTextFrameFormat::BorderStyle_DotDash);
+    comboBox->addItem(tr("Border DotDotDash"),QTextFrameFormat::BorderStyle_DotDotDash);
+    comboBox->addItem(tr("Border Groove"),QTextFrameFormat::BorderStyle_Groove);
+    comboBox->addItem(tr("Border Ridge"),QTextFrameFormat::BorderStyle_Ridge);
+    comboBox->addItem(tr("Border Inset"),QTextFrameFormat::BorderStyle_Inset);
+    comboBox->addItem(tr("Border Outset"),QTextFrameFormat::BorderStyle_Outset);
+    comboBox->setCurrentIndex(comboBox->findData(Ftf.borderStyle()));
+    
+    
+    QPixmap pix(22, 22);
+    vboxLayout1->addWidget(comboBox);
+    comboBox_3 = new QComboBox(this); //// color 
+    QStringList colorNames = QColor::colorNames();
+    foreach (QString name, colorNames) {  
+         pix.fill(QColor(name));
+         comboBox_3->addItem(pix,QString("color %1").arg(name),QColor(name));
+    }
+    comboBox_3->setCurrentIndex(comboBox_3->findData(Ftf.borderBrush().color()));
+    
+    vboxLayout1->addWidget(comboBox_3);
+    comboBox_2 = new QComboBox(this);   /// float
+    comboBox_2->addItem(tr("Float inline"),QTextFrameFormat::InFlow);
+    comboBox_2->addItem(tr("Float left"),QTextFrameFormat::FloatLeft);
+    comboBox_2->addItem(tr("Float right"),QTextFrameFormat::FloatRight);
+    
+    comboBox_2->setCurrentIndex(comboBox->findData(Ftf.position()));
+    
+    vboxLayout1->addWidget(comboBox_2);
+    /* border widht */
+    borderwi = new QSpinBox(this);
+    borderwi->setMaximum(20);
+    borderwi->setValue(Ftf.border());
+    vboxLayout1->addWidget(borderwi);
+		
+		framewi = new QSpinBox(this);
+    framewi->setMaximum(dd->idealWidth());
+    framewi->setValue(largoss);
+    vboxLayout1->addWidget(framewi);
+    
+    paddingwi = new QSpinBox(this);
+    paddingwi->setMaximum(50);
+    paddingwi->setValue(Ftf.padding());
+    vboxLayout1->addWidget(paddingwi);
+    
+    
+    hboxLayout->addLayout(vboxLayout1);
+    gridLayout->addLayout(hboxLayout, 0, 0, 1, 1);
+    QObject::connect(comboBox_3, SIGNAL(currentIndexChanged(int)),this, SLOT(FormatUpdate()));
+    QObject::connect(comboBox, SIGNAL(currentIndexChanged(int)),this, SLOT(FormatUpdate()));
+    QObject::connect(comboBox_2, SIGNAL(currentIndexChanged(int)),this, SLOT(FormatUpdate()));
+    QObject::connect(borderwi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
+    QObject::connect(paddingwi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
+		QObject::connect(framewi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
+		
+		
+		
+		
+    
+  
+}
+    QGridLayout *gridLayout;
+    QHBoxLayout *hboxLayout;
+    QVBoxLayout *vboxLayout;
+    QLabel *label;
+    QLabel *label_3;
+    QLabel *label_2;
+    QVBoxLayout *vboxLayout1;
+    QComboBox *comboBox;
+    QComboBox *comboBox_3;
+    QComboBox *comboBox_2;
+    QSpinBox *borderwi;
+    QSpinBox *paddingwi;
+    QSpinBox *framewi;
+    
+private:
+    QTextFrame *frame;
+signals:
+public slots:
+  
+void FormatUpdate()
+{
+  QTextFrameFormat Ftf = frame->frameFormat();
+	Ftf.setWidth ( framewi->value() );
+  Ftf.setPosition(QTextFrameFormat::Position(comboBox_2->itemData(comboBox_2->currentIndex()).toInt()));
+  Ftf.setBorderStyle(QTextFrameFormat::BorderStyle(comboBox->itemData(comboBox->currentIndex()).toInt()));
+  Ftf.setBorderBrush(QBrush(comboBox_3->itemData(comboBox_3->currentIndex()).value<QColor>()));
+  Ftf.setBorder(borderwi->value());
+  Ftf.setPadding(paddingwi->value());  
+  frame->setFrameFormat(Ftf);
+}
 
+};
 
 
 

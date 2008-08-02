@@ -158,6 +158,7 @@ public:
   /* draw item */
   //////////QPicture LayoutDraw;
   private:
+  qreal Get_Cell_Width( QTextTableFormat TableFormat , int position ); 
   QPair<int,int> RangeSelection;
   bool IsSelfPlacePaste();
   void StartDragOperation();
@@ -212,8 +213,27 @@ public slots:
   void BGcolor();  /* fragment span */
   void TXcolor();
   
+  void FosInsertFrame();
+  void SetFrameBGColor();
   
-  void ParaBlockPageBreackPolicyInsert();
+  void CreateanewTable();
+  
+  void MaketableColorBG();
+  void UpdateTableFormat();
+  void SetTableCellColor();
+  void AppendTableCools();
+  void AppendTableRows();
+  void RemoveCoolByCursorPosition();
+  void RemoveRowByCursorPosition();
+  void MergeCellByCursorPosition();
+  void SetColumLarge();
+  
+  void SetElementMargin();
+ 
+
+  
+  
+  
 
 private:
   /* not possibel to change if launch */
@@ -248,6 +268,7 @@ private:
 private slots:
   void SessionUserInput( int position = 0 , int charsRemoved = 0, int charsAdded  = 0);
   void PageUpdate();
+  void ParaBlockPageBreackPolicyInsert();
 
 
 };
