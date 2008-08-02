@@ -320,11 +320,11 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     CommandStorage *dync = CommandStorage::instance();
     StaticCommandID DocumentActions[] = { INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
     DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , TXT_COLOR  ,  D_NONE };
-    
+    DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
     
     QMenu *rootmenu = new QMenu(event->widget());  
     /* basic menu */
-    /* frame menu */
+    /* table / frame menu */
     
     QMenu *MenuFrame = new QMenu(tr("Frame handler"),rootmenu);
     MenuFrame->setIcon(QIcon(QString::fromUtf8(":/img/frame.png")));
@@ -339,6 +339,22 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     }
     
     
+    QMenu *MenuTables = new QMenu(tr("Table handler"),rootmenu);
+    MenuTables->setIcon(QIcon(QString::fromUtf8(":/img/newtodo.png")));
+    MenuTables->addAction(CommandStorage::instance()->actS(INSERT_TABLE));
+    for (int w = 0; TablesAction[w] != D_NONE; w++) {
+                 DynamicCommandID id = TablesAction[w];
+                 if ( id == D_SEPARATOR) {
+                    MenuTables->addSeparator();
+                 }
+                 QAction* t_1 = CommandStorage::instance()->actD(id);
+                 if (t_1) {
+                 MenuTables->addAction(t_1);
+                 }
+        
+    }
+    
+    
     //////rootmenu->addAction(MenuFrame->menuAction()); 
     
     
@@ -350,6 +366,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
                  
                  if ( id == D_SUBMENUS ) {
                      rootmenu->addSeparator();
+                     rootmenu->addAction(MenuTables->menuAction()); 
                      rootmenu->addAction(MenuFrame->menuAction()); 
                      rootmenu->addSeparator();
                  }
@@ -398,8 +415,7 @@ void TextLayer::MakeActionHere()
     snc->registerCommand_S(StaticCmd(PARA_BREACK_PAGE_POLICY,tr("Set Paragraph/Inline Frame/Table Page Breack Policy"),QIcon(":/img/wizard.png"),QKeySequence(),dev->txtControl(),SLOT(ParaBlockPageBreackPolicyInsert())));
     snc->registerCommand_S(StaticCmd(INSERT_FRAME,tr("Insert inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(FosInsertFrame())));
     snc->registerCommand_S(StaticCmd(MARGIN_CURRENT_ELEMENT,tr("Set Margin Paragraph/Table/Inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(SetElementMargin())));
-    
-    
+    snc->registerCommand_S(StaticCmd(INSERT_TABLE,tr("Insert Table"),QIcon(":/img/table.png"),QKeySequence(),dev->txtControl(),SLOT(CreateanewTable())));
     
     
    ////////// qDebug() << "### static count " << snc->countS();
@@ -423,7 +439,7 @@ void TextLayer::MakeDinamicCommand()
     if (c.currentFrame() && c.currentFrame() != RootFrame) {
         inlineFrameUnderCursor = true;
     }
-    
+    bool istable = c.currentTable();
     
     const QIcon TXTcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().foreground().color());
     const QIcon TXTBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().background().color());
@@ -454,7 +470,24 @@ void TextLayer::MakeDinamicCommand()
     dync->registerCommand_D(DinamicCmd(FRAME_BGCOLOR,false,false,tr("Frame Background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(SetFrameBGColor()),inlineFrameUnderCursor));
      
     
+    dync->registerCommand_D(DinamicCmd(TABLE_FORMATS,false,false,tr("Table Format"),QIcon(":/img/table.png"),QKeySequence(),dev->txtControl(),SLOT(UpdateTableFormat()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_BGCOLOR,false,false,tr("Table background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(MaketableColorBG()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_CELLBGCOLOR,false,false,tr("Cell background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(SetTableCellColor()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_APPENDCOOL,false,false,tr("Append column"),QIcon(":/img/row_table.png"),QKeySequence(),dev->txtControl(),SLOT(AppendTableCools()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_APPENDROW,false,false,tr("Append row"),QIcon(":/img/row_table.png"),QKeySequence(),dev->txtControl(),SLOT(AppendTableRows()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_REMCOOL,false,false,tr("Remove column on cursor"),QIcon(":/img/stop.png"),QKeySequence(),dev->txtControl(),SLOT(RemoveCoolByCursorPosition()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_REMROW,false,false,tr("Remove row on cursor"),QIcon(":/img/stop.png"),QKeySequence(),dev->txtControl(),SLOT(RemoveRowByCursorPosition()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_MERGECELL,false,false,tr("Merge selected cell"),QIcon(":/img/reload.png"),QKeySequence(),dev->txtControl(),SLOT(MergeCellByCursorPosition()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_COOLWIDHT,false,false,tr("Table Column width"),QIcon(":/img/configure.png"),QKeySequence(),dev->txtControl(),SLOT(SetColumLarge()),istable));
     
+    /*
+    
+ DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW ,TABLE_REMCOOL , TABLE_REMROW ,  TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
+    
+    */
+    
+   
+   
    /////////// qDebug() << "### dinamic count " << dync->countD();
     
     
