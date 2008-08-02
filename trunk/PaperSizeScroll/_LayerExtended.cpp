@@ -43,13 +43,11 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
 	  setDocument(dummy,FOP);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
-    setZValue (3.555555);
-    
-    
+    setZValue (0.555555);
     LastRect = dev->txtControl()->boundingRect();
     QGraphicsRectItem::setRect(LastRect);
     LastUpdateRequest = LastRect;
-    
+    AppendHeader();
 }
 
 QTextCursor TextLayer::textCursor() 
@@ -68,6 +66,9 @@ QTextDocument *TextLayer::document()
 {
   return dev->txtControl()->document();
 }
+
+
+
 void TextLayer::setDocument( const QTextDocument * document , FileHandlerType Type )
 {
     dev->txtControl()->setDocument(document,Type);
@@ -82,6 +83,15 @@ void TextLayer::updatearea( const QRect areas )
     LastUpdateRequest = areas;
     update(areas);
 }
+
+void TextLayer::AppendHeader()
+{
+    Aheader = new AbsoluteLayer(this);
+}
+
+
+
+
 
 void TextLayer::cursor_wake_up()
 {
@@ -175,17 +185,19 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void TextLayer::focusInEvent ( QFocusEvent * event ) 
 {
-    /////////////qDebug() << "### focusInEvent ..." << flags();
+    qDebug() << "### TextLayer focusInEvent ..." << flags();
     QGraphicsItem::setSelected(true);
     scene()->setFocusItem(this,Qt::ShortcutFocusReason);
-    return QGraphicsItem::focusInEvent(event);
+    dev->txtControl()->setBlinkingCursorEnabled(true);
+    ///////return QGraphicsItem::focusInEvent(event);
 }
 
 void TextLayer::focusOutEvent ( QFocusEvent * event ) 
 {
-   //////////// qDebug() << "### focusOutEvent ...";
+    qDebug() << "### TextLayer focusOutEvent ...";
     QGraphicsItem::setSelected(false);
-    return QGraphicsItem::focusOutEvent(event);
+    dev->txtControl()->setBlinkingCursorEnabled(false);
+    //////return QGraphicsItem::focusOutEvent(event);
 }
 
 void TextLayer::inputMethodEvent ( QInputMethodEvent * event )  
@@ -204,7 +216,7 @@ void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     
      if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
-      qDebug() << "###  mouseDoubleClickEvent... ";
+     /////////// qDebug() << "###  mouseDoubleClickEvent... ";
       if (dev->txtControl()->procesevent(event)) {
       return;
       }
@@ -217,10 +229,10 @@ void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
 void TextLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "### layer mouseMoveEvent a.. " << event->button() ;  /* no button capture !!!! */
+    ///////////qDebug() << "### layer mouseMoveEvent a.. " << event->button() ;  /* no button capture !!!! */
     
     if (dev->txtControl()->AllowedPosition(event->pos())) {
-      qDebug() << "### layer mouseMoveEvent b .. ";
+     //////////// qDebug() << "### layer mouseMoveEvent b .. ";
       if (dev->txtControl()->procesevent(event)) {
       return;
       }
@@ -233,7 +245,7 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
   
     
     if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
-    qDebug() << "### layer mouseReleaseEvent.. left .";
+    ////////////qDebug() << "### layer mouseReleaseEvent.. left .";
       if (dev->txtControl()->procesevent(event)) {
       return;
       }
@@ -247,7 +259,7 @@ void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
     
     if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
         
-        qDebug() << "### layer mousePressEvent left ...";
+        //////////////qDebug() << "### layer mousePressEvent left ...";
         
        if (dev->txtControl()->procesevent(event)) {
         return;
@@ -313,7 +325,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         inlineFrameUnderCursor = true;
     }
     
-    qDebug() << "### contextMenuEvent....";
+    ////////////qDebug() << "### contextMenuEvent....";
     MakeDinamicCommand();
  
     
