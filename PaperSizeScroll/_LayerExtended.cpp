@@ -393,7 +393,7 @@ void TextLayer::MakeActionHere()
 {
     CommandStorage *snc = CommandStorage::instance();
     snc->clearS();
-    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source"),QIcon(":/img/view-source.png"),QKeySequence("Alt+S"),dev->txtControl(),SLOT(showhtml())));
+    snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source as XHTML"),QIcon(":/img/view-source.png"),QKeySequence("Alt+S"),dev->txtControl(),SLOT(showhtml())));
     snc->registerCommand_S(StaticCmd(INSERT_IMAGE,tr("Insert image"),QIcon(":/img/pictures.png"),QKeySequence("Ctrl+J"),dev->txtControl(),SLOT(InsertImageonCursor())));
     snc->registerCommand_S(StaticCmd(PARA_BREACK_PAGE_POLICY,tr("Set Paragraph/Inline Frame/Table Page Breack Policy"),QIcon(":/img/wizard.png"),QKeySequence(),dev->txtControl(),SLOT(ParaBlockPageBreackPolicyInsert())));
     snc->registerCommand_S(StaticCmd(INSERT_FRAME,tr("Insert inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(FosInsertFrame())));
