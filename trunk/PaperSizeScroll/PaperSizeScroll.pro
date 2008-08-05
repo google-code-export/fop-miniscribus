@@ -22,6 +22,13 @@ QT += xml network svg
 CONFIG   +=  qt release warn_off console
 contains(QT_CONFIG, opengl):QT += opengl
 
+macx {
+###########  only on work to view debug output
+CONFIG -= app_bundle
+}
+
+
+
 # Input
 HEADERS += _Image_Page_Struct.h \
            _LayerApi.h \
