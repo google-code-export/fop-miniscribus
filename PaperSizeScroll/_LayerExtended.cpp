@@ -87,6 +87,7 @@ void TextLayer::updatearea( const QRect areas )
 void TextLayer::AppendHeader()
 {
     Aheader = new AbsoluteLayer(this);
+     Aheader->setPos (200,333);
 }
 
 
