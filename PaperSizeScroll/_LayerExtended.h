@@ -76,6 +76,7 @@ public slots:
     void ensureVisible( const QRectF areas );
     void updatearea( const QRect areas );
     void cursor_wake_up();
+    void cursor_stop_it();
 /*
     void deleteSelected();
     void cut();

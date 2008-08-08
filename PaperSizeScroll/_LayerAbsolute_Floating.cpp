@@ -61,6 +61,13 @@ void AbsoluteLayer::updatearea( const QRect areas )
 {
     lastUpdateRequest = areas; 
     qDebug() << "### updatearea " << areas;
+   
+    const QRectF txtrect = dev->txtControl()->boundingRect();
+    if (rect().height() < txtrect.height()) {
+    setRect(QRectF(0,0,rect().width(),txtrect.height()));
+    Angle_4->setPos(boundingRect().bottomRight());
+    Angle_2->setPos(boundingRect().topRight());
+    }
     update(areas);
 }
 
@@ -169,6 +176,7 @@ void AbsoluteLayer::focusInEvent ( QFocusEvent * event )
     QGraphicsItem::setSelected(true);
     scene()->setFocusItem(this,Qt::ShortcutFocusReason);
     dev->txtControl()->setBlinkingCursorEnabled(true);
+    emit close_main_cursor();
     return QGraphicsItem::focusInEvent(event);
 }
 
@@ -217,12 +225,24 @@ void AbsoluteLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void AbsoluteLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-  qDebug() << "### mouseReleaseEvent...";
+     
+
+  if (dev->txtControl()->procesevent(event)) {
+  return;
+  }
+
+
+   qDebug() << "### mouseReleaseEvent...";
   return QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void AbsoluteLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+
+       if (dev->txtControl()->procesevent(event)) {
+        return;
+       }
+     
     qDebug() << "### mousePressEvent...";
     return QGraphicsItem::mousePressEvent(event);
 }
@@ -236,17 +256,20 @@ void AbsoluteLayer::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void AbsoluteLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     qDebug() << "### hoverLeaveEvent...";
+    dev->txtControl()->setBlinkingCursorEnabled(false);
     return QGraphicsItem::hoverLeaveEvent(event);
 }
 
 void AbsoluteLayer::keyPressEvent( QKeyEvent * event ) 
 {
+   return dev->txtControl()->Controller_keyPressEvent(event);
    qDebug() << "### keyPressEvent...";
     return QGraphicsItem::keyPressEvent(event);
 }
 
 void AbsoluteLayer::keyReleaseEvent ( QKeyEvent * event )
 {
+    return dev->txtControl()->Controller_keyReleaseEvent(event);
     qDebug() << "### keyReleaseEvent...";
     return QGraphicsItem::keyReleaseEvent(event);
 }

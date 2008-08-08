@@ -87,10 +87,15 @@ void TextLayer::updatearea( const QRect areas )
 void TextLayer::AppendHeader()
 {
     Aheader = new AbsoluteLayer(this);
-     Aheader->setPos (200,333);
+    Aheader->setPos (200,333);
+    connect(Aheader, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
 }
 
-
+void TextLayer::cursor_stop_it()
+{
+   dev->txtControl()->setBlinkingCursorEnabled(false);
+   SceneReload();
+}
 
 
 

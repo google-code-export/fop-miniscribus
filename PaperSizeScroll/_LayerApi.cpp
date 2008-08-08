@@ -2643,7 +2643,7 @@ void LayerText::paint(QPainter * painter , const QStyleOptionGraphicsItem *optio
         CTX.palette.setColor(QPalette::Highlight,BackHightlight);
         CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
         CTX.cursorPosition = -1;
-        if (cursorTimeLine.isActive()) {
+        if (cursorTimeLine.isActive() && cursortime) {
         CTX.cursorPosition = textCursor().position();
         }
       	if ( textCursor().hasSelection()) {
