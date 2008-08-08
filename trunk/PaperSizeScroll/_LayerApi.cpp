@@ -151,6 +151,11 @@ QRectF TextProcessor::boundingRect()
 /* new cursor position .....  */
 void TextProcessor::cursorPosition( const QTextCursor curs )
 {
+     if (!_d->isUndoRedoEnabled()) {
+     _d->setUndoRedoEnabled(true);
+     }
+
+
 	cursor_position = curs.position();
 	LastCharFormat = curs.charFormat();  
 	if (curs.isCopyOf(C_cursor)) {
@@ -182,15 +187,20 @@ void TextProcessor::setBlinkingCursorEnabled( bool enable )
 {
      edit_enable = enable;
   
-	   if (cursorOn) {
-			   return;
-		 }
-		 cursorOn = enable;
+      if (cursorOn) {
+      return;
+      }
+      cursorOn = enable;
     if (enable && QApplication::cursorFlashTime() > 0) {
         cursorTimeLine.start( QApplication::cursorFlashTime() / 2,this);
-		}  else {
+        }  else {
         cursorTimeLine.stop();
-		}
+    }
+
+  emit q_update(boundingRect().toRect());
+  if (cursorTimeLine.isActive()) {
+  emit q_update_scene();
+  }
 }
 
 
@@ -2046,7 +2056,7 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
              srcBlock = srcBlock.next(), dstBlock = dstBlock.next()) {
             dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
         }
-	_d->setUndoRedoEnabled(true);
+	_d->setUndoRedoEnabled(false);
 	M_PageSize DefaultSizeDoc;
 	SwapPageModel(DefaultSizeDoc);
   PageTotal = _d->pageCount();
@@ -2595,5 +2605,110 @@ void TextProcessor::MaketableColorBG()
  
  
  
+/* #################################### floating text layer  ###########################################################  */
+
+
+LayerText::LayerText()
+ : TextProcessor(FLAT)
+{
+    PageTotal = 1;
+    QTextDocument *dummy = new QTextDocument();
+    dummy->setHtml ( "<p>Floating Layer2...</p>" ); /////  ReadFile("a.html")
+    setDocument(dummy,FOP);
+}
+
+
+void LayerText::SetRect ( const QRectF re )
+{
+        _d->setPageSize( re.size() );
+        Page_Edit_Rect = re;
+        Page_Width = Page_Edit_Rect.width();
+        Page_Height = Page_Edit_Rect.height();
+        
+}
+
+
+void LayerText::paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   )
+{
+	QTextFrame  *Tframe = _d->rootFrame();
+	root_format = Tframe->frameFormat();
+        
+        QAbstractTextDocumentLayout::PaintContext CTX;
+        painter->save();
+        painter->setClipRect(Page_Edit_Rect);
+        CTX.clip = Page_Edit_Rect;
+        QColor BackHightlight("#0072ab");
+        BackHightlight.setAlpha(180);   /* original 150 */
+        CTX.palette.setColor(QPalette::Text, Qt::black);
+        CTX.palette.setColor(QPalette::Highlight,BackHightlight);
+        CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
+        CTX.cursorPosition = -1;
+        if (cursorTimeLine.isActive()) {
+        CTX.cursorPosition = textCursor().position();
+        }
+      	if ( textCursor().hasSelection()) {
+	QAbstractTextDocumentLayout::Selection Internal_selection;
+	Internal_selection.cursor = textCursor();
+	cursorIsFocusIndicator = true;
+	QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
+	Internal_selection.format.setBackground(CTX.palette.brush(cg, QPalette::Highlight));
+	Internal_selection.format.setForeground(CTX.palette.brush(cg, QPalette::HighlightedText));
+	Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+	CTX.selections.append(Internal_selection);
+	}
+        _d->documentLayout()->draw(painter,CTX);
+        painter->restore();	
+}
+
+
+void LayerText::setDocument ( const QTextDocument * document , FileHandlerType Type )
+{
+    if (_d) {
+    _d->clear();
+    _d->disconnect(this);
+    _d->documentLayout()->disconnect(this);
+    _d = 0;
+    } else {
+    _d = new QTextDocument(0);
+    }
+    clipboard = QApplication::clipboard();
+    Op = Type;
+    _d = const_cast<QTextDocument*>(document); 
+  
+        for (QTextBlock srcBlock = document->firstBlock(), dstBlock = _d->firstBlock();
+             srcBlock.isValid() && dstBlock.isValid();
+             srcBlock = srcBlock.next(), dstBlock = dstBlock.next()) {
+            dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
+        }
+      
+      
+      
+      
+            QTextFrame  *Tframe = _d->rootFrame();
+	    QTextFrameFormat Ftf = Tframe->frameFormat();
+	    Ftf.setLeftMargin(0);
+	    Ftf.setBottomMargin(0);
+	    Ftf.setTopMargin(0);
+            Ftf.setBackground(QBrush(Qt::white));
+            Ftf.setRightMargin(0);
+	    Ftf.setPadding (4);
+            Tframe->setFrameFormat(Ftf);
+      
+      
+  _d->setUndoRedoEnabled(false);	
+  C_cursor = QTextCursor(_d);
+  C_cursor.setPosition(0,QTextCursor::MoveAnchor);
+  setBlinkingCursorEnabled(true);
+  QObject::connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(int_clipboard_new()));
+  QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
+  ///////QObject::connect(_d, SIGNAL(modificationChanged(bool)), this, SLOT(ChangeFormatDoc(bool)));
+  ///////QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(ChangeFormatDoc()));
+  /////QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
+	///////////QObject::connect(_d, SIGNAL(q_pageupdate()), this, SLOT(PageUpdate()));
+				
+				
+}
+
+
  
 
