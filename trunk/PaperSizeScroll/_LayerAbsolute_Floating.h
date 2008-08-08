@@ -107,6 +107,9 @@ private:
     qreal Rotate;
     QRectF lastUpdateRequest;
     AbsText *dev;
+signals:
+void close_main_cursor();
+
 private slots:
 void slotModpos_1( const QPointF posi );
 void slotResize_1( const QPointF posi );
