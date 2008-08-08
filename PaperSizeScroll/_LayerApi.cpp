@@ -2,6 +2,7 @@
 
 #include "_Image_Page_Struct.h"
 
+//////// commento 
 
 #include "table_setting.h"
 #include "href_gui.h"
