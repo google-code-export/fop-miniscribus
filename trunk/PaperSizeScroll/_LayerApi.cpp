@@ -2632,11 +2632,14 @@ void LayerText::paint(QPainter * painter , const QStyleOptionGraphicsItem *optio
 {
 	QTextFrame  *Tframe = _d->rootFrame();
 	root_format = Tframe->frameFormat();
+
+
+        QRectF stxt = _d->documentLayout()->frameBoundingRect(Tframe);
         
         QAbstractTextDocumentLayout::PaintContext CTX;
         painter->save();
-        painter->setClipRect(Page_Edit_Rect);
-        CTX.clip = Page_Edit_Rect;
+        painter->setClipRect(stxt);
+        CTX.clip = stxt;
         QColor BackHightlight("#0072ab");
         BackHightlight.setAlpha(180);   /* original 150 */
         CTX.palette.setColor(QPalette::Text, Qt::black);
