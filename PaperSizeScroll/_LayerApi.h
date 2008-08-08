@@ -156,13 +156,13 @@ public:
   int PageTotal;
   void ResetClickTimer();
   /* draw item */
-  //////////QPicture LayoutDraw;
+  QBasicTimer cursorTimeLine;  /* blink cursor time line */
   private:
   qreal Get_Cell_Width( QTextTableFormat TableFormat , int position ); 
   QPair<int,int> RangeSelection;
   bool IsSelfPlacePaste();
   void StartDragOperation();
-  QBasicTimer cursorTimeLine;  /* blink cursor time line */
+  
   QBasicTimer trippleClickTimer;
   QBasicTimer dragClickTimer;
   
@@ -276,8 +276,20 @@ private slots:
 
 
 
-
-
+class LayerText : public TextProcessor
+{
+    Q_OBJECT
+//
+public:
+explicit LayerText();
+void SetRect ( const QRectF re );
+void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   );
+void setDocument ( const QTextDocument * document , FileHandlerType Type = FOP );
+protected:
+private:
+private slots:
+  
+};
 
 
 

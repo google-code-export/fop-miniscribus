@@ -8,8 +8,9 @@ AbsoluteLayer::~AbsoluteLayer()
 
 
 AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent )
-    : QGraphicsRectItem(parent),Rotate(45)
+    : QGraphicsRectItem(parent),dev(new AbsText),Rotate(0)
 {
+    dev->q = this;
     qDebug() << "### init....";
     setAcceptsHoverEvents(true);
     setAcceptDrops(true);
@@ -29,10 +30,38 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent )
     Angle_2->allow(true);
     connect( Angle_2, SIGNAL(dragging(const QPointF&)), this, SLOT(slotRotate_1(const QPointF&)));
     Angle_2->setPos(boundingRect().topRight());
-    
-    
+    lastUpdateRequest = rect();  
 
+    QTextDocument *dummy = new QTextDocument();
+    dummy->setHtml ( "<p>Floating Layer1...andando a passeggio di cose preio...</p>" ); /////  ReadFile("a.html")
+    setDocument(dummy,FOP);
+    dev->txtControl()->SetRect ( rect() );
+}
+
+
+void AbsoluteLayer::setDocument( const QTextDocument * doc , FileHandlerType Type )
+{
+    dev->txtControl()->setDocument(doc,Type);
+    dev->txtControl()->SetRect ( rect() );
     
+}
+
+QTextCursor AbsoluteLayer::textCursor() 
+{
+  return dev->txtControl()->textCursor();
+}
+
+QTextDocument *AbsoluteLayer::document()
+{
+  return dev->txtControl()->document();
+}
+
+
+void AbsoluteLayer::updatearea( const QRect areas )
+{
+    lastUpdateRequest = areas; 
+    qDebug() << "### updatearea " << areas;
+    update(areas);
 }
 
 void AbsoluteLayer::slotRotate_1( const QPointF posi )
@@ -42,22 +71,28 @@ void AbsoluteLayer::slotRotate_1( const QPointF posi )
     if (newPos == refPos) {
         return;
     }
-  
-    QPointF ceradius = boundingRect().center();
-  
-    qreal ceAngle = atan2(ceradius.y(), ceradius.x());
-  
-    qDebug() << "###  ceAngle  " << ceAngle;
-  
-    qreal refAngle = atan2(refPos.y(), refPos.x());
-    qreal newAngle = atan2(newPos.y(), newPos.x());
-    Rotate = 180.0 * (newAngle - refAngle) / M_PI;
-    qDebug() << "###  Rotate  " << Rotate;
+    QLineF newangles(boundingRect().topLeft(),newPos);
+    newangles.setLength ( boundingRect().width() );
+    Rotate = 360 - newangles.angle();
     Angle_4->setPos(boundingRect().bottomRight());
     Angle_2->setPos(boundingRect().topRight());
+    dev->txtControl()->SetRect ( rect() );
     update();
 }
 
+
+QLineF AbsoluteLayer::LineTops()
+{
+  return transform().map(QLineF(0,0,rect().width(),0));
+}
+
+QLineF AbsoluteLayer::Diagonal()
+{
+  return transform().map(QLineF(QPointF(0,0),boundingRect().bottomRight()));
+}
+
+
+////////////////QPointF ( qreal x, qreal y )
 
 void AbsoluteLayer::slotModpos_1( const QPointF posi )
 {
@@ -66,8 +101,10 @@ void AbsoluteLayer::slotModpos_1( const QPointF posi )
     if (newPos == refPos) {
         return;
     }
+    QTransform trap = transform();
+    QRectF truebound = trap.mapRect ( absoluteRect() );
     QPointF buttonrelative = mapFromItem( Angle_1 ,  posi );
-    setPos(buttonrelative);
+    setPos(buttonrelative - LineTops().p1());
     setToolTip(QString("X = %1 / Y= %2").arg(buttonrelative.x()).arg(buttonrelative.y()));
 }
 
@@ -78,27 +115,51 @@ void AbsoluteLayer::slotResize_1( const QPointF posi )
     if (newPos == refPos) {
         return;
     }
-    QPointF buttonrelative = mapFromItem( Angle_4 ,  posi );
-    QPointF tl = this->pos();
-    const qreal largo = qAbs(tl.rx() +  boundingRect().width()  - buttonrelative.x());
-    const qreal alto = qAbs(tl.ry() +  boundingRect().height()  - buttonrelative.y());
+    QPointF buttonrelative = mapFromItem( Angle_4 ,  posi ) ;
+    QPointF tl = Diagonal().p1();
+    const qreal largo = qAbs(pos().rx() +  boundingRect().width()  - buttonrelative.x()  - tl.x() );
+    const qreal alto = qAbs(pos().ry() +  boundingRect().height()  - buttonrelative.y() - tl.y());
     setRect(QRectF(0,0,qBound(MinimumWhidhLayer,largo,MAXLargoTmp),qBound(MinimumHightLayer,alto,MAXLargoTmp)));
     setToolTip(QString("X = %1 / Y= %2").arg(buttonrelative.x()).arg(buttonrelative.y()));
     Angle_4->setPos(boundingRect().bottomRight());
     Angle_2->setPos(boundingRect().topRight());
+    dev->txtControl()->SetRect ( rect() );
 
 }
 
 void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setRenderHint(QPainter::TextAntialiasing);
-    painter->setPen( Qt::NoPen );
-    painter->setBrush(Qt::red);
+    dev->txtControl()->SetRect ( rect() );
+    const qreal liwid = 5.0;
+    const qreal limid = liwid / 2;
+    dev->txtControl()->paint(painter,option,widget);
+    painter->setPen( QPen( Qt::green ,liwid));
+    //////painter->drawLine(QLineF(limid,limid,limid,rect().height() - limid));
+
+
+
+    painter->setPen( QPen(Qt::black ,1));
+    painter->setBrush(Qt::NoBrush);
     painter->drawRect(boundingRect());
+
+    painter->setPen(Qt::NoPen);
+    QColor Visiblerecord(Qt::red);
+		Visiblerecord.setAlpha(22);
+    painter->setBrush(Visiblerecord);
+    painter->drawRect(lastUpdateRequest);
+
+
+
+
+
+
+
     QMatrix matrix;
     matrix.translate ( boundingRect().center().x() , boundingRect().center().y() );
     matrix.rotate(Rotate);
     matrix.translate ( - boundingRect().center().x() , - boundingRect().center().y() );
+
     setTransform(QTransform(matrix),false);
 }
 
@@ -107,6 +168,7 @@ void AbsoluteLayer::focusInEvent ( QFocusEvent * event )
     qDebug() << "### AbsoluteLayer focusInEvent ..." << flags();
     QGraphicsItem::setSelected(true);
     scene()->setFocusItem(this,Qt::ShortcutFocusReason);
+    dev->txtControl()->setBlinkingCursorEnabled(true);
     return QGraphicsItem::focusInEvent(event);
 }
 
@@ -114,6 +176,7 @@ void AbsoluteLayer::focusOutEvent ( QFocusEvent * event )
 {
     qDebug() << "### AbsoluteLayer focusOutEvent ...";
     QGraphicsItem::setSelected(false);
+    dev->txtControl()->setBlinkingCursorEnabled(false);
     return QGraphicsItem::focusOutEvent(event);
 }
 
@@ -128,6 +191,15 @@ QRectF AbsoluteLayer::boundingRect() const
 {
     return rect();
 }
+
+QRectF AbsoluteLayer::absoluteRect()
+{
+    return QRectF(pos(),boundingRect().size());
+}
+
+
+
+
 
 void AbsoluteLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -261,8 +333,25 @@ void FWButton::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
 
 
+AbsText::AbsText()
+  : device(0)
+{ 
 
+}
 
+/* only one connect */
+LayerText *AbsText::txtControl() const
+{
+    if (!device) {
+       AbsoluteLayer *that = const_cast<AbsoluteLayer *>(q); 
+       device = new LayerText();
+       ////////connect(device, SIGNAL(q_cursor_newPos() ),q, SLOT(cursor_wake_up()));
+       connect(device, SIGNAL(q_update(QRect) ),q, SLOT(updatearea(QRect)));
+       ///////connect(device, SIGNAL(q_visible(QRectF) ),q, SLOT(ensureVisible(QRectF)));
+       ///////connect(device, SIGNAL(q_update_scene()),q, SLOT(SceneReload()));
+    }
+    return device;
+}
 
 
 
