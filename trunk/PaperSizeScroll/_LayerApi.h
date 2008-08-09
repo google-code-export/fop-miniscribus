@@ -78,7 +78,7 @@ public:
   QRectF boundingRect();  /* all page and spacer to x y 00 */
   QRectF GroupboundingRect();  /* + shadow space */
   
-  inline bool Edit_On() { return edit_enable; }  /* same as cursor blink true / false */
+  inline bool Edit_On() { return cursorTimeLine.isActive(); }  /* same as cursor blink true / false */
   void setBlinkingCursorEnabled( bool enable );
 
   

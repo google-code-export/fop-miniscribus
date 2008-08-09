@@ -186,21 +186,28 @@ void TextProcessor::cursorPosition( const QTextCursor curs )
 
 void TextProcessor::setBlinkingCursorEnabled( bool enable )
 {
-     edit_enable = enable;
+    edit_enable = enable;
   
-      if (cursorOn) {
-      return;
-      }
-      cursorOn = enable;
+    if ( enable && cursorTimeLine.isActive() ) {
+    cursorOn = true;
+    emit q_update(boundingRect().toRect());
+    return;
+    }
+    
+    
     if (enable && QApplication::cursorFlashTime() > 0) {
         cursorTimeLine.start( QApplication::cursorFlashTime() / 2,this);
-        }  else {
+    }  else {
         cursorTimeLine.stop();
     }
 
   emit q_update(boundingRect().toRect());
   if (cursorTimeLine.isActive()) {
+  cursorOn = true;
   emit q_update_scene();
+  } else {
+  cursorOn = false;
+  emit q_update(boundingRect().toRect());
   }
 }
 
@@ -2633,9 +2640,7 @@ void LayerText::paint(QPainter * painter , const QStyleOptionGraphicsItem *optio
 {
 	QTextFrame  *Tframe = _d->rootFrame();
 	root_format = Tframe->frameFormat();
-
-
-        QRectF stxt = _d->documentLayout()->frameBoundingRect(Tframe);
+        const QRectF stxt = _d->documentLayout()->frameBoundingRect(Tframe);
         
         QAbstractTextDocumentLayout::PaintContext CTX;
         painter->save();

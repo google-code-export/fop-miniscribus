@@ -45,10 +45,15 @@ class FWButton : public QObject, public QGraphicsItem
         void mouseReleaseEvent( QGraphicsSceneMouseEvent * event );
         void mouseDoubleClickEvent( QGraphicsSceneMouseEvent * event );
         void allow( bool e );
+        void focusInEvent ( QFocusEvent * event );
+        void focusOutEvent ( QFocusEvent * event );
+        void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+        void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
     Q_SIGNALS:
         void dragging(const QPointF & point);
         void reset();
+        void operate(bool);
 
     private:
         QGraphicsItem *    m_parent;
@@ -104,6 +109,7 @@ private:
     FWButton  *Angle_1;
     FWButton  *Angle_2;
     FWButton  *Angle_4;
+    bool OnMoveRects;
     qreal Rotate;
     QRectF lastUpdateRequest;
     AbsText *dev;
@@ -114,8 +120,9 @@ private slots:
 void slotModpos_1( const QPointF posi );
 void slotResize_1( const QPointF posi );
 void slotRotate_1( const QPointF posi );
-
+void MoveActions( bool e );
 void updatearea( const QRect areas );
+void UpdateDots();
 
 };
 
