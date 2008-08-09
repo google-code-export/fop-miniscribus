@@ -104,6 +104,50 @@ typedef enum {
 	ID_ABOUT_QT			= 1403
 } StaticCommandID;
 
+
+/* command from absolute Layer */
+
+typedef enum {
+	
+	F_NONE				= 0,
+	F_SEPARATOR				= 1,
+	F_SUBMENUS  = 5001,
+	FTXTM_COPY		= 10,
+	FTXTM_PASTE		= 11,
+	FTXTM_SELECTALL		= 12,
+	FTXTM_REDO		= 13,
+	FTXTM_UNDO		= 14,
+	FTXTM_CUT		= 15,
+	FTXT_COLOR			= 400,
+	FTXT_BG_COLOR	= 401,
+	FTXT_BOLD			= 402,
+	FTXT_UNDERLINE			= 403,
+	FTXT_STRIKOUT			= 404,
+	FTXT_OVERLINE			= 405,
+	FTXT_NOBREAKLINE		= 406,
+	FTXT_FONTS		= 407,
+	FLAYER_BG = 500,
+	FLAYER_BORDER_COLOR = 502,
+	FFRAME_BGCOLOR			= 407,
+	FTABLE_BGCOLOR			= 408,
+	FTABLE_FORMATS			= 409,
+	FTABLE_CELLBGCOLOR			= 410,
+	FTABLE_APPENDCOOL			= 411,
+	FTABLE_APPENDROW			= 412,
+	FTABLE_REMCOOL		= 414,
+	FTABLE_REMROW		= 415,
+	FTABLE_MERGECELL		= 416,
+	FTABLE_COOLWIDHT		= 417
+} AbsCommandID;
+
+
+
+
+
+
+
+
+
 struct DinamicCmd {
 	DinamicCmd() {
 		id = D_NONE;
@@ -135,6 +179,9 @@ struct DinamicCmd {
 
 
 
+
+
+
 struct StaticCmd {
 	StaticCmd() {
 		id = S_NONE;
@@ -159,26 +206,58 @@ struct StaticCmd {
 
 
 
-
+struct AbsoluteCmd {
+	AbsoluteCmd() {
+		id = F_NONE;
+	}
+	
+	AbsoluteCmd(AbsCommandID Id, bool e , bool s ,  QString Name, QIcon Icon, 
+	          QKeySequence Seq, QObject* Reciever, const QString& Slot , bool f = true ) {
+		id = Id;
+		name = Name;
+		icon = Icon;
+		shortcut = Seq;
+		reciever = Reciever;
+		slot = Slot;
+		checkaBle_ = e;
+		enables = f;
+		status = s;
+	}
+	
+	AbsCommandID id;
+	QString name;
+	bool checkaBle_;
+	bool status;
+	bool enables;
+	QIcon icon;
+	QKeySequence shortcut;
+	QObject* reciever;
+	QString slot;
+};
 
 
 
 class CommandStorage {
 public:
-	static CommandStorage* instance();
+  static CommandStorage* instance();
 
-	void registerCommand_S(const StaticCmd&);
+  void registerCommand_S(const StaticCmd&);
   void registerCommand_D(const DinamicCmd&);
-	QAction* actS(StaticCommandID);
+  void registerCommand_F(const AbsoluteCmd&);
+  QAction* actS(StaticCommandID);
   QAction* actD(DynamicCommandID);
+  QAction* actF(AbsCommandID);
   inline void clearS() { Scmd_.clear(); }
-	inline void clearD() { Dcmd_.clear(); }
-	inline int countD() { return Dcmd_.size(); }
-	inline int countS() { return Scmd_.size(); }
+  inline void clearD() { Dcmd_.clear(); }
+  inline void clearF() { Fcmd_.clear(); }
+  inline int countD() { return Dcmd_.size(); }
+  inline int countS() { return Scmd_.size(); }
+  inline int countF() { return Fcmd_.size(); }
 
 private:
 	CommandStorage() { }
 	static CommandStorage* st_;
+        QMap<AbsCommandID, QAction*> Fcmd_;
 	QMap<StaticCommandID, QAction*> Scmd_;
 	QMap<DynamicCommandID, QAction*> Dcmd_;
 };

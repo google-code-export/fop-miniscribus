@@ -67,6 +67,11 @@ class FWButton : public QObject, public QGraphicsItem
 
 Q_DECLARE_METATYPE(FWButton *)
 
+  enum LAYERTYPE {
+    DIV_ABSOLUTE = 100,
+    DIV_HEADER = 200, 
+    DIV_FOOTER = 300
+  };
 
 
 
@@ -78,7 +83,7 @@ class AbsoluteLayer : public QObject, public QGraphicsRectItem
 
 public:
     
-    AbsoluteLayer( QGraphicsItem *parent );
+    AbsoluteLayer( QGraphicsItem *parent , LAYERTYPE layermodus = DIV_ABSOLUTE );
     ~AbsoluteLayer();
     QRectF boundingRect() const;
     QRectF absoluteRect();
@@ -106,6 +111,9 @@ protected:
     void inputMethodEvent ( QInputMethodEvent * event );
 
 private:
+    LAYERTYPE layermods;
+    int id;
+    bool ContextOpen;
     FWButton  *Angle_1;
     FWButton  *Angle_2;
     FWButton  *Angle_4;
@@ -115,6 +123,7 @@ private:
     AbsText *dev;
 signals:
 void close_main_cursor();
+void pagesize_swap();
 
 private slots:
 void slotModpos_1( const QPointF posi );
@@ -123,6 +132,8 @@ void slotRotate_1( const QPointF posi );
 void MoveActions( bool e );
 void updatearea( const QRect areas );
 void UpdateDots();
+void ShowInfos();
+void MakeAllCommand();
 
 };
 

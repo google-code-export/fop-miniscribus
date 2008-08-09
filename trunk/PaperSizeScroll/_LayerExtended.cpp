@@ -35,12 +35,12 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
 {
     qDebug() << "### init....";
     dev->q = this;
-	  setAcceptsHoverEvents(true);
+    setAcceptsHoverEvents(true);
     setAcceptDrops(true);
     
     QTextDocument *dummy = new QTextDocument();
-	  dummy->setHtml(ReadFile("a.html")); /////  
-	  setDocument(dummy,FOP);
+    dummy->setHtml(ReadFile("a.html")); /////  
+    setDocument(dummy,FOP);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
     setZValue (0.555555);
@@ -86,9 +86,12 @@ void TextLayer::updatearea( const QRect areas )
 
 void TextLayer::AppendHeader()
 {
-    Aheader = new AbsoluteLayer(this);
-    Aheader->setPos (200,333);
+    Aheader = new AbsoluteLayer(this,DIV_HEADER);
+    QTextDocument *dummy = new QTextDocument();
+    dummy->setHtml ( "<p>Header.</p>" );
+    Aheader->setDocument(dummy,FOP);
     connect(Aheader, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
+    connect(Aheader, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
 }
 
 void TextLayer::cursor_stop_it()
@@ -97,6 +100,11 @@ void TextLayer::cursor_stop_it()
    SceneReload();
 }
 
+void TextLayer::PageSizeReload()
+{
+    ApiSession *sx = ApiSession::instance();
+    SwapPageModel( sx->CurrentPageFormat() );
+}
 
 
 void TextLayer::cursor_wake_up()

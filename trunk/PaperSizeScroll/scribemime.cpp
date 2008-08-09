@@ -258,6 +258,12 @@ qreal Pointo( qreal unit , const QString unita )
 }
 
 
+qreal ToUnit( qreal unit , const QString unita )  
+{
+   return Pointo(unit,unita);
+}
+
+
 qreal ToPoint( qreal unit , const QString unita )  
 {
     qreal ri = 0;

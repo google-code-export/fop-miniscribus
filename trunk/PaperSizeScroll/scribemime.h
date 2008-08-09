@@ -49,6 +49,9 @@ static const int FlashReferenceID = 322;
 static const int TextFloatObjectName = 20;
 
 
+static const int FooterHeaderPadding = 1;
+
+
 
 
 #define _BG_CHAR_ALPHA_  425 
@@ -100,6 +103,7 @@ QString Imagename( QString touri );
 /* metric conversion from and to */
 qreal FopInt( const QString datain );
 qreal Pointo( qreal unit , const QString unita );
+qreal ToUnit( qreal unit , const QString unita );
 qreal ToPoint( qreal unit , const QString unita );
 
 bool Cache( const QString dirpath );  /* mkdir */
@@ -195,10 +199,19 @@ class M_PageSize
     public:
     enum { MAGICNUMBER = 0xFFAAFFAA, VERSION = 2 };
     M_PageSize();
-		M_PageSize& operator=( const M_PageSize& d );
-		operator QVariant() const {
+    M_PageSize& operator=( const M_PageSize& d );
+    operator QVariant() const {
     return QVariant::fromValue(*this);
     }
+    inline QRectF HeaderBoundingrect()
+    {
+    return  QRectF(0,0,G_regt.width() - ( FooterHeaderPadding * 2 ),P_margin.x() - ( FooterHeaderPadding * 2 ));
+    }
+    inline QRectF FooterBoundingrect()
+    {
+    return  QRectF(0,0,G_regt.width() - ( FooterHeaderPadding * 2 ),P_margin.width() - ( FooterHeaderPadding * 2 ));
+    }
+  
 		QString HName();
 		qreal faktor();
     void Register( QString n , QPrinter::PageSize pp , bool La = false );
