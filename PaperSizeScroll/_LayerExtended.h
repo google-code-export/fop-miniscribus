@@ -77,6 +77,7 @@ public slots:
     void updatearea( const QRect areas );
     void cursor_wake_up();
     void cursor_stop_it();
+    void PageSizeReload();
 /*
     void deleteSelected();
     void cut();
