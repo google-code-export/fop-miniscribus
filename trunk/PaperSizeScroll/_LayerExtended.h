@@ -53,7 +53,7 @@ protected:
     void focusOutEvent ( QFocusEvent * event );
     void inputMethodEvent ( QInputMethodEvent * event );
     /* layer floating */
-    void AppendHeader();
+    void SetupHeaderFooter();
 
 private:
     

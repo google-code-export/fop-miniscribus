@@ -2700,7 +2700,7 @@ void LayerText::setDocument ( const QTextDocument * document , FileHandlerType T
 	    Ftf.setTopMargin(0);
             Ftf.setBackground(QBrush(Qt::white));
             Ftf.setRightMargin(0);
-	    Ftf.setPadding (4);
+	    Ftf.setPadding(0);
             Tframe->setFrameFormat(Ftf);
       
       

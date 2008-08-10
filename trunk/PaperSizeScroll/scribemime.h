@@ -49,8 +49,11 @@ static const int FlashReferenceID = 322;
 static const int TextFloatObjectName = 20;
 
 
-static const int FooterHeaderPadding = 1;
+static const int FooterHeaderPadding = 2;
+static const int FooterHeaderMaxBlocks = 3;
 
+#define _PAGE_NUMERATION_ \
+             QString("#Page#") 
 
 
 
@@ -205,11 +208,31 @@ class M_PageSize
     }
     inline QRectF HeaderBoundingrect()
     {
-    return  QRectF(0,0,G_regt.width() - ( FooterHeaderPadding * 2 ),P_margin.x() - ( FooterHeaderPadding * 2 ));
+    return  QRectF(0,0,width(),P_margin.x() - ( FooterHeaderPadding * 2 ));
     }
+  
+    inline QPointF HeaderInitPoints( const int index = 0 )
+    {
+      const qreal fromTopY = index * G_regt.height();
+      const qreal spacepage = index * InterSpace;
+      return QPointF(P_margin.height(),fromTopY + spacepage + FooterHeaderPadding);
+    }
+  
+    inline QPointF FooterInitPoints( const int index = 0 )
+    {
+      const qreal fromTopY = index * G_regt.height();
+      const qreal Ytop = G_regt.height() - P_margin.width();
+      if (index ==  0) {
+      return QPointF(P_margin.height(),Ytop + FooterHeaderPadding);
+      }
+      const qreal spacepage = index * InterSpace;
+      return QPointF(P_margin.height(),fromTopY + spacepage + Ytop + FooterHeaderPadding);
+    }
+  
+  
     inline QRectF FooterBoundingrect()
     {
-    return  QRectF(0,0,G_regt.width() - ( FooterHeaderPadding * 2 ),P_margin.width() - ( FooterHeaderPadding * 2 ));
+    return  QRectF(0,0,width(),P_margin.width() - ( FooterHeaderPadding * 2 ));
     }
   
 		QString HName();

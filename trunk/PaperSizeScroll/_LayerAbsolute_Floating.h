@@ -89,6 +89,7 @@ public:
     QRectF absoluteRect();
     QLineF LineTops();
     QLineF Diagonal();
+    QPicture LayerImage( const int pagenr = 0 );  /* draw header or footer */
 
     QTextDocument *document();
     void setDocument( const QTextDocument * doc , FileHandlerType Type = FOP );
