@@ -52,7 +52,8 @@ public:
   void ImageonCursor( const QString file );
   QString ImageFilterHaving() const;
 
-
+  void ClearCurrentSelection();
+  
   void gotoNextTableCell();
   void gotoPreviousTableCell();
 
@@ -209,6 +210,7 @@ public slots:
   void BoldText();
   void FontText();
   void LinkText();
+  void ParaBGcolor();  /* paragraph bg color */
   
   void BGcolor();  /* fragment span */
   void TXcolor();

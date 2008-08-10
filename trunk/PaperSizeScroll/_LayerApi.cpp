@@ -1142,6 +1142,13 @@ bool TextProcessor::procesevent( QEvent *e )
 	 return FoundEvent;
 }
 
+void TextProcessor::ClearCurrentSelection()
+{
+        position_selection_start = -1;
+	C_cursor.clearSelection();
+}
+
+
 
 void TextProcessor::BaseDoubleClickEvent( const  QPointF posi , const QGraphicsSceneMouseEvent * event )  
 {
@@ -2243,6 +2250,22 @@ void  TextProcessor::LinkText()
     
 }
 
+
+void TextProcessor::ParaBGcolor()
+ {
+    QRgb col = QColorDialog::getRgba(textCursor().charFormat().background().color().rgb()); 
+    QColor col2 = QColor(col);
+    int trans = qAlpha(col); 
+    col2.setAlpha(trans);
+       if (!col2.isValid()) {
+        return;
+        } 
+    QTextCursor c = textCursor();
+    QTextBlockFormat format = c.block().blockFormat();
+    format.setProperty(_BG_CHAR_ALPHA_,trans);
+    format.setBackground(QBrush(col2));
+    c.setBlockFormat(format);
+ }
 
 void TextProcessor::BGcolor()
  {

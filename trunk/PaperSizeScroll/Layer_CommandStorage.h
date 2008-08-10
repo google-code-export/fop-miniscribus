@@ -9,6 +9,15 @@ class QAction;
 #include <QtGui/QKeySequence>
 
 /*
+
+Command storage instance to close all current action static to
+fast report on toolbar or other ......
+
+*/
+
+
+
+/*
 command to reload if cursor change.!
 */
 typedef enum {
@@ -31,6 +40,7 @@ typedef enum {
 	TXT_NOBREAKLINE		= 406,
 	TXT_FONTS		= 407,
 	LAYER_BG = 500,
+        BLOCK_BGCOLOR = 707,
 	LAYER_BORDER_COLOR = 502,
 	FRAME_BGCOLOR			= 407,
 	TABLE_BGCOLOR			= 408,
@@ -120,6 +130,7 @@ typedef enum {
 	FTXTM_CUT		= 15,
 	FTXT_COLOR			= 400,
 	FTXT_BG_COLOR	= 401,
+        FBLOCK_BGCOLOR			= 707,
 	FTXT_BOLD			= 402,
 	FTXT_UNDERLINE			= 403,
 	FTXT_STRIKOUT			= 404,
@@ -128,6 +139,7 @@ typedef enum {
 	FTXT_FONTS		= 407,
 	FLAYER_BG = 500,
 	FLAYER_BORDER_COLOR = 502,
+        FINSERT_TABLE = 700,
 	FFRAME_BGCOLOR			= 407,
 	FTABLE_BGCOLOR			= 408,
 	FTABLE_FORMATS			= 409,
