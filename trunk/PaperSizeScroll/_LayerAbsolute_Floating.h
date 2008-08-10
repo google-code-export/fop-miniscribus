@@ -137,6 +137,12 @@ void UpdateDots();
 void ShowInfos();
 void MakeAllCommand();
 
+public slots:
+  
+void seTBack();
+void seTFront();
+void UpdatePageFormat();
+
 };
 
 

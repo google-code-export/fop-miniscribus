@@ -38,7 +38,7 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
     
     
     } else {
-    setZValue (10.5);
+    setZValue (2.5);
     setRect(QRectF(0,0,200,23));
     }
     
@@ -92,6 +92,24 @@ QTextDocument *AbsoluteLayer::document()
 }
 
 
+void AbsoluteLayer::UpdatePageFormat()
+{
+   if (layermods == DIV_HEADER | layermods == DIV_FOOTER ) {
+               ApiSession *sx = ApiSession::instance();
+               if ( layermods == DIV_HEADER ) {
+               setPos(sx->CurrentPageFormat().HeaderInitPoints(0));
+               setRect(sx->CurrentPageFormat().HeaderBoundingrect());
+               }
+               if (layermods == DIV_FOOTER ) {
+               setPos(sx->CurrentPageFormat().FooterInitPoints(0));
+               setRect(sx->CurrentPageFormat().FooterBoundingrect());
+               }
+   
+   }
+   updatearea(boundingRect().toRect());
+   UpdateDots();
+}
+
 void AbsoluteLayer::UpdateDots()
 {
     Angle_1->setPos(boundingRect().topLeft());
@@ -103,7 +121,7 @@ void AbsoluteLayer::UpdateDots()
 void AbsoluteLayer::updatearea( const QRect areas )
 {
     lastUpdateRequest = areas; 
-    qDebug() << "### updatearea " << areas;
+    ////////qDebug() << "### updatearea " << areas;
     const qreal anspace = FooterHeaderPadding * 2;
     const QRectF txtrect = dev->txtControl()->boundingRect();
     if (rect().height() < txtrect.height()) {
@@ -494,7 +512,7 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         inlineFrameUnderCursor = true;
     }
 
-   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR ,  FTXT_COLOR  ,  F_NONE };
+   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR ,  FTXT_COLOR  ,  ZINDEX_MIN , ZINDEX_MAX , F_NONE };
  
  AbsCommandID TablesAction[] = { FTABLE_FORMATS ,  FTABLE_BGCOLOR ,  FTABLE_CELLBGCOLOR , FTABLE_APPENDCOOL , FTABLE_APPENDROW , F_SEPARATOR , FTABLE_REMCOOL , FTABLE_REMROW ,  F_SEPARATOR , FTABLE_MERGECELL , FTABLE_COOLWIDHT  ,  F_NONE };
 
@@ -660,9 +678,11 @@ dync->registerCommand_F(AbsoluteCmd(FBLOCK_MARGINS,false,false,tr("Paragraph Mar
     dync->registerCommand_F(AbsoluteCmd(FTABLE_MERGECELL,false,false,tr("Merge selected cell"),QIcon(":/img/reload.png"),QKeySequence(),dev->txtControl(),SLOT(MergeCellByCursorPosition()),istable));
     dync->registerCommand_F(AbsoluteCmd(FTABLE_COOLWIDHT,false,false,tr("Table Column width"),QIcon(":/img/configure.png"),QKeySequence(),dev->txtControl(),SLOT(SetColumLarge()),istable));
     
+    dync->registerCommand_F(AbsoluteCmd(ZINDEX_MAX,false,false,tr("Send Back zindex"),QIcon(":/img/sendtoback.png"),QKeySequence(),this,SLOT(seTBack()),true));
     
+     dync->registerCommand_F(AbsoluteCmd(ZINDEX_MIN,false,false,tr("Send Front zindex"),QIcon(":/img/bringtofront.png"),QKeySequence(),this,SLOT(seTFront()),true));
   
-    
+    //////////////   ZINDEX_MIN , ZINDEX_MAX
 }
 
 
@@ -672,6 +692,45 @@ dync->registerCommand_F(AbsoluteCmd(FBLOCK_MARGINS,false,false,tr("Paragraph Mar
 
 
 
+void AbsoluteLayer::seTBack()
+{
+    if (layermods != DIV_ABSOLUTE ) {
+    return;
+    }
+    qreal maxi = 999.9;
+    qreal minimums = 1.5;
+    
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    qreal backs = qBound(minimums,sc->zmin() - 0.1,maxi);
+    setZValue(backs);
+  
+    qDebug() << "### seTBack" << backs;
+  
+    update();
+    emit pagesize_swap();
+    
+}
+
+
+void AbsoluteLayer::seTFront()
+{
+    if (layermods != DIV_ABSOLUTE ) {
+    return;
+    }
+  
+    qreal maxi = 999.9;
+    qreal minimums = 1.5;
+    
+    GraphicsScene *sc = qobject_cast<GraphicsScene *>(scene());
+    qreal top = qBound(minimums,sc->zmax() + 0.1,maxi);
+    top++;
+    setZValue(top); 
+  
+    qDebug() << "### seTFront " << top;
+  
+    update();
+    emit pagesize_swap();
+}
 
 
 
