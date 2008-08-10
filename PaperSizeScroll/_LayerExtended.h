@@ -78,6 +78,8 @@ public slots:
     void cursor_wake_up();
     void cursor_stop_it();
     void PageSizeReload();
+    void Append_Layer();
+
 /*
     void deleteSelected();
     void cut();

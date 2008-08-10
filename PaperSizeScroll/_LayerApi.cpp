@@ -91,8 +91,57 @@ TextProcessor::TextProcessor( DisplayModus _modus_ )
 
 */
 
+bool TextProcessor::CheckedAlign( const int a )
+{
+    QTextBlock bf = textCursor().block();
+    QTextBlockFormat format = bf.blockFormat();
+    const Qt::Alignment cur = format.alignment();
+     if (a == 1200 && cur == Qt::AlignLeft ) {
+     return true;
+     } else  if (a == 1201 && cur == Qt::AlignRight ) {
+     return true;
+     }  else  if (a == 1202 && cur == Qt::AlignHCenter ) {
+       return true;
+     }  else  if (a == 1203 && cur == Qt::AlignJustify ) {
+       return true;
+     }
+   return false;
+}
 
 
+
+void TextProcessor::MaketextAlign()
+{
+    QAction *ali = qobject_cast<QAction *>(sender());
+    if (!ali) {
+    return;
+    }
+    const int a = ali->data().toInt();
+  
+    /*
+  BLOCK_ALIGN_LEFT = 1200,
+        BLOCK_ALIGN_RIGHT = 1201,
+        BLOCK_ALIGN_CENTER = 1202,
+        BLOCK_ALIGN_JUSTIFY = 1203,
+    */
+
+    QTextBlock bf = textCursor().block();
+    QTextBlockFormat format = bf.blockFormat();
+    
+    Qt::Alignment al = Qt::AlignLeft;
+    
+    if (a == 1200)
+        al = Qt::AlignLeft;
+    else if (a == 1202)
+        al = Qt::AlignHCenter;
+    else if (a == 1201)
+         al = Qt::AlignRight;
+    else if (a == 1203)
+         al = Qt::AlignJustify;
+    
+    format.setAlignment(al);
+    textCursor().setBlockFormat(format);
+}
 
 
 
@@ -2299,6 +2348,41 @@ void TextProcessor::TXcolor()
     format.setForeground(QBrush(col2));
 	  c.setCharFormat(format);
  }
+
+
+void  TextProcessor::SetParaMargin()
+{
+          QTextCursor c = textCursor();
+          QTextBlock textblocc = c.block();
+
+          GetMargin *marge = new GetMargin(0);
+	  marge->setWindowTitle(tr("Set Paragraph BlockFormat margin"));
+	  QTextBlockFormat formatibb = textblocc.blockFormat();
+	  QRectF bbmargin(formatibb.topMargin(), formatibb.rightMargin() ,formatibb.bottomMargin() , formatibb.leftMargin() );
+
+          marge->Set_margin(bbmargin);
+          int faxme = marge->exec();
+
+           if (faxme == 1) {
+           
+                 QRectF setFrams = marge->Get_margin();
+                 const qreal TopMargin = setFrams.x();
+                 const qreal RightMargin = setFrams.y();
+                 const qreal BottomMargin = setFrams.width();
+                 const qreal LeftMargin = setFrams.height();
+
+                 formatibb.setLeftMargin(LeftMargin);
+                 formatibb.setBottomMargin(BottomMargin);
+                 formatibb.setTopMargin(TopMargin);
+                 formatibb.setRightMargin(RightMargin);
+                 textCursor().setBlockFormat(formatibb);
+                                                           
+            }
+
+
+
+
+}
  
 void  TextProcessor::SetElementMargin()
 {
