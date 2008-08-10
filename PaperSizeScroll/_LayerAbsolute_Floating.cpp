@@ -244,11 +244,12 @@ QPicture AbsoluteLayer::LayerImage( const int pagenr )
         QTextCursor bcu = doc->find(_PAGE_NUMERATION_,cu,QTextDocument::FindWholeWords);
         if (!bcu.isNull ()) {
           if (bcu.hasSelection()) {
+           QTextCharFormat format = bcu.charFormat();
                  QString remtxt = bcu.selectedText();
                  for (int i = 0; i < remtxt.size(); ++i) {
                    bcu.deleteChar();
                  }
-          bcu.insertText(QString("%1").arg(pagefollow));
+          bcu.insertText(QString("%1").arg(pagefollow),format);
           bcu.clearSelection();
           }
         }
@@ -493,9 +494,31 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         inlineFrameUnderCursor = true;
     }
 
-   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FTXT_COLOR  ,  F_NONE };
+   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR ,  FTXT_COLOR  ,  F_NONE };
  
-    QMenu *rootmenu = new QMenu(event->widget());  
+ AbsCommandID TablesAction[] = { FTABLE_FORMATS ,  FTABLE_BGCOLOR ,  FTABLE_CELLBGCOLOR , FTABLE_APPENDCOOL , FTABLE_APPENDROW , F_SEPARATOR , FTABLE_REMCOOL , FTABLE_REMROW ,  F_SEPARATOR , FTABLE_MERGECELL , FTABLE_COOLWIDHT  ,  F_NONE };
+
+QMenu *rootmenu = new QMenu(event->widget());  
+
+
+    QMenu *MenuTables = new QMenu(tr("Table handler"),rootmenu);
+    MenuTables->setIcon(QIcon(QString::fromUtf8(":/img/newtodo.png")));
+    MenuTables->addAction(CommandStorage::instance()->actF(FINSERT_TABLE));
+
+    for (int w = 0; TablesAction[w] != F_NONE; w++) {
+                 AbsCommandID id = TablesAction[w];
+                 if ( id == F_SEPARATOR) {
+                    MenuTables->addSeparator();
+                 }
+                 QAction* t_1 = CommandStorage::instance()->actF(id);
+                 if (t_1) {
+                 MenuTables->addAction(t_1);
+                 }
+        
+    }
+
+
+
  
  
     for (int j = 0; BasicActions[j] != F_NONE; j++) {
@@ -505,7 +528,7 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
                  }
                  if ( id == D_SUBMENUS ) {
                      rootmenu->addSeparator();
-                     /////rootmenu->addAction(MenuTables->menuAction()); 
+                     rootmenu->addAction(MenuTables->menuAction()); 
                      //////rootmenu->addAction(MenuFrame->menuAction()); 
                      rootmenu->addSeparator();
                  }
@@ -521,6 +544,7 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
    }     
    rootmenu->deleteLater();     
    ContextOpen = false;
+   dev->txtControl()->ClearCurrentSelection();
 }
 
 void AbsoluteLayer::MakeAllCommand()
@@ -542,6 +566,8 @@ void AbsoluteLayer::MakeAllCommand()
     
     const QIcon TXTcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().foreground().color());
     const QIcon TXTBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().background().color());
+  
+   const QIcon BlockBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().blockFormat().background().color());
     
     
     CommandStorage *dync = CommandStorage::instance();
@@ -563,11 +589,35 @@ void AbsoluteLayer::MakeAllCommand()
     
     
     dync->registerCommand_F(AbsoluteCmd(FTXT_BG_COLOR,false,false,tr("Text Fragment Background color"),TXTBGcolorico,QKeySequence(),dev->txtControl(),SLOT(BGcolor()),true));
+    
+  dync->registerCommand_F(AbsoluteCmd(FBLOCK_BGCOLOR,false,false,tr("Paragraph Background color"),BlockBGcolorico,QKeySequence(),dev->txtControl(),SLOT(ParaBGcolor()),true));
+    
+    
+    
+    
+    
+    
+    
     dync->registerCommand_F(AbsoluteCmd(FTXT_COLOR,false,false,tr("Text color"),TXTcolorico,QKeySequence(),dev->txtControl(),SLOT(TXcolor()),true));
+    
+    /* table */
+    
+    
+    dync->registerCommand_F(AbsoluteCmd(FINSERT_TABLE,false,false,tr("Insert Table"),QIcon(":/img/table.png"),QKeySequence(),dev->txtControl(),SLOT(CreateanewTable()),true));
+    
 
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_FORMATS,false,false,tr("Table Format"),QIcon(":/img/table.png"),QKeySequence(),dev->txtControl(),SLOT(UpdateTableFormat()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_BGCOLOR,false,false,tr("Table background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(MaketableColorBG()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_CELLBGCOLOR,false,false,tr("Cell background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(SetTableCellColor()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_APPENDCOOL,false,false,tr("Append column"),QIcon(":/img/row_table.png"),QKeySequence(),dev->txtControl(),SLOT(AppendTableCools()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_APPENDROW,false,false,tr("Append row"),QIcon(":/img/row_table.png"),QKeySequence(),dev->txtControl(),SLOT(AppendTableRows()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_REMCOOL,false,false,tr("Remove column on cursor"),QIcon(":/img/stop.png"),QKeySequence(),dev->txtControl(),SLOT(RemoveCoolByCursorPosition()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_REMROW,false,false,tr("Remove row on cursor"),QIcon(":/img/stop.png"),QKeySequence(),dev->txtControl(),SLOT(RemoveRowByCursorPosition()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_MERGECELL,false,false,tr("Merge selected cell"),QIcon(":/img/reload.png"),QKeySequence(),dev->txtControl(),SLOT(MergeCellByCursorPosition()),istable));
+    dync->registerCommand_F(AbsoluteCmd(FTABLE_COOLWIDHT,false,false,tr("Table Column width"),QIcon(":/img/configure.png"),QKeySequence(),dev->txtControl(),SLOT(SetColumLarge()),istable));
     
     
-    
+  
     
 }
 

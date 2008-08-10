@@ -373,7 +373,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     CommandStorage *dync = CommandStorage::instance();
     StaticCommandID DocumentActions[] = { INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , TXT_COLOR  ,  D_NONE };
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
     
     QMenu *rootmenu = new QMenu(event->widget());  
@@ -455,8 +455,9 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     if (inlineFrameUnderCursor) {
     stylerwi->deleteLater();
     }     
-	  rootmenu->deleteLater();     
+    rootmenu->deleteLater();     
     ContextOpen = false;
+    dev->txtControl()->ClearCurrentSelection();
     
 }
 
@@ -497,6 +498,9 @@ void TextLayer::MakeDinamicCommand()
     
     const QIcon TXTcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().foreground().color());
     const QIcon TXTBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().charFormat().background().color());
+  
+  const QIcon BlockBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().blockFormat().background().color());
+  
     
     
     CommandStorage *dync = CommandStorage::instance();
@@ -517,6 +521,14 @@ void TextLayer::MakeDinamicCommand()
     
     
     dync->registerCommand_D(DinamicCmd(TXT_BG_COLOR,false,false,tr("Text Fragment Background color"),TXTBGcolorico,QKeySequence(),dev->txtControl(),SLOT(BGcolor()),true));
+    
+    
+     dync->registerCommand_D(DinamicCmd(BLOCK_BGCOLOR,false,false,tr("Paragraph Background color"),BlockBGcolorico,QKeySequence(),dev->txtControl(),SLOT(ParaBGcolor()),true));
+    
+    
+    
+    
+    
     dync->registerCommand_D(DinamicCmd(TXT_COLOR,false,false,tr("Text color"),TXTcolorico,QKeySequence(),dev->txtControl(),SLOT(TXcolor()),true));
  
      
