@@ -25,7 +25,7 @@ ScribePage *TextMount::txtControl() const
 
 TextLayer::~TextLayer()
 {
-  qDebug() << "### destroy obj ...";
+  //~ qDebug() << "### destroy obj ...";
 }
 
 
@@ -251,7 +251,7 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 void TextLayer::focusInEvent ( QFocusEvent * event ) 
 {
-    qDebug() << "### TextLayer focusInEvent ..." << flags();
+    //~ qDebug() << "### TextLayer focusInEvent ..." << flags();
     QGraphicsItem::setSelected(true);
     scene()->setFocusItem(this,Qt::ShortcutFocusReason);
     dev->txtControl()->setBlinkingCursorEnabled(true);
@@ -260,7 +260,7 @@ void TextLayer::focusInEvent ( QFocusEvent * event )
 
 void TextLayer::focusOutEvent ( QFocusEvent * event ) 
 {
-    qDebug() << "### TextLayer focusOutEvent ...";
+    //~ qDebug() << "### TextLayer focusOutEvent ...";
     QGraphicsItem::setSelected(false);
     dev->txtControl()->setBlinkingCursorEnabled(false);
     //////return QGraphicsItem::focusOutEvent(event);
@@ -396,8 +396,8 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
     
     CommandStorage *dync = CommandStorage::instance();
-    StaticCommandID DocumentActions[] = { INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
+    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
   
   DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
@@ -522,6 +522,12 @@ void TextLayer::MakeActionHere()
 snc->registerCommand_S(StaticCmd(NEW_LAYER_ABS,tr("Insert new Absolute Layer"),QIcon(":/img/frame.png"),QKeySequence(),this,SLOT(Append_Layer())));
 
 
+
+
+
+
+
+
     
     
    ////////// qDebug() << "### static count " << snc->countS();
@@ -556,13 +562,13 @@ void TextLayer::MakeDinamicCommand()
     
     CommandStorage *dync = CommandStorage::instance();
     dync->clearD();
-    dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),dev->txtControl(),SLOT(copy()),textCursor().hasSelection()));
+
+dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),dev->txtControl(),SLOT(copy()),textCursor().hasSelection()));
     dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,false,tr("Paste"),QIcon(":/img/paste.png"),QKeySequence("Ctrl+V"),dev->txtControl(),SLOT(paste()),canpaste));
     dync->registerCommand_D(DinamicCmd(TXTM_CUT,false,false,tr("Cut"),QIcon(":/img/cut.png"),QKeySequence("Ctrl+X"),dev->txtControl(),SLOT(cut()),textCursor().hasSelection()));
     dync->registerCommand_D(DinamicCmd(TXTM_REDO,false,false,tr("Redo"),QIcon(":/img/editredo.png"),QKeySequence("Ctrl+Z"),dev->txtControl(),SLOT(redo()),true)); ///////  document()->isRedoAvailable()
     dync->registerCommand_D(DinamicCmd(TXTM_UNDO,false,false,tr("Undo"),QIcon(":/img/editundo.png"),QKeySequence("Ctrl+Y"),dev->txtControl(),SLOT(undo()),true)); /////document()->isUndoAvailable()
     dync->registerCommand_D(DinamicCmd(TXTM_SELECTALL,false,false,tr("Select All"),QIcon(":/img/new.png"),QKeySequence("Ctrl+A"),dev->txtControl(),SLOT(selectAll()),true));
-    
     
     dync->registerCommand_D(DinamicCmd(TXT_BOLD,true,isbold,tr("Text Bold"),QIcon(":/img/textbold.png"),QKeySequence("Ctrl+B"),dev->txtControl(),SLOT(BoldText()),true));
     dync->registerCommand_D(DinamicCmd(TXT_UNDERLINE,true,isunderline,tr("Text Underline"),QIcon(":/img/textunder.png"),QKeySequence("Ctrl+U"),dev->txtControl(),SLOT(UnderlineText()),true));
@@ -613,28 +619,22 @@ dync->registerCommand_D(DinamicCmd(BLOCK_ALIGN_JUSTIFY,true,dev->txtControl()->C
 dync->registerCommand_D(DinamicCmd(BLOCK_MARGINS,false,false,tr("Paragraph Margin"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SetParaMargin()),true));
     
     
+
     
     
+dync->registerCommand_D(DinamicCmd(FONT_LETTER_SPACING,false,false,tr("Font Letter Spacing"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontsLetterSpacing()) , true )); 
     
     
+bool unbreak = c.blockFormat().nonBreakableLines();
+
+
+dync->registerCommand_D(DinamicCmd(TXT_NOBREAKLINE,true,unbreak,tr("Set Unbrekable Block"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SwapUnbrekableBlock()),true));
     
     
-    
-    
-    
-    
-    
-    
-    
-    /*
-    
- DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW ,TABLE_REMCOOL , TABLE_REMROW ,  TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
-    
-    */
-    
+
    
    
-   /////////// qDebug() << "### dinamic count " << dync->countD();
+ //////////////qDebug() << "### dinamic count " << dync->countD();
     
     
    

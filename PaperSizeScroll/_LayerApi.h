@@ -9,7 +9,7 @@
 #include <QGraphicsScene>
 
 
-
+#include <limits.h>
 
 
 typedef enum
@@ -235,8 +235,8 @@ public slots:
   
   void SetElementMargin();
   void SetParaMargin();
-
-  
+  void FontsLetterSpacing();
+  void SwapUnbrekableBlock();
   
   
 
