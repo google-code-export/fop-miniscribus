@@ -68,9 +68,9 @@ class FWButton : public QObject, public QGraphicsItem
 Q_DECLARE_METATYPE(FWButton *)
 
   enum LAYERTYPE {
-    DIV_ABSOLUTE = 100,
-    DIV_HEADER = 200, 
-    DIV_FOOTER = 300
+    DIV_ABSOLUTE = 1000,
+    DIV_HEADER = 2000, 
+    DIV_FOOTER = 3000
   };
 
 
@@ -86,6 +86,7 @@ public:
     AbsoluteLayer( QGraphicsItem *parent , LAYERTYPE layermodus = DIV_ABSOLUTE );
     ~AbsoluteLayer();
     QRectF boundingRect() const;
+    inline int Type() const { return layermods; }
     QRectF absoluteRect();
     QLineF LineTops();
     QLineF Diagonal();

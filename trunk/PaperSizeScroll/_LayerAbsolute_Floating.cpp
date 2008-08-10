@@ -498,7 +498,12 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
  AbsCommandID TablesAction[] = { FTABLE_FORMATS ,  FTABLE_BGCOLOR ,  FTABLE_CELLBGCOLOR , FTABLE_APPENDCOOL , FTABLE_APPENDROW , F_SEPARATOR , FTABLE_REMCOOL , FTABLE_REMROW ,  F_SEPARATOR , FTABLE_MERGECELL , FTABLE_COOLWIDHT  ,  F_NONE };
 
+AbsCommandID BlockActionPara[] = { FBLOCK_MARGINS , FBLOCK_BGCOLOR , F_SEPARATOR , FBLOCK_ALIGN_LEFT , FBLOCK_ALIGN_CENTER ,  FBLOCK_ALIGN_RIGHT , FBLOCK_ALIGN_JUSTIFY ,  F_NONE };
+
+
 QMenu *rootmenu = new QMenu(event->widget());  
+
+
 
 
     QMenu *MenuTables = new QMenu(tr("Table handler"),rootmenu);
@@ -516,7 +521,25 @@ QMenu *rootmenu = new QMenu(event->widget());
                  }
         
     }
-
+  
+  QMenu *MenuParagr = new QMenu(tr("TextBlock formats"),rootmenu);
+  MenuParagr->setIcon(QIcon(QString::fromUtf8(":/img/document.png")));
+  
+  
+    for (int o = 0; BlockActionPara[o] != F_NONE; o++) {
+                 AbsCommandID id = BlockActionPara[o];
+                 if ( id == F_SEPARATOR) {
+                    MenuParagr->addSeparator();
+                 }
+                 QAction* t_1 = CommandStorage::instance()->actF(id);
+                 if (t_1) {
+                 MenuParagr->addAction(t_1);
+                 }
+        
+    }
+  
+  
+   
 
 
  
@@ -528,6 +551,7 @@ QMenu *rootmenu = new QMenu(event->widget());
                  }
                  if ( id == D_SUBMENUS ) {
                      rootmenu->addSeparator();
+                     rootmenu->addAction(MenuParagr->menuAction()); 
                      rootmenu->addAction(MenuTables->menuAction()); 
                      //////rootmenu->addAction(MenuFrame->menuAction()); 
                      rootmenu->addSeparator();
@@ -593,8 +617,28 @@ void AbsoluteLayer::MakeAllCommand()
   dync->registerCommand_F(AbsoluteCmd(FBLOCK_BGCOLOR,false,false,tr("Paragraph Background color"),BlockBGcolorico,QKeySequence(),dev->txtControl(),SLOT(ParaBGcolor()),true));
     
     
+dync->registerCommand_F(AbsoluteCmd(FBLOCK_ALIGN_LEFT,true,dev->txtControl()->CheckedAlign(FBLOCK_ALIGN_LEFT),tr("Text align left"),QIcon(":/img/textleft.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+dync->registerCommand_F(AbsoluteCmd(FBLOCK_ALIGN_RIGHT,true,dev->txtControl()->CheckedAlign(FBLOCK_ALIGN_RIGHT),tr("Text align right"),QIcon(":/img/textright.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+
+dync->registerCommand_F(AbsoluteCmd(FBLOCK_ALIGN_CENTER,true,dev->txtControl()->CheckedAlign(FBLOCK_ALIGN_CENTER),tr("Text align center"),QIcon(":/img/textcenter.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+dync->registerCommand_F(AbsoluteCmd(FBLOCK_ALIGN_JUSTIFY,true,dev->txtControl()->CheckedAlign(FBLOCK_ALIGN_JUSTIFY),tr("Text align Justify"),QIcon(":/img/textjustify.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+
+dync->registerCommand_F(AbsoluteCmd(FBLOCK_MARGINS,false,false,tr("Paragraph Margin"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SetParaMargin()),true));
+ 
+
+
     
     
+    /*
+      BLOCK_ALIGN_LEFT = 1200,
+        BLOCK_ALIGN_RIGHT = 1201,
+        BLOCK_ALIGN_CENTER = 1202,
+        BLOCK_ALIGN_JUSTIFY = 1203,
+    */
     
     
     

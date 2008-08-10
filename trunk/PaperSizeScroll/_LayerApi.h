@@ -53,6 +53,7 @@ public:
   QString ImageFilterHaving() const;
 
   void ClearCurrentSelection();
+  bool CheckedAlign( const int a );  /* checkable case of alignment qaction*/
   
   void gotoNextTableCell();
   void gotoPreviousTableCell();
@@ -212,6 +213,8 @@ public slots:
   void LinkText();
   void ParaBGcolor();  /* paragraph bg color */
   
+  void MaketextAlign();
+  
   void BGcolor();  /* fragment span */
   void TXcolor();
   
@@ -231,7 +234,7 @@ public slots:
   void SetColumLarge();
   
   void SetElementMargin();
- 
+  void SetParaMargin();
 
   
   

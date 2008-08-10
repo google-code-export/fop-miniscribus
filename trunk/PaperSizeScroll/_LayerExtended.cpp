@@ -66,6 +66,22 @@ void TextLayer::SetupHeaderFooter()
     connect(Afooter, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
 }
 
+void TextLayer::Append_Layer()
+{
+
+   QTextDocument *dummy = new QTextDocument();
+    dummy->setHtml ( "<p>Your text.</p>" );
+
+   QLineF cursorpos = dev->txtControl()->ViewBlinkedCursorLine();
+
+   AbsoluteLayer *absolute = new AbsoluteLayer(this,DIV_ABSOLUTE);
+   absolute->setPos( cursorpos.p1() );
+   absolute->setDocument(dummy,FOP);
+
+    connect(absolute, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
+    connect(absolute, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
+}
+
 
 QTextCursor TextLayer::textCursor() 
 {
@@ -372,9 +388,13 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
     
     CommandStorage *dync = CommandStorage::instance();
-    StaticCommandID DocumentActions[] = { INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
+    StaticCommandID DocumentActions[] = { INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
     DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
+  
+  DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
+  
+  
     
     QMenu *rootmenu = new QMenu(event->widget());  
     /* basic menu */
@@ -407,6 +427,24 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
                  }
         
     }
+  
+  
+  QMenu *MenuParagr = new QMenu(tr("TextBlock formats"),rootmenu);
+  MenuParagr->setIcon(QIcon(QString::fromUtf8(":/img/document.png")));
+  
+  for (int o = 0; BlockActionPara[o] != D_NONE; o++) {
+                 DynamicCommandID id = BlockActionPara[o];
+                 if ( id == D_SEPARATOR) {
+                    MenuParagr->addSeparator();
+                 }
+                 QAction* t_1 = CommandStorage::instance()->actD(id);
+                 if (t_1) {
+                 MenuParagr->addAction(t_1);
+                 }
+        
+    }
+  
+  
     
     
     //////rootmenu->addAction(MenuFrame->menuAction()); 
@@ -420,6 +458,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
                  
                  if ( id == D_SUBMENUS ) {
                      rootmenu->addSeparator();
+                     rootmenu->addAction(MenuParagr->menuAction()); 
                      rootmenu->addAction(MenuTables->menuAction()); 
                      rootmenu->addAction(MenuFrame->menuAction()); 
                      rootmenu->addSeparator();
@@ -471,6 +510,10 @@ void TextLayer::MakeActionHere()
     snc->registerCommand_S(StaticCmd(INSERT_FRAME,tr("Insert inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(FosInsertFrame())));
     snc->registerCommand_S(StaticCmd(MARGIN_CURRENT_ELEMENT,tr("Set Margin Paragraph/Table/Inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(SetElementMargin())));
     snc->registerCommand_S(StaticCmd(INSERT_TABLE,tr("Insert Table"),QIcon(":/img/table.png"),QKeySequence(),dev->txtControl(),SLOT(CreateanewTable())));
+
+snc->registerCommand_S(StaticCmd(NEW_LAYER_ABS,tr("Insert new Absolute Layer"),QIcon(":/img/frame.png"),QKeySequence(),this,SLOT(Append_Layer())));
+
+
     
     
    ////////// qDebug() << "### static count " << snc->countS();
@@ -545,6 +588,35 @@ void TextLayer::MakeDinamicCommand()
     dync->registerCommand_D(DinamicCmd(TABLE_REMROW,false,false,tr("Remove row on cursor"),QIcon(":/img/stop.png"),QKeySequence(),dev->txtControl(),SLOT(RemoveRowByCursorPosition()),istable));
     dync->registerCommand_D(DinamicCmd(TABLE_MERGECELL,false,false,tr("Merge selected cell"),QIcon(":/img/reload.png"),QKeySequence(),dev->txtControl(),SLOT(MergeCellByCursorPosition()),istable));
     dync->registerCommand_D(DinamicCmd(TABLE_COOLWIDHT,false,false,tr("Table Column width"),QIcon(":/img/configure.png"),QKeySequence(),dev->txtControl(),SLOT(SetColumLarge()),istable));
+    
+    
+    
+    
+dync->registerCommand_D(DinamicCmd(BLOCK_ALIGN_LEFT,true,dev->txtControl()->CheckedAlign(BLOCK_ALIGN_LEFT),tr("Text align left"),QIcon(":/img/textleft.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+dync->registerCommand_D(DinamicCmd(BLOCK_ALIGN_RIGHT,true,dev->txtControl()->CheckedAlign(BLOCK_ALIGN_RIGHT),tr("Text align right"),QIcon(":/img/textright.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+
+dync->registerCommand_D(DinamicCmd(BLOCK_ALIGN_CENTER,true,dev->txtControl()->CheckedAlign(BLOCK_ALIGN_CENTER),tr("Text align center"),QIcon(":/img/textcenter.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+dync->registerCommand_D(DinamicCmd(BLOCK_ALIGN_JUSTIFY,true,dev->txtControl()->CheckedAlign(BLOCK_ALIGN_JUSTIFY),tr("Text align Justify"),QIcon(":/img/textjustify.png"),QKeySequence(),dev->txtControl(),SLOT(MaketextAlign()),true));
+
+
+dync->registerCommand_D(DinamicCmd(BLOCK_MARGINS,false,false,tr("Paragraph Margin"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SetParaMargin()),true));
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     /*
     
