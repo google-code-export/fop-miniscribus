@@ -142,7 +142,8 @@ typedef enum {
         FBLOCK_ALIGN_CENTER = 1202,
         FBLOCK_ALIGN_JUSTIFY = 1203,
         FBLOCK_MARGINS = 1500,
-
+        ZINDEX_MAX = 1700,
+        ZINDEX_MIN = 1701,
 	FTXT_BOLD			= 402,
 	FTXT_UNDERLINE			= 403,
 	FTXT_STRIKOUT			= 404,

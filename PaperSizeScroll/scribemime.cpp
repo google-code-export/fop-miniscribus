@@ -840,17 +840,7 @@ void GraphicsScene::dragMoveEvent ( QGraphicsSceneDragDropEvent * e )
 void GraphicsScene::clear()
 {
     clearSelection();
-    const QList<QGraphicsItem*> items =  QGraphicsScene::items();
-    QList<QGraphicsItem*> topLevelItems;
-    
-    foreach(QGraphicsItem* item, items) {
-        if (!item->parentItem()) {
-            topLevelItems << item;
-        }
-    }
-    foreach(QGraphicsItem* item, topLevelItems) {
-        delete item;
-    }
+    QGraphicsScene::clear();
     storno();
 }
 
@@ -858,7 +848,6 @@ void GraphicsScene::clearSelection()
 {
     QGraphicsScene::clearSelection();
     update(sceneRect());
-    
 }
 
 void GraphicsScene::storno()
@@ -870,20 +859,48 @@ void GraphicsScene::storno()
 qreal GraphicsScene::zmax()
 {
  qreal mValue = 0.00;
- QList<QGraphicsItem *> items = QGraphicsScene::items();
-     for (int o=0;o<items.size();o++) {
-       mValue = qMax(items[o]->zValue(),mValue);
+ const QList<QGraphicsItem*> items =  QGraphicsScene::items();
+ QList<QGraphicsItem*> subLevelItems;
+ /* loop all elemenst */
+    foreach(QGraphicsItem* item, items) {
+         mValue = qMax(item->zValue(),mValue);
+        if (item->parentItem()) {
+             QList<QGraphicsItem *> des = item->childItems();
+             foreach(QGraphicsItem* de,des) {
+             subLevelItems << de;
+             }
+        }
     }
+   foreach(QGraphicsItem* it, subLevelItems) {
+        mValue = qMax(it->zValue(),mValue);
+    }
+  /* loop all elemenst */
+  qDebug() << "### sc maxi" << mValue;
+  
  return mValue;
 }
 
 qreal GraphicsScene::zmin()
 {
  qreal mValue = zmax();
- QList<QGraphicsItem *> items = QGraphicsScene::items();
-     for (int o=0;o<items.size();o++) {
-       mValue = qMin(items[o]->zValue(),mValue);
+ const QList<QGraphicsItem*> items =  QGraphicsScene::items();
+ QList<QGraphicsItem*> subLevelItems;
+ /* loop all elemenst */
+    foreach(QGraphicsItem* item, items) {
+         mValue = qMin(item->zValue(),mValue);
+        if (item->parentItem()) {
+             QList<QGraphicsItem *> des = item->childItems();
+             foreach(QGraphicsItem* de,des) {
+             subLevelItems << de;
+             }
+        }
     }
+   foreach(QGraphicsItem* it, subLevelItems) {
+        mValue = qMin(it->zValue(),mValue);
+    }
+  /* loop all elemenst */
+  qDebug() << "### sc minimum " << mValue;
+  
  return mValue;
 }
 

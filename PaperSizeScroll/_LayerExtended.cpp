@@ -33,8 +33,10 @@ TextLayer::~TextLayer()
 TextLayer::TextLayer( QGraphicsItem *parent  )
     : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount),ContextOpen(false)
 {
-    qDebug() << "### init....";
+    //////qDebug() << "### init....";
     dev->q = this;
+    Aheader = 0;
+    Afooter = 0;
     setAcceptsHoverEvents(true);
     setAcceptDrops(true);
     
@@ -91,6 +93,12 @@ QTextCursor TextLayer::textCursor()
 void TextLayer::SwapPageModel( M_PageSize e )
 {
     dev->txtControl()->SwapPageModel(e);
+ 
+    if (Aheader && Afooter) {
+      Aheader->UpdatePageFormat();
+      Afooter->UpdatePageFormat();
+    }
+
     SceneReload();
 }
 
