@@ -47,8 +47,25 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     LastRect = dev->txtControl()->boundingRect();
     QGraphicsRectItem::setRect(LastRect);
     LastUpdateRequest = LastRect;
-    AppendHeader();
+    SetupHeaderFooter();
 }
+
+void TextLayer::SetupHeaderFooter()
+{
+    Aheader = new AbsoluteLayer(this,DIV_HEADER);
+    Afooter = new AbsoluteLayer(this,DIV_FOOTER);
+    QTextDocument *dummy = new QTextDocument();
+    dummy->setHtml ( "<p>Header and Logo.</p>" );
+    QTextDocument *dummy2 = new QTextDocument();
+    dummy2->setHtml ( "<p>Footer Page "+_PAGE_NUMERATION_+"</p>" );
+    Aheader->setDocument(dummy,FOP);
+    Afooter->setDocument(dummy2,FOP);
+    connect(Aheader, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
+    connect(Aheader, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
+    connect(Afooter, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
+    connect(Afooter, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
+}
+
 
 QTextCursor TextLayer::textCursor() 
 {
@@ -84,15 +101,7 @@ void TextLayer::updatearea( const QRect areas )
     update(areas);
 }
 
-void TextLayer::AppendHeader()
-{
-    Aheader = new AbsoluteLayer(this,DIV_HEADER);
-    QTextDocument *dummy = new QTextDocument();
-    dummy->setHtml ( "<p>Header.</p>" );
-    Aheader->setDocument(dummy,FOP);
-    connect(Aheader, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
-    connect(Aheader, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
-}
+
 
 void TextLayer::cursor_stop_it()
 {
@@ -165,6 +174,25 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->setPen( QPen(Qt::black,0.3) );
         painter->drawRect(pagen);
         painter->setPen( Qt::NoPen );
+    
+        
+       if (i !=0) {
+       /* header */
+       QPicture headerpaint = Aheader->LayerImage(i);
+       QPointF posheader = dev->txtControl()->Model().HeaderInitPoints(i);
+       painter->drawPicture(posheader, headerpaint);
+       /* footer */
+       QPicture footerpaint = Afooter->LayerImage(i);
+       QPointF posfooter = dev->txtControl()->Model().FooterInitPoints(i);
+       painter->drawPicture(posfooter, footerpaint);
+       }
+    
+    
+    
+    
+    
+    
+    
         
 	  }
     

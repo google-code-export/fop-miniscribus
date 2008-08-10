@@ -20,14 +20,19 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
     setAcceptDrops(true);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
+ 
+    
+
+
+
     if (layermodus == DIV_HEADER | layermodus == DIV_FOOTER ) {
     setZValue (1.5);
                if ( layermodus == DIV_HEADER ) {
-               setPos(FooterHeaderPadding,FooterHeaderPadding);
+               setPos(sx->CurrentPageFormat().HeaderInitPoints(0));
                setRect(sx->CurrentPageFormat().HeaderBoundingrect());
                }
                if ( layermodus == DIV_FOOTER ) {
-               setPos(FooterHeaderPadding,sx->CurrentPageFormat().P_margin.height() + FooterHeaderPadding);
+               setPos(sx->CurrentPageFormat().FooterInitPoints(0));
                setRect(sx->CurrentPageFormat().FooterBoundingrect());
                }
     
@@ -70,6 +75,9 @@ void AbsoluteLayer::setDocument( const QTextDocument * doc , FileHandlerType Typ
 {
     dev->txtControl()->setDocument(doc,Type);
     dev->txtControl()->SetRect ( rect() );
+    if (layermods == DIV_HEADER | layermods == DIV_FOOTER ) {
+    document()->setMaximumBlockCount(FooterHeaderMaxBlocks);
+    }
     
 }
 
@@ -96,7 +104,7 @@ void AbsoluteLayer::updatearea( const QRect areas )
 {
     lastUpdateRequest = areas; 
     qDebug() << "### updatearea " << areas;
-   
+    const qreal anspace = FooterHeaderPadding * 2;
     const QRectF txtrect = dev->txtControl()->boundingRect();
     if (rect().height() < txtrect.height()) {
     setRect(QRectF(0,0,rect().width(),txtrect.height()));
@@ -109,11 +117,11 @@ void AbsoluteLayer::updatearea( const QRect areas )
          const QRectF mold = sx->CurrentPageFormat().P_margin;
          //////QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
          if (layermods == DIV_HEADER ) {
-         sx->current_Page_Format.SetMargin(QRectF(txtrect.height(),mold.y(),mold.width(),mold.height()));
+         sx->current_Page_Format.SetMargin(QRectF(txtrect.height() + anspace ,mold.y(),mold.width(),mold.height()));
          }
          if (layermods == DIV_FOOTER ) {
-         sx->current_Page_Format.SetMargin(QRectF(mold.x(),mold.y(),txtrect.height() ,mold.height()));
-         setPos(FooterHeaderPadding,sx->CurrentPageFormat().P_margin.height() + FooterHeaderPadding);
+         sx->current_Page_Format.SetMargin(QRectF(mold.x(),mold.y(),txtrect.height() + anspace ,mold.height()));
+         setPos(sx->CurrentPageFormat().FooterInitPoints(0));
          }
          emit pagesize_swap();
       }
@@ -223,6 +231,51 @@ void AbsoluteLayer::ShowInfos()
     
 }
 
+QPicture AbsoluteLayer::LayerImage( const int pagenr )
+{
+        QPicture img;
+        img.setBoundingRect(rect().toRect());
+        int pagefollow = pagenr + 1;
+        QTextDocument * doc = document()->clone();
+        QTextCursor cu(doc);
+        cu.setPosition(0,QTextCursor::MoveAnchor);
+
+        /* search  _PAGE_NUMERATION_   #Page#  and replace nr. */
+        QTextCursor bcu = doc->find(_PAGE_NUMERATION_,cu,QTextDocument::FindWholeWords);
+        if (!bcu.isNull ()) {
+          if (bcu.hasSelection()) {
+                 QString remtxt = bcu.selectedText();
+                 for (int i = 0; i < remtxt.size(); ++i) {
+                   bcu.deleteChar();
+                 }
+          bcu.insertText(QString("%1").arg(pagefollow));
+          bcu.clearSelection();
+          }
+        }
+
+        
+        QTextFrame  *Tframe = doc->rootFrame();
+        const QRectF stxt = doc->documentLayout()->frameBoundingRect(Tframe);
+
+
+         QPainter painter;
+         painter.begin(&img);  
+         painter.setRenderHint(QPainter::TextAntialiasing);
+         painter.setBrush(Qt::white);
+         painter.setPen(Qt::NoPen);
+         painter.drawRect(rect());
+
+         QAbstractTextDocumentLayout::PaintContext CTX;
+         painter.setClipRect(stxt);
+         CTX.cursorPosition = -1;
+         CTX.clip = stxt;
+         doc->documentLayout()->draw(&painter,CTX);
+         painter.end(); 
+         
+         
+  return img;
+}
+
 
 
 void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -237,18 +290,21 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
     dev->txtControl()->SetRect ( rect() );
     dev->txtControl()->paint(painter,option,widget);
+
+    const qreal border = 0.5;
+    const QRectF  BoRect(-border,-border,wi + (border * 2) , hi + (border * 2) );
    
     if (layermods == DIV_ABSOLUTE) {
           if (option->state & (QStyle::State_Selected | QStyle::State_HasFocus)  | OnMoveRects ) {
           painter->setPen( QPen(Qt::black ,0.5));
           painter->setBrush(Qt::NoBrush);
-          painter->drawRect(boundingRect());
+          painter->drawRect(BoRect);
           }
     } else {
           if (option->state & (QStyle::State_Selected | QStyle::State_HasFocus)  | OnMoveRects ) {
-          painter->setPen( QPen(Qt::black ,0.5,Qt::DotLine));
+          painter->setPen( QPen(Qt::lightGray ,0.5));  /////Qt::DotLine
           painter->setBrush(Qt::NoBrush);
-          painter->drawRect(boundingRect());
+          painter->drawRect(BoRect);
           }
     
     }
