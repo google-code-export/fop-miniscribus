@@ -2,7 +2,7 @@
 
 AbsoluteLayer::~AbsoluteLayer()
 {
-  qDebug() << "### destroy obj ...";
+  //~ qDebug() << "### destroy obj ...";
 }
 
 
@@ -12,7 +12,7 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
 {
     dev->q = this;
     layermods = layermodus;
-    qDebug() << "### init....";
+    /////////qDebug() << "### init....";
     ApiSession *sx = ApiSession::instance();
     ////const qreal widhtinit = sx->CurrentPageFormat().G_regt.width() - ( FooterHeaderPadding * 2 );
     //////const qreal hightinit = sx->CurrentPageFormat().P_margin.x() - ( FooterHeaderPadding * 2 );
@@ -162,7 +162,7 @@ void AbsoluteLayer::slotRotate_1( const QPointF posi )
     if (Rotate > 359.5 | Rotate < 0.9) {
     Rotate = 0;
     }
-    qDebug() << "### Rotate " << Rotate;
+    //////////qDebug() << "### Rotate " << Rotate;
     
     
     dev->txtControl()->SetRect ( rect() );
@@ -255,6 +255,16 @@ QPicture AbsoluteLayer::LayerImage( const int pagenr )
         img.setBoundingRect(rect().toRect());
         int pagefollow = pagenr + 1;
         QTextDocument * doc = document()->clone();
+
+
+          for (QTextBlock srcBlock = document()->firstBlock(), dstBlock = doc->firstBlock();
+             srcBlock.isValid() && dstBlock.isValid();
+             srcBlock = srcBlock.next(), dstBlock = dstBlock.next()) {
+            dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
+          }
+
+
+
         QTextCursor cu(doc);
         cu.setPosition(0,QTextCursor::MoveAnchor);
 
@@ -362,7 +372,7 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 void AbsoluteLayer::focusInEvent ( QFocusEvent * event ) 
 {
-    qDebug() << "### AbsoluteLayer focusInEvent ..." << flags();
+    /////////qDebug() << "### AbsoluteLayer focusInEvent ..." << flags();
     QGraphicsItem::setSelected(true);
     scene()->setFocusItem(this,Qt::ShortcutFocusReason);
     dev->txtControl()->setBlinkingCursorEnabled(true);
@@ -372,7 +382,7 @@ void AbsoluteLayer::focusInEvent ( QFocusEvent * event )
 
 void AbsoluteLayer::focusOutEvent ( QFocusEvent * event ) 
 {
-    qDebug() << "### AbsoluteLayer focusOutEvent ...";
+    ///////////qDebug() << "### AbsoluteLayer focusOutEvent ...";
     QGraphicsItem::setSelected(false);
     dev->txtControl()->setBlinkingCursorEnabled(false);
     return QGraphicsItem::focusOutEvent(event);
@@ -380,7 +390,7 @@ void AbsoluteLayer::focusOutEvent ( QFocusEvent * event )
 
 void AbsoluteLayer::inputMethodEvent ( QInputMethodEvent * event )  
 {
-    qDebug() << "### inputMethodEvent ...";
+    //~ qDebug() << "### inputMethodEvent ...";
      return QGraphicsItem::inputMethodEvent(event);
 }
 
@@ -410,7 +420,7 @@ void AbsoluteLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
       return;
      }
    
-     qDebug() << "### mouseDoubleClickEvent...";
+     //~ qDebug() << "### mouseDoubleClickEvent...";
      return QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
@@ -423,7 +433,7 @@ void AbsoluteLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
       return;
       }
     
-    qDebug() << "### mouseMoveEvent.. ";
+    //~ qDebug() << "### mouseMoveEvent.. ";
     return QGraphicsItem::mouseMoveEvent(event);
     
 }
@@ -440,7 +450,7 @@ void AbsoluteLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
   }
 
 
-   qDebug() << "### mouseReleaseEvent...";
+   //~ qDebug() << "### mouseReleaseEvent...";
   return QGraphicsItem::mouseReleaseEvent(event);
 }
 
@@ -460,19 +470,19 @@ void AbsoluteLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
        }
      
      
-    qDebug() << "### mousePressEvent...";
+    //~ qDebug() << "### mousePressEvent...";
     return QGraphicsItem::mousePressEvent(event);
 }
 
 void AbsoluteLayer::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug() << "### hoverEnterEvent...";
+    //~ qDebug() << "### hoverEnterEvent...";
     return QGraphicsItem::hoverEnterEvent(event);
 }
 
 void AbsoluteLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug() << "### hoverLeaveEvent...";
+    //~ qDebug() << "### hoverLeaveEvent...";
     dev->txtControl()->setBlinkingCursorEnabled(false);
     return QGraphicsItem::hoverLeaveEvent(event);
 }
@@ -480,14 +490,14 @@ void AbsoluteLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 void AbsoluteLayer::keyPressEvent( QKeyEvent * event ) 
 {
    return dev->txtControl()->Controller_keyPressEvent(event);
-   qDebug() << "### keyPressEvent...";
+   //~ qDebug() << "### keyPressEvent...";
     return QGraphicsItem::keyPressEvent(event);
 }
 
 void AbsoluteLayer::keyReleaseEvent ( QKeyEvent * event )
 {
     return dev->txtControl()->Controller_keyReleaseEvent(event);
-    qDebug() << "### keyReleaseEvent...";
+    //~ qDebug() << "### keyReleaseEvent...";
     return QGraphicsItem::keyReleaseEvent(event);
 }
 
@@ -512,7 +522,7 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         inlineFrameUnderCursor = true;
     }
 
-   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR ,  FTXT_COLOR  ,  ZINDEX_MIN , ZINDEX_MAX , F_NONE };
+   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR ,  FTXT_COLOR  ,  ZINDEX_MIN , ZINDEX_MAX , F_NONE };
  
  AbsCommandID TablesAction[] = { FTABLE_FORMATS ,  FTABLE_BGCOLOR ,  FTABLE_CELLBGCOLOR , FTABLE_APPENDCOOL , FTABLE_APPENDROW , F_SEPARATOR , FTABLE_REMCOOL , FTABLE_REMROW ,  F_SEPARATOR , FTABLE_MERGECELL , FTABLE_COOLWIDHT  ,  F_NONE };
 
@@ -579,7 +589,7 @@ QMenu *rootmenu = new QMenu(event->widget());
       rootmenu->addAction(a_1);
       }
     }
-   qDebug() << "### contextMenuEvent....";
+   //~ qDebug() << "### contextMenuEvent....";
    rootmenu->exec(QCursor::pos());
    if (inlineFrameUnderCursor) {
     stylerwi->deleteLater();
@@ -646,6 +656,13 @@ dync->registerCommand_F(AbsoluteCmd(FBLOCK_ALIGN_JUSTIFY,true,dev->txtControl()-
 
 
 dync->registerCommand_F(AbsoluteCmd(FBLOCK_MARGINS,false,false,tr("Paragraph Margin"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SetParaMargin()),true));
+
+bool unbreak = c.blockFormat().nonBreakableLines();
+
+dync->registerCommand_F(AbsoluteCmd(FTXT_NOBREAKLINE,true,unbreak,tr("Set Unbrekable Block"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SwapUnbrekableBlock()),true));
+
+
+
  
 
 
@@ -682,7 +699,9 @@ dync->registerCommand_F(AbsoluteCmd(FBLOCK_MARGINS,false,false,tr("Paragraph Mar
     
      dync->registerCommand_F(AbsoluteCmd(ZINDEX_MIN,false,false,tr("Send Front zindex"),QIcon(":/img/bringtofront.png"),QKeySequence(),this,SLOT(seTFront()),true));
   
-    //////////////   ZINDEX_MIN , ZINDEX_MAX
+ dync->registerCommand_F(AbsoluteCmd(FFONT_LETTER_SPACING,false,false,tr("Font Letter Spacing"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontsLetterSpacing()) , true ));
+ 
+ 
 }
 
 
@@ -704,7 +723,7 @@ void AbsoluteLayer::seTBack()
     qreal backs = qBound(minimums,sc->zmin() - 0.1,maxi);
     setZValue(backs);
   
-    qDebug() << "### seTBack" << backs;
+    //~ qDebug() << "### seTBack" << backs;
   
     update();
     emit pagesize_swap();
@@ -726,7 +745,7 @@ void AbsoluteLayer::seTFront()
     top++;
     setZValue(top); 
   
-    qDebug() << "### seTFront " << top;
+    //~ qDebug() << "### seTFront " << top;
   
     update();
     emit pagesize_swap();

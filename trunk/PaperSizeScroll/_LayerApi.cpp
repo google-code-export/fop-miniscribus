@@ -276,10 +276,16 @@ QTextDocument *TextProcessor::document()
 
 void TextProcessor::timerEvent(QTimerEvent *event)
 {
-	
-	if (!edit_enable) {
+     if (!edit_enable) {
      return;
-	}
+     }
+     /* activate undo redo only at the first blink cursor */
+     if (!_d->isUndoRedoEnabled()) {
+     _d->setUndoRedoEnabled(true);
+     }
+   
+	
+   
     if (event->timerId() == cursorTimeLine.timerId()) {
 			cursortime = cursortime == true ? false : true;
 			repaintCursor();
@@ -309,7 +315,7 @@ void TextProcessor::ResetClickTimer()
 	   if (dragClickTimer.isActive()) {
 		  dragClickTimer.stop();
 			DragFill = false;
-			qDebug() << "### ResetClickTimer DragFill go " << DragFill;
+			//////qDebug() << "### ResetClickTimer DragFill go " << DragFill;
 	   }
 		 if (trippleClickTimer.isActive()) {
 		  trippleClickTimer.stop();
@@ -452,7 +458,7 @@ QTextLine TextProcessor::currentTextLine(const QTextCursor &cursor)
 QPointF TextProcessor::traposin( const QPointF &pos )
 {
 	
-	qDebug() << "### traposin  modus  " << Modus;
+	////////////qDebug() << "### traposin  modus  " << Modus;
 	
 	
 	if (Modus == FLAT) {
@@ -616,7 +622,7 @@ void TextProcessor::int_clipboard_new()
 	sx->SaveMimeTmp();   /* clone a copy on session before next incomming */
 	
 	
-	qDebug() << "### clipboard fill  ";
+	////////////////qDebug() << "### clipboard fill  ";
 }
 
 void TextProcessor::copy()
@@ -816,8 +822,9 @@ void TextProcessor::Controller_keyReleaseEvent ( QKeyEvent * e )
 void TextProcessor::Controller_keyPressEvent ( QKeyEvent * e )
 {
 	  //////////qDebug() << "### Controller_keyPressEvent  " << e->text() << e->key();
-		ResetClickTimer();
+          ResetClickTimer();
 	  cursortime = false;
+
 	  if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_S) {
 		return;
 		}
@@ -937,6 +944,16 @@ void TextProcessor::Controller_keyPressEvent ( QKeyEvent * e )
 		if (e->key() == Qt::Key_Backspace && !(e->modifiers() & ~Qt::ShiftModifier)) {
 			
         QTextBlockFormat blockFmt = C_cursor.blockFormat();
+                
+            if (blockFmt.bottomMargin() == 12) {
+              blockFmt.setBottomMargin(0);
+            }
+          
+            if (blockFmt.topMargin() == 12) {
+              blockFmt.setTopMargin(0);
+            }
+                
+                
 			
         QTextList *list = C_cursor.currentList();
         if (list && C_cursor.atBlockStart()) {
@@ -949,13 +966,27 @@ void TextProcessor::Controller_keyPressEvent ( QKeyEvent * e )
         }
         goto accept;
     }  else if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
-			
+	
+        QTextBlockFormat blockFmt = C_cursor.blockFormat();
+    
+    
         if (e->modifiers() & Qt::ControlModifier) {
-					  if (Op != FOP ) {
+            if (Op != FOP ) {
             C_cursor.insertText(QString(QChar::LineSeparator));
-						} else {
-						C_cursor.insertBlock();
-						}
+            } else {
+            C_cursor.insertBlock();
+            }
+          
+            if (blockFmt.bottomMargin() == 12) {
+              blockFmt.setBottomMargin(0);
+            }
+          
+            if (blockFmt.topMargin() == 12) {
+              blockFmt.setTopMargin(0);
+            }
+          
+            blockFmt.setIndent(blockFmt.indent() - 1);
+            C_cursor.setBlockFormat(blockFmt);
 					
         } else {
             C_cursor.insertBlock();   /* default format can take from setting */
@@ -1260,7 +1291,7 @@ void TextProcessor::StartDragOperation()
 	}
 	
 	
-	qDebug() << "### StartDragOperation->selectionLength" << selectionLength;
+	/////////////qDebug() << "### StartDragOperation->selectionLength" << selectionLength;
 	QMimeData *data = createMimeDataFromSelection();
 	                 if (data) {
 									  QApplication::clipboard()->setMimeData(data);
@@ -1283,7 +1314,7 @@ void TextProcessor::StartDragOperation()
 void TextProcessor::BaseMousePressEvent( const  QPointF posi , const QGraphicsSceneMouseEvent *epress )  
 {
 	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
-	qDebug() << "### BaseMousePressEvent selectionLength->" << selectionLength;
+	//////////////qDebug() << "### BaseMousePressEvent selectionLength->" << selectionLength;
 	if (selectionLength > 0) {
 	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
 	}
@@ -1325,7 +1356,7 @@ void TextProcessor::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton
 	if (selectionLength > 0) {
 	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
 	}
-	qDebug() << "### BaseMouseReleaseEvent  " << selectionLength;
+	//////////////////qDebug() << "### BaseMouseReleaseEvent  " << selectionLength;
 	if (button == Qt::LeftButton) {
 	   LastReleasePoint = posi;
 		 ResetClickTimer();
@@ -1346,6 +1377,15 @@ void TextProcessor::BaseMouseReleaseEvent( const  QPointF posi , Qt::MouseButton
 
 void TextProcessor::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )  
 {
+   ////////////// qDebug() << "### BaseMoveEvent  aa " << cursorpos;
+
+       if (cursorpos >= INT_MAX || cursorpos ==  -1) {
+       return;
+       }
+
+   ///////////////// qDebug() << "### BaseMoveEvent bb " << cursorpos;
+
+
 	const int cursorPosFozze = cursorpos;
 	cursortime = false;
 	const int stopat = qMax(position_selection_start,cursorPosFozze); 
@@ -1355,7 +1395,7 @@ void TextProcessor::BaseMoveEvent( const int cursorpos ,  QPointF moveposition )
 	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
 	}
 	
-	qDebug() << "### BaseMoveEvent selectionLength  " << selectionLength;
+	
 	
 	
 	if (position_selection_start >= 0 && cursorPosFozze >= 0 && !C_cursor.currentTable()) {
@@ -2316,6 +2356,20 @@ void TextProcessor::ParaBGcolor()
     c.setBlockFormat(format);
  }
 
+void TextProcessor::FontsLetterSpacing()  /* */
+ {
+   const qreal spaqhe = textCursor().charFormat().fontLetterSpacing();
+   bool ok;
+   qreal space = QInputDialog::getDouble(0, tr("Font Letter Spacing"),
+                                        tr("Space:"),spaqhe,50,2000, 2, &ok);
+    if (space > 0) {
+    QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    format.setFontLetterSpacing(space);
+    c.setCharFormat(format);
+    }
+ }
+
 void TextProcessor::BGcolor()
  {
     QRgb col = QColorDialog::getRgba(textCursor().charFormat().background().color().rgb()); 
@@ -2383,6 +2437,14 @@ void  TextProcessor::SetParaMargin()
 
 
 }
+void  TextProcessor::SwapUnbrekableBlock()
+{
+ QTextCursor c = textCursor();
+ QTextBlock textblocc = c.block();
+ QTextBlockFormat formatibb = textblocc.blockFormat();formatibb.setNonBreakableLines( formatibb.hasProperty(QTextFormat::BlockNonBreakableLines) == true ? false : true );
+ c.setBlockFormat(formatibb);
+}
+
  
 void  TextProcessor::SetElementMargin()
 {
