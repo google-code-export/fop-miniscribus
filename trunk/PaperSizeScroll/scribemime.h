@@ -508,5 +508,77 @@ void FormatUpdate()
 
 
 
+
+
+
+
+
+class Rotater : public QWidget
+{
+    Q_OBJECT
+//
+public:
+ Rotater( int rotaten , QWidget *parent  )
+{
+    gridLayout = new QGridLayout(this);
+    gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+    hboxLayout = new QHBoxLayout();
+    hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
+    label = new QLabel(tr("Rotate°:"),this);
+    label->setObjectName(QString::fromUtf8("label"));
+    label->setMaximumSize(QSize(16777215, 25));
+    hboxLayout->addWidget(label);
+    spacerItem = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    hboxLayout->addItem(spacerItem);
+    lcdNumber = new QLCDNumber(this);
+    lcdNumber->setObjectName(QString::fromUtf8("lcdNumber"));
+    lcdNumber->setMaximumSize(QSize(16777215, 25));
+    lcdNumber->setAutoFillBackground(false);
+    lcdNumber->setFrameShadow(QFrame::Sunken);
+    lcdNumber->display(rotaten);
+    hboxLayout->addWidget(lcdNumber);
+    gridLayout->addLayout(hboxLayout, 0, 0, 1, 1);
+  
+    dial = new QDial(this);
+    dial->setObjectName(QString::fromUtf8("dial"));
+    dial->setFocusPolicy(Qt::NoFocus);
+    dial->setContextMenuPolicy(Qt::NoContextMenu);
+    dial->setNotchesVisible(true);
+    dial->setMaximum(360);
+    dial->setValue(rotaten);
+    gridLayout->addWidget(dial, 1, 0, 1, 1);
+    connect(dial, SIGNAL(dialMoved(int)),this, SLOT(NewValue(int)));
+  
+}
+
+~Rotater()
+{
+ dial->disconnect(this);
+}
+
+
+    QGridLayout *gridLayout;
+    QHBoxLayout *hboxLayout;
+    QLabel *label;
+    QSpacerItem *spacerItem;
+    QLCDNumber *lcdNumber;
+    QDial *dial;
+private:
+signals:
+    void rotater(int);
+public slots:
+  
+void NewValue( const int x )
+{
+  lcdNumber->display(x);
+  emit rotater(x);
+}
+  
+
+
+};
+
+
+
 #endif // SCRIBEMIME_H
 

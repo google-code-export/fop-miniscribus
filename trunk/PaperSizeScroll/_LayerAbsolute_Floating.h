@@ -142,6 +142,7 @@ public slots:
 void seTBack();
 void seTFront();
 void UpdatePageFormat();
+void RotateLayer( const int ro ) ;
 
 };
 
