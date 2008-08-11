@@ -44,16 +44,17 @@ QPixmap BruschChess( qreal chesswidth )
 
 M_PageSize::M_PageSize() 
 {
-		landscape = false;
-		coolspace = 0;
-		modus = 0;
-    name = "A4 (210 x 297 mm, 8.26 x 11.7 inches)";  ////////  G_regt.size()
-    P_rect = QPrinter::A4;
-    G_regt = QRectF(0,0,MM_TO_POINT(210),MM_TO_POINT(297));
-    RealSize = G_regt.size();
-		const qreal mr = MM_TO_POINT(10);
-		P_margin = QRectF(mr,mr,mr,MM_TO_POINT(30));   
-		//////P_margin = QRectF(0,0,0,0);  ////// css like QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin); 
+	landscape = false;
+	coolspace = 0;
+	modus = 0;
+	name = "A4 (210 x 297 mm, 8.26 x 11.7 inches)";  ////////  G_regt.size()
+	P_rect = QPrinter::A4;
+	G_regt = QRectF(0,0,MM_TO_POINT(210),MM_TO_POINT(297));
+	RealSize = G_regt.size();
+	const qreal mr = MM_TO_POINT(10);
+	P_margin = QRectF(mr,mr,mr,MM_TO_POINT(30));   
+	//////P_margin = QRectF(0,0,0,0);  ////// css like QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin); 
+	AllowHeaderFooter = true;
 }
 
 M_PageSize& M_PageSize::operator=( const M_PageSize& d )
