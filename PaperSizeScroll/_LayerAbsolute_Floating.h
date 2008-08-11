@@ -113,6 +113,21 @@ protected:
     void inputMethodEvent ( QInputMethodEvent * event );
 
 private:
+
+    /* layer absolute params */
+    QColor Background_Color;
+    QColor Border_Color;
+
+    QColor Border_Color_t;
+    QColor Border_Color_b;
+    QColor Border_Color_l;
+    QColor Border_Color_r;
+    qreal _border_top;
+    qreal _border_bottom;
+    qreal _border_left;
+    qreal _border_right;
+    
+
     LAYERTYPE layermods;
     int id;
     bool ContextOpen;
@@ -143,6 +158,7 @@ void seTBack();
 void seTFront();
 void UpdatePageFormat();
 void RotateLayer( const int ro ) ;
+void BackGroundColor();
 
 };
 
