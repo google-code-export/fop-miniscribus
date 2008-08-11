@@ -12,6 +12,18 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
 {
     dev->q = this;
     layermods = layermodus;
+    Background_Color = QColor(Qt::white);
+    Border_Color = QColor(Qt::white);
+    Border_Color_t = QColor(Qt::white);
+    Border_Color_b = QColor(Qt::white);
+    Border_Color_l = QColor(Qt::white);
+    Border_Color_r = QColor(Qt::white);
+
+    _border_top = 0.;
+    _border_bottom = 0.;
+    _border_left = 0.;
+    _border_right = 0.;
+
     /////////qDebug() << "### init....";
     ApiSession *sx = ApiSession::instance();
     ////const qreal widhtinit = sx->CurrentPageFormat().G_regt.width() - ( FooterHeaderPadding * 2 );
@@ -290,7 +302,7 @@ QPicture AbsoluteLayer::LayerImage( const int pagenr )
          QPainter painter;
          painter.begin(&img);  
          painter.setRenderHint(QPainter::TextAntialiasing);
-         painter.setBrush(Qt::white);
+         painter.setBrush(Background_Color);
          painter.setPen(Qt::NoPen);
          painter.drawRect(rect());
 
@@ -310,7 +322,7 @@ QPicture AbsoluteLayer::LayerImage( const int pagenr )
 void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->setRenderHint(QPainter::TextAntialiasing);
-    painter->setBrush(Qt::white);
+    painter->setBrush(Background_Color);
     painter->setPen(Qt::NoPen);
     painter->drawRect(rect());
     const qreal hi = rect().height();
@@ -544,7 +556,9 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         inlineFrameUnderCursor = true;
     }
 
-   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_STRIKOUT , FTXT_OVERLINE , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR ,  FTXT_COLOR  ,  ZINDEX_MIN , ZINDEX_MAX , F_NONE };
+   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE
+, FTXT_STRIKOUT , FTXT_OVERLINE , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG ,  FTXT_COLOR  , 
+ZINDEX_MIN , ZINDEX_MAX , F_NONE };
  
  AbsCommandID TablesAction[] = { FTABLE_FORMATS ,  FTABLE_BGCOLOR ,  FTABLE_CELLBGCOLOR , FTABLE_APPENDCOOL , FTABLE_APPENDROW , F_SEPARATOR , FTABLE_REMCOOL , FTABLE_REMROW ,  F_SEPARATOR , FTABLE_MERGECELL , FTABLE_COOLWIDHT  ,  F_NONE };
 
@@ -730,13 +744,33 @@ dync->registerCommand_F(AbsoluteCmd(FTXT_NOBREAKLINE,true,unbreak,tr("Set Unbrek
      dync->registerCommand_F(AbsoluteCmd(ZINDEX_MIN,false,false,tr("Send Front zindex"),QIcon(":/img/bringtofront.png"),QKeySequence("Alt+Up"),this,SLOT(seTFront()),true));
   
  dync->registerCommand_F(AbsoluteCmd(FFONT_LETTER_SPACING,false,false,tr("Font Letter Spacing"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontsLetterSpacing()) , true ));
- 
- 
+
+
+dync->registerCommand_F(AbsoluteCmd(FLAYER_BG,false,false,tr("Background color"),createColorIcon( Background_Color ),QKeySequence(),this,SLOT(BackGroundColor()),true));
+
+
+
 }
 
 
 
+void AbsoluteLayer::BackGroundColor()
+{
+	QRgb col = QColorDialog::getRgba(Background_Color.rgba()); 
+	QColor col2 = QColor(col);
+	int trans = qAlpha(col); 
+	col2.setAlpha(trans);
+	if (!col2.isValid()) {
+	return;
+	}
+	Background_Color = col2;
 
+	QTextFrame  *Tframe = document()->rootFrame();
+	QTextFrameFormat Ftf = Tframe->frameFormat();
+	Ftf.setBackground(QBrush(Qt::transparent));
+	Tframe->setFrameFormat(Ftf);
+	update();
+}
 
 
 
