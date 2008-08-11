@@ -179,52 +179,52 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setPen( Qt::NoPen );
     painter->setBrush(Qt::lightGray);
-		painter->drawRect(LastRect);
-    
+    painter->drawRect(LastRect);
     const int PageSumm = qBound (1,document()->pageCount(),MaximumPages);
-    dev->txtControl()->paint(painter,option,widget);
-    painter->setPen( Qt::NoPen );
-    
-    for (int i = 0; i < PageSumm; ++i)  {
-        const QRectF pagen =  dev->txtControl()->Model().PageExternal(i);
+
+    /* draw white first background */
+    for (int o = 0; o < PageSumm; ++o)  {
+        painter->save();
+        const QRectF pagen =  dev->txtControl()->Model().PageExternal(o);
+        painter->setBrush(QColor(Qt::white));
+        painter->setPen( QPen(Qt::black,0.3) );
+        painter->drawRect(pagen);
+        painter->restore();
+        dev->txtControl()->DrawPage(o,painter,o);
+        painter->save();
+
+        
         QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
         QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
-        
         painter->fillRect(rightShadow, Qt::darkGray);
         painter->fillRect(bottomShadow, Qt::darkGray);
-        
-        
+        /* small border */
         painter->setBrush(Qt::NoBrush);
         painter->setPen( QPen(Qt::black,0.3) );
         painter->drawRect(pagen);
         painter->setPen( Qt::NoPen );
     
         
-       if (i !=0) {
-       /* header */
-       QPicture headerpaint = Aheader->LayerImage(i);
-       QPointF posheader = dev->txtControl()->Model().HeaderInitPoints(i);
+       if (o !=0) {
+       /* draw  header */
+       QPicture headerpaint = Aheader->LayerImage(o);
+       QPointF posheader = dev->txtControl()->Model().HeaderInitPoints(o);
        painter->drawPicture(posheader, headerpaint);
-       /* footer */
-       QPicture footerpaint = Afooter->LayerImage(i);
-       QPointF posfooter = dev->txtControl()->Model().FooterInitPoints(i);
+       /* draw footer */
+       QPicture footerpaint = Afooter->LayerImage(o);
+       QPointF posfooter = dev->txtControl()->Model().FooterInitPoints(o);
        painter->drawPicture(posfooter, footerpaint);
        }
+      
+       painter->restore();
+    }
     
-    
-    
-    
-    
-    
-    
-        
-	  }
-    
-    
+    /*
     QColor Visiblerecord(Qt::red);
 		Visiblerecord.setAlpha(22);
     painter->setBrush(Visiblerecord);
     painter->drawRect(LastUpdateRequest);
+*/
     
     
     
@@ -396,8 +396,9 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
     
     CommandStorage *dync = CommandStorage::instance();
-    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , D_SEPARATOR ,  TXT_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
+    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE ,
+TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
   
   DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
@@ -467,6 +468,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
                  if ( id == D_SUBMENUS ) {
                      rootmenu->addSeparator();
                      rootmenu->addAction(MenuParagr->menuAction()); 
+                     rootmenu->addAction(CommandStorage::instance()->actD(TXT_SPAN_FONTS));
                      rootmenu->addAction(MenuTables->menuAction()); 
                      rootmenu->addAction(MenuFrame->menuAction()); 
                      rootmenu->addSeparator();
@@ -521,7 +523,7 @@ void TextLayer::MakeActionHere()
 
 snc->registerCommand_S(StaticCmd(NEW_LAYER_ABS,tr("Insert new Absolute Layer"),QIcon(":/img/frame.png"),QKeySequence(),this,SLOT(Append_Layer())));
 
-
+snc->registerCommand_S(StaticCmd(LINK_TEXT,tr("Insert Link"),QIcon(":/img/web-48x48.png"),QKeySequence(),dev->txtControl(),SLOT(LinkText())));
 
 
 
@@ -574,7 +576,7 @@ dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img
     dync->registerCommand_D(DinamicCmd(TXT_UNDERLINE,true,isunderline,tr("Text Underline"),QIcon(":/img/textunder.png"),QKeySequence("Ctrl+U"),dev->txtControl(),SLOT(UnderlineText()),true));
     dync->registerCommand_D(DinamicCmd(TXT_STRIKOUT,true,f.strikeOut(),tr("Text Strikeout "),QIcon(":/img/texstrickout.png"),QKeySequence(),dev->txtControl(),SLOT(StrickText()),true));
     dync->registerCommand_D(DinamicCmd(TXT_OVERLINE,true,f.overline(),tr("Text Overline"),QIcon(":/img/texoverline.png"),QKeySequence(),dev->txtControl(),SLOT(OverlineText()),true));
-    dync->registerCommand_D(DinamicCmd(TXT_FONTS,false,false,tr("Text Fonts"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontText()),true));
+    dync->registerCommand_D(DinamicCmd(TXT_SPAN_FONTS,false,false,tr("Fonts"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontText()),true));
     
     
     dync->registerCommand_D(DinamicCmd(TXT_BG_COLOR,false,false,tr("Text Fragment Background color"),TXTBGcolorico,QKeySequence(),dev->txtControl(),SLOT(BGcolor()),true));

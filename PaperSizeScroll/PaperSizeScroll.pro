@@ -8,23 +8,23 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 
-MOC_DIR	= build/.moc
-RCC_DIR	= build/.rcc
+MOC_DIR = build/.moc
+RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
 
 win32 {
     BUILD_PATH = $$PWD 
     message(BUILD PATH  $$BUILD_PATH)
-} 
+}
 
-DESTDIR	+= ./
+DESTDIR += ./
 QT += xml network svg 
-CONFIG   +=  qt release warn_off console
-contains(QT_CONFIG, opengl):QT += opengl
+CONFIG +=  qt release warn_off console
+contains(QT_CONFIG, opengl): QT += opengl
 
 macx {
-###########  only on work to view debug output
-CONFIG -= app_bundle
+    ###########  only on work to view debug output
+    CONFIG -= app_bundle
 }
 
 
@@ -41,7 +41,8 @@ HEADERS += _Image_Page_Struct.h \
            scribemime.h \
            SessionManager.h \
            Layer_CommandStorage.h \
-           table_setting.h
+           table_setting.h \
+ documentlinker.h
 SOURCES += _Image_Page_Struct.cpp \
            _LayerApi.cpp \
            _LayerExtended.cpp \
@@ -54,9 +55,10 @@ SOURCES += _Image_Page_Struct.cpp \
            scribemime.cpp \
            SessionManager.cpp \
            Layer_CommandStorage.cpp \
-           table_setting.cpp
-           
-           
+           table_setting.cpp \
+ documentlinker.cpp
+
+
 RESOURCES += osApplication.qrc       
-           
-           
+
+

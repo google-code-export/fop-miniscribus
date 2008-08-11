@@ -38,7 +38,7 @@ typedef enum {
 	TXT_STRIKOUT			= 404,
 	TXT_OVERLINE			= 405,
 	TXT_NOBREAKLINE		= 406,
-	TXT_FONTS		= 407,
+	TXT_SPAN_FONTS		= 1650,
         FONT_LETTER_SPACING  = 1204,
 	LAYER_BG = 500,
         BLOCK_BGCOLOR = 707,
@@ -92,7 +92,7 @@ typedef enum {
 	FRAME_PARAMS			= 450,
 	PARA_BREACK_PAGE_POLICY			= 451,
 	
-	
+	LINK_TEXT = 1702,
 	/* TXT group layer */
 	
 	/* Page group layer */
@@ -145,6 +145,7 @@ typedef enum {
         FBLOCK_MARGINS = 1500,
         ZINDEX_MAX = 1700,
         ZINDEX_MIN = 1701,
+        FLINK_TEXT = 1702,
 	FTXT_BOLD			= 402,
 	FTXT_UNDERLINE			= 403,
 	FTXT_STRIKOUT			= 404,

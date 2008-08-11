@@ -2263,6 +2263,14 @@ void TextProcessor::FontText()
   }
 }
 
+void  TextProcessor::HubBlockids()
+{
+
+
+
+}
+
+
 void  TextProcessor::LinkText()
 {
     QTextCursor c = textCursor();
@@ -2356,13 +2364,13 @@ void TextProcessor::ParaBGcolor()
     c.setBlockFormat(format);
  }
 
-void TextProcessor::FontsLetterSpacing()  /* */
+void TextProcessor::FontsLetterSpacing()
  {
-   const qreal spaqhe = textCursor().charFormat().fontLetterSpacing();
+   const qreal spacingnow = textCursor().charFormat().fontLetterSpacing();
    bool ok;
    qreal space = QInputDialog::getDouble(0, tr("Font Letter Spacing"),
-                                        tr("Space:"),spaqhe,50,2000, 2, &ok);
-    if (space > 0) {
+                                        tr("Space:"),spacingnow,90,2000, 2, &ok);
+    if (space > 0 && ok) {
     QTextCursor c = textCursor();
     QTextCharFormat format = c.charFormat();
     format.setFontLetterSpacing(space);
@@ -2867,7 +2875,6 @@ void LayerText::setDocument ( const QTextDocument * document , FileHandlerType T
 	    Ftf.setLeftMargin(0);
 	    Ftf.setBottomMargin(0);
 	    Ftf.setTopMargin(0);
-            Ftf.setBackground(QBrush(Qt::white));
             Ftf.setRightMargin(0);
 	    Ftf.setPadding(0);
             Tframe->setFrameFormat(Ftf);
@@ -2887,6 +2894,13 @@ void LayerText::setDocument ( const QTextDocument * document , FileHandlerType T
 				
 }
 
+DocumentLinker::DocumentLinker()
+{
+}
 
+
+DocumentLinker::~DocumentLinker()
+{
+}
  
 
