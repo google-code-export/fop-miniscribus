@@ -489,6 +489,16 @@ void AbsoluteLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void AbsoluteLayer::keyPressEvent( QKeyEvent * event ) 
 {
+
+   if (layermods == DIV_ABSOLUTE) {
+     if ((event->modifiers() & Qt::AltModifier) && event->key() == Qt::Key_Up) {
+     seTFront();
+     }
+     if ((event->modifiers() & Qt::AltModifier) && event->key() == Qt::Key_Down) {
+     seTBack();
+     }
+   }
+
    return dev->txtControl()->Controller_keyPressEvent(event);
    //~ qDebug() << "### keyPressEvent...";
     return QGraphicsItem::keyPressEvent(event);
@@ -511,6 +521,18 @@ bool AbsoluteLayer::sceneEvent(QEvent *event)
 void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
    MakeAllCommand();
+
+   Rotater *slider;
+   QWidgetAction *widgetslider = 0;
+
+
+   if (dev->txtControl()->Edit_On() && layermods == DIV_ABSOLUTE ) {
+        slider = new Rotater(Rotate,event->widget());
+        widgetslider = new QWidgetAction(event->widget());
+        widgetslider->setDefaultWidget(slider);
+        connect(slider, SIGNAL(rotater(int)),this, SLOT(RotateLayer(int)));  
+   }
+
 
 
     ContextOpen = true;
@@ -582,6 +604,11 @@ QMenu *rootmenu = new QMenu(event->widget());
                      rootmenu->addAction(MenuParagr->menuAction()); 
                      rootmenu->addAction(MenuTables->menuAction()); 
                      //////rootmenu->addAction(MenuFrame->menuAction()); 
+                     if (widgetslider) {
+                     rootmenu->addAction(widgetslider); 
+                     }
+                 
+                 
                      rootmenu->addSeparator();
                  }
       QAction* a_1 = CommandStorage::instance()->actF(id);
@@ -594,7 +621,10 @@ QMenu *rootmenu = new QMenu(event->widget());
    if (inlineFrameUnderCursor) {
     stylerwi->deleteLater();
    }     
-   rootmenu->deleteLater();     
+   rootmenu->deleteLater(); 
+   if (widgetslider) {
+    widgetslider->deleteLater();
+   }   
    ContextOpen = false;
    dev->txtControl()->ClearCurrentSelection();
 }
@@ -695,9 +725,9 @@ dync->registerCommand_F(AbsoluteCmd(FTXT_NOBREAKLINE,true,unbreak,tr("Set Unbrek
     dync->registerCommand_F(AbsoluteCmd(FTABLE_MERGECELL,false,false,tr("Merge selected cell"),QIcon(":/img/reload.png"),QKeySequence(),dev->txtControl(),SLOT(MergeCellByCursorPosition()),istable));
     dync->registerCommand_F(AbsoluteCmd(FTABLE_COOLWIDHT,false,false,tr("Table Column width"),QIcon(":/img/configure.png"),QKeySequence(),dev->txtControl(),SLOT(SetColumLarge()),istable));
     
-    dync->registerCommand_F(AbsoluteCmd(ZINDEX_MAX,false,false,tr("Send Back zindex"),QIcon(":/img/sendtoback.png"),QKeySequence(),this,SLOT(seTBack()),true));
+    dync->registerCommand_F(AbsoluteCmd(ZINDEX_MAX,false,false,tr("Send Back zindex"),QIcon(":/img/sendtoback.png"),QKeySequence("Alt+Down"),this,SLOT(seTBack()),true));
     
-     dync->registerCommand_F(AbsoluteCmd(ZINDEX_MIN,false,false,tr("Send Front zindex"),QIcon(":/img/bringtofront.png"),QKeySequence(),this,SLOT(seTFront()),true));
+     dync->registerCommand_F(AbsoluteCmd(ZINDEX_MIN,false,false,tr("Send Front zindex"),QIcon(":/img/bringtofront.png"),QKeySequence("Alt+Up"),this,SLOT(seTFront()),true));
   
  dync->registerCommand_F(AbsoluteCmd(FFONT_LETTER_SPACING,false,false,tr("Font Letter Spacing"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontsLetterSpacing()) , true ));
  
@@ -753,6 +783,12 @@ void AbsoluteLayer::seTFront()
 
 
 
+void AbsoluteLayer::RotateLayer( const int ro ) 
+{ 
+   Rotate = ro;
+    ////////////qDebug() << "### RotateLayer " << ro;
+   update();
+}
 
 
 
