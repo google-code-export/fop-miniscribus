@@ -129,7 +129,7 @@ void M_PageSize::HandlePrint( QTextDocument *doc )
 	    Ftf.setLeftMargin(P_margin.height());
 	    Ftf.setBottomMargin(P_margin.width());
 	    Ftf.setTopMargin(P_margin.x());
-			Ftf.setBackground(QBrush(Qt::white));
+	   Ftf.setBackground(QBrush(Qt::transparent));
 			Ftf.setRightMargin(P_margin.y());
 	    Ftf.setPadding ( 0);
 			Tframe->setFrameFormat(Ftf);

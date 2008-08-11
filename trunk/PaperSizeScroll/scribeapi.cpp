@@ -122,7 +122,7 @@ Panel::Panel( QWidget *parent)
     openGlButton = new QToolButton;
     openGlButton->setText(tr("OpenGL"));
     openGlButton->setCheckable(true);
-    openGlButton->setChecked ( true );
+    
     
     labelLayout->addWidget(openGlButton);
     labelLayout->addStretch();
@@ -161,7 +161,8 @@ Panel::Panel( QWidget *parent)
     zoomSliderLayout->addWidget(zoomInIcon);
     zoomSliderLayout->addWidget(zoomSlider);
     zoomSliderLayout->addWidget(zoomOutIcon);
-		zoomSliderLayout->addWidget(resetButton);
+
+    zoomSliderLayout->addWidget(resetButton);
 		
 		QGridLayout *topLayout = new QGridLayout;
     topLayout->addLayout(labelLayout, 0, 0);
@@ -178,9 +179,12 @@ Panel::Panel( QWidget *parent)
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
     connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
     
-		resetView();
-		QTimer::singleShot(10, this, SLOT(DisplayTop()));  
-    toggleOpenGL();
+   resetView();
+   QTimer::singleShot(10, this, SLOT(DisplayTop()));  
+   #ifndef Q_WS_X11
+   openGlButton->setChecked ( true );
+   toggleOpenGL();
+   #endif
     
     
 }

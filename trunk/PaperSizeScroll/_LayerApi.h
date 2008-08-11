@@ -27,6 +27,22 @@ typedef enum
 } DisplayModus;
 
 
+
+
+class DocumentLinker {
+public:
+    DocumentLinker( QTextDocument doc );
+    ~DocumentLinker();
+
+};
+
+
+
+
+
+
+
+
 class TextProcessor : public QObject
 {
      Q_OBJECT
@@ -243,6 +259,7 @@ public slots:
 private:
   /* not possibel to change if launch */
 DisplayModus Modus;
+void  HubBlockids();
 
 };
 
@@ -263,7 +280,6 @@ public:
   bool AllowedPosition( const QPointF inpos );
   QRectF GroupboundingRect();
   QRectF boundingRect();
-protected:
   void DrawPage( const int index  , QPainter * painter , const int cursorpage );
   QPointF PageIndexTopLeft( const int index  );
   M_PageSize PAGE_MODEL;

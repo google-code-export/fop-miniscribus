@@ -12,7 +12,7 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
 {
     dev->q = this;
     layermods = layermodus;
-    Background_Color = QColor(Qt::white);
+    Background_Color = QColor(0,0,0,44);
     Border_Color = QColor(Qt::white);
     Border_Color_t = QColor(Qt::white);
     Border_Color_b = QColor(Qt::white);
@@ -127,6 +127,7 @@ void AbsoluteLayer::UpdateDots()
     Angle_1->setPos(boundingRect().topLeft());
     Angle_4->setPos(boundingRect().bottomRight());
     Angle_2->setPos(boundingRect().topRight());
+    
 }
 
 
@@ -367,12 +368,13 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     }
                 
   
-
+    /*
     painter->setPen(Qt::NoPen);
     QColor Visiblerecord(Qt::red);
     Visiblerecord.setAlpha(22);
     painter->setBrush(Visiblerecord);
     painter->drawRect(lastUpdateRequest);
+   */
   
     QMatrix matrix;
     matrix.translate ( boundingRect().center().x() , boundingRect().center().y() );
@@ -557,7 +559,8 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     }
 
    AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE
-, FTXT_STRIKOUT , FTXT_OVERLINE , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG ,  FTXT_COLOR  , 
+, FTXT_STRIKOUT , FTXT_OVERLINE , FLINK_TEXT , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG , 
+FTXT_COLOR , 
 ZINDEX_MIN , ZINDEX_MAX , F_NONE };
  
  AbsCommandID TablesAction[] = { FTABLE_FORMATS ,  FTABLE_BGCOLOR ,  FTABLE_CELLBGCOLOR , FTABLE_APPENDCOOL , FTABLE_APPENDROW , F_SEPARATOR , FTABLE_REMCOOL , FTABLE_REMROW ,  F_SEPARATOR , FTABLE_MERGECELL , FTABLE_COOLWIDHT  ,  F_NONE };
@@ -707,9 +710,8 @@ dync->registerCommand_F(AbsoluteCmd(FTXT_NOBREAKLINE,true,unbreak,tr("Set Unbrek
 
 
 
- 
 
-
+dync->registerCommand_F(AbsoluteCmd(FLINK_TEXT,true,unbreak,tr("Insert Link"),QIcon(":/img/web-48x48.png"),QKeySequence(),dev->txtControl(),SLOT(LinkText()),true));
     
     
     /*
