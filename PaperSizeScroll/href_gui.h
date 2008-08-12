@@ -47,8 +47,8 @@ public:
     QLabel *label_3;
     QVBoxLayout *vboxLayout1;
     QLineEdit *text_href;
-    QLineEdit *url_href;
     QComboBox *target_href;
+    QComboBox *otext_href;
     QHBoxLayout *hboxLayout1;
     QSpacerItem *spacerItem1;
     QPushButton *okButton;
@@ -108,19 +108,14 @@ public:
     vboxLayout1->setObjectName(QString::fromUtf8("vboxLayout1"));
     text_href = new QLineEdit(Href_Gui);
     text_href->setObjectName(QString::fromUtf8("text_href"));
-
     vboxLayout1->addWidget(text_href);
+    
+    otext_href = new QComboBox(Href_Gui);
+    otext_href->setObjectName(QString::fromUtf8("otext_href"));
+    otext_href->setEditable (true);
 
-    url_href = new QLineEdit(Href_Gui);
-    url_href->setObjectName(QString::fromUtf8("url_href"));
-    QSizePolicy sizePolicy1(static_cast<QSizePolicy::Policy>(7), static_cast<QSizePolicy::Policy>(0));
-    sizePolicy1.setHorizontalStretch(0);
-    sizePolicy1.setVerticalStretch(0);
-    sizePolicy1.setHeightForWidth(url_href->sizePolicy().hasHeightForWidth());
-    url_href->setSizePolicy(sizePolicy1);
-    url_href->setMinimumSize(QSize(355, 18));
+    vboxLayout1->addWidget(otext_href);
 
-    vboxLayout1->addWidget(url_href);
 
     target_href = new QComboBox(Href_Gui);
     target_href->setObjectName(QString::fromUtf8("target_href"));
@@ -210,6 +205,7 @@ class Href_Gui : public QDialog, public Ui::Href_Gui
 public:
     Href_Gui( QWidget* = 0 );
 	static Href_Gui* self( QWidget* = 0 );
+    inline QComboBox *linker() { return otext_href; }
     QStringList GetUserConfig();
     static QPointer<Href_Gui> _self;
 	//
@@ -225,6 +221,7 @@ private:
  public slots:
      void Acceptvars();
      void reject();
+     void urlChanged( const int index );
 
 };
 //

@@ -1905,13 +1905,42 @@ void TextProcessor::in_image( int id )
 
 void TextProcessor::showhtml()
 {
+    int modus = 0;
+    QAction *ali = qobject_cast<QAction *>(sender());
+    if (ali) {
+    modus = ali->data().toInt();
+    }
+  
+  /*
+  SHOW_SOURCE_HTML = 703,
+	SHOW_SOURCE_SCRIBE = 704,
+        SHOW_SOURCE_FOP = 705,
+  */
+  
+  
+    QDomDocument *sxml;
+    if (modus == 703 ) {
+    sxml = new QDomDocument();
+    sxml->setContent (_d->toHtml("utf-8"),false);
+    } else if (modus == 704 ) {
+    ScribeParser *parsen = new ScribeParser(_d,ScribeParser::Psave);
+    sxml = parsen->dom();
+    } else if (modus == 705 ) {
+    ScribeParser *parsen = new ScribeParser(_d,ScribeParser::Psave);
+    sxml = parsen->dom();
+    } else {
+    sxml = new QDomDocument();
+    sxml->setContent (_d->toHtml("utf-8"),false);
+    }
+
 	XMLTextEdit *sHtml = new XMLTextEdit(0);
 	sHtml->setWindowFlags ( Qt::Window );
 	sHtml->setMinimumSize ( 450 , 500 );
 	
-	QDomDocument *fh = new QDomDocument();
-	if (fh->setContent (_d->toHtml("utf-8"),false)) {
-		sHtml->setPlainText( fh->toString(1) );
+	 
+  
+	if (!sxml->isNull()) {
+		sHtml->setPlainText( sxml->toString(1) );
 	} else {
 		sHtml->setPlainText( "Not conform!" );
 	}
@@ -2263,11 +2292,10 @@ void TextProcessor::FontText()
   }
 }
 
-void  TextProcessor::HubBlockids()
+QStringList TextProcessor::HubBlockids()
 {
-
-
-
+  ScribeParser *parsen = new ScribeParser(document(),ScribeParser::Plinker);
+  return parsen->internals();
 }
 
 
@@ -2302,8 +2330,39 @@ void  TextProcessor::LinkText()
       if (sthtml.size() < 1) {
            sthtml= "Text to link";  
       }
+    
+      ScribeParser *parsen = new ScribeParser(document(),ScribeParser::Plinker);
+      QStringList internalinks = parsen->internals();
+      QStringList cclinks = parsen->destinations();
+    
+    
+    
+      const QString nowurl = format.anchorHref();
+      QComboBox *box = Href_Gui::self( 0 )->linker();
+      box->clear();
+      if (nowurl.contains("@") || 
+                      nowurl.contains("mailto:") || 
+                      nowurl.startsWith("news:") || 
+                      nowurl.startsWith("ftp:") || 
+                      nowurl.startsWith("webdav:") || 
+                      nowurl.startsWith("http:") || 
+                      nowurl.startsWith("https:")) {
+      box->addItem (QIcon(":/img/web-48x48.png"),nowurl,1);  /* external link */
+      } else if (nowurl.size() < 1 ) {
+      box->addItem(QIcon(":/img/web-48x48.png"),_MASTERLINK_,1);
+      } else {
+      box->addItem(QIcon(":/img/document.png"),nowurl,2);
+      }
+      for (int i = 0; i < cclinks.size(); ++i) {  
+         const QString durl = cclinks.at(i);
+         box->addItem(QIcon(":/img/web-48x48.png"),durl,1);
+      }
+      for (int i = 0; i < internalinks.size(); ++i) {  
+         const QString durl = internalinks.at(i);    
+         box->addItem(QIcon(":/img/document.png"),durl,2);
+      }
+    
       Href_Gui::self( 0 )->text_href->setText(sthtml);
-      Href_Gui::self( 0 )->url_href->setText(format.anchorHref());
       Href_Gui::self( 0 )->exec();
       
         if (Href_Gui::self) {
@@ -2325,22 +2384,23 @@ void  TextProcessor::LinkText()
                        }
                    }
                 if (satarget !="#name") {
-                //////ltext ="<a href=\""+linkerma+"\">"+QString(data.at(0))+"</a>";
                 format.setAnchor(true);
                 format.setAnchorHref(hrefprimo); 
+                format.setForeground(QBrush(_LINK_COLOR_));
                 } else {
-                    ///// setAnchorNames ( const QStringList & names )
                 hrefprimo.replace("#","");
                 hrefprimo.replace(" ","");
                 format.setAnchor(true);
-                format.setAnchorHref(hrefprimo); 
-                }
-                
+                format.setAnchorHref(QString("#")+hrefprimo); 
                 format.setForeground(QBrush(_LINK_COLOR_));
+                }
+              
                 format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
                 
                 c.setCharFormat(format);
                 }
+              
+              Href_Gui::self( 0 )->deleteLater();
           }
     
 
@@ -2894,13 +2954,221 @@ void LayerText::setDocument ( const QTextDocument * document , FileHandlerType T
 				
 }
 
-DocumentLinker::DocumentLinker()
+
+/*   Parser QTextDocument  */
+
+
+ScribeParser::ScribeParser( QTextDocument *  doc  , ScribeParseModus e )
 {
+    textDocument = doc;
+    QTextFrame *root = doc->rootFrame();
+    helper_cursor = QTextCursor(doc); 
+
+    Internal_Destination_Links.clear();
+    modus = e;
+    QDomImplementation implementation;
+    QDomDocumentType docType = implementation.createDocumentType("scribe-document", "scribe","www.trolltech.com/scribe");
+
+    document = new QDomDocument(docType);
+    QDomProcessingInstruction process = document->createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+    document->appendChild(process);
+
+    QDomElement documentElement = document->createElement("document");
+    document->appendChild(documentElement);
+    if (root) {
+    processFrame(documentElement,root);
+    }
+
 }
 
 
-DocumentLinker::~DocumentLinker()
+
+void ScribeParser::processFrame(QDomElement appender ,  QTextFrame *frame)
 {
+      //~ qDebug() << "### processFrame   ";
+
+    QDomElement frameElement = document->createElement("frame");
+    frameElement.setAttribute("begin", frame->firstPosition());
+    frameElement.setAttribute("end", frame->lastPosition());
+    appender.appendChild(frameElement);
+    QTextFrame::iterator it;
+    for (it = frame->begin(); !(it.atEnd()); ++it) {
+        QTextFrame *childFrame = it.currentFrame();
+        QTextBlock childBlock = it.currentBlock();
+    
+        if (childFrame) {
+            if (QTextTable *table = qobject_cast<QTextTable *>(it.currentFrame())) {
+            processTable(frameElement,table);
+            } else {
+            processFrame(frameElement, childFrame);
+            }
+        } else if (childBlock.isValid()) {
+            processBlock(frameElement, childBlock);
+        }
+    }
+
 }
+
+///////////int QTextBlock::position () const
+
+void ScribeParser::MemoonBlock( QTextCursor c ,  QVariant data , const int id )
+{
+      QTextBlockFormat bf = c.blockFormat();
+      bf.setProperty (id,data);
+      c.setBlockFormat(bf);
+
+}
+
+
+void ScribeParser::processBlock( QDomElement appender ,  QTextBlock   block )
+{
+    
+    const int idnumerate = block.blockNumber();
+    const QString blokstxt = Qt::escape(block.text());
+    QString humantxt = Imagename(blokstxt.toUpper()); 
+    humantxt.truncate(4);
+    const QString InternDestName = QString("%1_").arg(idnumerate) + humantxt.leftJustified(10, '0');
+    if (modus == Plinker && blokstxt.size() > 1 && InternDestName.size() > 9 ) {
+          QTextCharFormat chformat = block.charFormat();
+          if ( chformat.isAnchor() )  {
+              QStringList dests = chformat.anchorNames();
+               for (int i = 0; i < dests.size(); ++i) {
+                 Internal_Destination_Links.append(dests.at(i));
+               }
+          
+          
+              if (dests.contains(InternDestName)) {
+                 /* having insert all link and block bookmark */
+                 Internal_Destination_Links.append(InternDestName);
+             
+              } else {
+                dests << InternDestName;
+                chformat.setAnchor(true);
+                chformat.setAnchorNames(dests);
+                chformat.setToolTip ( InternDestName );
+                ////chformat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+                //////chformat.setForeground(QBrush(_LINK_COLOR_));
+                Internal_Destination_Links.append(InternDestName);
+                helper_cursor.setPosition(block.position());
+                helper_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+                helper_cursor.setCharFormat(chformat);
+                MemoonBlock(helper_cursor,InternDestName,BookMarkInternalID);
+
+              }
+          
+          } else {
+            QStringList linker;
+            linker << InternDestName;
+            chformat.setAnchor(true);
+            chformat.setAnchorNames(linker);
+            chformat.setToolTip ( InternDestName );
+            /////chformat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+            /////chformat.setForeground(QBrush(_LINK_COLOR_));
+            helper_cursor.setPosition(block.position());
+            helper_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+            helper_cursor.setCharFormat(chformat);
+            MemoonBlock(helper_cursor,InternDestName,BookMarkInternalID);
+          }
+    }
+
+
+    QDomElement blockElement = document->createElement("block");
+    blockElement.setAttribute("block_number",idnumerate);
+    blockElement.setAttribute("position", block.position());
+    blockElement.setAttribute("length", block.length());
+    appender.appendChild(blockElement);
+
+    QTextBlock::iterator it;
+    for (it = block.begin(); !(it.atEnd()); ++it) {
+        QTextFragment fragment = it.fragment();
+        if (fragment.isValid()) {
+            processFragment(blockElement,fragment);
+        }
+    }
+}
+
+void ScribeParser::processFragment( QDomElement appender ,  QTextFragment  fragment )
+{
+     //~ qDebug() << "### processFragment   ";
+
+     QTextCharFormat chformat = fragment.charFormat();
+     if (chformat.isAnchor() && chformat.anchorNames().size() > 0 ) {
+         /////chformat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+         //////chformat.setForeground(QBrush(_INTERNAL_LINK_COLOR_));
+         ////helper_cursor.setPosition(fragment.position() + fragment.length(),QTextCursor::KeepAnchor);
+         ///////helper_cursor.setCharFormat(chformat);
+     }  else if ( chformat.isAnchor() && 
+                 chformat.anchorHref().size() > 0 && 
+                 !Clicks_Destination_Links.contains(chformat.anchorHref())) {
+         Clicks_Destination_Links.append(chformat.anchorHref());
+     }
+
+    if (modus == Plinker ) {
+          
+          if ( chformat.isAnchor() )  {
+                 QStringList dests = chformat.anchorNames();
+                 for (int i = 0; i < dests.size(); ++i) {
+                   Internal_Destination_Links.append(dests.at(i));
+                 }
+          }
+    }
+
+    QDomElement fragmentElement = document->createElement("fragment");
+    appender.appendChild(fragmentElement);
+    fragmentElement.setAttribute("length", fragment.length());
+    fragmentElement.setAttribute("position", fragment.position());
+    ///////blockElement.setAttribute("length", block.length());
+    QDomText fragmentText = document->createTextNode(fragment.text());
+    fragmentElement.appendChild(fragmentText);
+}
+
+
+
+void ScribeParser::processTable( QDomElement appender , QTextTable *table)
+{
+     //~ qDebug() << "### processTable   ";
+
+    QDomElement element = document->createElement("table");
+
+    for (int row = 0; row < table->rows(); ++row) {
+        for (int column = 0; column < table->columns(); ++column) {
+            QTextTableCell cell = table->cellAt(row, column);
+            processTableCell(element, cell);
+        }
+    }
+    appender.appendChild(element);
+}
+
+
+void ScribeParser::processTableCell( QDomElement appender , QTextTableCell cell )
+{
+
+      //~ qDebug() << "### processTableCell   ";
+
+    QDomElement element = document->createElement("cell");
+    element.setAttribute("row", cell.row());
+    element.setAttribute("column", cell.column());
+    
+    QTextFrame::iterator it;
+    for (it = cell.begin(); !(it.atEnd()); ++it) {
+
+        QTextFrame *childFrame = it.currentFrame();
+        QTextBlock childBlock = it.currentBlock();
+
+        if (childFrame) {
+            processFrame(element, childFrame);
+        } else if (childBlock.isValid()) {
+            processBlock(element, childBlock);
+        }
+    }
+    appender.appendChild(element);
+}
+
+
+
+
  
+ScribeParser::~ScribeParser()
+{
+}
 

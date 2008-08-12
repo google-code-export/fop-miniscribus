@@ -71,11 +71,18 @@ static const int FooterHeaderMaxBlocks = 3;
 #define _LINK_COLOR_ \
              QColor("#dc0000")
              
+#define _INTERNAL_LINK_COLOR_ \
+             QColor(Qt::darkMagenta)
+             
 #define _DEFAULT_TXT_COLOR_ \
              QColor("#000088")   /* cursor color palette from text now is cursor color */
 
 #define _DOCUMENT_TXT_COLOR_ \
              QColor("#717171")    /* real txt palette */
+             
+             
+#define _MASTERLINK_ \
+             QString("http://code.google.com/p/fop-miniscribus/")    /* real txt palette */
 
 
 /* set your monitor to 72 DPI on go to */
@@ -101,7 +108,7 @@ static const int FooterHeaderMaxBlocks = 3;
 /* help functions */
 QPixmap BruschChess( qreal chesswidth = 50. );
 /* allowed char on file name image to save */
-QString Imagename( QString touri );
+QString Imagename( const  QString txt );
 /* 12mm to point , 12cm , 2inch */
 /* metric conversion from and to */
 qreal FopInt( const QString datain );

@@ -155,8 +155,9 @@ int M_PageSize::FillFopAttributes( QDomElement e )
 
 
 /* allowed char on file name image to save */
-QString Imagename( QString touri )
+QString Imagename( const QString txt )
 {
+    QString touri = txt;
     touri = touri.replace(" ","_");
     QStringList piece = touri.split("");
     QString alloweduri = "abcdefghijklmnopqrstuvwxyz1234567890_-ABCDEFGHIJKLMNOPQRSTUVWXYZ";

@@ -396,7 +396,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
     
     CommandStorage *dync = CommandStorage::instance();
-    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , PARA_BREACK_PAGE_POLICY , S_NONE };
+    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY , S_NONE };
     DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE ,
 TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
@@ -515,6 +515,16 @@ void TextLayer::MakeActionHere()
     CommandStorage *snc = CommandStorage::instance();
     snc->clearS();
     snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source as XHTML"),QIcon(":/img/view-source.png"),QKeySequence("Alt+S"),dev->txtControl(),SLOT(showhtml())));
+
+snc->registerCommand_S(StaticCmd(SHOW_SOURCE_SCRIBE,tr("Show source as Debug"),QIcon(":/img/view-source.png"),QKeySequence(),dev->txtControl(),SLOT(showhtml())));
+
+snc->registerCommand_S(StaticCmd(SHOW_SOURCE_FOP,tr("Show source as XSL_FO"),QIcon(":/img/view-source.png"),QKeySequence(),dev->txtControl(),SLOT(showhtml())));
+
+
+
+
+
+
     snc->registerCommand_S(StaticCmd(INSERT_IMAGE,tr("Insert image"),QIcon(":/img/pictures.png"),QKeySequence("Ctrl+J"),dev->txtControl(),SLOT(InsertImageonCursor())));
     snc->registerCommand_S(StaticCmd(PARA_BREACK_PAGE_POLICY,tr("Set Paragraph/Inline Frame/Table Page Breack Policy"),QIcon(":/img/wizard.png"),QKeySequence(),dev->txtControl(),SLOT(ParaBlockPageBreackPolicyInsert())));
     snc->registerCommand_S(StaticCmd(INSERT_FRAME,tr("Insert inline Frame"),QIcon(":/img/frame.png"),QKeySequence(),dev->txtControl(),SLOT(FosInsertFrame())));
