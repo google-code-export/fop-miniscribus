@@ -1,0 +1,19 @@
+
+win download 
+http://apache.mirror.testserver.li/xmlgraphics/fop/binaries/fop-0.95-bin.zip
+21 MB
+
+mac search Apache_fop_installer_MAC.OSX.6.1.pkg.zip  
+on http://sourceforge.net/project/showfiles.php?group_id=167757
+
+
+
+unzip to any path or
+C:/fop
+
+usage:
+cd fopdir
+
+fop file.fo result.pdf
+or
+fop file.fo -rtf result.rtf
