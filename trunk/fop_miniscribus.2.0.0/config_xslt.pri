@@ -8,15 +8,19 @@ win32 {
     LIBS   += -LC:/Programming/libs/lib/ -liconv
 }
 
-unix {
-    INCLUDEPATH += /usr/include
-    DEPENDPATH += /usr/include
-    LIBS += -lxslt -lxml2 -liconv
 
+unix {
+INCLUDEPATH += /opt/local/include
+INCLUDEPATH += /opt/local/include/libxml2
+INCLUDEPATH += /opt/local/include/libxslt
+INCLUDEPATH += /opt/local/include/libxml2/libxml
+LIBS += -lxml2 -lxslt
 }
 
-macx {
-    INCLUDEPATH += /usr/include
-    DEPENDPATH += /usr/include
-    LIBS += -lxslt -lxml2 -liconv
+mac {
+INCLUDEPATH += /opt/local/include
+INCLUDEPATH += /opt/local/include/libxml2
+INCLUDEPATH += /opt/local/include/libxslt
+INCLUDEPATH += /opt/local/include/libxml2/libxml
+LIBS += -lxml2 -lxslt
 }
