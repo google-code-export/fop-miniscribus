@@ -41,8 +41,7 @@ HEADERS += _Image_Page_Struct.h \
            scribemime.h \
            SessionManager.h \
            Layer_CommandStorage.h \
-           table_setting.h \
- documentlinker.h
+           table_setting.h 
 SOURCES += _Image_Page_Struct.cpp \
            _LayerApi.cpp \
            _LayerExtended.cpp \
@@ -55,8 +54,7 @@ SOURCES += _Image_Page_Struct.cpp \
            scribemime.cpp \
            SessionManager.cpp \
            Layer_CommandStorage.cpp \
-           table_setting.cpp \
- documentlinker.cpp
+           table_setting.cpp 
 
 
 RESOURCES += osApplication.qrc       
