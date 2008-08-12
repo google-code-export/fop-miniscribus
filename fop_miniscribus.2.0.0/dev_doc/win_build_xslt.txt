@@ -1,0 +1,75 @@
+
+Install MSYS
+Download and install MSys so that we can run various libraries configure scripts:
+http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe?download
+
+open ./mysbuild.sh
+on window on run it on MSYS
+
+
+Create a libs directory alongside where you'll check out a copy of the repository directory. 
+For example, on my machine I have:
+
+
+C:\Programming\libs\src
+C:\Programming\libs\include
+C:\Programming\libs\lib
+
+Install wget
+Download the wget port for msys from:
+http://prdownloads.sourceforge.net/mingw/wget-1.9.1-mingwPORT.tar.bz2?download
+
+Open a msys console and move the bzipped tarball to the root directory (/), then issue the following commands. When promped for input when running the install script just hit enter to accept the defaults:
+
+<pre>
+tar -xvjf wget-1.9.1-mingwPORT.tar.bz2
+rm wget-1.9.1-mingwPORT.tar.bz2
+mkdir /usr/src
+mkdir /usr/local
+mkdir /usr/local/bin
+cd wget-1.9.1/mingwPORT
+cp wget.exe /usr/local/bin
+./mingwPORT.sh
+cd
+rm -rf wget-1.9.1
+</pre>
+
+
+
+Compiling libexiv2
+<pre>
+wget http://www.exiv2.org/exiv2-0.12.tar.gz
+tar xzf exiv2-0.12.tar.gz
+rm exiv2-0.12.tar.gz
+cd exiv2-0.12
+./configure --enable-static --disable-shared --prefix=$PWD/../../ \
+CXXFLAGS="${CXXFLAGS} -DSUPPRESS_WARNINGS" --with-zlib=$PWD/../../
+make
+make install
+cd ..
+</pre>
+
+
+Compiling libxml2
+<pre>
+wget ftp://xmlsoft.org/libxml2/libxml2-2.6.26.tar.gz
+tar xzf libxml2-2.6.26.tar.gz
+rm libxml2-2.6.26.tar.gz
+cd libxml2-2.6.26
+./configure --enable-static --disable-shared --with-iconv=$PWD/../../ --prefix=$PWD/../../
+make
+make install
+cd ..
+</pre>
+
+Compiling libxslt
+<pre>
+wget ftp://xmlsoft.org/libxslt/libxslt-1.1.17.tar.gz
+tar xzf libxslt-1.1.17.tar.gz
+rm libxslt-1.1.17.tar.gz
+cd libxslt-1.1.17
+./configure --enable-static --disable-shared --with-libxml-prefix=$PWD/../../ --prefix=$PWD/../../
+make
+make install
+cd ..
+</pre>
