@@ -1,0 +1,2781 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+   
+
+
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+
+  
+  
+  
+
+  
+   <fo:layout-master-set>
+    
+      <fo:simple-page-master master-name="first-page" margin="15mm">
+      
+         <fo:region-body border="0.25pt solid silver" margin="0pt"/>
+    
+      </fo:simple-page-master>
+    
+      <fo:simple-page-master master-name="page-0" margin="15mm" size="landscape">
+      
+         <fo:region-body border="0.25pt solid silver" margin="0pt" reference-orientation="0"/>
+    
+      </fo:simple-page-master>
+    
+      <fo:simple-page-master master-name="page-90" margin="15mm">
+      
+         <fo:region-body border="0.25pt solid silver" margin="0pt" reference-orientation="90"/>
+    
+      </fo:simple-page-master>
+  
+   </fo:layout-master-set>
+
+    
+   <fo:page-sequence master-reference="first-page">
+      
+      <fo:flow flow-name="xsl-region-body">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="bold 14pt Helvetica" color="black" space-before="18pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt" background-color="silver">Side-floats test</fo:block>
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="italic 12pt Times" space-before="6pt" space-after="6pt" text-align="justify">
+          This stylesheet tests side floats.
+          We test <fo:wrapper font-family="monospace">fo:float</fo:wrapper> element with various values
+          of <fo:wrapper font-family="monospace">float</fo:wrapper> and <fo:wrapper font-family="monospace">clear</fo:wrapper> properties.
+          In addition we test various values of 
+          <fo:wrapper font-family="monospace">intrusion-displace</fo:wrapper> property
+          of surround blocks.
+        </fo:block>
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">Properties used for the test are:</fo:block>
+        
+         <fo:list-block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" space-before="6pt" space-after="6pt">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">float</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">clear</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">intrusion-displace</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">reference-orientation</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">writing-mode</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">width</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block>-</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block>
+                     <fo:wrapper font-family="monospace">height</fo:wrapper>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" break-after="column">
+          
+            <fo:block font="bold 12pt Times" color="black" space-before="12pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt">
+               <fo:wrapper text-decoration="underline">1. <fo:wrapper font-family="monospace">Float</fo:wrapper> property</fo:wrapper>
+            </fo:block>
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+            <fo:block margin-left="0.2in" margin-right="0.2in">
+            On this page two <fo:wrapper font-family="monospace">fo:float</fo:wrapper>'s is placed - 
+            the blue <fo:wrapper font-family="monospace">fo:float</fo:wrapper> near left side
+            and the green <fo:wrapper font-family="monospace">fo:float</fo:wrapper> near right side.
+          </fo:block> 
+        
+         </fo:block>
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" break-after="column">
+          
+            <fo:block font="bold 12pt Times" color="black" space-before="12pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt">
+               <fo:wrapper text-decoration="underline">2. <fo:wrapper font-family="monospace">Clear</fo:wrapper> property</fo:wrapper>
+            </fo:block>
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid yellow" background-color="#EEFFEE">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid red" background-color="#FF9999">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+            <fo:block margin-left="0.2in" margin-right="0.2in">
+            There is 4 <fo:wrapper font-family="monospace">fo:float</fo:wrapper>'s. First of them is blue. 
+            It have <fo:wrapper font-family="monospace">float="left"</fo:wrapper> and <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+            and placed on the top left corner. Second <fo:wrapper font-family="monospace">fo:float</fo:wrapper>
+            is green, have <fo:wrapper font-family="monospace">float="left"</fo:wrapper> and 
+            <fo:wrapper font-family="monospace">clear="left"</fo:wrapper> and situated under the blue
+            <fo:wrapper font-family="monospace">fo:float</fo:wrapper>.
+            3rd <fo:wrapper font-family="monospace">fo:float</fo:wrapper> have yellow background 
+            and flow to the right side on the same level as previous
+            because it have <fo:wrapper font-family="monospace">float="right"</fo:wrapper> and 
+            <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>. And pink <fo:wrapper font-family="monospace">fo:float</fo:wrapper> have to
+            placed from the right of first (blue) <fo:wrapper font-family="monospace">fo:float</fo:wrapper> according
+            <fo:wrapper font-family="monospace">float="left"</fo:wrapper> and 
+            <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>. 
+          </fo:block> 
+        
+         </fo:block>
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" break-after="column">
+          
+            <fo:block font="bold 12pt Times" color="black" space-before="12pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt">
+               <fo:wrapper text-decoration="underline">3. <fo:wrapper font-family="monospace">intrusion-displace</fo:wrapper> property</fo:wrapper>
+            </fo:block>
+          
+          
+          
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="1.5in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="180" writing-mode="rl-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="180"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="right">
+      
+               <fo:block-container margin="0pt" color="red" width="2.5in" height="auto" reference-orientation="90" writing-mode="lr-tb" border="1pt solid yellow" background-color="#EEFFEE">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="90"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="1.8in" height="3in" reference-orientation="270" writing-mode="rl-tb" border="1pt solid red" background-color="#FF9999">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.8in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="3in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="270"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="auto" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+        This block have intrusion-displace="auto"and clear="none".
+      
+    </fo:block>
+    
+  
+
+          
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="1.5in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="180" writing-mode="rl-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="180"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="right">
+      
+               <fo:block-container margin="0pt" color="red" width="2.5in" height="auto" reference-orientation="90" writing-mode="lr-tb" border="1pt solid yellow" background-color="#EEFFEE">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="90"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="1.8in" height="3in" reference-orientation="270" writing-mode="rl-tb" border="1pt solid red" background-color="#FF9999">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.8in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="3in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="270"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="block" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+        This block have intrusion-displace="block"and clear="none".
+      
+    </fo:block>
+    
+  
+
+          
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="1.5in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="180" writing-mode="rl-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="180"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="right">
+      
+               <fo:block-container margin="0pt" color="red" width="2.5in" height="auto" reference-orientation="90" writing-mode="lr-tb" border="1pt solid yellow" background-color="#EEFFEE">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="90"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="1.8in" height="3in" reference-orientation="270" writing-mode="rl-tb" border="1pt solid red" background-color="#FF9999">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.8in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="3in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="270"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="line" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+        This block have intrusion-displace="line"and clear="none".
+      
+    </fo:block>
+    
+  
+
+          
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="1.5in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="180" writing-mode="rl-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="180"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="right">
+      
+               <fo:block-container margin="0pt" color="red" width="2.5in" height="auto" reference-orientation="90" writing-mode="lr-tb" border="1pt solid yellow" background-color="#EEFFEE">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="90"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="1.8in" height="3in" reference-orientation="270" writing-mode="rl-tb" border="1pt solid red" background-color="#FF9999">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.8in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="3in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="270"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="indent" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+        This block have intrusion-displace="indent"and clear="none".
+      
+    </fo:block>
+    
+  
+
+          
+          
+    
+            <fo:float float="left" clear="none">
+      
+               <fo:block-container margin="0pt" color="red" width="1.5in" height="auto" reference-orientation="0" writing-mode="lr-tb" border="1pt solid blue" background-color="#E0E0FF">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="none"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="0"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="2in" height="auto" reference-orientation="180" writing-mode="rl-tb" border="1pt solid green" background-color="#99FF99">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="180"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="left" clear="right">
+      
+               <fo:block-container margin="0pt" color="red" width="2.5in" height="auto" reference-orientation="90" writing-mode="lr-tb" border="1pt solid yellow" background-color="#EEFFEE">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="2.5in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="auto"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="90"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="lr-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+            <fo:float float="right" clear="left">
+      
+               <fo:block-container margin="0pt" color="red" width="1.8in" height="3in" reference-orientation="270" writing-mode="rl-tb" border="1pt solid red" background-color="#FF9999">
+        
+                  <fo:block>This float properties are:
+          <fo:list-block space-before="6pt" space-after="6pt">
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">float="right"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">clear="left"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">width="1.8in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">height="3in"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">reference-orientation="270"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                        <fo:list-item>
+                           <fo:list-item-label end-indent="label-end()">
+                              <fo:block>-</fo:block>
+                           </fo:list-item-label>
+                           <fo:list-item-body start-indent="body-start()">
+                              <fo:block>
+                                 <fo:wrapper font-family="monospace">writing-mode="rl-tb"</fo:wrapper>
+                              </fo:block>
+                           </fo:list-item-body>
+                        </fo:list-item>
+                     </fo:list-block>
+          
+                     <fo:external-graphic src="url(Images//teddy.jpg)"/>
+        
+                  </fo:block>
+      
+               </fo:block-container>
+    
+            </fo:float>
+  
+          
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+    
+            <fo:block intrusion-displace="none" clear="none" space-before.optimum="6pt">
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+        This block have intrusion-displace="none"and clear="none".
+      
+    </fo:block>
+    
+  
+
+        
+         </fo:block>
+      
+      </fo:flow>
+    
+   </fo:page-sequence>
+    
+
+
+</fo:root>

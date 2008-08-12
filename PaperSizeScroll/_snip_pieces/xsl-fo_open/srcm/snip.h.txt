@@ -1,0 +1,192 @@
+class FlashReference : public QObject, public QTextObjectInterface
+{
+	Q_OBJECT
+ 	Q_INTERFACES(QTextObjectInterface)
+	
+	
+public:
+ 	FlashReference( FlashItem flock , QObject* par = 0)
+ 		: QObject(par),params(flock) {  }
+	QSizeF intrinsicSize(QTextDocument* doc, int posInDoc,
+		const QTextFormat &fmt)
+	{
+		  Q_UNUSED(doc)
+			Q_UNUSED(posInDoc)
+      QVariant xx = fmt.property(FlashReferenceID); 
+      Q_ASSERT(!xx.isNull());
+      FlashItem fla = xx.value<FlashItem>();
+			return fla.sizeF();
+	}
+	void drawObject(QPainter* p, const QRectF &rect, QTextDocument* doc,
+		   int posInDoc, const QTextFormat &fmt)
+	{
+		  Q_UNUSED(doc)
+			Q_UNUSED(posInDoc)
+      QVariant xx = fmt.property(FlashReferenceID); 
+      Q_ASSERT(!xx.isNull());
+      FlashItem fla = xx.value<FlashItem>();
+			p->drawPixmap(rect.toRect(), fla.pics() );
+	}
+private:
+	FlashItem params;
+};
+
+
+
+
+
+
+
+
+class FlashItem
+{
+    public:
+    enum { MAGICNUMBER = 0xFFAAFFAA, VERSION = 1 };
+    FlashItem() {
+    wi = 400;  /* width */
+    hi = 290;  /* height  */
+    url = "erno";
+    bg = QColor(Qt::blue);
+    rchunk = QByteArray("erno");
+    }
+    operator QVariant() const {
+    return QVariant::fromValue(*this);
+    }
+		/* is default setting no url no edit params */
+		bool isValid()
+		{
+			return url == "erno" ? false : true;
+		}
+		QString linktranslate()
+		{
+		 return QString("mediafla://%1|%2|%3|%4|end|").arg(url).arg(wi).arg(hi).arg(bg.name());
+		}
+		void Load( const QString mediaflaurl )
+		{
+			if (mediaflaurl.startsWith("mediafla://")) {
+				  QString Luri = mediaflaurl;
+				  QStringList items = Luri.replace("mediafla://","").split("|");
+				  if (items.size() > 4) {
+						 url = items.at(0);
+						 wi = qBound(100,items.at(1).toInt(),3000);
+						 hi = qBound(100,items.at(2).toInt(),3000);
+						 bg = QColor(items.at(3));
+					}
+					///////qDebug() << "### items list " << items;
+			}
+		}
+		
+    QSizeF sizeF()
+    {
+    return QSizeF(wi,hi); 
+    }
+		QString Tag()
+		{
+			QSettings setter;
+			QByteArray xcode("");;
+      xcode.append(setter.value("cms/mediapath").toString());
+      QByteArray precode(QByteArray::fromBase64(xcode));
+      QString  pathmm = precode.data();
+			
+		  return QString("<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0\" width=\""+QString::number(wi)+"\" height=\""+QString::number(hi)+"\" align=\"middle\">\n"
+        "<param name=\"movie\" value=\""+pathmm+"flvplayer.swf?file=data/"+url+".flv&amp;autoStart=true\" />\n"
+        "<param name=\"quality\" value=\"high\" />\n"
+        "<param name=\"bgcolor\" value=\""+bg.name()+"\" />\n"
+			
+			
+        "<embed src=\""+pathmm+"flvplayer.swf?file=data/"+url+".flv&autoStart=true\" quality=\"high\" bgcolor=\"#ffffff\" width=\""+QString::number(wi)+"\" height=\""+QString::number(hi)+"\" align=\"middle\" allowscriptaccess=\"sameDomain\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />\n"
+			
+			
+        "</object>\n");
+			  /* data samba linux and webdav */
+		}
+		/* to load as dom childs from root elements */
+		QDomDocument stDom()
+		{
+			QString xml = QString("<dummyroot>%1</dummyroot>").arg(Tag());
+			//////qDebug() << "### xxxx " << xml;
+			QString errorStr;
+      int errorLine, errorColumn;
+      QDomDocument doc;
+			Q_ASSERT(!doc.setContent(xml,false, &errorStr, &errorLine, &errorColumn));
+			return doc;
+		}
+		
+    FlashItem& operator=( const FlashItem& d )
+    {
+      wi = d.wi;
+      hi = d.hi;
+      url = d.url;
+      bg = d.bg;
+      rchunk = d.rchunk;
+      return *this;
+    }
+		QSize minimum()
+		{
+			return QSize(300,140);
+		}
+    /* draw param from movie width x height + url */
+    QPixmap pics()  {
+    QPixmap pixmap(wi,hi);
+    pixmap.fill(bg);
+    QPainter p(&pixmap);
+    //// QPointF ( qreal x, qreal y )
+    p.setPen(QPen(Qt::black,4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    const int linessumme_1 = 12;
+    const int divisor = wi / linessumme_1;
+    const int border = divisor;
+    QRectF BBleft(0,0,border,hi);
+    QRectF BBright(wi-border,0,border,hi);
+    p.setBrush(QBrush(Qt::lightGray));
+    p.drawRect(BBleft);
+    p.drawRect(BBright);
+    for (int i = 0; i<=linessumme_1; i++) 
+    {
+       if (i > 0) {
+         int TopY = divisor * i;
+         p.drawLine(QPointF(0,TopY),QPointF(border,TopY));
+         p.drawLine(QPointF(wi-border,TopY),QPointF(wi,TopY));
+       }           
+        
+    }
+    QFont font = QApplication::font();
+    font.setPixelSize(30);
+    p.setFont(font);
+    p.setPen(Qt::white);
+    p.drawText(pixmap.rect(), Qt::AlignCenter,
+                      QString("Multimedia: %1x%2")      /* \xb0 */
+                      .arg(wi)
+                      .arg(hi));
+    font.setPixelSize(12);
+    p.setFont(font);
+    p.drawText(pixmap.rect(),Qt::AlignBottom | Qt::AlignCenter ,QString("File: ")+url);
+    return pixmap;
+   }
+    
+QColor bg;
+QByteArray rchunk;
+int wi;
+int hi;
+int type;
+QString url;
+};
+
+Q_DECLARE_METATYPE(FlashItem);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

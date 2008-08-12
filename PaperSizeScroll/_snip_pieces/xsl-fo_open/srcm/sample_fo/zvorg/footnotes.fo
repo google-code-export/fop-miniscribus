@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><!--
+    (c) RenderX, 2000
+    This file makes part of the RenderX XSL FO Test Suite. Permission is
+    granted to copy and modify this file as a whole or in part, provided
+    that any work derived from it bear a reference to the original
+    document.
+  -->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <fo:layout-master-set>
+      <fo:simple-page-master master-name="all-pages">
+         <fo:region-body region-name="xsl-region-body" margin="0.7in" column-gap="0.25in" border="0.25pt solid gray" padding="6pt" column-count="2"/>
+         <fo:region-before region-name="xsl-region-before" extent="0.7in" display-align="after" padding="6pt 0.7in"/>
+         <fo:region-after region-name="xsl-region-after" extent="0.7in" display-align="before" padding="6pt 0.7in"/>
+      </fo:simple-page-master>
+   </fo:layout-master-set>
+   <fo:page-sequence master-reference="all-pages">
+      <fo:static-content flow-name="xsl-region-before">
+         <fo:list-block font="10pt Helvetica" provisional-distance-between-starts="5in" provisional-label-separation="0in">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block text-align="start" font-weight="bold">Footnotes</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block text-align="end">
+                Page <fo:page-number/>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+      </fo:static-content>
+      <fo:static-content flow-name="xsl-region-after">
+         <fo:list-block font="9pt Times" provisional-distance-between-starts="3in" provisional-label-separation="0in">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block text-align="start" font-weight="bold">© <fo:basic-link external-destination="url(http://www.renderx.com/)" color="#0000C0" text-decoration="underline">Render<fo:wrapper font-weight="bold" color="#C00000">X</fo:wrapper>
+                     </fo:basic-link> 2000</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block text-align="end" font-style="italic" color="#606060">
+                XSL Formatting Objects Test Suite
+              </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+      </fo:static-content>
+      <fo:static-content flow-name="xsl-footnote-separator">
+         <fo:block>
+            <fo:leader leader-pattern="rule" leader-length="100%" rule-thickness="0.5pt" rule-style="solid" color="black"/>
+         </fo:block>
+      </fo:static-content>
+      <fo:flow flow-name="xsl-region-body">
+         <fo:block>
+
+
+            <fo:block font="bold 14pt Helvetica" color="black" space-before="18pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt" background-color="silver">Footnotes</fo:block>
+
+   
+
+
+            <fo:block text-align="justify" text-indent="0.5in" font="10pt Helvetica" line-height="1.5">
+
+  
+               <fo:block space-before="6pt">
+     This test aims at illustrating footnote-handling capabilities
+     of the renderer. The main text should be rendered in two
+     columns, Helvetica font, size 10 pt; text is double-justified,
+     with first line indent of 0.4 inch and extra space before each
+     paragraph of 6 pt. Margins are 0.7 inch from each side. 
+     Column separation is 0.25 inch. Line interval is 1.5.
+  </fo:block>
+
+  
+               <fo:block space-before="6pt">
+     Starting  from the first page, there should also be a header
+     with page number inside it. The header should be placed above
+     the thin gray line surrounding the page body.
+  </fo:block>
+
+  
+               <fo:block space-before="6pt">
+     After this prelude, we can proceed by testing footnotes.
+     The first 
+     <fo:wrapper font-weight="bold"> footnote</fo:wrapper>
+                  <fo:footnote>
+                     <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(1)</fo:inline>
+                     <fo:footnote-body>
+                        <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                           <fo:list-item>
+                              <fo:list-item-label end-indent="label-end()">
+                                 <fo:block>
+                                    <fo:wrapper keep-together.within-line="always" font-size="75%">(1)</fo:wrapper>
+                                 </fo:block>
+                              </fo:list-item-label>
+                              <fo:list-item-body start-indent="body-start()">
+                                 <fo:block padding-before="3pt">
+       This is the body of the first footnote. All footnotes are 
+       rendered in 9 pt Times font, with line interval of 1.2. 
+       Extra space between single footnotes is 6 pt.
+       Footnotes are formatted using a list - the footnote reference 
+       becomes a list item label, and the footnote body is placed 
+       into a list item body. This technique is recommended in the
+       XSL Specification.
+     </fo:block>
+                              </fo:list-item-body>
+                           </fo:list-item>
+                        </fo:list-block>
+                     </fo:footnote-body>
+                  </fo:footnote>
+     is inserted after the word "footnote". The footnote reference
+     should look like an integer enclosed in parentheses. It should 
+     be drawn as a superscript in a somewhat smaller font size.
+  </fo:block>
+  
+               <fo:block space-before="6pt">
+     Let's now continue addind more and more footnotes, to see their
+     interaction. The second 
+     <fo:wrapper font-weight="bold">footnote</fo:wrapper>
+                  <fo:footnote>
+                     <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(2)</fo:inline>
+                     <fo:footnote-body>
+                        <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                           <fo:list-item>
+                              <fo:list-item-label end-indent="label-end()">
+                                 <fo:block>
+                                    <fo:wrapper keep-together.within-line="always" font-size="75%">(2)</fo:wrapper>
+                                 </fo:block>
+                              </fo:list-item-label>
+                              <fo:list-item-body start-indent="body-start()">
+                                 <fo:block padding-before="3pt">
+       This is the body of the second footnote. All footnotes are 
+       rendered in 9 pt Times font, with line interval of 1.2. 
+       Footnotes are formatted using a list - the footnote reference 
+       becomes a list item label, and the footnote body is placed 
+       into a list item body. This technique is recommended in the
+       XSL Specification.
+     </fo:block>
+                              </fo:list-item-body>
+                           </fo:list-item>
+                        </fo:list-block>
+                     </fo:footnote-body>
+                  </fo:footnote>
+     is inserted after the word "footnote". Since the formatting
+     of this document text is already fully described, the text
+     will progressively become more and more senseless. So you need
+     not read the rest of my writings; just look at the layout
+     and compare it with the above declarations. 
+  </fo:block>
+  
+               <fo:block space-before="6pt">
+     The third 
+     <fo:wrapper font-weight="bold">footnote</fo:wrapper>
+                  <fo:footnote>
+                     <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(3)</fo:inline>
+                     <fo:footnote-body>
+                        <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                           <fo:list-item>
+                              <fo:list-item-label end-indent="label-end()">
+                                 <fo:block>
+                                    <fo:wrapper keep-together.within-line="always" font-size="75%">(3)</fo:wrapper>
+                                 </fo:block>
+                              </fo:list-item-label>
+                              <fo:list-item-body start-indent="body-start()">
+                                 <fo:block padding-before="3pt">
+       This is the body of the third footnote. All footnotes are 
+       rendered in 9 pt Times font, with line interval of 1.2. 
+       Extra space between single footnotes is 6 pt.
+     </fo:block>
+                              </fo:list-item-body>
+                           </fo:list-item>
+                        </fo:list-block>
+                     </fo:footnote-body>
+                  </fo:footnote>
+     is inserted after the word "footnote", as usual. It becomes
+     difficult to invent meaningful phrases to fill the space, and
+     from this point the content becomes an <fo:wrapper font-style="italic">abracadabra</fo:wrapper> 
+     interspersed by footnotes. The next 
+     <fo:wrapper font-weight="bold">footnote</fo:wrapper>
+                  <fo:footnote>
+                     <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(4)</fo:inline>
+                     <fo:footnote-body>
+                        <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                           <fo:list-item>
+                              <fo:list-item-label end-indent="label-end()">
+                                 <fo:block>
+                                    <fo:wrapper keep-together.within-line="always" font-size="75%">(4)</fo:wrapper>
+                                 </fo:block>
+                              </fo:list-item-label>
+                              <fo:list-item-body start-indent="body-start()">
+                                 <fo:block padding-before="3pt">
+       This is the body of the 4th footnote. All footnotes are 
+       rendered in 9 pt Times font, with line interval of 1.2. 
+       Extra space between single footnotes is 6 pt.
+     </fo:block>
+                              </fo:list-item-body>
+                           </fo:list-item>
+                        </fo:list-block>
+                     </fo:footnote-body>
+                  </fo:footnote>
+     is put here.
+  </fo:block>
+
+  
+               <fo:block space-before="6pt">
+     The quick brown fox jumps over a lazy dog, generating one
+     more 
+     <fo:wrapper font-weight="bold">footnote</fo:wrapper>
+                  <fo:footnote>
+                     <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(5)</fo:inline>
+                     <fo:footnote-body>
+                        <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                           <fo:list-item>
+                              <fo:list-item-label end-indent="label-end()">
+                                 <fo:block>
+                                    <fo:wrapper keep-together.within-line="always" font-size="75%">(5)</fo:wrapper>
+                                 </fo:block>
+                              </fo:list-item-label>
+                              <fo:list-item-body start-indent="body-start()">
+                                 <fo:block padding-before="3pt">
+       I wonder why jumping over a dog generates footnotes. However,
+       this is the body of the 5th footnote. All footnotes are 
+       rendered in 9 pt Times font, with line interval of 1.2. 
+       Footnotes are formatted using a list - the footnote reference 
+       becomes a list item label, and the footnote body is placed 
+       into a list item body. This technique is recommended in the
+       XSL Specification.
+     </fo:block>
+                              </fo:list-item-body>
+                           </fo:list-item>
+                        </fo:list-block>
+                     </fo:footnote-body>
+                  </fo:footnote>
+     in the text. Then it goes on jumping over the dog, and jumps, 
+     and jumps, and jumps...
+  </fo:block>
+
+  
+               <fo:block space-before="6pt" text-indent="-0.7in" start-indent="0.7in" font="italic 10pt Times" line-height="1.4">
+    
+                  <fo:block> 
+      To be or not to be - that is a question,<fo:footnote>
+                        <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(6)</fo:inline>
+                        <fo:footnote-body>
+                           <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                              <fo:list-item>
+                                 <fo:list-item-label end-indent="label-end()">
+                                    <fo:block>
+                                       <fo:wrapper keep-together.within-line="always" font-size="75%">(6)</fo:wrapper>
+                                    </fo:block>
+                                 </fo:list-item-label>
+                                 <fo:list-item-body start-indent="body-start()">
+                                    <fo:block padding-before="3pt">
+       This is the body of the 6th footnote. All footnotes should be 
+       rendered in 9 pt Times font, with line interval of 1.2 - 
+       regardless of how the main text flow is formatted.
+       Please note that this footnote refers to a somewhat special
+       text - a citation from a medieval British poet. His verses
+       are rendered in Times Italic 10 pt, which
+       seems more suitable to express poetic texts of that epoque.
+       (Normally, we tend to make the content self-explaining
+       about the formatting ascribed to it; but the poet could
+       hardly know about the typeface and the slant of the font
+       given to his rhymes).
+       It is also worth noting that footnotes have become
+       considerably longer; as a consequence, I expect footnote 
+       splitting at some point.
+     </fo:block>
+                                 </fo:list-item-body>
+                              </fo:list-item>
+                           </fo:list-block>
+                        </fo:footnote-body>
+                     </fo:footnote>
+    
+                  </fo:block>
+
+    
+                  <fo:block> 
+      Whether it is nobler in the mind to suffer<fo:footnote>
+                        <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(7)</fo:inline>
+                        <fo:footnote-body>
+                           <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                              <fo:list-item>
+                                 <fo:list-item-label end-indent="label-end()">
+                                    <fo:block>
+                                       <fo:wrapper keep-together.within-line="always" font-size="75%">(7)</fo:wrapper>
+                                    </fo:block>
+                                 </fo:list-item-label>
+                                 <fo:list-item-body start-indent="body-start()">
+                                    <fo:block padding-before="3pt">
+       This is the body of the 7th footnote. This footnote refers 
+       to a second line of the same special
+       text - a citation from a medieval British poet. His verses
+       are rendered in Times Italic 10 pt, which
+       seems more suitable to express poetic texts of that epoque.
+       (Normally, we tend to make the content self-explaining
+       about the formatting ascribed to it; but the poet could
+       hardly know about the typeface and the slant of the font
+       given to his rhymes).
+       It is also worth noting that footnotes have become
+       considerably longer; as a consequence, I expect footnote 
+       splitting at some point.
+     </fo:block>
+                                 </fo:list-item-body>
+                              </fo:list-item>
+                           </fo:list-block>
+                        </fo:footnote-body>
+                     </fo:footnote>
+    
+                  </fo:block>
+
+    
+                  <fo:block> 
+      The slings and arrows of outrageous fortune,<fo:footnote>
+                        <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(8)</fo:inline>
+                        <fo:footnote-body>
+                           <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                              <fo:list-item>
+                                 <fo:list-item-label end-indent="label-end()">
+                                    <fo:block>
+                                       <fo:wrapper keep-together.within-line="always" font-size="75%">(8)</fo:wrapper>
+                                    </fo:block>
+                                 </fo:list-item-label>
+                                 <fo:list-item-body start-indent="body-start()">
+                                    <fo:block padding-before="3pt">
+       This is the body of the 8th footnote. This footnote refers 
+       to a second line of the same special
+       text - a citation from a medieval British poet. His verses
+       are rendered in Times Italic 10 pt, which
+       seems more suitable to express poetic texts of that epoque.
+       (Normally, we tend to make the content self-explaining
+       about the formatting ascribed to it; but the poet could
+       hardly know about the typeface and the slant of the font
+       given to his rhymes).
+       It is also worth noting that footnotes have become
+       considerably longer; as a consequence, I expect footnote 
+       splitting at some point.
+     </fo:block>
+                                 </fo:list-item-body>
+                              </fo:list-item>
+                           </fo:list-block>
+                        </fo:footnote-body>
+                     </fo:footnote>
+    
+                  </fo:block>
+
+    
+                  <fo:block> 
+      Or to raise arms against a sea of troubles<fo:footnote>
+                        <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(9)</fo:inline>
+                        <fo:footnote-body>
+                           <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                              <fo:list-item>
+                                 <fo:list-item-label end-indent="label-end()">
+                                    <fo:block>
+                                       <fo:wrapper keep-together.within-line="always" font-size="75%">(9)</fo:wrapper>
+                                    </fo:block>
+                                 </fo:list-item-label>
+                                 <fo:list-item-body start-indent="body-start()">
+                                    <fo:block padding-before="3pt">
+       I wonder what does he mean by <fo:wrapper font-style="italic">a sea of troubles?</fo:wrapper>
+       This is the 9th footnote about the same special
+       text - a citation from a medieval British poet. His verses
+       are rendered in Times Italic 10 pt, which
+       seems more suitable to express poetic texts of that epoque.
+       (Normally, we tend to make the content self-explaining
+       about the formatting ascribed to it; but the poet could
+       hardly know about the typeface and the slant of the font
+       given to his rhymes).
+       It is also worth noting that footnotes have become
+       considerably longer; as a consequence, I expect footnote 
+       splitting at some point.
+     </fo:block>
+                                 </fo:list-item-body>
+                              </fo:list-item>
+                           </fo:list-block>
+                        </fo:footnote-body>
+                     </fo:footnote>
+    
+                  </fo:block>
+
+    
+                  <fo:block> 
+      And by opposing end them - to die - to sleep...<fo:footnote>
+                        <fo:inline baseline-shift="super" font-size="75%" keep-with-previous.within-line="always">(10)</fo:inline>
+                        <fo:footnote-body>
+                           <fo:list-block provisional-distance-between-starts="15pt" provisional-label-separation="2pt" space-before="6pt" space-before.conditionality="discard" line-height="1.2" font="9pt Times" start-indent="0" text-indent="0">
+                              <fo:list-item>
+                                 <fo:list-item-label end-indent="label-end()">
+                                    <fo:block>
+                                       <fo:wrapper keep-together.within-line="always" font-size="75%">(10)</fo:wrapper>
+                                    </fo:block>
+                                 </fo:list-item-label>
+                                 <fo:list-item-body start-indent="body-start()">
+                                    <fo:block padding-before="3pt">
+       
+                                       <fo:wrapper font-style="italic">To sleep - perchance to dream - ay, that's the rub!</fo:wrapper>
+       This is the 10th footnote - the very last one.
+       All footnotes were rendered in 9 pt Times font, with 
+       line interval of 1.2. <fo:wrapper font-style="italic">Must give us pause...</fo:wrapper>
+     
+                                    </fo:block>
+                                 </fo:list-item-body>
+                              </fo:list-item>
+                           </fo:list-block>
+                        </fo:footnote-body>
+                     </fo:footnote>
+    
+                  </fo:block>
+  
+               </fo:block>
+
+            </fo:block>
+
+         </fo:block>
+      </fo:flow>
+   </fo:page-sequence>
+</fo:root>

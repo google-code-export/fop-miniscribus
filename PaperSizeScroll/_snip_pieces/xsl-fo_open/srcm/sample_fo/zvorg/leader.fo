@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><!--
+    (c) RenderX, 2000
+    This file makes part of the RenderX XSL FO Test Suite. Permission is
+    granted to copy and modify this file as a whole or in part, provided
+    that any work derived from it bear a reference to the original
+    document.
+  -->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <fo:layout-master-set>
+      <fo:simple-page-master master-name="all-pages">
+         <fo:region-body region-name="xsl-region-body" margin="0.7in" column-gap="0.25in" border="0.25pt solid gray" padding="6pt"/>
+         <fo:region-before region-name="xsl-region-before" extent="0.7in" display-align="after" padding="6pt 0.7in"/>
+         <fo:region-after region-name="xsl-region-after" extent="0.7in" display-align="before" padding="6pt 0.7in"/>
+      </fo:simple-page-master>
+   </fo:layout-master-set>
+   <fo:page-sequence master-reference="all-pages">
+      <fo:static-content flow-name="xsl-region-before">
+         <fo:list-block font="10pt Helvetica" provisional-distance-between-starts="5in" provisional-label-separation="0in">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block text-align="start" font-weight="bold"> Rules &amp; Leaders</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block text-align="end">
+                Page <fo:page-number/>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+      </fo:static-content>
+      <fo:static-content flow-name="xsl-region-after">
+         <fo:list-block font="9pt Times" provisional-distance-between-starts="3in" provisional-label-separation="0in">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block text-align="start" font-weight="bold">© <fo:basic-link external-destination="url(http://www.renderx.com/)" color="#0000C0" text-decoration="underline">Render<fo:wrapper font-weight="bold" color="#C00000">X</fo:wrapper>
+                     </fo:basic-link> 2000</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block text-align="end" font-style="italic" color="#606060">
+                XSL Formatting Objects Test Suite
+              </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+      </fo:static-content>
+      <fo:static-content flow-name="xsl-footnote-separator">
+         <fo:block>
+            <fo:leader leader-pattern="rule" leader-length="100%" rule-thickness="0.5pt" rule-style="solid" color="black"/>
+         </fo:block>
+      </fo:static-content>
+      <fo:flow flow-name="xsl-region-body">
+         <fo:block>
+
+   
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+            <fo:block font="bold 14pt Helvetica" color="black" space-before="18pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt" background-color="silver"> Rules &amp; Leaders</fo:block>
+
+  
+            <fo:block font="bold 12pt Times" space-before="12pt" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center">
+               <fo:wrapper text-decoration="underline">Rules</fo:wrapper>
+            </fo:block>
+
+  
+            <fo:block font="bold 12pt Times" space-before="6pt" space-after="3pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="start">Rule length</fo:block>
+
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    If leader rules are properly implemented in your system, you will 
+    see two parabolic curves:
+  </fo:block>
+
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="5in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="4.8025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="4.609999999999999in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="4.422499999999999in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="4.24in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="4.0625in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="3.89in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="3.7225in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="3.56in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="3.4025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="3.25in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="3.1025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.96in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.8225000000000002in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.69in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.5625in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.44in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.3225in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.21in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2.1025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="2in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.9024999999999999in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.81in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.7225000000000001in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.6400000000000001in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.5625in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.49in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.4224999999999999in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.3599999999999999in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.3025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.25in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.2025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.16in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.1225in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.09in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.0625in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.04in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.0225in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.01in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1.0025in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="start" line-height="1mm">
+    
+               <fo:leader leader-length="1in" leader-pattern="rule" rule-style="solid" line-height="1mm" rule-thickness="1mm" color="#E00000"/>
+   
+            </fo:block>
+  
+   
+   
+            <fo:block text-align="center" line-height="3mm">
+    
+               <fo:leader leader-length="3mm" leader-pattern="rule" rule-style="solid" rule-thickness="3mm" color="black"/>
+   
+            </fo:block>
+
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.0025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.01in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.0225in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.04in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.0625in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.09in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.1225in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.16in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.2025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.25in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.3025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.3599999999999999in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.4224999999999999in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.49in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.5625in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.6400000000000001in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.7225000000000001in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.81in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="1.9024999999999999in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.1025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.21in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.3225in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.44in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.5625in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.69in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.8225000000000002in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="2.96in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="3.1025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="3.25in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="3.4025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="3.56in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="3.7225in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="3.89in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="4.0625in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="4.24in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="4.422499999999999in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="4.609999999999999in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="4.8025in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+   
+            <fo:block text-align="end" line-height="1mm">
+    
+               <fo:leader leader-length="5in" leader-pattern="rule" rule-style="solid" rule-thickness="1mm" color="#0000E0"/>
+   
+            </fo:block>
+  
+    
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    The upper curve is red, and the lower one is blue. Both curves are
+    composed of bars 1 mm thick, whose length is varied to form
+    a parabolic profile. There are 41 bars in every set, and their length
+    varies from 1.00 inch to 5.00 inch, following a quadratic law.
+    Red bars are aligned to the left, and blue ones to the right.
+    There is also a black square 3 x 3 mm,
+    placed in the center of the whole image.
+  </fo:block>
+
+  
+            <fo:block font="bold 12pt Times" space-before="6pt" space-after="3pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="start">Rule style</fo:block>
+
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    The following blocks illustrate various styles and widths of rules 
+    produced by an <fo:wrapper font-family="monospace">fo:leader</fo:wrapper>: 
+  </fo:block>
+
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">solid</fo:wrapper>, width: <fo:wrapper font-weight="bold">1 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="solid" rule-thickness="1pt" color="gray"/>
+     
+            </fo:block>
+  
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">dashed</fo:wrapper>, width: <fo:wrapper font-weight="bold">2 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="dashed" rule-thickness="2pt" color="gray"/>
+     
+            </fo:block>
+  
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">dotted</fo:wrapper>, width: <fo:wrapper font-weight="bold">3 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="dotted" rule-thickness="3pt" color="gray"/>
+     
+            </fo:block>
+  
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">double</fo:wrapper>, width: <fo:wrapper font-weight="bold">4 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="double" rule-thickness="4pt" color="gray"/>
+     
+            </fo:block>
+  
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">ridge</fo:wrapper>, width: <fo:wrapper font-weight="bold">5 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="ridge" rule-thickness="5pt" color="gray"/>
+     
+            </fo:block>
+  
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">groove</fo:wrapper>, width: <fo:wrapper font-weight="bold">6 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="groove" rule-thickness="6pt" color="gray"/>
+     
+            </fo:block>
+  
+  
+    
+            <fo:block>
+      Style: <fo:wrapper font-weight="bold">none</fo:wrapper>, width: <fo:wrapper font-weight="bold">7 pt</fo:wrapper> 
+      
+               <fo:leader leader-length.maximum="8in" leader-length.optimum="2in" leader-length.minimum="0.5in" leader-pattern="rule" rule-style="none" rule-thickness="7pt" color="gray"/>
+     
+            </fo:block>
+  
+
+  
+            <fo:block font="bold 12pt Times" space-before="12pt" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center">
+               <fo:wrapper text-decoration="underline">Dot-filled leaders</fo:wrapper>
+            </fo:block>
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    In the following paragraph, text will be interspersed with inlined dot-filled
+    leaders. For every inserted leader, its <fo:wrapper font-family="monospace">length.optimum</fo:wrapper>
+    is equal to the number immediately preceding it; <fo:wrapper font-family="monospace">.minimum</fo:wrapper>
+    is one half, and <fo:wrapper font-family="monospace">.maximum</fo:wrapper> is twice the value
+    of <fo:wrapper font-family="monospace">.optimum</fo:wrapper>.
+  </fo:block>
+
+  
+            <fo:block space-before="6pt" space-after="6pt">
+    
+      
+               <fo:inline keep-together.within-line="always">12 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="dots" leader-length.optimum="12pt" leader-length.maximum="24pt" leader-length.minimum="6pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">24 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="dots" leader-length.optimum="24pt" leader-length.maximum="48pt" leader-length.minimum="12pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">36 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="dots" leader-length.optimum="36pt" leader-length.maximum="72pt" leader-length.minimum="18pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">48 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="dots" leader-length.optimum="48pt" leader-length.maximum="96pt" leader-length.minimum="24pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">60 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="dots" leader-length.optimum="60pt" leader-length.maximum="120pt" leader-length.minimum="30pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">72 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="dots" leader-length.optimum="72pt" leader-length.maximum="144pt" leader-length.minimum="36pt"/>
+  
+    
+  
+            </fo:block>
+  
+  
+            <fo:block font="bold 12pt Times" space-before="12pt" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center">
+               <fo:wrapper text-decoration="underline">Spacing leaders</fo:wrapper>
+            </fo:block>
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    In the following paragraph, text will be interspersed with inlined space
+    leaders. Leader lengths are the same as in the preceding test.
+  </fo:block>
+
+  
+            <fo:block space-before="6pt" space-after="6pt">
+    
+      
+               <fo:inline keep-together.within-line="always">12 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="space" leader-length.optimum="12pt" leader-length.maximum="24pt" leader-length.minimum="6pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">24 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="space" leader-length.optimum="24pt" leader-length.maximum="48pt" leader-length.minimum="12pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">36 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="space" leader-length.optimum="36pt" leader-length.maximum="72pt" leader-length.minimum="18pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">48 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="space" leader-length.optimum="48pt" leader-length.maximum="96pt" leader-length.minimum="24pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">60 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="space" leader-length.optimum="60pt" leader-length.maximum="120pt" leader-length.minimum="30pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">72 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="space" leader-length.optimum="72pt" leader-length.maximum="144pt" leader-length.minimum="36pt"/>
+  
+    
+  
+            </fo:block>
+
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    The following paragraph contains pattern-filled leaders with an empty pattern.
+    By the spec, they should be treated the same as space-filled, so the two blocks
+    above and below this text should appear identical:
+  </fo:block>
+
+  
+            <fo:block space-before="6pt" space-after="6pt">
+    
+      
+               <fo:inline keep-together.within-line="always">12 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="use-content" leader-length.optimum="12pt" leader-length.maximum="24pt" leader-length.minimum="6pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">24 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="use-content" leader-length.optimum="24pt" leader-length.maximum="48pt" leader-length.minimum="12pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">36 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="use-content" leader-length.optimum="36pt" leader-length.maximum="72pt" leader-length.minimum="18pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">48 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="use-content" leader-length.optimum="48pt" leader-length.maximum="96pt" leader-length.minimum="24pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">60 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="use-content" leader-length.optimum="60pt" leader-length.maximum="120pt" leader-length.minimum="30pt"/>
+  
+    
+      
+               <fo:inline keep-together.within-line="always">72 points</fo:inline>
+      
+    
+               <fo:leader leader-pattern="use-content" leader-length.optimum="72pt" leader-length.maximum="144pt" leader-length.minimum="36pt"/>
+  
+    
+  
+            </fo:block>
+
+  
+            <fo:block font="bold 12pt Times" space-before="12pt" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center">
+               <fo:wrapper text-decoration="underline">Pattern-filled leaders</fo:wrapper>
+            </fo:block>
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    Given below are several examples of leaders filled with text patterns.
+    Text inside the leader is typed in red characters.
+  </fo:block>
+  
+            <fo:block space-before="6pt">
+    Leader filled with underscores, 72 pt long:
+    
+    <fo:leader leader-pattern="use-content" leader-length.maximum="72pt" leader-length.optimum="72pt" leader-length.minimum="1em" leader-pattern-width="use-font-metrics" color="red">_</fo:leader>
+  
+  
+            </fo:block>
+  
+            <fo:block space-before="6pt">
+    Leader filled with tildes, 72 pt long, pattern width is fixed to 12 pt:
+    
+    <fo:leader leader-pattern="use-content" leader-length.maximum="72pt" leader-length.optimum="72pt" leader-length.minimum="1em" leader-pattern-width="12pt" color="red">~</fo:leader>
+  
+  
+            </fo:block>
+
+  
+            <fo:block space-before="6pt">
+    Leader filled with a character sequence <fo:wrapper font-family="monospace">ABCD</fo:wrapper>, long enough
+    to expand to the end-of-line:
+    
+    <fo:leader leader-pattern="use-content" leader-length.maximum="720pt" leader-length.optimum="720pt" leader-length.minimum="1em" leader-pattern-width="use-font-metrics" color="red">ABCD</fo:leader>
+  
+  
+            </fo:block>
+
+  
+            <fo:block space-before="6pt">
+    Same as above but with pattern width fixed to 1 in:
+    
+    <fo:leader leader-pattern="use-content" leader-length.maximum="720pt" leader-length.optimum="720pt" leader-length.minimum="1em" leader-pattern-width="1in" color="red">ABCD</fo:leader>
+  
+  
+            </fo:block>
+
+
+         </fo:block>
+      </fo:flow>
+   </fo:page-sequence>
+</fo:root>

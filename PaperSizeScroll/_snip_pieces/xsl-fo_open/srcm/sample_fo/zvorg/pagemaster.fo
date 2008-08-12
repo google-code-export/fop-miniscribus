@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions">
+
+   
+
+  
+  
+  
+
+
+  
+  
+  
+
+  
+  
+
+  
+   <fo:layout-master-set>
+    
+
+    
+      <fo:simple-page-master master-name="first">
+      
+         <fo:region-body region-name="first-body" margin="1in" display-align="center" border-top="thin gray groove" border-bottom="thin gray groove"/>
+      
+         <fo:region-before region-name="first-before" extent="1in" display-align="after" padding="6pt 1in"/>
+      
+         <fo:region-after region-name="first-after" extent="1in" display-align="before" padding="6pt 1in"/>
+    
+      </fo:simple-page-master>
+
+  
+    
+
+    
+      <fo:simple-page-master master-name="second">
+      
+         <fo:region-body region-name="second-body" margin="1in" display-align="center" border-top="thin gray groove" border-bottom="thin gray groove"/>
+      
+         <fo:region-before region-name="second-before" extent="1in" display-align="after" padding="6pt 1in"/>
+      
+         <fo:region-after region-name="second-after" extent="1in" display-align="before" padding="6pt 1in"/>
+    
+      </fo:simple-page-master>
+
+  
+    
+
+    
+      <fo:simple-page-master master-name="third">
+      
+         <fo:region-body region-name="third-body" margin="1in" display-align="center" border-top="thin gray groove" border-bottom="thin gray groove"/>
+      
+         <fo:region-before region-name="third-before" extent="1in" display-align="after" padding="6pt 1in"/>
+      
+         <fo:region-after region-name="third-after" extent="1in" display-align="before" padding="6pt 1in"/>
+    
+      </fo:simple-page-master>
+
+  
+  
+   </fo:layout-master-set>
+
+  
+    
+   <fo:page-sequence master-reference="first">
+      
+      <fo:static-content flow-name="xsl-region-before">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">
+          This text <fo:wrapper font-weight="bold">SHOULD NEVER OCCUR</fo:wrapper> on the page; 
+          if you see it, there is an error in your formatter.
+        </fo:block>
+      
+      </fo:static-content>
+ 
+      
+      <fo:static-content flow-name="xsl-region-after">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">
+          This text <fo:wrapper font-weight="bold">SHOULD NEVER OCCUR</fo:wrapper> on the page; 
+          if you see it, there is an error in your formatter.
+        </fo:block>
+      
+      </fo:static-content>
+ 
+      
+      <fo:static-content flow-name="first-before">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the header of the first page.</fo:block>
+      
+      </fo:static-content>
+
+      
+      <fo:static-content flow-name="first-after">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the footer of the first page.</fo:block>
+      
+      </fo:static-content>
+
+      
+      <fo:flow flow-name="first-body">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the body of the first page.</fo:block>
+      
+      </fo:flow>
+    
+   </fo:page-sequence>
+  
+  
+    
+   <fo:page-sequence master-reference="second">
+      
+      <fo:static-content flow-name="xsl-region-before">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">
+          This text <fo:wrapper font-weight="bold">SHOULD NEVER OCCUR</fo:wrapper> on the page; 
+          if you see it, there is an error in your formatter.
+        </fo:block>
+      
+      </fo:static-content>
+ 
+      
+      <fo:static-content flow-name="xsl-region-after">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">
+          This text <fo:wrapper font-weight="bold">SHOULD NEVER OCCUR</fo:wrapper> on the page; 
+          if you see it, there is an error in your formatter.
+        </fo:block>
+      
+      </fo:static-content>
+ 
+      
+      <fo:static-content flow-name="second-before">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the header of the second page.</fo:block>
+      
+      </fo:static-content>
+
+      
+      <fo:static-content flow-name="second-after">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the footer of the second page.</fo:block>
+      
+      </fo:static-content>
+
+      
+      <fo:flow flow-name="second-body">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the body of the second page.</fo:block>
+      
+      </fo:flow>
+    
+   </fo:page-sequence>
+  
+  
+    
+   <fo:page-sequence master-reference="third">
+      
+      <fo:static-content flow-name="xsl-region-before">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">
+          This text <fo:wrapper font-weight="bold">SHOULD NEVER OCCUR</fo:wrapper> on the page; 
+          if you see it, there is an error in your formatter.
+        </fo:block>
+      
+      </fo:static-content>
+ 
+      
+      <fo:static-content flow-name="xsl-region-after">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">
+          This text <fo:wrapper font-weight="bold">SHOULD NEVER OCCUR</fo:wrapper> on the page; 
+          if you see it, there is an error in your formatter.
+        </fo:block>
+      
+      </fo:static-content>
+ 
+      
+      <fo:static-content flow-name="third-before">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the header of the third page.</fo:block>
+      
+      </fo:static-content>
+
+      
+      <fo:static-content flow-name="third-after">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the footer of the third page.</fo:block>
+      
+      </fo:static-content>
+
+      
+      <fo:flow flow-name="third-body">
+        
+         <fo:block xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" font="12pt Times" space-before="6pt" space-after="6pt">This is the body of the third page.</fo:block>
+      
+      </fo:flow>
+    
+   </fo:page-sequence>
+  
+
+
+</fo:root>
