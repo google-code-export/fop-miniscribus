@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jnlp spec="1.0+" codebase="http://javadl-esd.sun.com/">
+
+  <information>
+    <title>Sun Download Manager 2.0 (web)</title>
+    <vendor>Sun Microsystems, Inc.</vendor>
+    <homepage href="http://www.sun.com/download/sdm/"/>
+    <description>Sun Download Manager (web)</description>
+    <icon href="http://www.sun.com/download/sdm/SDM20Icon.gif"/>
+    <shortcut>
+      <desktop/>
+      <menu submenu="Sun Download Manager 2.0 (web)"/>
+    </shortcut>
+  </information>
+
+  <security><all-permissions/></security>
+
+  <resources>
+    <j2se version="1.3+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="/update/sdm20/sdm.jar" main="true" download="eager"/>
+    <property name="sdm_lf" value="integrated"/>
+  </resources>
+
+  <application-desc main-class="com.sun.sdm.SunDownloadManager">
+    <argument>http://cds.sun.com/is-bin/INTERSHOP.enfinity/WFS/CDS-CDS_Developer-Site/en_US/-/USD/VerifyItem-Start/j2sdk-1_4_2_18-windows-i586-p-iftw.exe?sdm=w8dIBe.m_tsAAAEbQRxI97jl&BundledLineItemUUID=ocVIBe.m7HoAAAEbVxxI97jl&OrderID=w8dIBe.m_tsAAAEbQRxI97jl&ProductID=d0xIBe.ox8EAAAEad8YGcZhi&FileName=/j2sdk-1_4_2_18-windows-i586-p-iftw.exe</argument>
+    <argument>jnlp_ts-1218577995545</argument>
+  </application-desc>
+
+</jnlp>
+
