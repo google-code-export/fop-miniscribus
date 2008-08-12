@@ -1,0 +1,2158 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><!--
+    (c) RenderX, 2000
+    This file makes part of the RenderX XSL FO Test Suite. Permission is
+    granted to copy and modify this file as a whole or in part, provided
+    that any work derived from it bear a reference to the original
+    document.
+  -->
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xep="http://www.renderx.com/XEP/xep" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <fo:layout-master-set>
+      <fo:simple-page-master master-name="all-pages">
+         <fo:region-body region-name="xsl-region-body" margin="0.7in" column-gap="0.25in" border="0.25pt solid gray" padding="6pt"/>
+         <fo:region-before region-name="xsl-region-before" extent="0.7in" display-align="after" padding="6pt 0.7in"/>
+         <fo:region-after region-name="xsl-region-after" extent="0.7in" display-align="before" padding="6pt 0.7in"/>
+      </fo:simple-page-master>
+   </fo:layout-master-set>
+   <fo:page-sequence master-reference="all-pages">
+      <fo:static-content flow-name="xsl-region-before">
+         <fo:list-block font="10pt Helvetica" provisional-distance-between-starts="5in" provisional-label-separation="0in">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block text-align="start" font-weight="bold"> Vertical Alignment Properties - Baseline Shift</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block text-align="end">
+                Page <fo:page-number/>
+                  </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+      </fo:static-content>
+      <fo:static-content flow-name="xsl-region-after">
+         <fo:list-block font="9pt Times" provisional-distance-between-starts="3in" provisional-label-separation="0in">
+            <fo:list-item>
+               <fo:list-item-label end-indent="label-end()">
+                  <fo:block text-align="start" font-weight="bold">© <fo:basic-link external-destination="url(http://www.renderx.com/)" color="#0000C0" text-decoration="underline">Render<fo:wrapper font-weight="bold" color="#C00000">X</fo:wrapper>
+                     </fo:basic-link> 2000</fo:block>
+               </fo:list-item-label>
+               <fo:list-item-body start-indent="body-start()">
+                  <fo:block text-align="end" font-style="italic" color="#606060">
+                XSL Formatting Objects Test Suite
+              </fo:block>
+               </fo:list-item-body>
+            </fo:list-item>
+         </fo:list-block>
+      </fo:static-content>
+      <fo:static-content flow-name="xsl-footnote-separator">
+         <fo:block>
+            <fo:leader leader-pattern="rule" leader-length="100%" rule-thickness="0.5pt" rule-style="solid" color="black"/>
+         </fo:block>
+      </fo:static-content>
+      <fo:flow flow-name="xsl-region-body">
+         <fo:block>
+
+   
+
+
+
+  
+
+  
+
+  
+      
+
+
+  
+
+  
+
+  
+
+  
+
+  
+            <fo:block font="bold 14pt Helvetica" color="black" space-before="18pt" space-before.conditionality="discard" space-after="6pt" keep-with-next.within-column="always" keep-together.within-column="always" text-align="center" padding="3pt" background-color="silver"> Vertical Alignment Properties - Baseline Shift</fo:block>
+  
+            <fo:block font="12pt Times" space-before="6pt" space-after="6pt">
+    
+               <fo:block>
+    This document tests vertical alignment of inline elements.
+    The test consists of several lines of text; line height is 30 pt.
+    Each line is structured as follows:
+    </fo:block>
+    
+               <fo:list-block space-before="6pt" space-after="6pt">
+                  <fo:list-item>
+                     <fo:list-item-label end-indent="label-end()">
+                        <fo:block>-</fo:block>
+                     </fo:list-item-label>
+                     <fo:list-item-body start-indent="body-start()">
+                        <fo:block>
+        
+                           <fo:inline background-color="#F0F0F0" padding="0pt 2pt">gray background</fo:inline>
+        marks the unshifted line;
+      </fo:block>
+                     </fo:list-item-body>
+                  </fo:list-item>
+                  <fo:list-item>
+                     <fo:list-item-label end-indent="label-end()">
+                        <fo:block>-</fo:block>
+                     </fo:list-item-label>
+                     <fo:list-item-body start-indent="body-start()">
+                        <fo:block>
+        
+                           <fo:inline border="0.25pt black solid" padding="0pt 2pt">black border</fo:inline>
+        marks an inline shifted by the amount specified by the first word
+        inside it. This box serves as a reference to all other elements;
+      </fo:block>
+                     </fo:list-item-body>
+                  </fo:list-item>
+                  <fo:list-item>
+                     <fo:list-item-label end-indent="label-end()">
+                        <fo:block>-</fo:block>
+                     </fo:list-item-label>
+                     <fo:list-item-body start-indent="body-start()">
+                        <fo:block>
+        
+                           <fo:inline background-color="#E0E080" padding="0pt 2pt">yellow background</fo:inline>
+        marks a nested inline unshifted from the reference box. The rectangle
+        should contain the word "unshifted" and be aligned within the reference box;
+      </fo:block>
+                     </fo:list-item-body>
+                  </fo:list-item>
+                  <fo:list-item>
+                     <fo:list-item-label end-indent="label-end()">
+                        <fo:block>-</fo:block>
+                     </fo:list-item-label>
+                     <fo:list-item-body start-indent="body-start()">
+                        <fo:block>
+        
+                           <fo:inline background-color="#A0A0FF" padding="0pt 2pt">light blue background</fo:inline>
+        marks an inline shifted from the reference box by the speficied amount.
+      </fo:block>
+                     </fo:list-item-body>
+                  </fo:list-item>
+               </fo:list-block>
+    
+               <fo:block>
+      To facilitate test interpretation, a ruler is drawn
+      at the left of the text. 
+    </fo:block>
+  
+            </fo:block>
+
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="8pt Courier" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="8pt Courier">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        8pt Courier
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="baseline">
+           baseline
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="8pt Courier">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        8pt Courier
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="baseline">
+           baseline
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="12pt Times" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="12pt Times">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        12pt Times
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="sub">
+           sub
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="12pt Times">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        12pt Times
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="sub">
+           sub
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="16pt Times" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="16pt Times">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        16pt Times
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="super">
+           super
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="16pt Times">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        16pt Times
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="super">
+           super
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="6pt Helvetica" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="6pt Helvetica">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        6pt Helvetica
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="25%">
+           25%
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="6pt Helvetica">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        6pt Helvetica
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="25%">
+           25%
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="6pt Helvetica" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="6pt Helvetica">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        6pt Helvetica
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="-50%">
+           -50%
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="6pt Helvetica">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        6pt Helvetica
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="-50%">
+           -50%
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="10pt Courier" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="10pt Courier">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        10pt Courier
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="-5pt">
+           -5pt
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="10pt Courier">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        10pt Courier
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="-5pt">
+           -5pt
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+  
+    
+            <fo:table space-before="12pt" space-after="12pt" keep-together.within-page="always">
+      
+               <fo:table-column column-width="40pt"/>
+      
+               <fo:table-column column-width="9pt"/>
+      
+               <fo:table-body>
+        
+                  <fo:table-row>
+          
+                     <fo:table-cell padding-right="1pt">
+    
+                        <fo:wrapper line-height="10pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block> 0 pt</fo:block>
+      
+        
+                           <fo:block> 10 pt</fo:block>
+      
+        
+                           <fo:block> 20 pt</fo:block>
+      
+        
+                           <fo:block> 30 pt</fo:block>
+      
+        
+                           <fo:block> 40 pt</fo:block>
+      
+        
+                           <fo:block> 50 pt</fo:block>
+      
+        
+                           <fo:block> 60 pt</fo:block>
+      
+        
+                           <fo:block> 70 pt</fo:block>
+      
+        
+                           <fo:block> 80 pt</fo:block>
+      
+        
+                           <fo:block> 90 pt</fo:block>
+      
+        
+                           <fo:block> 100 pt</fo:block>
+      
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell>
+    
+                        <fo:wrapper line-height="5pt" line-stacking-strategy="font-height" font="8pt Helvetica" text-align="end">
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+        
+                           </fo:block>
+        
+                           <fo:block>
+          
+                              <fo:leader leader-length.optimum="3pt" leader-length.maximum="3pt" leader-length.minimum="3pt" leader-pattern="rule" color="gray" rule-style="solid" rule-thickness="0.25pt"/>
+        
+                           </fo:block>
+      
+      
+                           <fo:block>
+        
+                              <fo:leader leader-length.optimum="6pt" leader-length.maximum="6pt" leader-length.minimum="6pt" leader-pattern="rule" rule-style="solid" rule-thickness="0.5pt"/>
+      
+                           </fo:block>
+    
+                        </fo:wrapper>
+  
+                     </fo:table-cell>
+          
+                     <fo:table-cell padding="3pt">
+            
+                        <fo:block text-align="start" font="14pt Helvetica" line-height="30pt">
+              
+    
+                           <fo:block text-align="start" font="14pt Helvetica">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        14pt Helvetica
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="15pt">
+           15pt
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="baseline">
+      baseline
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="sub">
+      sub
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="super">
+      super
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+              
+    
+                           <fo:block text-align="start" font="14pt Helvetica">
+      
+                              <fo:inline background-color="#F0F0F0" padding="0pt 3pt">
+        14pt Helvetica
+        <fo:inline border="0.25pt black solid" padding="0pt 2pt" baseline-shift="15pt">
+           15pt
+           <fo:inline background-color="#E0E080" padding="0pt 3pt">
+              unshifted
+           </fo:inline>
+
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="33.3%">
+      33.3%
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="10pt">
+      10pt
+    </fo:inline>
+  
+            
+    
+                                    <fo:inline background-color="#A0A0FF" padding="0pt 2pt" baseline-shift="-15pt">
+      -15pt
+    </fo:inline>
+  
+        
+                                 </fo:inline>
+      
+                              </fo:inline>
+    
+                           </fo:block>
+  
+            
+                        </fo:block>
+          
+                     </fo:table-cell>
+        
+                  </fo:table-row>
+      
+               </fo:table-body>
+    
+            </fo:table>
+  
+
+         </fo:block>
+      </fo:flow>
+   </fo:page-sequence>
+</fo:root>
