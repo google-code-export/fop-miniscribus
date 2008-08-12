@@ -1,0 +1,64 @@
+
+
+
+_LayerApi.h mutable class TextProcessor is the base Handler from QtextDocument and 
+it take mouse event keybord and so... this is the "QTextControl from QTextEdit"
+class ScribeParser is a template to (save) QtextDocument to other format.
+
+To open other format as template you can read on:
+class Fo_Format
+trunk/PaperSizeScroll/_snip_pieces/xsl-fo_open/srcm/struct/Fo_Format.h
+class Fo_Reader
+trunk/PaperSizeScroll/_snip_pieces/xsl-fo_open/srcm/struct/Fo_Reader.h
+
+_LayerAbsolute_Floating.h is the inline Floating layer subclass from 
+QGraphicsRectItem
+
+I use it as
+
+enum LAYERTYPE {
+DIV_ABSOLUTE = 1000, /* only absolute position top,left x,y*/
+DIV_HEADER = 2000,
+DIV_FOOTER = 3000
+};
+
+
+_LayerExtended.h is the QGraphicsRectItem container from all page and its 
+must send to QGraphicsView scribeapi.h the correct pagecount to increase 
+or degrease rect space.. and place of pages.
+
+scribemime.h contain all base defines and structure from QGraphicsScene 
+M_PageSize s , QDataStream to save hard qtextdocuments and is 
+image see _Image_Page_Struct.h
+class SPics
+class RichDoc
+class PageDoc
+it is utils to Drag & Drop richtext image or other.
+
+SessionManager.h is a static Objekt to save cached paint and pagesize 
+A4, us letter and so .. ....
+I use its Like a PHPSESSION instance
+
+Layer_CommandStorage.h static Objekt having all QAction from 
+TextApi Absolute Layer and floating text as pages ...
+
+On this way is possibel to better implements on a QMainWindow or 
+QtoolBars ... whitout rewrite all Actions.
+
+IMO XSL-FO format doc:
+http://www.ecrion.com/Support/Resour...l/Toc.xml.html
+http://www.zvon.org/xxl/xslfoReferen...put/index.html
+http://en.wikipedia.org/wiki/XSL_Formatting_Objects
+http://de.wikipedia.org/wiki/Extensi...atting_Objects
+http://es.wikipedia.org/wiki/XSL-FO
+http://xmlgraphics.apache.org/fop/
+http://www.ecrion.com/Support/Resour...marks.xml.html
+
+
+
+
+
+
+
+
+
