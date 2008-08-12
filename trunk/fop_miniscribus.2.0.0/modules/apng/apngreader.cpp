@@ -329,7 +329,7 @@ void FrameReader::NextFrame()
 		}
 		const int grab = qBound (0,current,movie.size() - 1);
 		APNGFRAME im = movie[grab];
-		cout <<  "ID " << grab << "from." << movie.size() << " time " << im.play << " l." << running_loop << "\r";
+		///////////cout <<  "ID " << grab << "from." << movie.size() << " time " << im.play << " l." << running_loop << "\r";
 		fflush ( stdin );
 		current++;
 		current = qBound (1,current,movie.size());
