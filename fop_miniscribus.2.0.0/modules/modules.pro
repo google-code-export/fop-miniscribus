@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = lib
-TARGET = editor
+TARGET = scribe
 DEPENDPATH += . apng ooo tidy zip
 INCLUDEPATH += . apng ooo tidy zip
 
