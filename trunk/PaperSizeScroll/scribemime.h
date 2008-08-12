@@ -532,7 +532,7 @@ public:
     gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
     hboxLayout = new QHBoxLayout();
     hboxLayout->setObjectName(QString::fromUtf8("hboxLayout"));
-    label = new QLabel(tr("Rotateï¿½:"),this);
+    label = new QLabel(tr("Rotate °:"),this);
     label->setObjectName(QString::fromUtf8("label"));
     label->setMaximumSize(QSize(16777215, 25));
     hboxLayout->addWidget(label);
