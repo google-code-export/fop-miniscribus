@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
-     <cms:pager printer_format="CH-A4" build="12.08.2008 18:24:24" editor="FOP converter to QT-TextDocument" />
+     <cms:pager printer_format="CH-A4" build="13.08.2008 18:32:58" editor="FOP converter to QT-TextDocument" />
      <fo:layout-master-set>
           <fo:simple-page-master margin-left="20pt" page-height="841.891pt" master-name="CH-A4" margin-bottom="20pt" margin-top="20pt" margin-right="20pt" page-width="598.111pt" >
                <fo:region-body margin-left="20pt" background-color="#ffffff" margin-bottom="20pt" region-name="xsl-region-body" margin-top="20pt" margin-right="20pt" />
@@ -8,26 +8,32 @@
      </fo:layout-master-set>
      <fo:page-sequence master-reference="CH-A4" >
           <fo:flow flow-name="xsl-region-body" >
-               <fo:block-container width="625pt" opacity="1" margin-left="2pt" z-index="44.78590000000001" absolute-position="absolute" height="34pt" left="-281.72pt" margin-bottom="2pt" id="layer_10" margin-top="2pt" rotate="270" margin-right="2pt" top="398.16pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >
-                         <fo:basic-link external-destination="http://fop-miniscribus.googlecode.com/svn/trunk/fop_miniscribus.2.0.0/modules/" text-decoration="underline" color="red" >http://fop-miniscribus.googlecode.com/svn/trunk/fop_miniscribus.2.0.0/modules/</fo:basic-link>
-                    </fo:block>
+               <fo:block-container width="182pt" opacity="110" border-start-color="#ff0000" margin-left="2pt" z-index="37.97940000000001" absolute-position="absolute" height="295pt" background-color="#f0ffbb" left="62.5879pt" margin-bottom="2pt" border-width="1pt" id="layer_10" margin-top="2pt" rotate="350" margin-right="2pt" top="266.678pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="12pt" margin-top="18pt" color="#000000" font-size="12pt" >Battleplan:</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="12pt" margin-top="18pt" color="#000000" font-size="12pt" >Other module to append</fo:block>
+                    <fo:block font-family="Arial" text-align="left" margin-bottom="12pt" margin-top="18pt" color="#000000" font-size="12pt" >aspell</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" />
                </fo:block-container>
-               <fo:block-container width="538pt" opacity="80" border-start-color="#000000" margin-left="2pt" z-index="11" absolute-position="absolute" height="670pt" background-color="#f5ffc2" left="41.7147pt" margin-bottom="2pt" border-width="1pt" id="layer_11" margin-top="2pt" margin-right="2pt" top="98.3887pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
+               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="34.17280000000001" absolute-position="absolute" height="95pt" background-color="#a7ffca" left="283.502pt" margin-bottom="2pt" id="layer_11" margin-top="2pt" margin-right="2pt" top="287.997pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/tidy/</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >correction from some XML or HTML</fo:block>
                </fo:block-container>
-               <fo:block-container width="150pt" opacity="1" margin-left="2pt" z-index="41.78600000000001" absolute-position="absolute" height="181pt" left="424.898pt" margin-bottom="2pt" id="layer_12" margin-top="2pt" margin-right="2pt" top="21.4989pt" imgcount="1" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >
-                         <fo:external-graphic width="145pt" height="145pt" src="Pictures/pngexternal-paste-1218557298-140-image.png" />
-                    </fo:block>
+               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="30.69950000000001" absolute-position="absolute" height="95pt" background-color="#00f3f3" left="282.109pt" margin-bottom="2pt" id="layer_12" margin-top="2pt" margin-right="2pt" top="505.399pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/zip/</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Open GZIP svg vector image</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >an zip  read &amp; Write normal compression</fo:block>
                </fo:block-container>
-               <fo:block-container width="520pt" opacity="1" margin-left="2pt" z-index="10.01" absolute-position="absolute" height="95pt" left="40.1806pt" margin-bottom="2pt" id="layer_13" margin-top="2pt" margin-right="2pt" top="22.7238pt" imgcount="0" >
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="16pt" >Structure from MiniScribus Version 2.0.0</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="16pt" >
-                         <fo:basic-link external-destination="http://code.google.com/p/fop-miniscribus/" text-decoration="underline" color="red" >http://code.google.com/p/fop-miniscribus/</fo:basic-link>
-                    </fo:block>
+               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="42.45260000000001" absolute-position="absolute" height="95pt" background-color="#b8b8b8" left="282.96pt" margin-bottom="2pt" id="layer_13" margin-top="2pt" margin-right="2pt" top="397.183pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/ooo/</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Converter from OpenOffice</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >to QTextDocument QT4.4</fo:block>
                </fo:block-container>
-               <fo:block-container width="200pt" opacity="255" margin-left="2pt" z-index="34.50610000000001" absolute-position="absolute" height="114pt" background-color="#e7e7e7" left="56.0419pt" margin-bottom="2pt" id="layer_14" margin-top="2pt" margin-right="2pt" top="110.433pt" imgcount="0" >
+               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="23.7529" absolute-position="absolute" height="95pt" background-color="#ffaa00" left="282.153pt" margin-bottom="2pt" id="layer_14" margin-top="2pt" margin-right="2pt" top="181.154pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/apng/</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Firefox png-lib</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Animated Portable Network Graphics</fo:block>
+               </fo:block-container>
+               <fo:block-container width="200pt" opacity="255" margin-left="2pt" z-index="34.50610000000001" absolute-position="absolute" height="114pt" background-color="#e7e7e7" left="56.0419pt" margin-bottom="2pt" id="layer_15" margin-top="2pt" margin-right="2pt" top="110.433pt" imgcount="0" >
                     <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Main place from all static lib</fo:block>
                     <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/</fo:block>
                     <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" />
@@ -35,30 +41,33 @@
                     <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" />
                     <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" />
                </fo:block-container>
-               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="23.7529" absolute-position="absolute" height="95pt" background-color="#ffaa00" left="275.724pt" margin-bottom="2pt" id="layer_15" margin-top="2pt" margin-right="2pt" top="218.441pt" imgcount="0" >
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/apng/</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Firefox png-lib</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Animated Portable Network Graphics</fo:block>
+               <fo:block-container width="520pt" opacity="1" margin-left="2pt" z-index="10.01" absolute-position="absolute" height="95pt" left="40.1806pt" margin-bottom="2pt" id="layer_16" margin-top="2pt" margin-right="2pt" top="22.7238pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="16pt" >Structure from MiniScribus Version 2.0.0</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="16pt" >
+                         <fo:basic-link external-destination="http://code.google.com/p/fop-miniscribus/" text-decoration="underline" color="red" >http://code.google.com/p/fop-miniscribus/</fo:basic-link>
+                    </fo:block>
                </fo:block-container>
-               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="42.45260000000001" absolute-position="absolute" height="95pt" background-color="#b8b8b8" left="275.245pt" margin-bottom="2pt" id="layer_16" margin-top="2pt" margin-right="2pt" top="456.328pt" imgcount="0" >
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/ooo/</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Converter from OpenOffice</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >to QTextDocument QT4.4</fo:block>
+               <fo:block-container width="150pt" opacity="1" margin-left="2pt" z-index="41.78600000000001" absolute-position="absolute" height="181pt" left="424.898pt" margin-bottom="2pt" id="layer_17" margin-top="2pt" margin-right="2pt" top="21.4989pt" imgcount="1" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >
+                         <fo:external-graphic width="145pt" height="145pt" src="Pictures/pngexternal-paste-1218557298-140-image.png" />
+                    </fo:block>
                </fo:block-container>
-               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="30.69950000000001" absolute-position="absolute" height="95pt" background-color="#00f3f3" left="274.394pt" margin-bottom="2pt" id="layer_17" margin-top="2pt" margin-right="2pt" top="579.973pt" imgcount="0" >
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/zip/</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Open GZIP svg vector image</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >an zip  read &amp; Write normal compression</fo:block>
+               <fo:block-container width="537pt" opacity="80" border-start-color="#000000" margin-left="2pt" z-index="11" absolute-position="absolute" height="726pt" background-color="#f5ffc2" left="41.71pt" margin-bottom="2pt" border-width="1pt" id="layer_18" margin-top="2pt" margin-right="2pt" top="98.39pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
                </fo:block-container>
-               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="34.17280000000001" absolute-position="absolute" height="95pt" background-color="#a7ffca" left="277.073pt" margin-bottom="2pt" id="layer_18" margin-top="2pt" margin-right="2pt" top="335.57pt" imgcount="0" >
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/tidy/</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >correction from some XML or HTML</fo:block>
+               <fo:block-container width="625pt" opacity="1" margin-left="2pt" z-index="44.78590000000001" absolute-position="absolute" height="34pt" left="-293.65pt" margin-bottom="2pt" id="layer_19" margin-top="2pt" rotate="270" margin-right="2pt" top="400.51pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >
+                         <fo:basic-link external-destination="http://fop-miniscribus.googlecode.com/svn/trunk/fop_miniscribus.2.0.0/modules/" text-decoration="underline" color="red" >http://fop-miniscribus.googlecode.com/svn/trunk/fop_miniscribus.2.0.0/modules/</fo:basic-link>
+                    </fo:block>
                </fo:block-container>
-               <fo:block-container width="182pt" opacity="110" border-start-color="#ff0000" margin-left="2pt" z-index="37.97940000000001" absolute-position="absolute" height="295pt" background-color="#f0ffbb" left="85.2506pt" margin-bottom="2pt" border-width="1pt" id="layer_19" margin-top="2pt" rotate="343" margin-right="2pt" top="305.67pt" imgcount="0" >
-                    <fo:block font-family="Arial" text-align="left" margin-bottom="12pt" margin-top="18pt" color="#000000" font-size="12pt" >Battleplan:</fo:block>
-                    <fo:block font-family="Arial" text-align="left" margin-bottom="12pt" margin-top="18pt" color="#000000" font-size="12pt" >Other module to append</fo:block>
-                    <fo:block font-family="Arial" text-align="left" margin-bottom="12pt" margin-top="18pt" color="#000000" font-size="12pt" >xsltproc, xsl-fo ( reader &amp; Writer) , aspell</fo:block>
-                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" />
+               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="48.25920000000001" absolute-position="absolute" height="95pt" background-color="#a7ffca" left="281.36pt" margin-bottom="2pt" id="layer_1011" margin-top="2pt" margin-right="2pt" top="611.152pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/xslt/</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >enable to transform xsl-fo documents</fo:block>
+               </fo:block-container>
+               <fo:block-container width="290pt" opacity="120" margin-left="2pt" z-index="51.73250000000002" absolute-position="absolute" height="95pt" background-color="#ffaa00" left="281.297pt" margin-bottom="2pt" id="layer_1014" margin-top="2pt" margin-right="2pt" top="712.603pt" imgcount="0" >
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >modules/scribe/</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >Basic mime to image &amp;</fo:block>
+                    <fo:block font-family="Arial" text-align="left" color="#000000" font-size="12pt" >QTextDocument to Stream Binary</fo:block>
                </fo:block-container>
           </fo:flow>
      </fo:page-sequence>
