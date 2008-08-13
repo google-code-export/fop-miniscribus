@@ -1,3 +1,4 @@
 TEMPLATE    =   subdirs
 
-SUBDIRS   =   modules
+SUBDIRS   =   modules \
+              src_2
