@@ -39,10 +39,9 @@ DEPENDPATH += $$LIB_EXTERN_PATH/include
 
 
 unix {
-INCLUDEPATH += /opt/local/include
-INCLUDEPATH += /opt/local/include/libxml2
-INCLUDEPATH += /opt/local/include/libxslt
-INCLUDEPATH += /opt/local/include/libxml2/libxml
+INCLUDEPATH += /usr/include/libxslt
+INCLUDEPATH += /usr/include/libxml2/libxml
+INCLUDEPATH += /usr/include/libxml2
 LIBS += -lxml2 -lxslt
 }
 

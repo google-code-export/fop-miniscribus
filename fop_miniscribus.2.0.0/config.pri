@@ -5,6 +5,9 @@ message(Need QT Version 4.4.1)
 ##### flag from compiler ??? 
 
 DEFINES += OPENGLINITYES
+LIB_EXTENSION = a   ### compiler default
+
+
 
 win32-msvc {
 LIB_EXTENSION = lib  ### compiler option
@@ -13,7 +16,6 @@ error(Visual studio xslt lib not setting on pro file)
 }
 
 win32-g++{
-LIB_EXTENSION = a   ### compiler option
 DEFINES += MINGWCC_
 ###############error(xslt lib not setting to mingw compiler on pro file) 
 }
