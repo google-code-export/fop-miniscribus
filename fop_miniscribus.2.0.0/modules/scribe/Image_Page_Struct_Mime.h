@@ -7,7 +7,7 @@
 #include <QtGui>
 #include <QtCore>
 #include <QPixmap>
-
+#include "Basic_Mime.h"
 #include <QMetaType>
 #define _IMAGE_PICS_ITEM_ 100
 
@@ -37,6 +37,28 @@ public:
     {
         return data.size();
     }
+    QByteArray streams()
+    {
+      return qUncompress( data ); 
+    }
+    
+    bool FopSaveImage( QDomElement e )
+    {
+			const QString dirref = QString("./%1%2").arg(FOPIMAGEDIR).arg(FileName());
+			e.setAttribute ("src",dirref); /* current path from export now! */
+			QFileInfo gosave(dirref);
+			Cache( gosave.absolutePath() );
+			  QFile f( gosave.absoluteFilePath() );
+        if ( f.open( QIODevice::WriteOnly ) )
+        {
+          f.write ( qUncompress( data ) );
+          f.close();   
+          return true;					
+        }
+			return false;	
+    }
+    
+    
     QUrl indoc();
     /* vars permanent to put on stream  */
     QString name;

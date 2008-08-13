@@ -4,6 +4,8 @@ message(Need QT Version 4.4.1)
 
 ##### flag from compiler ??? 
 
+DEFINES += OPENGLINITYES
+
 win32-msvc {
 LIB_EXTENSION = lib  ### compiler option
 DEFINES += VISUALSTUDIOCC_

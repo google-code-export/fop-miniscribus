@@ -5,6 +5,64 @@
 #include <QtCore>
 #include <QPixmap>
 #include <QTextCodec>
+#include <QDomDocument>
+
+class StreamFop
+{
+  public:
+  StreamFop() 
+  :d(new QBuffer())
+  {
+  d->open(QIODevice::ReadWrite);
+  start();
+  }
+  ~StreamFop()
+  {
+   d->close();
+  }
+  bool clear()
+  {
+    d->write(QByteArray()); 
+    return d->bytesAvailable() == 0 ? true : false;
+  }
+  void start() { 
+    d->seek(0);
+  }
+  bool LoadFile( const QString file ) { 
+    if (clear()) {
+     QFile f(file); 
+        if (f.exists()) {
+          if (f.open(QFile::ReadOnly)) {
+           d->write(f.readAll());
+           f.close();
+           start();
+           return true;
+          }
+        }
+    }
+    return false;
+  }
+  bool PutOnFile( const QString file ) { 
+      QFile f(file);
+      start();
+      if (f.open(QFile::WriteOnly)) {
+        uint bi = f.write(d->readAll());
+        f.close();
+        start();
+        return bi > 0 ? true : false;
+      }
+   return false; 
+  }
+  QDomDocument Dom() { return doc; }
+  QBuffer *device() { return d; }
+  bool isValid() { return doc.setContent(stream(),false,0,0,0);  }
+  QByteArray stream() { return d->data(); }
+  QDomDocument doc;
+  QBuffer *d;
+}; 
+
+
+
 
 
 /* correct codex from xml file read only first line */
