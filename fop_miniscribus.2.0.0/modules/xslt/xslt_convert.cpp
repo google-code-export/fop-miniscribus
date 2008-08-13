@@ -50,97 +50,65 @@ void qt_libxml_error_handler(void *ctx, const char *msg, ...)
 	}
 }
 
-
-/* read the contenet of a local file as qstring */
-QString ReadFileUtf8Xml( const QString fullFileName )
+Xslt_Convert::~Xslt_Convert()
 {
-    QString inside = "";
-    QFile file(fullFileName); 
-    if (file.exists()) {
-                if (file.open(QFile::ReadOnly | QFile::Text)) {
-                    inside = QString::fromUtf8(file.readAll());
-                    file.close();
-                }
-    }
-
-return inside;
+   EndingJob = true;
+   qDebug() << "### Destructor ..........................  ->" << UmanTimeFromUnix(QTime_Null());
+   qDebug() << "### EndingJob ..........................  ->" << EndingJob;
+   qt_unlink(XMLERROR_FILE);  /* remove debug or error message from last */
 }
 
-
-
-
-
-
-
-//
-Xslt_Convert::Xslt_Convert()
+Xslt_Convert::Xslt_Convert( const QString xmlfile , const QString xsltfile ,  QMap<QString,QString> paramsetting )
+ :EndingJob(false),xmlcodec(0),xsltcodec(0)
 {
-    //////qt_unlink(XMLERROR_FILE);
-}
-//
-void Xslt_Convert::Convert()
-{
-    if (XML_file.size() < 1) {
-    emit ErrorMsg(tr("XML file is not set!"));
+    ////////qDebug() << "### Start Xslt_Convert ...................  ->" << UmanTimeFromUnix(QTime_Null());
+    qt_unlink(XMLERROR_FILE);  /* remove debug or error message from last */
+    QTimer::singleShot(1000, this, SLOT(CheckError()));
+    QFile *xfile = new QFile( xmlfile );
+    if (!xfile->exists()) {
+    emit ErrorMsg(QString("File %1 not exist!").arg(xmlfile));
     return;
     }
-    if (XSLT_file.size() < 1) {
-    emit ErrorMsg(tr("XML file is not set!"));
+    QFile *sfile = new QFile( xsltfile );
+    if (!sfile->exists()) {
+    emit ErrorMsg(QString("File %1 not exist!").arg(xsltfile));
     return;
     }
-    
-    if (!is_file(XML_file)) {
-    emit ErrorMsg(tr("XML file \"%1\" not found!").arg(XML_file));   
-    return;
-    }
-    if (!is_file(XSLT_file)) {
-    emit ErrorMsg(tr("XSLT file \"%1\" not found!").arg(XSLT_file));   
-    return;
-    }
-    
-    QString resulterxml = XMLRESULT_FILE;
-    QString catnummer = QString("\"%1\"").arg(UmanTimeFromUnix(QTime_Null()));
-    QByteArray nummero = catnummer.toAscii();
-    QString catnummer1 = QString("\"%1\"").arg(QTime_Null());
-    QByteArray nummero1 = catnummer1.toAscii();
-    QString success = "";
-    QStringList nam_M;
-    QStringList val_M;
-    
-    int caseparam = nam_M.size();
-    bool eset = false;
-    const char* paramsa[caseparam];
-    const char* params[6];  
-    if (caseparam > 0 && nam_M.size() == val_M.size() ) {
-         eset = true;
-         
-         int numerise = -1;
-         for (int i = 0; i < caseparam; ++i)  {
-           numerise++;
-           QByteArray na = nam_M.at(i).toAscii();    
-           QByteArray va = val_M.at(i).toAscii();  
-               paramsa[numerise] = na.data();
-                      numerise++;
-               paramsa[numerise] = va.data();
-             
-         }
-          
-
-        
-    } else {
-     
+    xmlcodec = GetcodecfromXml(xmlfile);
+    xsltcodec = GetcodecfromXml(xsltfile);
+  
+    qDebug() << "### codec ..........................  " << xmlcodec->mibEnum();
+    qDebug() << "### codec ..........................  " << xmlcodec->name();
+    qDebug() << "### codec ..........................  " << xsltcodec->mibEnum();
+    qDebug() << "### codec ..........................  " << xsltcodec->name();
+  
+    const QString maildate = QString("\"%1\"").arg(UmanTimeFromUnix(QTime_Null()));
+    QByteArray param1 = maildate.toAscii();
+    const QString unixtime = QString("\"%1\"").arg(QTime_Null());
+    QByteArray param2 = unixtime.toAscii();
+    /////qDebug() << "### catnummer ..........................  " << param1;
+    /////qDebug() << "### catnummer1 ..........................  " << param2;
+    const int totparams = paramsetting.size() * 2 + 4;
+    //////qDebug() << "### totparams ..........................  " << totparams;
+    const char* params[totparams];  
     params[0] = "NowTime";
-    params[1] = nummero.data();
+    params[1] = param1.data();
     params[2] = "UnixTime";
-    params[3] = nummero1.data();
-    params[4] = NULL;
-    params[5] = NULL;  
-    }
-    
-    
-    
-    
-    
+    params[3] = param2.data();
+    int loop = 4;
+  
+         QMapIterator<QString,QString> i(paramsetting);
+         while (i.hasNext()) {
+             i.next();
+             QString name = i.key();
+             qDebug() << "### name  " << name << loop;
+             params[loop] = "done";
+             params[loop + 1 ] = qPrintable(i.value());
+             loop = loop + 2;
+         }
+    QTemporaryFile recfile;
+    recfile.setAutoRemove (true);
+    QString resulterxml = recfile.fileTemplate();
     
     /* ######################################### */
          xsltStylesheetPtr cur = NULL;
@@ -149,18 +117,13 @@ void Xslt_Convert::Convert()
          xmlLoadExtDtdDefaultValue = 1;
     /* ######################################### */
         char* xslt_errors;
-        qt_unlink(XMLERROR_FILE);
         xsltSetGenericErrorFunc(&xslt_errors, qt_libxml_error_handler);
         xmlSetGenericErrorFunc(&xslt_errors, qt_libxml_error_handler);
         xsltSetGenericDebugFunc(&xslt_errors, qt_libxml_error_handler);
-        QByteArray gocharxslt = XSLT_file.toAscii();
+        QByteArray gocharxslt = QFile::encodeName(xsltfile); 
         cur = xsltParseStylesheetFile( (const xmlChar*)gocharxslt.data() );
-        doc = xmlParseFile( QFile::encodeName(XML_file) );
-        if (eset) {
-        outputDoc = xsltApplyStylesheet(cur, doc, paramsa);
-        } else {
+        doc = xmlParseFile( QFile::encodeName(xmlfile) );
         outputDoc = xsltApplyStylesheet(cur, doc, params);
-        }
         xmlFreeDoc( doc ); /* free ram from xml! */
         doc = outputDoc; /* swap input and output */
         FILE* outfile = fopen( QFile::encodeName( resulterxml ), "w" );
@@ -170,18 +133,30 @@ void Xslt_Convert::Convert()
         xmlFreeDoc( outputDoc );
         xsltCleanupGlobals();
         xmlCleanupParser();
-    
-        QString rxml = fopenutf8(XMLRESULT_FILE);
-        
-        if (!rxml.contains("utf-8",Qt::CaseInsensitive)) {
-            rxml = fopeniso(XMLRESULT_FILE);
+        qDebug() << "### resulterxml ..........................  " << resulterxml;
+        QFile file(resulterxml); 
+        if (file.exists()) {
+                if (file.open(QIODevice::ReadOnly)) {
+                    Rstream = file.readAll();
+                    file.close();
+                }
         }
-        
-        
-        const QString rdedu = fopenutf8(XMLERROR_FILE);
-        LAST_RESUL = rxml;
-        qt_unlink(XMLERROR_FILE);
-        emit Result(rxml,rdedu);  
+        debug_msg = ReadFileUtf8Xml(XMLERROR_FILE);
+        qDebug() << "### resulterxml ..........................  " << Rstream;
+        qt_unlink(XMLERROR_FILE); 
+        EndingJob = true;
+        emit DebugMsg(debug_msg);
+
+}
+
+
+
+void Xslt_Convert::CheckError()
+{
+
+    qDebug() << "### CheckError ..........................  ->" << UmanTimeFromUnix(QTime_Null());
+    qDebug() << "### EndingJob ..........................  ->" << EndingJob;
+
 }
 
 

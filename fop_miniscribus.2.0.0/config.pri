@@ -2,11 +2,32 @@
 message(Need QT Version 4.4.1)
 
 
+##### flag from compiler ??? 
+
+win32-msvc {
+LIB_EXTENSION = lib  ### compiler option
+DEFINES += VISUALSTUDIOCC_
+error(Visual studio xslt lib not setting on pro file) 
+}
+
+win32-g++{
+LIB_EXTENSION = a   ### compiler option
+DEFINES += MINGWCC_
+###############error(xslt lib not setting to mingw compiler on pro file) 
+}
+
+
+CONFIG += libxslt libxml2 libiconv
+
 win32 {
     ########## window no pwd  #############
     BUILD_TREE_PATH = $$PWD
     message(Window path  $$BUILD_TREE_PATH)
+    
+    
+    
 }
+
 
 unix {
     BUILD_TREE_PATH = $$PWD

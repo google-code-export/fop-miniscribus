@@ -26,46 +26,40 @@
 #include <libxslt/xsltutils.h>
 
 
+#include "Tools_Basic.h"   /* on global include */
 
-QString ReadFileUtf8Xml( const QString fullFileName );
-
-
-
-
-
-
-
+#define XMLERROR_FILE \
+              QString( "%1.libxmlerror.dat" ).arg( QDir::homePath() ) 
 
 class Xslt_Convert : public QObject
 {
      Q_OBJECT
 //
 public:	 
-    Xslt_Convert();
-    inline void Set_xml( const QString xmlfilein  ) { XML_file =  xmlfilein; }
-    inline void Set_xslt( const QString xsltfilein  ) { XSLT_file =  xsltfilein; }
-    inline void Set_param( QStringList namet , QStringList valuet ) 
-    { 
-        nam_M = namet;
-        val_M = valuet;
-    }
-    inline QString  GetLast() 
-    { 
-       return LAST_RESUL;
-    }
-    void Convert();
+    Xslt_Convert( const QString xmlfile , 
+                  const QString xsltfile ,  
+                  QMap<QString,QString> paramsetting );
+    ~Xslt_Convert();
+    inline QString dmg() { return debug_msg; }
+    inline QByteArray stream() { return Rstream; }
+    QTextCodec *xmlcodec;
+    QTextCodec *xsltcodec;
+    
 protected:
+    QString debug_msg;
     QString XML_file;
     QString XSLT_file;
-    QStringList nam_M;
-    QStringList val_M;
-    QString LAST_RESUL;
+    QMap<QString,QString> Params;
 private:
- 
+    QByteArray Rstream;
+    bool EndingJob;
  signals:
  void ErrorMsg(QString);
- void Result(QString,QString);
+ void DebugMsg(QString);
 public slots:
+
+private slots:
+void CheckError();
 
 };
 //

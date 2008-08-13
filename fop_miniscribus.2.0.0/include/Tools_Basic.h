@@ -4,7 +4,52 @@
 #include <QtGui>
 #include <QtCore>
 #include <QPixmap>
+#include <QTextCodec>
 
+
+/* correct codex from xml file read only first line */
+static inline QTextCodec *GetcodecfromXml( const QString xmlfile  )
+{
+    QString semencoding = "UTF-8";
+    QTextCodec *codecsin;
+    QFile *xfile = new QFile( xmlfile );
+    if (!xfile->exists()) {
+    codecsin =  QTextCodec::codecForName(semencoding.toAscii());
+    return codecsin;
+    }
+  
+    QString Firstline;
+    bool validxml = false;
+    if (xfile->open(QIODevice::ReadOnly))    {
+             char buf[1024];
+             qint64 lineLength = xfile->readLine(buf, sizeof(buf));
+             Firstline = QString(buf);
+             if (lineLength > 10 && Firstline.contains("encoding")) {
+             validxml = true;
+             }  
+    }
+  
+    if (!validxml ) {
+    codecsin =  QTextCodec::codecForName(semencoding.toAscii());
+    return codecsin;
+    }
+  
+    QRegExp expression( "encoding=[\"\'](.*)[\"\']", Qt::CaseInsensitive );
+    expression.setMinimal(true);
+    int iPosition = 0;
+    while( (iPosition = expression.indexIn( Firstline , iPosition )) != -1 ) {
+        semencoding = expression.cap( 0 );
+        semencoding = semencoding.mid(10,semencoding.size() - 11);
+        iPosition += expression.matchedLength();
+        qDebug() << "### semencoding" << semencoding;
+    }
+    if (iPosition == -1) {
+    codecsin =  QTextCodec::codecForName("UTF-8");
+    } else {
+    codecsin =  QTextCodec::codecForName(semencoding.toAscii());
+    }
+    return codecsin;
+}
 
 static inline uint QTime_Null()
 {
