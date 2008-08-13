@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = lib
-TARGET = basescribe
+TARGET = txtscribe
 DEPENDPATH += . apng ooo tidy zip
 INCLUDEPATH += . apng ooo tidy zip
 
@@ -41,8 +41,7 @@ SOURCES += scribe/Basic_Mime.cpp \
            
            
            
-HEADERS += xslt/xslt_convert.h
-SOURCES += xslt/xslt_convert.cpp   
+
            
            
 

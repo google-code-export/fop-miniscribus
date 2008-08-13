@@ -31,6 +31,7 @@
 #define _DRAWMODUS_WEB_ 0
 
 
+
 #define FOPIMAGEDIR "Pictures/"
 
 static const int InterSpace = 15;  /* distance from page 1 to 2 */
@@ -309,6 +310,19 @@ public:
     {
         return QPointF(P_margin.height(),P_margin.x());
     }
+    void ReportPage( QDomElement e )
+    {
+		const qreal TopMargin = Pointo(P_margin.x(),"mm");
+		const qreal RightMargin = Pointo(P_margin.y(),"mm");
+		const qreal BottomMargin = Pointo(P_margin.width(),"mm");
+		const qreal LeftMargin = Pointo(P_margin.height(),"mm");
+		e.setAttribute ("margin-top",QString("%1mm").arg(TopMargin));
+    e.setAttribute ("margin-bottom",QString("%1mm").arg(BottomMargin));
+    e.setAttribute ("margin-left",QString("%1mm").arg(LeftMargin));
+    e.setAttribute ("margin-right",QString("%1mm").arg(RightMargin));
+    e.setAttribute ("page-width",QString("%1mm").arg(Pointo(G_regt.width(),"mm")));
+    e.setAttribute ("page-height",QString("%1mm").arg(Pointo(G_regt.height(),"mm")));
+    }
     /*  edit modus */
     //////////////void HandleDocument( QTextDocument *doc );
     /* open or set a qtexdocument from this */
@@ -318,11 +332,7 @@ public:
     /* form qtexdocument to this margin an papersize */
     void HandlePrint( QTextDocument *doc );
 
-    QPixmap PicfromMime( QMimeData *mime );
-
-
-
-/////////  MarginPage = QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
+    ////////QPixmap PicfromMime( QMimeData *mime );
     QPrinter::PageSize P_rect;
     QRectF G_regt;
     QRectF P_margin;
