@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = lib
-TARGET = scribe
+TARGET = basescribe
 DEPENDPATH += . apng ooo tidy zip
 INCLUDEPATH += . apng ooo tidy zip
 
@@ -13,7 +13,9 @@ DESTDIR	+= ../lib
 QT += xml
 QT += network
 QT += svg 
-QT += sql
+
+
+
 CONFIG   +=  qt release warn_off staticlib
 
 contains(QT_CONFIG, opengl):QT += opengl
@@ -23,6 +25,26 @@ contains(QT_CONFIG, opengl):QT += opengl
 message( "../config.pri not found" )
 }
 
+# Input
+HEADERS += scribe/Basic_Mime.h \
+           scribe/getmargin.h \
+           scribe/href_gui.h \
+           scribe/Image_Page_Struct_Mime.h \
+           scribe/table_setting.h \
+           scribe/XML_Editor.h
+SOURCES += scribe/Basic_Mime.cpp \
+           scribe/getmargin.cpp \
+           scribe/href_gui.cpp \
+           scribe/Image_Page_Struct_Mime.cpp \
+           scribe/table_setting.cpp \
+           scribe/XML_Editor.cpp
+           
+           
+           
+HEADERS += xslt/xslt_convert.h
+SOURCES += xslt/xslt_convert.cpp   
+           
+           
 
 # Input
 HEADERS += apng/apngreader.h \
