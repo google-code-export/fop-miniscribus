@@ -36,10 +36,12 @@ QTextPanelLayerControl::QTextPanelLayerControl(QGraphicsItem *parent)
 {
 	//////qDebug() << "### init....";
 	device->q = this;
-	header = 0;
-	footer = 0;
+	header = footer = NULL;
+
 	setAcceptsHoverEvents(true);
 	setAcceptDrops(true);
+
+	headerActive = footerActive = false;
 
 	QTextDocument *dummy = new QTextDocument();
 	setDocument(dummy,FOP);
@@ -55,27 +57,83 @@ QTextPanelLayerControl::QTextPanelLayerControl(QGraphicsItem *parent)
 
 void QTextPanelLayerControl::setupHeaderFooter()
 {
-	header = new AbsoluteLayer(this, DIV_HEADER);
-	footer = new AbsoluteLayer(this, DIV_FOOTER);
+	setHeaderActive(true);
+	setFooterActive(true);
+}
 
-	QTextDocument *dummy = new QTextDocument();
-	QTextDocument *dummy2 = new QTextDocument();
+void QTextPanelLayerControl::setHeaderActive(bool active)
+{
+	headerActive = active;
 
-	dummy->setHtml("<p>Header and Logo.</p>");
-	dummy2->setHtml("<p>Footer Page "+_PAGE_NUMERATION_+"</p>");
+	if (active)
+	{
+		if (header == NULL)
+		{
+			header = new AbsoluteLayer(this, DIV_HEADER);
+			QTextDocument *dummy = new QTextDocument();
 
-	header->setDocument(dummy,FOP);
-	footer->setDocument(dummy2,FOP);
+			dummy->setHtml("<p>Header and Logo.</p>");
+			header->setDocument(dummy, FOP);
 
-	connect(header, SIGNAL(close_main_cursor()),this, SLOT(cursorStopIt()));
-	connect(header, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
-	connect(footer, SIGNAL(close_main_cursor()),this, SLOT(cursorStopIt()));
-	connect(footer, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
+			connect(header, SIGNAL(close_main_cursor()),this, SLOT(cursorStopIt()));
+			connect(header, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
+
+			header->UpdatePageFormat();
+		}
+	}
+	else
+	{
+		QTextDocument *dummy = header->document();
+		disconnect(header, 0, 0, 0);
+		delete header;
+		delete dummy;
+
+		header = NULL;
+	}
+
+	sceneReload();
+}
+
+void QTextPanelLayerControl::setFooterActive(bool active)
+{
+	footerActive = active;
+
+	if (active)
+	{
+		if (footer == NULL)
+		{
+			footer = new AbsoluteLayer(this, DIV_FOOTER);
+
+			QTextDocument *dummy2 = new QTextDocument();
+
+			dummy2->setHtml("<p>Footer Page "+_PAGE_NUMERATION_+"</p>");
+
+			footer->setDocument(dummy2, FOP);
+
+			connect(footer, SIGNAL(close_main_cursor()),this, SLOT(cursorStopIt()));
+			connect(footer, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
+
+			footer->UpdatePageFormat();
+		}
+	}
+	else
+	{
+		QTextDocument *dummy = footer->document();
+		disconnect(footer, 0, 0, 0);
+
+		delete footer;
+		delete dummy;
+
+		pageSizeReload();
+
+		footer = NULL;
+	}
+
+	sceneReload();
 }
 
 void QTextPanelLayerControl::appendLayer()
 {
-
 	QTextDocument *dummy = new QTextDocument();
 	dummy->setHtml("<p>Your text.</p>");
 
@@ -99,9 +157,14 @@ void QTextPanelLayerControl::changePageModel(PanelPageSize e)
 {
 	device->txtControl()->SwapPageModel(e);
 
-	if (header && footer)
+	/* double check :) */
+	if (headerActive && header)
 	{
 		header->UpdatePageFormat();
+	}
+
+	if (footerActive && footer)
+	{
 		footer->UpdatePageFormat();
 	}
 
@@ -189,17 +252,16 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 	const int PageSumm = qBound(1,document()->pageCount(),MaximumPages);
 
 	/* draw white first background */
-	for (int o = 0; o < PageSumm; ++o)
+	for (int x = 0; x < PageSumm; ++x)
 	{
 		painter->save();
-		const QRectF pagen =  device->txtControl()->Model().PageExternal(o);
+		const QRectF pagen =  device->txtControl()->Model().PageExternal(x);
 		painter->setBrush(QColor(Qt::white));
 		painter->setPen(QPen(Qt::black,0.3));
 		painter->drawRect(pagen);
 		painter->restore();
-		device->txtControl()->DrawPage(o,painter,o);
+		device->txtControl()->DrawPage(x, painter, x);
 		painter->save();
-
 
 		QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
 		QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
@@ -211,17 +273,26 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 		painter->drawRect(pagen);
 		painter->setPen(Qt::NoPen);
 
-
-		if (o !=0)
+		if (x != 0)
 		{
-			/* draw  header */
-			QPicture headerpaint = header->LayerImage(o);
-			QPointF posheader = device->txtControl()->Model().HeaderInitPoints(o);
-			painter->drawPicture(posheader, headerpaint);
-			/* draw footer */
-			QPicture footerpaint = footer->LayerImage(o);
-			QPointF posfooter = device->txtControl()->Model().FooterInitPoints(o);
-			painter->drawPicture(posfooter, footerpaint);
+			/* only draw header/footer if they are active */
+			if (headerActive && header)
+			{
+				qDebug() << "header" << endl;
+				/* draw  header */
+				QPicture headerPicture = header->LayerImage(x);
+				QPointF headerPosition = device->txtControl()->Model().HeaderInitPoints(x);
+				painter->drawPicture(headerPosition, headerPicture);
+			}
+
+			if (footerActive && footer)
+			{
+				qDebug() << "footer" << endl;
+				/* draw footer */
+				QPicture footerPicture = footer->LayerImage(x);
+				QPointF footerPosition = device->txtControl()->Model().FooterInitPoints(x);
+				painter->drawPicture(footerPosition, footerPicture);
+			}
 		}
 
 		painter->restore();
