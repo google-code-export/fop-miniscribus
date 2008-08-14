@@ -706,7 +706,9 @@ FOPTAGSINT Fo_Format::FoTag( const QDomElement e )
         return BLOCK_TAG;
     } else if (fotag == "fo:leader") {
         return FOLEADER;
-    }  else if (fotag == "fo:table") {
+    }  else if (fotag == "fo:page-number-citation") {
+        return FOPAGENRCITATION;
+    } else if (fotag == "fo:table") {
         return TABLE_TAG;
     } else if (fotag == "table-footer") {
         return TABLE_FOOTER;

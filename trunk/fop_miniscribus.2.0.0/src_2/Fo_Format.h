@@ -250,6 +250,7 @@ typedef enum
     FOCHAR,      /* fo:character  */
     FOLEADER,      /* fo:leader  inline space  */
     FOOTNOTEBOTTOM,            /* fo:footnote - fo:footnote-body */
+    FOPAGENRCITATION,        /*  fo:page-number-citation*/
     FLOATBLOCK   /* fo:float */
 } FOPTAGSINT;
 

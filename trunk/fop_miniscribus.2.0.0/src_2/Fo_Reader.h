@@ -49,7 +49,7 @@ protected:
     bool FoFloatingContainerPaint( const QDomElement e , const QDomElement parentup );  /* fo:float*/
 
     void DidplayUnknowTag( const QDomElement e  , QTextCursor Cursor );
-    void FoLeaderPaint( const QDomElement e  , QTextCursor Cursor );
+    bool FoLeaderPaint( const QDomElement e  , QTextCursor Cursor );
 
 
     void FootNoteSave( const QDomElement e  , QTextCursor Cursor );

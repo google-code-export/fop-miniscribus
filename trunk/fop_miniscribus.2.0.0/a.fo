@@ -1,347 +1,504 @@
-<?xml version='1.0' encoding='utf-8'?>
-<fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
-     <fo:layout-master-set>
-          <fo:simple-page-master margin-left="6.41111mm" page-height="297mm" master-name="PeterHohlFormat" margin-bottom="6.34999mm" margin-top="6.34999mm" margin-right="3mm" page-width="210mm" >
-               <fo:region-body margin-left="6.41111mm" page-height="297mm" margin-bottom="6.34999mm" region-name="xsl-region-body" margin-top="6.34999mm" margin-right="3mm" page-width="210mm" />
-          </fo:simple-page-master>
-     </fo:layout-master-set>
-     <fo:page-sequence master-reference="PeterHohlFormat" >
-          <fo:flow flow-name="xsl-region-body" >
-               <fo:block text-align="justify" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia </fo:block>
-               <fo:block text-align="justify" margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="12pt" leader-length="2%" />
-               </fo:block>
-               <fo:block text-align="justify" margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="12pt" leader-length="2%" />
-               </fo:block>
-               <fo:table border-right-style="outset" border-left-style="outset" border-top-color="rgb(0,0,0)" background-color="rgb(255,255,255,255)" border-bottom-width="1pt" border-bottom-style="outset" border-top-style="outset" border-left-width="1pt" border-top-width="1pt" border-left-color="rgb(0,0,0)" border-right-color="rgb(0,0,0)" border-bottom-color="rgb(0,0,0)" border-right-width="1pt" >
-                    <fo:table-column column-width="33%" />
-                    <fo:table-column column-width="33%" />
-                    <fo:table-column column-width="33%" />
-                    <fo:table-body border-right-style="outset" border-left-style="outset" border-top-color="rgb(0,0,0)" background-color="rgb(255,255,255,255)" border-bottom-width="1pt" border-bottom-style="outset" border-top-style="outset" border-left-width="1pt" border-top-width="1pt" border-left-color="rgb(0,0,0)" border-right-color="rgb(0,0,0)" border-bottom-color="rgb(0,0,0)" border-right-width="1pt" >
-                         <fo:table-row>
-                              <fo:table-cell>
-                                   <fo:block color="rgb(0,0,0,255)" >
-1</fo:block>
-                              </fo:table-cell>
-                              <fo:table-cell>
-                                   <fo:block line-height="10pt" color="rgb(0,0,0,255)" >
-                                        <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-                                   </fo:block>
-                              </fo:table-cell>
-                              <fo:table-cell>
-                                   <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" >
-3</fo:block>
-                              </fo:table-cell>
-                         </fo:table-row>
-                         <fo:table-row>
-                              <fo:table-cell>
-                                   <fo:block line-height="10pt" color="rgb(0,0,0,255)" >
-                                        <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-                                   </fo:block>
-                              </fo:table-cell>
-                              <fo:table-cell>
-                                   <fo:block line-height="10pt" color="rgb(0,0,0,255)" >
-                                        <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-                                   </fo:block>
-                              </fo:table-cell>
-                              <fo:table-cell>
-                                   <fo:block margin-bottom="12pt" line-height="33.2pt" margin-top="12pt" color="rgb(0,0,0,255)" >
-                                        <fo:leader leader-pattern="space" content-height="33.2pt" leader-length="2%" />
-                                   </fo:block>
-                              </fo:table-cell>
-                         </fo:table-row>
-                         <fo:table-row>
-                              <fo:table-cell>
-                                   <fo:block color="rgb(0,0,0,255)" >
-6</fo:block>
-                              </fo:table-cell>
-                              <fo:table-cell>
-                                   <fo:block line-height="10pt" color="rgb(0,0,0,255)" >
-                                        <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-                                   </fo:block>
-                              </fo:table-cell>
-                              <fo:table-cell>
-                                   <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" >
-9</fo:block>
-                              </fo:table-cell>
-                         </fo:table-row>
-                    </fo:table-body>
-               </fo:table>
-               <fo:block line-height="10pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block text-align="justify" margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="12pt" leader-length="2%" />
-               </fo:block>
-               <fo:block text-align="justify" margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="12pt" leader-length="2%" />
-               </fo:block>
-               <fo:block text-align="justify" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-                    <fo:inline>
-consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia 
-dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi</fo:inline>
-                    <fo:inline font-weight="bold" >
-tempora</fo:inline>
-                    <fo:inline>
-incidunt, ut labore et dolore magnam aliquam quaerat volupt</fo:inline>
-                    <fo:inline font-weight="bold" color="rgb(255,0,0,255)" >
-atem. Ut enim ad minima veniam, quis</fo:inline>
-                    <fo:inline>
-nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum 
-iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum 
-fugiat,</fo:inline>
-                    <fo:inline letter-spacing="200%" >
-quo voluptas nulla pariatur? [33]</fo:inline>
-                    <fo:inline>
-At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, 
-quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia 
-deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita 
-distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod 
-maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis 
-debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum 
-rerum hic te</fo:inline>
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid e force 
-page breack here</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-x ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, 
-quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero 
-eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores 
-et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia 
-animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam 
-libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, 
-facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut 
-rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic 
-te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-                    <fo:leader leader-pattern="space" content-height="10pt" leader-length="2%" />
-               </fo:block>
-               <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-« Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam 
-eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim 
-ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui 
-ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci 
-velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea 
-commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae 
-consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus 
-et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias 
-excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est 
-laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum 
-soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis 
-voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe 
-eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic te</fo:block>
-          </fo:flow>
-     </fo:page-sequence>
+<?xml version="1.0" encoding="utf-8"?>
+
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+
+
+  <!-- defines the layout master -->
+  <fo:layout-master-set>
+    <fo:simple-page-master master-name="first"
+                           page-height="29.7cm"
+                           page-width="21cm"
+                           margin-top="1cm"
+                           margin-bottom="2cm"
+                           margin-left="2.5cm"
+                           margin-right="2.5cm">
+      <fo:region-body margin-top="3cm"/>
+      <fo:region-before extent="3cm"/>
+      <fo:region-after extent="1.5cm"/>
+    </fo:simple-page-master>
+  </fo:layout-master-set>
+
+  <!-- starts actual layout -->
+  <fo:page-sequence master-reference="first">
+
+  <fo:flow flow-name="xsl-region-body">
+
+      <!-- this defines a title level 1-->
+      <fo:block font-size="18pt"
+            font-family="sans-serif"
+            line-height="24pt"
+            space-after.optimum="15pt"
+            background-color="blue"
+            color="white"
+            text-align="center"
+            padding-top="3pt">
+        How to use table elements
+      </fo:block>
+
+      <!-- this defines a title level 2-->
+      <fo:block font-size="16pt"
+            font-family="sans-serif"
+            space-after.optimum="15pt"
+            text-align="center">
+        A simple table, 3 columns, 4 rows
+      </fo:block>
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+    <!-- table start -->
+    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>good</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>bad</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>ugly</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>nice</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>dice</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>vice</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>literature</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>music</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>art</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>java</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>perl</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>python</fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+    <!-- table end -->
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+<!-- **************************** NEW PAGE ************************************* -->
+
+      <!-- this defines a title level 2-->
+      <fo:block font-size="16pt"
+            font-family="sans-serif"
+            space-after.optimum="15pt"
+            text-align="center"
+            break-before="page">
+        A table with borders
+      </fo:block>
+
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+    <!-- table start -->
+    <fo:table border-width="0.5mm" border-style="solid" background-color="yellow" table-layout="fixed" width="100%" border-collapse="separate">
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>good</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>bad</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>ugly</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>nice</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>dice</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>vice</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>literature</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>music</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>art</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>java</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>perl</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>python</fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+    <!-- table end -->
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+<!-- **************************** NEW PAGE ************************************* -->
+
+      <!-- this defines a title level 2-->
+      <fo:block font-size="16pt"
+            font-family="sans-serif"
+            space-after.optimum="15pt"
+            text-align="center"
+            break-before="page">
+        A table with thick borders
+      </fo:block>
+
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+    <!-- table start -->
+    <fo:table border-width="3mm" border-style="solid" background-color="yellow" table-layout="fixed" width="100%" border-collapse="separate">
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>good</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>bad</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>ugly</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>nice</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>dice</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>vice</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>literature</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>music</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>art</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell ><fo:block>java</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>perl</fo:block></fo:table-cell>
+          <fo:table-cell ><fo:block>python</fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+    <!-- table end -->
+
+    <!-- normal text -->
+    <fo:block text-align="start" start-indent="-3mm">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+<!-- **************************** NEW PAGE ************************************* -->
+
+      <!-- this defines a title level 2-->
+      <fo:block font-size="16pt"
+            font-family="sans-serif"
+            space-after.optimum="15pt"
+            text-align="center"
+            break-before="page">
+        A table with borders around the cells
+      </fo:block>
+
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+    <!-- table start -->
+    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>good</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>bad</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>ugly</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>nice</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>dice</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>vice</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>literature</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>music</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>art</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>java</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>perl</fo:block></fo:table-cell>
+          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>python</fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+    <!-- table end -->
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+<!-- **************************** NEW PAGE ************************************* -->
+
+      <!-- this defines a title level 2-->
+      <fo:block font-size="16pt"
+            font-family="sans-serif"
+            space-after.optimum="15pt"
+            text-align="center"
+            break-before="page">
+        2 tables with thick borders around the cells
+      </fo:block>
+
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+    <!-- table start -->
+    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>good</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>bad</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>ugly</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>nice</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>dice</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>vice</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>literature</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>music</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>art</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>java</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>perl</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>python</fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+    <!-- table end -->
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+    <!-- table start -->
+    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-column column-width="50mm"/>
+      <fo:table-body>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>good</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>bad</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>ugly</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>nice</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>dice</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>vice</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>literature</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>music</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>art</fo:block></fo:table-cell>
+        </fo:table-row>
+        <fo:table-row>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>java</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>perl</fo:block></fo:table-cell>
+          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>python</fo:block></fo:table-cell>
+        </fo:table-row>
+      </fo:table-body>
+    </fo:table>
+    <!-- table end -->
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+<!-- **************************** NEW PAGE ************************************* -->
+
+      <!-- this defines a title level 2-->
+      <fo:block font-size="16pt"
+            font-family="sans-serif"
+            space-after.optimum="15pt"
+            text-align="center"
+            break-before="page">
+        5 tables with borders
+      </fo:block>
+
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
+        <fo:table-column column-width="150mm"/>
+        <fo:table-body>
+          <fo:table-row>
+            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
+          </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+
+
+      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
+        <fo:table-column column-width="150mm"/>
+        <fo:table-body>
+          <fo:table-row>
+            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
+          </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+
+
+      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
+        <fo:table-column column-width="150mm"/>
+        <fo:table-body>
+          <fo:table-row>
+            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
+          </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+
+      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
+        <fo:table-column column-width="150mm"/>
+        <fo:table-body>
+          <fo:table-row>
+            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
+          </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+
+    <!-- normal text -->
+    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
+                                 this is normal text. this is normal text. this is normal text.
+    </fo:block>
+
+
+<!-- **************************** NEW PAGE ************************************* -->
+      <fo:block font-size="16pt"
+                font-family="sans-serif"
+                line-height="20pt"
+                space-after.optimum="3pt"
+                break-before="page"
+                text-align="justify">
+          A Contents table
+      </fo:block>
+
+      <!-- Here starts the table -->
+      <fo:table table-layout="fixed" width="100%" border-collapse="separate">
+        <fo:table-column column-width="1cm"/>
+        <fo:table-column column-width="15cm"/>
+        <fo:table-body font-size="10pt" font-family="sans-serif">
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+          <fo:block text-align="end">A) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">What is FOP?</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">B) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Downloading FOP</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">C) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Running FOP</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">D) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Embedding FOP </fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">E) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">What's Implemented?</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">F) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Limitations</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">G) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Bugs</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">H) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Compiling FOP</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">I) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Getting involved</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">J) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">FOP Relevant Specifications</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        <fo:table-row line-height="12pt">
+        <fo:table-cell>
+        <fo:block text-align="end">K) </fo:block>
+        </fo:table-cell>
+        <fo:table-cell>
+        <fo:block text-align="start">Licence</fo:block>
+        </fo:table-cell>
+        </fo:table-row>
+        </fo:table-body>
+      </fo:table>
+    </fo:flow>
+  </fo:page-sequence>
 </fo:root>
