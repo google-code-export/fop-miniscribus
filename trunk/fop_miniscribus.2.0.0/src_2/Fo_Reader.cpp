@@ -51,6 +51,9 @@ void Fo_Reader::read()
     qreal pwi = Unit(layout.attribute ("page-width",QString("210mm")));
     qreal phi = Unit(layout.attribute ("page-height",QString("297mm")));
     PageSize = session->FindPagePsize(QRect(0,0,pwi,phi));
+    QString yourname = layout.attribute("master-name");
+    const qreal largefront = qMax (pwi,phi);
+    
 
     while (!layout.isNull())
     {
@@ -60,7 +63,9 @@ void Fo_Reader::read()
         qreal xLeftMargin = Unit(layout.attribute ("margin-left",QString("1cm")));
         MarginPage = QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
         //////////////////  QRectF(top,right,bottom,left);
-
+        if (yourname.size() < 5) {
+        yourname = layout.attribute("master-name");
+        }
         ////// QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
 
         QDomElement body = layout.firstChildElement("fo:region-body");
@@ -70,7 +75,16 @@ void Fo_Reader::read()
         layout = layout.nextSiblingElement("fo:simple-page-master");
     }
     PageSize.SetMargin( MarginPage );
+    PageSize.landscape = largefront == phi ? false : true;
+    PageSize.P_rect = QPrinter::Custom;
+    if (yourname.size() > 5) {
+    PageSize.name = yourname;
+    }
     session->current_Page_Format = PageSize;
+    session->AppendPaper(PageSize);
+    
+    
+    
     Docwidth = pwi - MarginPage.y() - MarginPage.height();
     session->CurrentDocWidth = Docwidth;
     Qdoc->setPageSize ( QSizeF( Docwidth , phi - MarginPage.x() - MarginPage.width() ) );

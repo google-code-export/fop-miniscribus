@@ -38,6 +38,7 @@ public:
    
 signals:
    void SceneSwap();
+   void NewPageFormatin();
 public slots:
    void DisplayTop();
    void  ViewDisplay( const QRectF area );
@@ -77,8 +78,9 @@ private slots:
     void SceneChange();
     void toggleOpenGL();
     void PaperSwap( const int index );
-private:
     void FillPaperSize();
+private:
+    
     bool NotPaperUpdate;
     uint tievents;
     QLabel *label;
