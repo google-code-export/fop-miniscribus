@@ -14,6 +14,7 @@ public:
 typedef enum
 {  
   Psave,
+  PFopModus,
   Plinker
 } ScribeParseModus;
 

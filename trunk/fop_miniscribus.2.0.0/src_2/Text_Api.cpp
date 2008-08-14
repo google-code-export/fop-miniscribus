@@ -1907,6 +1907,9 @@ void TextProcessor::showhtml()
     if (ali) {
     modus = ali->data().toInt();
     }
+    
+    
+    qDebug() << "### showhtml modus .........................................." << modus;
   
   /*
   SHOW_SOURCE_HTML = 703,
@@ -1923,7 +1926,7 @@ void TextProcessor::showhtml()
     ScribeParser *parsen = new ScribeParser(_d,ScribeParser::Psave);
     sxml = parsen->dom();
     } else if (modus == 705 ) {
-    ScribeParser *parsen = new ScribeParser(_d,ScribeParser::Psave);
+    ScribeParser *parsen = new ScribeParser(_d,ScribeParser::PFopModus);
     sxml = parsen->dom();
     } else {
     sxml = new QDomDocument();
