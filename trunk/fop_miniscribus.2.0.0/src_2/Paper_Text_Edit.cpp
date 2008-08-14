@@ -143,11 +143,17 @@ GraphicsView::~GraphicsView()
 Panel::Panel( QWidget *parent)
     : QFrame(parent),tievents(0),NotPaperUpdate(true)
 {
-		setFrameStyle(Sunken | StyledPanel);
+    setFrameStyle(Sunken | StyledPanel);
     graphicsView = new GraphicsView(this);
-	  graphicsView->setObjectName(QString("graphicsView"));
+    graphicsView->setObjectName(QString("graphicsView"));
     graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    setMinimumSize(999,508);
+    /* first call graphicsView to become all action */
+  
+    
+    
+    
+    
+    setMinimumSize(750,508);
     int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
     QSize iconSize(size, size);
     
@@ -338,3 +344,112 @@ void Panel::DisplayTop()
 {
 	graphicsView->DisplayTop();
 }
+
+
+
+
+
+
+
+PaperTextEdit::PaperTextEdit( QWidget *parent )
+  : QMainWindow(parent)
+{
+    panel = new Panel(this);
+    setCentralWidget (panel);
+    tb_0 = new QToolBar(this);
+    tb_0->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_1 = new QToolBar(this);
+    tb_1->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_2 = new QToolBar(this);
+    tb_2->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_3 = new QToolBar(this);
+    tb_3->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_4 = new QToolBar(this);
+    tb_4->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_5 = new QToolBar(this);
+    tb_5->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    
+    addToolBar(Qt::TopToolBarArea,tb_0);
+    addToolBar(Qt::TopToolBarArea,tb_1);
+    addToolBarBreak( Qt::TopToolBarArea );
+    addToolBar(Qt::TopToolBarArea,tb_3);
+    addToolBar(Qt::LeftToolBarArea,tb_2);
+    addToolBar(Qt::LeftToolBarArea,tb_4);
+    addToolBar(Qt::LeftToolBarArea,tb_5);
+    
+    CommandStorage *dync = CommandStorage::instance();
+    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY , S_NONE };
+         for (int x = 0; DocumentActions[x] != S_NONE; x++) {
+                 StaticCommandID id = DocumentActions[x];
+                 QAction* a_2 = CommandStorage::instance()->actS(id);
+                 if ( id == S_SEPARATOR) {
+                 tb_3->addSeparator();
+                 }
+                 if (a_2) {
+                 tb_3->addAction(a_2);
+                }
+           }
+           
+           
+     
+    connect(panel->view()->autopage(), SIGNAL(autocursorchange()),this, SLOT(auto_page_dinamic()));
+}
+
+
+void PaperTextEdit::auto_page_dinamic()
+{
+    ///////qDebug() << "### auto_page_dinamic cursor swap ....";
+    CommandStorage *dync = CommandStorage::instance();
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE ,
+TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
+    DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
+    DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
+    tb_0->clear();
+    tb_1->clear();
+    tb_2->clear();
+    tb_2->addAction(CommandStorage::instance()->actS(INSERT_TABLE));
+    
+     for (int j = 0; BasicActions[j] != D_NONE; j++) {
+          DynamicCommandID id = BasicActions[j];     
+          QAction* a_1 = CommandStorage::instance()->actD(id);
+          if (a_1) {
+          tb_0->addAction(a_1);
+          }
+     }
+     for (int o = 0; BlockActionPara[o] != D_NONE; o++) {
+                 DynamicCommandID id = BlockActionPara[o];
+                 QAction* t_2 = CommandStorage::instance()->actD(id);
+                 if (t_2) {
+                 tb_1->addAction(t_2);
+                 }
+        
+    }
+    for (int w = 0; TablesAction[w] != D_NONE; w++) {
+                 DynamicCommandID id = TablesAction[w];
+                 QAction* t_3 = CommandStorage::instance()->actD(id);
+                 if (t_3) {
+                 tb_2->addAction(t_3);
+                 }
+        
+    }
+    
+}
+
+
+
+
+
+
+
+
+PaperTextEdit::~PaperTextEdit()
+{
+    
+}
+
+
+
+
+
+
+

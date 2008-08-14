@@ -8,7 +8,7 @@ int main( int argc, char ** argv )
 {
     QApplication app( argc, argv );
     
-    Panel *paperedit = new Panel();
+    PaperTextEdit *paperedit = new PaperTextEdit();
     paperedit->show();
     
     ////QTextEdit t;

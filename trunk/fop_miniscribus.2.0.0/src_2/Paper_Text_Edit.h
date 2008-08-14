@@ -13,6 +13,9 @@
 #include "xslt_convert.h"
 #include "Fo_Reader.h"
 
+
+#define _MAINICONSIZE_  18
+
 /*
 
 file to display scene and view !!! 
@@ -34,11 +37,13 @@ public:
    QRectF boundingRect();
    GraphicsScene *scene;
    QRectF rectToScene();
+   TextLayer *autopage() { return BASE_TEXT; }
    TextLayer *BASE_TEXT;
    
 signals:
    void SceneSwap();
    void NewPageFormatin();
+   void dinamic_autocursor_swap();
 public slots:
    void DisplayTop();
    void  ViewDisplay( const QRectF area );
@@ -81,7 +86,7 @@ private slots:
     void PaperSwap( const int index );
     void FillPaperSize();
 private:
-    
+    ///////QToolBar *tb;
     bool NotPaperUpdate;
     uint tievents;
     QLabel *label;
@@ -95,6 +100,30 @@ private:
 };
 
 
+
+
+class PaperTextEdit : public QMainWindow
+
+{
+    Q_OBJECT
+    
+public:
+    PaperTextEdit( QWidget *parent = 0 );
+    ~PaperTextEdit();
+private:
+    QToolBar *tb_0;
+    QToolBar *tb_1;
+    QToolBar *tb_2;
+    QToolBar *tb_3;
+    QToolBar *tb_4;
+    QToolBar *tb_5;
+    Panel *panel;
+
+public slots:
+
+private slots:
+    void auto_page_dinamic();
+};
 
 
 
