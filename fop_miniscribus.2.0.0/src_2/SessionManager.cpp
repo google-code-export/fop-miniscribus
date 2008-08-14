@@ -153,7 +153,7 @@ M_PageSize ApiSession::FindPagePsize( const QRect paper )
     QMapIterator<int,M_PageSize> i(mpages());
          while (i.hasNext()) {
             i.next();
-					  M_PageSize xx = i.value();
+            M_PageSize xx = i.value();
             if (xx.G_regt.toRect() == paper) {
               return xx;
             }

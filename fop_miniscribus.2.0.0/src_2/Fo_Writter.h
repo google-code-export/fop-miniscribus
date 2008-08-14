@@ -3,7 +3,7 @@
 
 
 #include "Fo_Format.h"
-
+#include "SessionManager.h"
 /* session file !!! */
 
 

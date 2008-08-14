@@ -113,7 +113,7 @@ typedef enum {
 	INSERT_IMAGE = 702,
 	SHOW_SOURCE_HTML = 703,
 	SHOW_SOURCE_SCRIBE = 704,
-        SHOW_SOURCE_FOP = 705,
+    SHOW_SOURCE_FOP = 705,
 	
 	MARGIN_CURRENT_ELEMENT			= 950,
 	/* Page group layer */

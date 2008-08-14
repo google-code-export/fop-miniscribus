@@ -1,31 +1,43 @@
 #include "Scribe_Parser.h"
 
 #include "Text_Api.h"
-
+#include "Fo_Writter.h"
 
 /*   Parser QTextDocument  */
 
+using namespace ApacheFop;
 
 ScribeParser::ScribeParser( QTextDocument *  doc  , ScribeParseModus e )
 {
     textDocument = doc;
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize pageformat = sx->CurrentPageFormat();
+    modus = e;
+    bool ContinueParser = true;
+    if (e == PFopModus) {
+    FopDom *foppi = new FopDom(doc,pageformat,FOP_APACHE);
+    document = new QDomDocument();
+    document->setContent (foppi->Foxml().toByteArray(1),false);
+    foppi->deleteLater();
+    ContinueParser = false;
+    }
+    
+    Internal_Destination_Links.clear();
+    if (ContinueParser) {
     QTextFrame *root = doc->rootFrame();
     helper_cursor = QTextCursor(doc); 
-
-    Internal_Destination_Links.clear();
-    modus = e;
     QDomImplementation implementation;
     QDomDocumentType docType = implementation.createDocumentType("scribe-document", "scribe","www.trolltech.com/scribe");
-
     document = new QDomDocument(docType);
     QDomProcessingInstruction process = document->createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
     document->appendChild(process);
-
     QDomElement documentElement = document->createElement("document");
     document->appendChild(documentElement);
     if (root) {
     processFrame(documentElement,root);
     }
+    
+   }
 
 }
 
