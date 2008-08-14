@@ -1,5 +1,11 @@
 #include "Fo_Writter.h"
 #include "SessionManager.h"
+
+
+
+#include "Config.h"
+
+
 /* http://www.bessrc.aps.anl.gov/software/qt4-x11-4.2.2-browser/d0/dbc/qtextdocument_8cpp-source.html */
 using namespace ApacheFop;
 
@@ -246,6 +252,8 @@ void FopDom::HandleTable( QTextTable  * childTable , QDomElement appender )
 		base = dom.createElement("fo:table");
 		appender.appendChild(base);
 	}
+    
+    
 	
 	FoBorder TableBorder;
 	TableBorder.Change(TableBorder.rgb,QString("%1pt").arg(tbforms.border()),BorderStyleCss(tbforms.borderStyle()));
@@ -328,15 +336,12 @@ void FopDom::HandleBlock( QTextBlock  para  , QDomElement appender )
     if (!para.isValid()) {
     return;
     }
-		sumblox++;
-		
-		
-		
-		QVariant footernote = para.blockFormat().property(FootNoteNummer); 
-		if (!footernote.isNull()) {
-		qDebug() << "### footernote founddddddddddddddddddd   " << para.blockNumber();
-		}
-		
+    sumblox++;
+    QVariant footernote = para.blockFormat().property(FootNoteNummer); 
+    if (!footernote.isNull()) {
+    qDebug() << "### footernote founddddddddddddddddddd   " << para.blockNumber();
+    }
+	/* page breack policy */	
 		
 		
 		
@@ -359,6 +364,7 @@ void FopDom::HandleBlock( QTextBlock  para  , QDomElement appender )
 		}
 		////const QTextBlockFormat BBnormal = DefaultMargin();
 		//////const QTextCharFormat CCnormal = DefaultCharFormats();
+        //////////////  QTextFormat::PageBreakFlags actual = bbformat.pageBreakPolicy();
 		PaintFopBlockFormat(paragraph,para.blockFormat());
 		PaintFopCharFormat(paragraph,para.charFormat());
 		
@@ -493,11 +499,11 @@ void FopDom::HandleBlock( QTextBlock  para  , QDomElement appender )
 	//////////appender.appendChild(footerBlock);
 }
 
-
+/* the big xsl-fo format not know <br> !!!!!!  */
 void FopDom::SendBreakLine( QDomElement appender , bool blockcreate )
 {
+    /*    http://www.zvon.org/xxl/xslfoReference/Output/el_leader.html       */
 	qreal currentHi = qBound (4.9,LINEHIGHT_CURRENT,33.2);
-	////////  <fo:leader leader-pattern="space" content-height="2cm" leader-length="101%"/>
 	if (blockcreate) {
 	QDomElement spaceline = dom.createElement("fo:block"); 
 	spaceline.setAttribute("space-after",QString("%1pt").arg(currentHi / 2));
@@ -505,11 +511,10 @@ void FopDom::SendBreakLine( QDomElement appender , bool blockcreate )
 	QDomElement spaceline = dom.createElement("fo:leader"); 
 	spaceline.setAttribute("content-height",QString("%1pt").arg(currentHi));
 	spaceline.setAttribute("leader-pattern","space");
-	spaceline.setAttribute("leader-length","2%");
+	spaceline.setAttribute("leader-length",RecoveryBreackLineParagraph());
+    spaceline.setAttribute("speak-numeral",ApplicationsVersionFopConvert);   
 	appender.appendChild(spaceline);	
 	}
-	//////QDomComment footerBlock = dom.createComment(QString("BreakLine  by block nr. %1.").arg(sumblox));
-	//////////appender.appendChild(footerBlock);
 }
 
 
@@ -876,7 +881,16 @@ void FopDom::TextAlignment(Qt::Alignment align , QDomElement e )
 
 void FopDom::PaintFopBlockFormat( QDomElement e , QTextBlockFormat bf )
 {
-			TextAlignment(bf.alignment(),e);
+      TextAlignment(bf.alignment(),e);
+    
+      QTextFormat::PageBreakFlags actual = bf.pageBreakPolicy();
+      if (actual == QTextFormat::PageBreak_AlwaysBefore) {
+      e.setAttribute("break-before","page"); 
+      } else if ( actual == QTextFormat::PageBreak_AlwaysAfter ) {
+      e.setAttribute("break-after","page");  
+      }
+    
+    
       if (bf.topMargin() !=0) {
       e.setAttribute ("margin-top",QString("%1pt").arg(bf.topMargin()));  
       }

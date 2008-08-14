@@ -319,7 +319,7 @@ void Panel::setupMatrix()
     ///////matrix.rotate(10);
     graphicsView->setMatrix(matrix);
     setResetButtonEnabled();
-	  /////////graphicsView->DisplayTop();
+    graphicsView->ForceResize();
 }
 
 void Panel::setResetButtonEnabled()

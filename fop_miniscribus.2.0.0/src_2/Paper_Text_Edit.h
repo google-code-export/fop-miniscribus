@@ -43,8 +43,9 @@ public slots:
    void DisplayTop();
    void  ViewDisplay( const QRectF area );
    void  SwapPaper();
+   void ForceResize();
 private slots:
-    void ForceResize();
+    
 
 protected:
     void pageclear();

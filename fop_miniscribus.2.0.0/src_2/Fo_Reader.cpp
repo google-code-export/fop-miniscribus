@@ -61,6 +61,9 @@ void Fo_Reader::read()
         qreal xTopMargin =  Unit(layout.attribute ("margin-top",QString("1cm")));
         qreal xRightMargin = Unit(layout.attribute ("margin-right",QString("1cm")));
         qreal xLeftMargin = Unit(layout.attribute ("margin-left",QString("1cm")));
+        
+        
+        
         MarginPage = QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
         //////////////////  QRectF(top,right,bottom,left);
         if (yourname.size() < 5) {
@@ -229,6 +232,10 @@ bool Fo_Reader::FoBlockTagPaint( const QDomElement e , QTextCursor Cursor )
     {
         return false;
     }
+    QTextBlockFormat dd;
+    QTextCharFormat cc;
+    ///////Cursor.setBlockFormat(dd);  /* try to reset !!!! */
+    Cursor.setCharFormat(cc);  /* try to reset !!!! */
     
     const QTextBlockFormat blf = TextBlockFormFromDom(e, DefaultMargin()); 
     
@@ -249,12 +256,25 @@ bool Fo_Reader::FoBlockTagPaint( const QDomElement e , QTextCursor Cursor )
 }
 
 
-void Fo_Reader::FoLeaderPaint( const QDomElement e  , QTextCursor Cursor )
+bool Fo_Reader::FoLeaderPaint( const QDomElement e  , QTextCursor Cursor )
 {
     if (FoTag(e) != FOLEADER)
     {
-        return;
+        return false;
     }
+    /*   check if is a self writteln fo:leader to emulate a breack line or empity paragraph !!!!  */  
+    if ( e.attribute("leader-pattern") == "space" && 
+        e.attribute("leader-length") == RecoveryBreackLineParagraph() && 
+        AllowtoBreack(e)) {
+      /* breack line br check line hight ???? */
+       Cursor.setBlockFormat(DefaultMargin());
+       Cursor.insertText("",DefaultCharFormats());
+       Cursor.setCharFormat ( DefaultCharFormats() );
+       Cursor.endEditBlock();
+       Cursor.atBlockEnd();
+      return true;            
+    }
+
     /* draw space */
     FopLeader space;
     space.read(e,Docwidth);
@@ -272,17 +292,16 @@ void Fo_Reader::FoLeaderPaint( const QDomElement e  , QTextCursor Cursor )
     format.setName( ximg.name );
     format.setHeight( spaceimg.height() );
     format.setWidth ( spaceimg.width() );
-    /////////////format.setProperty(_IMAGE_PICS_ITEM_,ximg);
     format.setProperty(LeaderNummer,space);
     Cursor.insertImage( format );
     if (space.leaderpattern == 3)
     {
         /////leader-pattern =   space | rule | dots | use-content | inherit
         FrameDomIterator(e.firstChild(),Cursor);
-        return;
+        return false;
     }
 
-
+    return false;
 }
 
 void Fo_Reader::DidplayUnknowTag( const QDomElement e  , QTextCursor Cursor )
@@ -454,9 +473,16 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
             {
                 Tcursor.insertText(QString(QChar::LineSeparator));
             }
+            else if ( FoTag(childElement) == FOPAGENRCITATION )
+            {
+                Tcursor.insertText(".");
+            }
             else if ( FoTag(childElement) == FOLEADER )
             {
-                FoLeaderPaint(childElement,Tcursor);
+                bool brline = FoLeaderPaint(childElement,Tcursor);
+                if (brline) {
+                 return true;
+                }
             }
             else if ( FoTag(childElement) == FOOTNOTEBOTTOM  )
             {
@@ -532,12 +558,14 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
             pretag.prepend("<pre>");
             pretag.append("</pre>");
             QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(pretag);
-            QTextCharFormat prefo = DefaultCharFormats();
-            prefo.setProperty(QTextFormat::BlockNonBreakableLines,1);
-            ///////prefo.setNonBreakableLines(true);
+            
             Cinline.setCharFormat ( PreFormatChar() );
             Cinline.insertFragment(fragment);
             Cinline.setCharFormat ( PreFormatChar() );
+            
+            
+            bbformat.setProperty(QTextFormat::BlockNonBreakableLines,1);
+            bbformat.setNonBreakableLines(true);
         }
         else if (child.isText())
         {
