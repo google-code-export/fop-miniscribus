@@ -473,7 +473,7 @@ public:
     QObject::connect(comboBox_2, SIGNAL(currentIndexChanged(int)),this, SLOT(FormatUpdate()));
     QObject::connect(borderwi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
     QObject::connect(paddingwi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
-		QObject::connect(framewi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
+    QObject::connect(framewi, SIGNAL(valueChanged(int)),this, SLOT(FormatUpdate()));
 		
 		
 		
