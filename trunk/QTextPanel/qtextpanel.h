@@ -39,6 +39,8 @@ class QTextPanel : public QGraphicsView
 		QTextPanelLayerControl *BASE_TEXT;
 		QTextPanel(QWidget * parent  = 0);
 		~QTextPanel();
+		void setHeaderActive(bool active) {BASE_TEXT->setHeaderActive(active); scene->update();}
+		void setFooterActive(bool active) {BASE_TEXT->setFooterActive(active); scene->update();}
 
 	public slots:
 		void displayTop();

@@ -32,9 +32,9 @@ class FWButton : public QObject, public QGraphicsItem
 	Q_OBJECT
 
 	private:
-		QGraphicsItem *    m_parent;
-		QBrush      m_brush;
-		QPointF     m_startPos;
+		QGraphicsItem *m_parent;
+		QBrush m_brush;
+		QPointF m_startPos;
 		bool permission;
 		QString txt;
 
@@ -106,7 +106,7 @@ class AbsoluteLayer : public QObject, public QGraphicsRectItem
 		void slotResize_1(const QPointF posi);
 		void slotRotate_1(const QPointF posi);
 		void MoveActions(bool e);
-		void updatearea(const QRect areas);
+		void updateArea(const QRect areas);
 		void UpdateDots();
 		void ShowInfos();
 
@@ -136,7 +136,7 @@ class AbsoluteLayer : public QObject, public QGraphicsRectItem
 		QRectF absoluteRect();
 		QLineF LineTops();
 		QLineF Diagonal();
-		QPicture LayerImage(const int pagenr = 0);    /* draw header or footer */
+		QPicture LayerImage(const int pageNumber = 0);    /* draw header or footer */
 
 		QTextDocument *document();
 		void setDocument(const QTextDocument * doc , FileHandlerType Type = FOP);

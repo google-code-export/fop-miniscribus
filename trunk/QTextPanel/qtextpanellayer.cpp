@@ -52,8 +52,6 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus)
 		setRect(QRectF(0,0,200,23));
 	}
 
-
-
 	Angle_1 = new FWButton(this,Qt::green,tr("Move Layer"));
 	Angle_2 = new FWButton(this,Qt::green,tr("Rotate layer"));
 	Angle_4 = new FWButton(this,Qt::green,tr("Resize layer"));
@@ -77,20 +75,17 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus)
 	setDocument(dummy,FOP);
 	dev->txtControl()->SetRect(rect());
 	UpdateDots();
-
-
 }
 
 
-void AbsoluteLayer::setDocument(const QTextDocument * doc , FileHandlerType Type)
+void AbsoluteLayer::setDocument(const QTextDocument *doc, FileHandlerType Type)
 {
-	dev->txtControl()->setDocument(doc,Type);
+	dev->txtControl()->setDocument(doc, Type);
 	dev->txtControl()->SetRect(rect());
 	if (layermods == DIV_HEADER | layermods == DIV_FOOTER)
 	{
 		document()->setMaximumBlockCount(FooterHeaderMaxBlocks);
 	}
-
 }
 
 QTextCursor AbsoluteLayer::textCursor()
@@ -121,7 +116,7 @@ void AbsoluteLayer::UpdatePageFormat()
 
 	}
 
-	updatearea(boundingRect().toRect());
+	updateArea(boundingRect().toRect());
 	UpdateDots();
 }
 
@@ -134,19 +129,20 @@ void AbsoluteLayer::UpdateDots()
 }
 
 
-void AbsoluteLayer::updatearea(const QRect areas)
+void AbsoluteLayer::updateArea(const QRect areas)
 {
 	lastUpdateRequest = areas;
 	////////qDebug() << "### updateArea " << areas;
 	const qreal anspace = FooterHeaderPadding * 2;
 	const QRectF txtrect = dev->txtControl()->boundingRect();
+
 	if (rect().height() < txtrect.height())
 	{
 		setRect(QRectF(0,0,rect().width(),txtrect.height()));
 	}
+
 	if (layermods == DIV_HEADER | layermods == DIV_FOOTER)
 	{
-
 		if (txtrect.height() != rect().height())
 		{
 			setRect(QRectF(0,0,rect().width(),txtrect.height()));
@@ -165,6 +161,7 @@ void AbsoluteLayer::updatearea(const QRect areas)
 			emit pagesize_swap();
 		}
 	}
+
 	UpdateDots();
 	update(areas);
 }
@@ -276,13 +273,12 @@ void AbsoluteLayer::ShowInfos()
 
 }
 
-QPicture AbsoluteLayer::LayerImage(const int pagenr)
+QPicture AbsoluteLayer::LayerImage(const int pageNumber)
 {
 	QPicture img;
 	img.setBoundingRect(rect().toRect());
-	int pagefollow = pagenr + 1;
+	int pagefollow = pageNumber + 1;
 	QTextDocument * doc = document()->clone();
-
 
 	for (QTextBlock srcBlock = document()->firstBlock(), dstBlock = doc->firstBlock();
 	      srcBlock.isValid() && dstBlock.isValid();
@@ -291,32 +287,29 @@ QPicture AbsoluteLayer::LayerImage(const int pagenr)
 		dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
 	}
 
-
-
-	QTextCursor cu(doc);
-	cu.setPosition(0,QTextCursor::MoveAnchor);
+	QTextCursor cursor(doc);
+	cursor.setPosition(0,QTextCursor::MoveAnchor);
 
 	/* search  _PAGE_NUMERATION_   #Page#  and replace nr. */
-	QTextCursor bcu = doc->find(_PAGE_NUMERATION_,cu,QTextDocument::FindWholeWords);
-	if (!bcu.isNull())
+	QTextCursor cursor2 = doc->find(_PAGE_NUMERATION_, cursor, QTextDocument::FindWholeWords);
+	if (!cursor2.isNull())
 	{
-		if (bcu.hasSelection())
+		if (cursor2.hasSelection())
 		{
-			QTextCharFormat format = bcu.charFormat();
-			QString remtxt = bcu.selectedText();
+			QTextCharFormat format = cursor2.charFormat();
+			QString remtxt = cursor2.selectedText();
 			for (int i = 0; i < remtxt.size(); ++i)
 			{
-				bcu.deleteChar();
+				cursor2.deleteChar();
 			}
-			bcu.insertText(QString("%1").arg(pagefollow),format);
-			bcu.clearSelection();
+			cursor2.insertText(QString("%1").arg(pagefollow),format);
+			cursor2.clearSelection();
 		}
 	}
 
 
 	QTextFrame  *Tframe = doc->rootFrame();
 	const QRectF stxt = doc->documentLayout()->frameBoundingRect(Tframe);
-
 
 	QPainter painter;
 	painter.begin(&img);
@@ -331,7 +324,6 @@ QPicture AbsoluteLayer::LayerImage(const int pagenr)
 	CTX.clip = stxt;
 	doc->documentLayout()->draw(&painter,CTX);
 	painter.end();
-
 
 	return img;
 }

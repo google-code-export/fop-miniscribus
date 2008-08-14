@@ -7,6 +7,8 @@ Panel::Panel(QWidget *parent)
 	textPanel = new QTextPanel(this);
 	textPanel->setObjectName(QString("graphicsView"));
 	textPanel->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+	/* FIXME the line below crashes the app */
+	//textPanel->setFooterActive(false);
 
 	setMinimumSize(999,508);
 	int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
@@ -17,7 +19,6 @@ Panel::Panel(QWidget *parent)
 	openGlButton = new QToolButton;
 	openGlButton->setText(tr("OpenGL"));
 	openGlButton->setCheckable(true);
-
 
 	labelLayout->addWidget(openGlButton);
 	labelLayout->addStretch();

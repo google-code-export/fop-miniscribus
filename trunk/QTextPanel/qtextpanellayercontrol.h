@@ -31,6 +31,8 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		QRectF lastUpdateRequest;
 		QRectF lastVisibleRequest;
 
+		bool headerActive, footerActive;
+
 	protected:
 		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 		bool sceneEvent(QEvent *event);
@@ -59,6 +61,8 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		void setDocument(const QTextDocument * document , FileHandlerType Type = FOP);
 		QTextCursor textCursor();
 		void changePageModel(PanelPageSize e);
+		void setHeaderActive(bool active);
+		void setFooterActive(bool active);
 
 	public slots:
 		void sceneReload();
