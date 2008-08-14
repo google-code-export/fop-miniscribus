@@ -70,6 +70,8 @@ private:
 
 signals:
   void PageCountChange();
+  void autocursorchange();
+  void absolutecursorchange();
 public slots:
     void SceneReload();
     void ensureVisible( const QRectF areas );

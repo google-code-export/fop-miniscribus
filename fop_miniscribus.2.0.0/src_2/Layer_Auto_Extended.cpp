@@ -50,6 +50,7 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     QGraphicsRectItem::setRect(LastRect);
     LastUpdateRequest = LastRect;
     SetupHeaderFooter();
+    QTimer::singleShot(1, this, SLOT(cursor_wake_up())); 
 }
 
 void TextLayer::SetupHeaderFooter()
@@ -148,6 +149,8 @@ void TextLayer::cursor_wake_up()
     SceneReload();
     emit PageCountChange();
     }
+    MakeDinamicCommand();  /* redraw action depending cursor */
+    emit autocursorchange();
 }
 
 
@@ -266,6 +269,7 @@ void TextLayer::focusInEvent ( QFocusEvent * event )
     QGraphicsItem::setSelected(true);
     scene()->setFocusItem(this,Qt::ShortcutFocusReason);
     dev->txtControl()->setBlinkingCursorEnabled(true);
+    cursor_wake_up();
     ///////return QGraphicsItem::focusInEvent(event);
 }
 
@@ -291,11 +295,12 @@ QRectF TextLayer::boundingRect() const
 
 void TextLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    
+     
      if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
      /////////// qDebug() << "###  mouseDoubleClickEvent... ";
       if (dev->txtControl()->procesevent(event)) {
-      return;
+        cursor_wake_up();
+        return;
       }
     }
     
@@ -334,11 +339,13 @@ void TextLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void TextLayer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     
+    
     if (dev->txtControl()->AllowedPosition(event->pos()) && event->button() == Qt::LeftButton ) {
         
         //////////////qDebug() << "### layer mousePressEvent left ...";
         
        if (dev->txtControl()->procesevent(event)) {
+        cursor_wake_up();
         return;
        }
     }
@@ -618,10 +625,11 @@ dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img
      /* frame menu separat INSERT_FRAME  static */
     dync->registerCommand_D(DinamicCmd(FRAME_BGCOLOR,false,false,tr("Frame Background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(SetFrameBGColor()),inlineFrameUnderCursor));
      
-    
+    QColor tableCC = textCursor().currentFrame()->frameFormat().background().color();
+    ///////QColor cellCC = textCursor().currentFrame()->frameFormat().background().color();
     dync->registerCommand_D(DinamicCmd(TABLE_FORMATS,false,false,tr("Table Format"),QIcon(":/img/table.png"),QKeySequence(),dev->txtControl(),SLOT(UpdateTableFormat()),istable));
-    dync->registerCommand_D(DinamicCmd(TABLE_BGCOLOR,false,false,tr("Table background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(MaketableColorBG()),istable));
-    dync->registerCommand_D(DinamicCmd(TABLE_CELLBGCOLOR,false,false,tr("Cell background color"),createColorIcon(textCursor().currentFrame()->frameFormat().background().color()),QKeySequence(),dev->txtControl(),SLOT(SetTableCellColor()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_BGCOLOR,false,false,tr("Table background color"),createColorIcon( tableCC == QColor( Qt::black ) ? QColor( Qt::white ) : tableCC  ),QKeySequence(),dev->txtControl(),SLOT(MaketableColorBG()),istable));
+    dync->registerCommand_D(DinamicCmd(TABLE_CELLBGCOLOR,false,false,tr("Cell background color"),createColorIcon(tableCC == QColor( Qt::black ) ? QColor( Qt::white ) : tableCC ),QKeySequence(),dev->txtControl(),SLOT(SetTableCellColor()),istable));
     dync->registerCommand_D(DinamicCmd(TABLE_APPENDCOOL,false,false,tr("Append column"),QIcon(":/img/row_table.png"),QKeySequence(),dev->txtControl(),SLOT(AppendTableCools()),istable));
     dync->registerCommand_D(DinamicCmd(TABLE_APPENDROW,false,false,tr("Append row"),QIcon(":/img/row_table.png"),QKeySequence(),dev->txtControl(),SLOT(AppendTableRows()),istable));
     dync->registerCommand_D(DinamicCmd(TABLE_REMCOOL,false,false,tr("Remove column on cursor"),QIcon(":/img/stop.png"),QKeySequence(),dev->txtControl(),SLOT(RemoveCoolByCursorPosition()),istable));
