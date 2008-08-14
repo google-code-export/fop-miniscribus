@@ -1,0 +1,10 @@
+job
+
+
+
+
+
+somma pagine nel view correggere.
+
+install git to view
+http://gitorious.org/projects/dlib/repos/netuno-sandbox
