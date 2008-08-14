@@ -33,13 +33,14 @@ GraphicsView::GraphicsView( QWidget * parent )
    scene->addItem(BASE_TEXT);
    connect(scene, SIGNAL(MakeVisible(QRectF) ), this, SLOT(ViewDisplay(QRectF)));
    connect(BASE_TEXT, SIGNAL(PageCountChange() ), this, SLOT(ForceResize()));
-    
+   QTimer::singleShot(400, this, SLOT(ForceResize())); 
     
 }
 
 void GraphicsView::ForceResize()
 {
     scene->setSceneRect( rectToScene());
+    emit NewPageFormatin();
 }
 
 
@@ -211,6 +212,9 @@ Panel::Panel( QWidget *parent)
 		///////connect(graphicsView, SIGNAL(SceneSwap()), this, SLOT(SceneChange()));
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
     connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
+    connect(graphicsView, SIGNAL(NewPageFormatin()),this, SLOT(FillPaperSize()));
+    
+    
     
    resetView();
    QTimer::singleShot(10, this, SLOT(DisplayTop()));  
@@ -264,6 +268,7 @@ void Panel::FillPaperSize()
     ///////PortraitPaper = new QComboBox;
    //////////LandscapePaper = new QComboBox;
    NotPaperUpdate = false;
+   graphicsView->SwapPaper();
 }
 
 

@@ -97,6 +97,8 @@ ApiSession::ApiSession()
     
 }
 
+
+
 void ApiSession::FormatRegister( const QString txt , QPrinter::PageSize pp )
 {
 	   M_PageSize Lxx;

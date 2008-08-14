@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
      <fo:layout-master-set>
-          <fo:simple-page-master margin-left="8mm" page-height="200mm" master-name="CD-Label_128_x_128mm" margin-bottom="6.34999mm" margin-top="6.34999mm" margin-right="8mm" page-width="200mm" >
-               <fo:region-body margin-left="8mm" page-height="200mm" margin-bottom="6.34999mm" region-name="xsl-region-body" margin-top="6.34999mm" margin-right="8mm" page-width="200mm" />
+          <fo:simple-page-master margin-left="8mm" page-height="200mm" master-name="PeterHohlFormat" margin-bottom="6.34999mm" margin-top="6.34999mm" margin-right="8mm" page-width="200mm" >
+               <fo:region-body margin-left="4pt" page-height="200mm" margin-bottom="6.34999mm" region-name="xsl-region-body" margin-top="6.34999mm" margin-right="3mm" page-width="200mm" />
           </fo:simple-page-master>
      </fo:layout-master-set>
      <fo:page-sequence master-reference="CD-Label_128_x_128mm" >
