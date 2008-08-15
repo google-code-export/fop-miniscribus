@@ -1,9 +1,6 @@
 #include "qtextpanelmime.h"
-
 #include "qtextpanel.h"
 #include "qtextpanelimage.h"
-
-
 
 QIcon createColorToolButtonIcon(const QString &imageFile,QColor color)
 {
@@ -24,10 +21,6 @@ QIcon createColorIcon(QColor color)
 	pixmap.fill(color);
 	return QIcon(pixmap);
 }
-
-
-
-
 
 QPixmap bruschChess(qreal chesswidth)
 {
@@ -118,9 +111,6 @@ QTextDocument *PanelPageSize::nulldoc(QString htm)
 	return doc->clone();
 }
 
-
-
-
 /* form qtexdocument to this margin an papersize */
 void PanelPageSize::HandlePrint(QTextDocument *doc)
 {
@@ -140,8 +130,6 @@ void PanelPageSize::HandlePrint(QTextDocument *doc)
 	doc->setPageSize(G_regt.size());
 }
 
-
-
 int PanelPageSize::FillFopAttributes(QDomElement e)
 {
 	const qreal TopMargin = pointTo(P_margin.x(),"mm");
@@ -156,7 +144,6 @@ int PanelPageSize::FillFopAttributes(QDomElement e)
 	e.setAttribute("page-height",QString("%1mm").arg(pointTo(G_regt.height(),"mm")));
 	return 1;
 }
-
 
 /* allowed char on file name image to save */
 QString imageName(const QString txt)
@@ -178,8 +165,6 @@ QString imageName(const QString txt)
 	return touri.trimmed();
 }
 
-
-
 qreal FopInt(const QString datain)
 {
 	QString ctmp = datain;
@@ -196,13 +181,11 @@ qreal FopInt(const QString datain)
 		return 12.5;
 	}
 
-
-
-
 	if (datain == "0")
 	{
 		return points;
 	}
+
 	if (data.endsWith("pt") ||  data.endsWith("px"))
 	{
 		points = data.left(data.length() - 2).toDouble();
@@ -257,15 +240,14 @@ qreal FopInt(const QString datain)
 		points = 0;
 	}
 
-
 	return points;
-
 }
 
 
 qreal pointTo(qreal unit , const QString unita)
 {
 	qreal ri = 0;
+
 	if (unita == "cm")
 	{
 		ri = POINT_TO_CM(unit);
@@ -303,19 +285,19 @@ qreal pointTo(qreal unit , const QString unita)
 	{
 		ri = 10;
 	}
+
 	return ri;
 }
-
 
 qreal toUnit(qreal unit , const QString unita)
 {
 	return pointTo(unit,unita);
 }
 
-
 qreal toPoint(qreal unit , const QString unita)
 {
 	qreal ri = 0;
+
 	if (unita == "cm")
 	{
 		ri = CM_TO_POINT(unit);
@@ -353,10 +335,9 @@ qreal toPoint(qreal unit , const QString unita)
 	{
 		ri = 10;
 	}
+
 	return ri;
 }
-
-
 
 /* encode to name */
 QString encodeBase64(QString xml)
@@ -410,7 +391,6 @@ QByteArray StreamFromFile(const QString fullFileName)
 	return inside;
 }
 
-
 void OpenDeskBrowser(QUrl loc)
 {
 #if defined Q_WS_MAC
@@ -439,11 +419,14 @@ void OpenDeskBrowser(QUrl loc)
 	{
 		fullFileName.prepend("file:///");
 	}
+
 	bool wr = QDesktopServices::openUrl(QUrl(fullFileName));
+
 	if (!wr)
 	{
 		QMessageBox::warning(0, qApp->tr("Error"),qApp->tr("Window Unable to open action file or dir  %1").arg(loc.toString()));
 	}
+
 	return;
 #endif
 
@@ -456,8 +439,6 @@ void OpenDeskBrowser(QUrl loc)
 	}
 
 }
-
-
 
 /* simple mkdir */
 bool Cache(const QString dirpath)
@@ -472,6 +453,7 @@ bool Cache(const QString dirpath)
 		return false;
 	}
 }
+
 /* os path from sistem */
 QString convertPath(QString path)
 {
@@ -506,12 +488,6 @@ bool fwriteUtf8(const QString file ,QString xml)
 	return false;
 }
 
-
-
-
-
-
-
 QString getGSLinuxPath(QString apps)
 {
 	QStringList potential_paths;
@@ -543,8 +519,6 @@ QString getGSLinuxPath(QString apps)
 		}
 	}
 }
-
-
 
 /* find gpl GhostScript path or exe */
 QString getGSDefaultExeName()
@@ -616,7 +590,6 @@ QString getGSDefaultExeName()
 #endif
 	/* forum http://www.qtcentre.org/forum/f-qt-programming-2/t-qsettings-read-only-avaiable-10254.html */
 }
-
 
 /* find gpl GhostScript version  */
 double getGSVersion()
@@ -803,9 +776,6 @@ args.append("-q");
 args.append(pdfFile);
 */
 
-
-
-
 QPixmap LoadPDF(QString fn, int Page, int w)
 {
 	QString tmp, cmd1, cmd2;
@@ -845,10 +815,6 @@ QPixmap LoadPDF(QString fn, int Page, int w)
 	return pm;
 }
 
-
-
-
-
 QRectF M_PagesizeMake(QPrinter::PageSize psize , bool landscape)
 {
 	QPrinter *print = new QPrinter(QPrinter::HighResolution);
@@ -880,9 +846,6 @@ QRectF M_PagesizeMake(QPrinter::PageSize psize , bool landscape)
 	}
 }
 
-
-
-
 QStringList QTextEditMimeData::formats() const
 {
 	if (!fragment.isEmpty())
@@ -906,8 +869,6 @@ void QTextEditMimeData::setup() const
 	fragment = QTextDocumentFragment();
 }
 
-
-
 QRectF CenterRectSlaveFromMaster(const QRectF Master ,
                                  QRectF Slave)
 {
@@ -918,19 +879,13 @@ QRectF CenterRectSlaveFromMaster(const QRectF Master ,
 	return SlaveOnline;
 }
 
-
-
-
-
-
-
-
 GraphicsScene::GraphicsScene(QObject * parent)
 		: QGraphicsScene(parent),bridge(0)
 {
 	QApplication::restoreOverrideCursor();
 	QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
 }
+
 GraphicsScene::GraphicsScene(const QRectF & sceneRect, QObject * parent)
 		: QGraphicsScene(sceneRect,  parent),bridge(0)
 {
@@ -946,17 +901,8 @@ void GraphicsScene::SetVisibleArea(const QRectF area)
 
 void GraphicsScene::dragMoveEvent(QGraphicsSceneDragDropEvent * e)
 {
-
-	/*
-
-	*/
-
-
-
 	return QGraphicsScene::dragMoveEvent(e);
 }
-
-
 
 void GraphicsScene::clear()
 {
@@ -1033,8 +979,6 @@ qreal GraphicsScene::zmin()
 	return mValue;
 }
 
-
-
 /* filter only item a top Zindex /  zValue */
 bool GraphicsScene::WakeUp(const QPointF incomming)
 {
@@ -1096,6 +1040,7 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 	}
 	QGraphicsScene::mouseReleaseEvent(event);
 }
+
 void GraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
 	if (WakeUp(QPointF(event->scenePos().x(),event->scenePos().y())))
@@ -1110,20 +1055,11 @@ void GraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	QGraphicsScene::mouseDoubleClickEvent(event);
 }
 
-
 void GraphicsScene::setSceneRect(const QRectF & rect)
 {
 	///////Area = rect;
 	QGraphicsScene::setSceneRect(rect);
 }
-
-
-
-
-
-
-
-
 
 QPixmap ImagefromMime(const QMimeData *mime)
 {
@@ -1185,11 +1121,6 @@ QPixmap ImagefromMime(const QMimeData *mime)
 	return one;
 }
 
-
-
-
-
-
 QPixmap RenderPixmapFromSvgByte(QByteArray streams)
 {
 	QSvgRenderer  svgRenderer(streams);
@@ -1236,7 +1167,6 @@ void LoadGetImage::ImageReady(bool error)
 	}
 }
 
-
 void Gloader::Setting(QObject *parent , int id , QUrl url_send)
 {
 	receiver = parent;
@@ -1252,8 +1182,3 @@ void Gloader::run()
 	Rhttp->Start();
 	exec();
 }
-
-
-
-
-

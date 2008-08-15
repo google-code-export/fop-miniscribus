@@ -7,8 +7,7 @@ Panel::Panel(QWidget *parent)
 	textPanel = new QTextPanel(this);
 	textPanel->setObjectName(QString("graphicsView"));
 	textPanel->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-	/* FIXME the line below crashes the app */
-	//textPanel->setFooterActive(false);
+	textPanel->setFooterActive(false);
 
 	setMinimumSize(999,508);
 	int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
