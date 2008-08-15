@@ -7,7 +7,7 @@ Panel::Panel(QWidget *parent)
 	textPanel = new QTextPanel(this);
 	textPanel->setObjectName(QString("graphicsView"));
 	textPanel->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-	textPanel->setFooterActive(false);
+	//textPanel->setFooterActive(false);
 
 	setMinimumSize(999,508);
 	int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
@@ -19,7 +19,19 @@ Panel::Panel(QWidget *parent)
 	openGlButton->setText(tr("OpenGL"));
 	openGlButton->setCheckable(true);
 
+	headerButton = new QToolButton;
+	headerButton->setText(tr("Header"));
+	headerButton->setCheckable(true);
+	headerButton->setChecked(true);
+
+	footerButton = new QToolButton;
+	footerButton->setText(tr("Footer"));
+	footerButton->setCheckable(true);
+	footerButton->setChecked(true);
+
 	labelLayout->addWidget(openGlButton);
+	labelLayout->addWidget(headerButton);
+	labelLayout->addWidget(footerButton);
 	labelLayout->addStretch();
 
 	PortraitPaper = new QComboBox;
@@ -72,6 +84,8 @@ Panel::Panel(QWidget *parent)
 	connect(zoomOutIcon, SIGNAL(clicked()), this, SLOT(zoomOut()));
 	///////connect(textPanel, SIGNAL(sceneSwap()), this, SLOT(SceneChange()));
 	connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
+	connect(headerButton, SIGNAL(toggled(bool)), textPanel, SLOT(setHeaderActive(bool)));
+	connect(footerButton, SIGNAL(toggled(bool)), textPanel, SLOT(setFooterActive(bool)));
 	connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
 
 	resetView();
