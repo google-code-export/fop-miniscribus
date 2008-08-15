@@ -3050,7 +3050,7 @@ void LayerText::setDocument(const QTextDocument * document , FileHandlerType Typ
 
 
 /*   Parser QTextDocument  */
-ScribeParser::ScribeParser(QTextDocument *  doc  , ScribeParseModus e)
+ScribeParser::ScribeParser(QTextDocument *doc, ScribeParseModus e)
 {
 	textDocument = doc;
 	QTextFrame *root = doc->rootFrame();
@@ -3071,7 +3071,6 @@ ScribeParser::ScribeParser(QTextDocument *  doc  , ScribeParseModus e)
 	{
 		processFrame(documentElement,root);
 	}
-
 }
 
 void ScribeParser::processFrame(QDomElement appender ,  QTextFrame *frame)

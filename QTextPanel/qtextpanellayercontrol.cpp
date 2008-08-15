@@ -84,12 +84,23 @@ void QTextPanelLayerControl::setHeaderActive(bool active)
 	}
 	else
 	{
-		QTextDocument *dummy = header->document();
-		disconnect(header, 0, 0, 0);
-		delete header;
-		delete dummy;
+		if (header)
+		{
+			GraphicsScene *sc;
+			if (sc = qobject_cast<GraphicsScene *>(scene()))
+			{
+				sc->removeItem(footer);
+			}
 
-		header = NULL;
+			QTextDocument *dummy = header->document();
+			disconnect(header, 0, 0, 0);
+			header->deleteLater();
+			dummy->deleteLater();
+
+			pageSizeReload();
+
+			header = NULL;
+		}
 	}
 
 	sceneReload();
@@ -105,11 +116,11 @@ void QTextPanelLayerControl::setFooterActive(bool active)
 		{
 			footer = new AbsoluteLayer(this, DIV_FOOTER);
 
-			QTextDocument *dummy2 = new QTextDocument();
+			QTextDocument *dummy = new QTextDocument();
 
-			dummy2->setHtml("<p>Footer Page "+_PAGE_NUMERATION_+"</p>");
+			dummy->setHtml("<p>Footer Page " + _PAGE_NUMERATION_ + "</p>");
 
-			footer->setDocument(dummy2, FOP);
+			footer->setDocument(dummy, FOP);
 
 			connect(footer, SIGNAL(close_main_cursor()),this, SLOT(cursorStopIt()));
 			connect(footer, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
@@ -119,15 +130,24 @@ void QTextPanelLayerControl::setFooterActive(bool active)
 	}
 	else
 	{
-		QTextDocument *dummy = footer->document();
-		disconnect(footer, 0, 0, 0);
+		if (footer)
+		{
+			GraphicsScene *sc;
+			if (sc = qobject_cast<GraphicsScene *>(scene()))
+			{
+				sc->removeItem(footer);
+			}
 
-		delete footer;
-		delete dummy;
+			QTextDocument *dummy = footer->document();
+			disconnect(footer, 0, 0, 0);
 
-		pageSizeReload();
+			footer->deleteLater();
+			dummy->deleteLater();
 
-		footer = NULL;
+			pageSizeReload();
+
+			footer = NULL;
+		}
 	}
 
 	sceneReload();
@@ -280,7 +300,7 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 
 		if (x != 0)
 		{
-			/* only draw header/footer if they are active */
+			/* only draws header/footer if they are active */
 			if (headerActive && header)
 			{
 				//////qDebug() << "header" << endl;

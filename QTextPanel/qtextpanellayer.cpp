@@ -2,6 +2,7 @@
 
 AbsoluteLayer::~AbsoluteLayer()
 {
+	if (dev) {delete dev;}
 	//~ qDebug() << "### destroy obj ...";
 }
 
@@ -329,8 +330,6 @@ QImage AbsoluteLayer::LayerImage(const int pageNumber)
 	return img;
 }
 
-
-
 void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	painter->setRenderHint(QPainter::TextAntialiasing);
@@ -367,7 +366,6 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 	}
 
-
 	if (OnMoveRects)
 	{
 		painter->setOpacity(0.8);
@@ -379,7 +377,6 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 		painter->fillRect(bottomShadow, Qt::green);
 		painter->setOpacity(1.0);
 	}
-
 
 	/*
 	painter->setPen(Qt::NoPen);
@@ -432,10 +429,6 @@ QRectF AbsoluteLayer::absoluteRect()
 	return QRectF(pos(),boundingRect().size());
 }
 
-
-
-
-
 void AbsoluteLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 
@@ -453,11 +446,8 @@ void AbsoluteLayer::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	return QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-
 void AbsoluteLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-
-
 	if (dev->txtControl()->procesevent(event))
 	{
 		return;
@@ -465,12 +455,10 @@ void AbsoluteLayer::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 	//~ qDebug() << "### mouseMoveEvent.. ";
 	return QGraphicsItem::mouseMoveEvent(event);
-
 }
 
 void AbsoluteLayer::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-
 	if (event->button() != Qt::LeftButton)
 	{
 		return;
@@ -524,7 +512,6 @@ void AbsoluteLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void AbsoluteLayer::keyPressEvent(QKeyEvent * event)
 {
-
 	if (layermods == DIV_ABSOLUTE)
 	{
 		if ((event->modifiers() & Qt::AltModifier) && event->key() == Qt::Key_Up)
@@ -574,15 +561,13 @@ void AbsoluteLayer::BackGroundColor()
 	update();
 }
 
-
-
-
 void AbsoluteLayer::seTBack()
 {
 	if (layermods != DIV_ABSOLUTE)
 	{
 		return;
 	}
+
 	qreal maxi = 999.9;
 	qreal minimums = 1.5;
 
@@ -596,7 +581,6 @@ void AbsoluteLayer::seTBack()
 	emit pagesize_swap();
 
 }
-
 
 void AbsoluteLayer::seTFront()
 {
@@ -619,28 +603,12 @@ void AbsoluteLayer::seTFront()
 	emit pagesize_swap();
 }
 
-
-
 void AbsoluteLayer::RotateLayer(const int ro)
 {
 	Rotate = ro;
 	////////////qDebug() << "### RotateLayer " << ro;
 	update();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 FWButton::FWButton(QGraphicsItem * parent, const QBrush & brush , const QString msg)
 		: QGraphicsItem(parent)
@@ -712,7 +680,6 @@ void FWButton::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 	emit reset();
 }
 
-
 void FWButton::focusInEvent(QFocusEvent * event)
 {
 	emit operate(true);
@@ -722,8 +689,6 @@ void FWButton::focusOutEvent(QFocusEvent * event)
 {
 	emit operate(false);
 }
-
-
 
 void FWButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
@@ -735,12 +700,19 @@ void FWButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 	emit operate(false);
 }
 
-
-
 AbsText::AbsText() : device(0)
 {
 
 }
+
+AbsText::~AbsText()
+{
+	if (device)
+	{
+		delete device;
+	}
+}
+
 
 /* only one connect */
 LayerText *AbsText::txtControl() const
@@ -756,7 +728,3 @@ LayerText *AbsText::txtControl() const
 	}
 	return device;
 }
-
-
-
-

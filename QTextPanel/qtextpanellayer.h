@@ -166,6 +166,7 @@ class AbsText: public QObject
 
 	public:
 		AbsText();
+		~AbsText();
 		LayerText *txtControl() const;
 		AbsoluteLayer *q;
 };
