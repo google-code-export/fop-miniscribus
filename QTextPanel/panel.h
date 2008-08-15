@@ -28,6 +28,8 @@ class Panel : public QFrame
 		QSlider *rotateSlider;
 		QToolButton *printButton;
 		QToolButton *openGlButton;
+		QToolButton *headerButton;
+		QToolButton *footerButton;
 
 	private slots:
 		void resetView();

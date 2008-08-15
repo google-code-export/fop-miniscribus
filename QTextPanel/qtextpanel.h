@@ -46,14 +46,14 @@ class QTextPanel : public QGraphicsView
 		QTextPanelLayerControl *BASE_TEXT;
 		QTextPanel(QWidget * parent  = 0);
 		~QTextPanel();
-		void setHeaderActive(bool active) {BASE_TEXT->setHeaderActive(active); scene->update();}
-		void setFooterActive(bool active) {BASE_TEXT->setFooterActive(active); scene->update();}
 
 	public slots:
 		void displayTop();
 		void viewDisplay(const QRectF area);
 		void swapPaper();
         void forceResize();
+		void setHeaderActive(bool active) {BASE_TEXT->setHeaderActive(active); scene->update();}
+		void setFooterActive(bool active) {BASE_TEXT->setFooterActive(active); scene->update();}
 
 	signals:
 		void sceneSwap();

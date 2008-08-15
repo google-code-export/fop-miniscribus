@@ -89,7 +89,7 @@ void QTextPanelLayerControl::setHeaderActive(bool active)
 			GraphicsScene *sc;
 			if (sc = qobject_cast<GraphicsScene *>(scene()))
 			{
-				sc->removeItem(footer);
+				sc->removeItem(header);
 			}
 
 			QTextDocument *dummy = header->document();
