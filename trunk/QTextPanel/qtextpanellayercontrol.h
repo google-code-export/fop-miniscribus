@@ -30,7 +30,6 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		TextMount *device;
 		QRectF lastUpdateRequest;
 		QRectF lastVisibleRequest;
-
 		bool headerActive, footerActive;
 
 	protected:
@@ -51,7 +50,6 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		void setupHeaderFooter();
 
 	public:
-
 		QTextPanelLayerControl(QGraphicsItem *parent = 0);
 		~QTextPanelLayerControl();
 		int type() const {return TextTypeFloating;}
@@ -64,12 +62,10 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		void setHeaderActive(bool active);
 		void setFooterActive(bool active);
 
-     signals:
-    void pageCountChange();
-    void autocursorchange();
+	signals:
+		void pageCountChange();
+		void autoCursorChange();
 
-        
-        
 	public slots:
 		void sceneReload();
 		void ensureVisible(const QRectF areas);

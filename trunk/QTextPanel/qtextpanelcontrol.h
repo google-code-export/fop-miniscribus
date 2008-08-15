@@ -65,9 +65,28 @@ class ScribeParser
 	   inline QDomDocument *dom() {return document;}
 };
 
+/* TODO QTextPanelControl needs to be formatted */
 class QTextPanelControl : public QObject
 {
 	Q_OBJECT
+
+	private:
+	   /* not possible to change if launch */
+	   DisplayModus Modus;
+	   QStringList  HubBlockids();
+	   QPair<int,int> RangeSelection;
+	   void StartDragOperation();
+
+	   QBasicTimer trippleClickTimer;
+	   QBasicTimer dragClickTimer;
+
+	   QTextCharFormat LastCharFormat;
+
+	   qreal Get_Cell_Width(QTextTableFormat TableFormat , int position);
+	   bool IsSelfPlacePaste();
+	   /* events */
+	   ////////////QPointF trapos( const QPointF &pos );   /* translate position from space */
+	   void timerEvent(QTimerEvent *event);
 
    public:
 	   int CurrentSessionID;
@@ -90,9 +109,9 @@ class QTextPanelControl : public QObject
 	   QPointF LastReleasePoint;
 
 	   /* cursor selection */
-	   int position_selection_start;
+	   int selectionStartPosition;
 	   int cursor_position;
-	   int Current_Page_Nr;
+	   int currentPageNumber;
 	   QLineF CursorDrawLine;
 	   QTextFrameFormat root_format;
 	   qreal LeftBorderPadding;
@@ -105,7 +124,7 @@ class QTextPanelControl : public QObject
 	   /* core data */
 	   //////////QAbstractTextDocumentLayout *layout;
 	   QTextDocument *_d;
-	   QTextCursor C_cursor;
+	   QTextCursor controlTextCursor;
 	   FileHandlerType Op;
 
 	   QRect OverloadRectUpdate;
@@ -183,28 +202,6 @@ class QTextPanelControl : public QObject
 	   void BaseMouseReleaseEvent(const  QPointF posi , Qt::MouseButton button);
 	   void BaseDoubleClickEvent(const  QPointF position , const QGraphicsSceneMouseEvent * event);
 
-   private:
-	   qreal Get_Cell_Width(QTextTableFormat TableFormat , int position);
-	   QPair<int,int> RangeSelection;
-	   bool IsSelfPlacePaste();
-	   void StartDragOperation();
-
-	   QBasicTimer trippleClickTimer;
-	   QBasicTimer dragClickTimer;
-
-	   QTextCharFormat LastCharFormat;
-	   /* events */
-	   ////////////QPointF trapos( const QPointF &pos );   /* translate position from space */
-	   void timerEvent(QTimerEvent *event);
-
-   signals:
-	   void q_cursor_newPos();  /* +++  swap reformat qmenu from session */
-	   void q_visible(QRectF);
-	   void q_update(QRect);
-	   void q_pageupdate();
-	   void q_startDrag(QPointF);
-	   void q_update_scene();  /* page changes ++ or -- */
-
    public slots:
 	   /* internal and frineds */
 	   void ChangeFormatDoc(bool e = true);
@@ -261,10 +258,14 @@ class QTextPanelControl : public QObject
 	   void FontsLetterSpacing();
 	   void SwapUnbrekableBlock();
 
-   private:
-	   /* not possibel to change if launch */
-	   DisplayModus Modus;
-	   QStringList  HubBlockids();
+   signals:
+	   void q_cursor_newPos();  /* +++  swap reformat qmenu from session */
+	   void q_visible(QRectF);
+	   void q_update(QRect);
+	   void q_pageupdate();
+	   void q_startDrag(QPointF);
+	   void q_update_scene();  /* page changes ++ or -- */
+
 };
 
 
