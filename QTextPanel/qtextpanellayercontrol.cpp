@@ -230,13 +230,16 @@ void QTextPanelLayerControl::pageSizeReload()
 
 void QTextPanelLayerControl::cursorWakeUp()
 {
-     const int PageSumm = qBound (1,document()->pageCount(),MaximumPages);
-    if (PageRecords != PageSumm) {
-    PageRecords = PageSumm;
-    sceneReload();
-    emit pageCountChange();
+	const int PageCount = qBound(1, document()->pageCount(), MaximumPages);
+
+    if (PageRecords != PageCount)
+    {
+		PageRecords = PageCount;
+		sceneReload();
+		emit pageCountChange();
     }
-    emit autocursorchange();
+
+    emit autoCursorChange();
 }
 
 
@@ -260,12 +263,10 @@ void QTextPanelLayerControl::ensureVisible(const QRectF areas)
 	}
 }
 
-
 QString QTextPanelLayerControl::pageName()
 {
 	return device->txtControl()->Model().HName();
 }
-
 
 void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
@@ -274,10 +275,10 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 	painter->setPen(Qt::NoPen);
 	painter->setBrush(Qt::lightGray);
 	painter->drawRect(lastRect);
-	const int PageSumm = qBound(1,document()->pageCount(),MaximumPages);
+	const int pageCount = qBound(1, document()->pageCount(), MaximumPages);
 
 	/* draw white first background */
-	for (int x = 0; x < PageSumm; ++x)
+	for (int x = 0; x < pageCount; ++x)
 	{
 		painter->save();
 		const QRectF pagen =  device->txtControl()->Model().PageExternal(x);
