@@ -136,7 +136,7 @@ class AbsoluteLayer : public QObject, public QGraphicsRectItem
 		QRectF absoluteRect();
 		QLineF LineTops();
 		QLineF Diagonal();
-		QPicture LayerImage(const int pageNumber = 0);    /* draw header or footer */
+		QImage LayerImage(const int pageNumber = 0);    /* draw header or footer */
 
 		QTextDocument *document();
 		void setDocument(const QTextDocument * doc , FileHandlerType Type = FOP);
