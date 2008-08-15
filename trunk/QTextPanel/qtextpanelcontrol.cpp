@@ -8,21 +8,6 @@ static QRectF boundingRectOfFrame(const QTextCursor &cursor)
 	QRectF r;
 	QTextFrame *frame = cursor.currentFrame();
 	return frame->document()->documentLayout()->frameBoundingRect(frame);
-
-	/*
-	   const QList<QTextFrame *> children = frame->childFrames();
-
-	   const QList<QTextFrame *>::ConstIterator firstFrame = qLowerBound(children.constBegin(), children.constEnd(),
-	                                                                     cursor.selectionStart(), firstFramePosLessThanCursorPos);
-	   const QList<QTextFrame *>::ConstIterator lastFrame = qUpperBound(children.constBegin(), children.constEnd(),
-	                                                                    cursor.selectionEnd(), cursorPosLessThanLastFramePos);
-	   for (QList<QTextFrame *>::ConstIterator it = firstFrame; it != lastFrame; ++it) {
-	       if ((*it)->frameFormat().position() != QTextFrameFormat::InFlow)
-	           r |= frame->document()->documentLayout()->frameBoundingRect(*it);
-	   }
-	   return r;
-	*/
-
 }
 
 

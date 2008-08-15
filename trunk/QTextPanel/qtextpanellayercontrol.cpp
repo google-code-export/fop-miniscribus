@@ -32,7 +32,8 @@ QTextPanelLayerControl::~QTextPanelLayerControl()
 
 
 QTextPanelLayerControl::QTextPanelLayerControl(QGraphicsItem *parent)
-		: QGraphicsRectItem(QRectF(0,0,100,100),parent),device(new TextMount),contextOpen(false)
+		: QGraphicsRectItem(QRectF(0,0,100,100),parent),device(new TextMount),
+         contextOpen(false),PageRecords(1)
 {
 	//////qDebug() << "### init....";
 	device->q = this;
@@ -209,9 +210,13 @@ void QTextPanelLayerControl::pageSizeReload()
 
 void QTextPanelLayerControl::cursorWakeUp()
 {
-	////const QRectF rectblock = device->txtControl()->CurrentBlockRect();
-	/////updateArea(rectblock.toRect());
-	/////////MakeDinamicCommand();
+     const int PageSumm = qBound (1,document()->pageCount(),MaximumPages);
+    if (PageRecords != PageSumm) {
+    PageRecords = PageSumm;
+    sceneReload();
+    emit pageCountChange();
+    }
+    emit autocursorchange();
 }
 
 
@@ -332,6 +337,7 @@ void QTextPanelLayerControl::focusInEvent(QFocusEvent * event)
 {
 	//~ qDebug() << "### QTextPanelLayerControl focusInEvent ..." << flags();
 	QGraphicsItem::setSelected(true);
+    emit pageCountChange();
 	scene()->setFocusItem(this,Qt::ShortcutFocusReason);
 	device->txtControl()->setBlinkingCursorEnabled(true);
 	///////return QGraphicsItem::focusInEvent(event);
@@ -365,6 +371,7 @@ void QTextPanelLayerControl::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *eve
 		/////////// qDebug() << "###  mouseDoubleClickEvent... ";
 		if (device->txtControl()->procesevent(event))
 		{
+            cursorWakeUp();
 			return;
 		}
 	}
@@ -383,6 +390,7 @@ void QTextPanelLayerControl::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		//////////// qDebug() << "### layer mouseMoveEvent b .. ";
 		if (device->txtControl()->procesevent(event))
 		{
+            cursorWakeUp();
 			return;
 		}
 	}
@@ -398,6 +406,7 @@ void QTextPanelLayerControl::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		////////////qDebug() << "### layer mouseReleaseEvent.. left .";
 		if (device->txtControl()->procesevent(event))
 		{
+            cursorWakeUp();
 			return;
 		}
 	}
@@ -415,6 +424,7 @@ void QTextPanelLayerControl::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 		if (device->txtControl()->procesevent(event))
 		{
+            cursorWakeUp();
 			return;
 		}
 	}
@@ -438,6 +448,7 @@ void QTextPanelLayerControl::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 void QTextPanelLayerControl::keyPressEvent(QKeyEvent * event)
 {
 	/////////qDebug() << "### keyPressEvent...";
+    cursorWakeUp();
 	return device->txtControl()->Controller_keyPressEvent(event);
 	/////return QGraphicsItem::keyPressEvent(event);
 }
@@ -457,7 +468,9 @@ bool QTextPanelLayerControl::sceneEvent(QEvent *event)
 	      event->type() == QEvent::GraphicsSceneDragLeave ||
 	      event->type() == QEvent::GraphicsSceneDragMove)
 	{
+
 		device->txtControl()->procesevent(event);
+        cursorWakeUp();
 		return true;
 	}
 	/* buggi events */

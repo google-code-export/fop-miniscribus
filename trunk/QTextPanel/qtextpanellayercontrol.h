@@ -24,7 +24,7 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 	private:
 		AbsoluteLayer *header;
 		AbsoluteLayer *footer;
-
+        int PageRecords;  /* current page tot for rect*/
 		QRectF lastRect;
 		bool contextOpen;
 		TextMount *device;
@@ -64,6 +64,12 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		void setHeaderActive(bool active);
 		void setFooterActive(bool active);
 
+     signals:
+    void pageCountChange();
+    void autocursorchange();
+
+        
+        
 	public slots:
 		void sceneReload();
 		void ensureVisible(const QRectF areas);
