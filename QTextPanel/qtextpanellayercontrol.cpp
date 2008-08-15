@@ -283,20 +283,20 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 			/* only draw header/footer if they are active */
 			if (headerActive && header)
 			{
-				qDebug() << "header" << endl;
+				//////qDebug() << "header" << endl;
 				/* draw  header */
-				QPicture headerPicture = header->LayerImage(x);
+				QImage headerPicture = header->LayerImage(x);
 				QPointF headerPosition = device->txtControl()->Model().HeaderInitPoints(x);
-				painter->drawPicture(headerPosition, headerPicture);
+				painter->drawImage(headerPosition, headerPicture);
 			}
 
 			if (footerActive && footer)
 			{
-				qDebug() << "footer" << endl;
+				//////qDebug() << "footer" << endl;
 				/* draw footer */
-				QPicture footerPicture = footer->LayerImage(x);
+				QImage footerPicture = footer->LayerImage(x);
 				QPointF footerPosition = device->txtControl()->Model().FooterInitPoints(x);
-				painter->drawPicture(footerPosition, footerPicture);
+				painter->drawImage(footerPosition, footerPicture);
 			}
 		}
 

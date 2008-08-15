@@ -12,7 +12,7 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus)
 {
 	dev->q = this;
 	layermods = layermodus;
-	Background_Color = QColor(0,0,0,44);
+	Background_Color = QColor(Qt::white);
 	Border_Color = QColor(Qt::white);
 	Border_Color_t = QColor(Qt::white);
 	Border_Color_b = QColor(Qt::white);
@@ -75,6 +75,7 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus)
 	setDocument(dummy,FOP);
 	dev->txtControl()->SetRect(rect());
 	UpdateDots();
+    dev->txtControl()->setBlinkingCursorEnabled(false);
 }
 
 
@@ -162,8 +163,10 @@ void AbsoluteLayer::updateArea(const QRect areas)
 		}
 	}
 
+    QRect repaintarea = areas;
+    repaintarea.setWidth ( rect().width() + 22 );
 	UpdateDots();
-	update(areas);
+	update(repaintarea);
 }
 
 void AbsoluteLayer::slotRotate_1(const QPointF posi)
@@ -273,10 +276,10 @@ void AbsoluteLayer::ShowInfos()
 
 }
 
-QPicture AbsoluteLayer::LayerImage(const int pageNumber)
+QImage AbsoluteLayer::LayerImage(const int pageNumber)
 {
-	QPicture img;
-	img.setBoundingRect(rect().toRect());
+	QImage img(rect().size().toSize(),QImage::Format_ARGB32);
+	/////img.setBoundingRect(rect().toRect());
 	int pagefollow = pageNumber + 1;
 	QTextDocument * doc = document()->clone();
 
@@ -286,10 +289,8 @@ QPicture AbsoluteLayer::LayerImage(const int pageNumber)
 	{
 		dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
 	}
-
 	QTextCursor cursor(doc);
 	cursor.setPosition(0,QTextCursor::MoveAnchor);
-
 	/* search  _PAGE_NUMERATION_   #Page#  and replace nr. */
 	QTextCursor cursor2 = doc->find(_PAGE_NUMERATION_, cursor, QTextDocument::FindWholeWords);
 	if (!cursor2.isNull())
@@ -372,14 +373,10 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 		painter->setOpacity(0.8);
 		const qreal fullliwid = 1.5;
 		const qreal limid = fullliwid / 2;
-		//////painter->setPen( QPen( Qt::green ,fullliwid));
-
 		QRectF rightShadow(pagen.right(), pagen.top() + fullliwid + limid, fullliwid + limid , pagen.height());
 		QRectF bottomShadow(pagen.left() + fullliwid + limid, pagen.bottom(), pagen.width(), fullliwid + limid);
 		painter->fillRect(rightShadow, Qt::green);
 		painter->fillRect(bottomShadow, Qt::green);
-
-
 		painter->setOpacity(1.0);
 	}
 
