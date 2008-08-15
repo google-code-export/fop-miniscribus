@@ -12,6 +12,11 @@
 
 
 
+#define _PARSE_DEBUG_FOP_  1
+#define _DEFAULT_FONT_POINT_SIZE_  10
+#define _BOTTOM_VIEW_SPACE_RESERVE_  50
+
+
 static const int DefaultStartZoom = 220;
 
 /**
@@ -31,10 +36,12 @@ class QTextPanel : public QGraphicsView
 		void keyPressEvent(QKeyEvent *e);
 		void resizeEvent(QResizeEvent *event);
 		QSettings setter;
+        GraphicsScene *scene;
 
 	public:
 		QRectF boundingRect();
-		GraphicsScene *scene;
+        QTextCursor textCursor();
+        QTextDocument *document();
 		QRectF rectToScene();
 		QTextPanelLayerControl *BASE_TEXT;
 		QTextPanel(QWidget * parent  = 0);
@@ -46,9 +53,11 @@ class QTextPanel : public QGraphicsView
 		void displayTop();
 		void viewDisplay(const QRectF area);
 		void swapPaper();
+        void forceResize();
 
 	signals:
 		void sceneSwap();
+        void newPageFormatin();
 };
 
 #endif // QTEXTPANEL_H
