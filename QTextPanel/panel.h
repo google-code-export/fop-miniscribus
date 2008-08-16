@@ -42,6 +42,7 @@ class Panel : public QFrame
 		void SceneChange();
 		void toggleOpenGL();
 		void PaperSwap(const int index);
+        void catchUpdate();
 
 	public:
 		Panel(QWidget *parent = 0);

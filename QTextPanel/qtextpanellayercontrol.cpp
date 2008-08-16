@@ -33,7 +33,7 @@ QTextPanelLayerControl::~QTextPanelLayerControl()
 
 QTextPanelLayerControl::QTextPanelLayerControl(QGraphicsItem *parent)
 		: QGraphicsRectItem(QRectF(0,0,100,100),parent),device(new TextMount),
-         contextOpen(false),PageRecords(1)
+         contextOpen(false),PageRecords(1),printProcessRun(false),lastViewMatrixM11(1.00000)
 {
 	//////qDebug() << "### init....";
 	device->q = this;
@@ -60,6 +60,10 @@ void QTextPanelLayerControl::setupHeaderFooter()
 {
 	setHeaderActive(true);
 	setFooterActive(true);
+    ///////////const QRectF allpagerect = boundingRect();
+    /////////QPolygonF viewareap = mapFromScene ( scene()->sceneRect() );
+    ///////lastViewPortRect = allpagerect.intersected ( viewareap.boundingRect() );
+    lastViewPortRect = QRectF();
 }
 
 void QTextPanelLayerControl::setHeaderActive(bool active)
@@ -80,6 +84,7 @@ void QTextPanelLayerControl::setHeaderActive(bool active)
 			connect(header, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
 
 			header->UpdatePageFormat();
+            header->stopCursorBlink();
 		}
 	}
 	else
@@ -126,6 +131,7 @@ void QTextPanelLayerControl::setFooterActive(bool active)
 			connect(footer, SIGNAL(pagesize_swap()),this, SLOT(pageSizeReload()));
 
 			footer->UpdatePageFormat();
+            footer->stopCursorBlink();
 		}
 	}
 	else
@@ -304,7 +310,7 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 		painter->drawRect(pagen);
 		painter->setPen(Qt::NoPen);
 
-		if (x != 0)
+		if (x != 0 && !lastViewPortRect.isNull()  )
 		{
 			/* only draws header/footer if they are active */
 			if (headerActive && header)
@@ -335,8 +341,19 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 	painter->setBrush(Visiblerecord);
 	painter->drawRect(lastUpdateRequest);
 	*/
+    
+    if ( device->txtControl()->PlayCursorMode ) {
 
-
+    if ( !lastViewPortRect.isNull () ) {
+    QColor Visiblerecord(Qt::red);
+	Visiblerecord.setAlpha(14);
+    painter->setPen(QPen(Qt::darkMagenta,2));
+	painter->setBrush(Visiblerecord);
+	painter->drawRect(lastViewPortRect);
+    }
+    
+    }
+    
 
 	/*
 	 QColor BackHightlight("#a6ffc7");
@@ -506,6 +523,61 @@ bool QTextPanelLayerControl::sceneEvent(QEvent *event)
 	//////}
 	return QGraphicsItem::sceneEvent(event);
 }
+
+void QTextPanelLayerControl::paintManager(const QMatrix viewmat , const QRectF viewrect , bool printmodus )
+{
+    printProcessRun = printmodus;
+    const QRectF allpagerect = boundingRect();
+    QPolygonF viewareap = mapFromScene (viewrect);
+    const QRectF vieportrect = allpagerect.intersected ( viewareap.boundingRect() );
+    if ( lastViewPortRect.height() == vieportrect.height()  && 
+         lastViewPortRect.bottom() == vieportrect.bottom() && 
+         lastViewPortRect.top() == vieportrect.top()) {
+    return;
+    }
+    lastViewPortRect = vieportrect;
+    
+    
+    
+    /* cursor blink live */
+    if (!device->txtControl()->Edit_On()) {
+    /* cursor sleep not having long repaint */
+    return;
+    }
+    
+    const qreal HHscaled = viewmat.m11();
+    if (lastViewMatrixM11 == HHscaled) {
+    /* not news!!! view port rect is saved !! */
+    return;
+    }
+    
+    lastViewMatrixM11 = HHscaled;
+    bool blinkenable = false;
+    
+    if (printmodus) {
+    device->txtControl()->setBlinkingCursorEnabled(blinkenable); 
+    /* reactivate on focus int event */
+    }
+    /* unable to paint cursor to small view ?*/
+    if (HHscaled < 0.522222222222) {
+    device->txtControl()->setBlinkingCursorEnabled(blinkenable);   
+    }
+    qDebug() << "### QTextPanelLayerControl::paintManager  ->" << HHscaled <<  "-" << vieportrect;
+    if (footer && !device->txtControl()->Edit_On())  {
+      /* check if blink && deactivate */
+       footer->stopCursorBlink();
+    }
+    
+    if (header && !device->txtControl()->Edit_On()) {
+     /* check if blink && deactivate */
+        header->stopCursorBlink();
+    }
+    
+    
+}
+
+
+
 
 /*
 void QTextPanelLayerControl::deleteSelected()

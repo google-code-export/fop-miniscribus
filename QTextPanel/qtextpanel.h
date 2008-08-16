@@ -29,14 +29,16 @@ class QTextPanel : public QGraphicsView
 		void resizeEvent(QResizeEvent *event);
 		QSettings setter;
         GraphicsScene *scene;
+        QTextPanelLayerControl *BASE_TEXT;
     ////////  void setDocument(const QTextDocument * document , FileHandlerType Type = FOP);
 	public:
 		QRectF boundingRect();
         QTextCursor textCursor();
         QTextDocument *document() const;
 		QRectF rectToScene();
-		QTextPanelLayerControl *BASE_TEXT;
+		inline QTextPanelLayerControl *editor() { return BASE_TEXT; }
 		QTextPanel(QWidget * parent  = 0);
+        void setMatrix ( const QMatrix & matri, bool combine = false );
 		~QTextPanel();
 
 	public slots:
@@ -46,7 +48,9 @@ class QTextPanel : public QGraphicsView
         void forceResize();
 		void setHeaderActive(bool active) {BASE_TEXT->setHeaderActive(active); scene->update();}
 		void setFooterActive(bool active) {BASE_TEXT->setFooterActive(active); scene->update();}
+        void newPageInit();  /* begin a new blank page */
         void stressTestPaint();
+        void matrixExchange();
 
 	signals:
 		void sceneSwap();

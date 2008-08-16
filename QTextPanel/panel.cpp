@@ -87,6 +87,12 @@ Panel::Panel(QWidget *parent)
 	connect(headerButton, SIGNAL(toggled(bool)), textPanel, SLOT(setHeaderActive(bool)));
 	connect(footerButton, SIGNAL(toggled(bool)), textPanel, SLOT(setFooterActive(bool)));
 	connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
+    
+    /*  view port wake up to paint correct */
+    connect(resetButton, SIGNAL(clicked()), textPanel, SLOT(matrixExchange()));
+    connect(textPanel->verticalScrollBar(), SIGNAL(valueChanged (int)), textPanel, SLOT(matrixExchange()));
+    connect(textPanel->horizontalScrollBar(), SIGNAL(valueChanged (int)), textPanel, SLOT(matrixExchange()));
+    /*  view port wake up to paint correct */
 
 	resetView();
 	QTimer::singleShot(10, this, SLOT(displayTop()));
@@ -181,14 +187,23 @@ void Panel::resetView()
 
 void Panel::setupMatrix()
 {
-
-	qDebug() << "### ZoomLevel " << zoomSlider->value();
 	qreal scale = ::pow(2.0, (zoomSlider->value() - DefaultStartZoom) / 50.0);
 	QMatrix matrix;
 	matrix.scale(scale, scale);
 	textPanel->setMatrix(matrix);
 	setResetButtonEnabled();
+    /* matrix need time to eval */
+    QTimer::singleShot(100, this, SLOT(catchUpdate()));
+    
 }
+
+void Panel::catchUpdate()
+{
+    textPanel->forceResize();
+    
+}
+
+
 
 void Panel::setResetButtonEnabled()
 {
@@ -205,9 +220,12 @@ void Panel::displayTop()
 void Panel::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_F10) {
-       qDebug() << "### Panel::keyPressEvent   ->" << e->key(); 
         textPanel->stressTestPaint();
     }
+    if (e->key() == Qt::Key_F11) {
+        textPanel->newPageInit();
+    }
+    textPanel->matrixExchange();
 	QFrame::keyPressEvent(e);
 }
 

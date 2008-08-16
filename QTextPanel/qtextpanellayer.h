@@ -148,6 +148,7 @@ class AbsoluteLayer : public QObject, public QGraphicsRectItem
 		void UpdatePageFormat();
 		void RotateLayer(const int ro) ;
 		void BackGroundColor();
+        void stopCursorBlink();
 
 	signals:
 		void close_main_cursor();

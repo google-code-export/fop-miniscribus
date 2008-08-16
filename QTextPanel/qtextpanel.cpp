@@ -31,6 +31,11 @@ void QTextPanel::pageClear()
     QTimer::singleShot(22, this, SLOT(forceResize()));
 }
 
+void QTextPanel::newPageInit()
+{
+    pageClear();
+}
+
 
 QTextCursor QTextPanel::textCursor()
 {
@@ -49,6 +54,7 @@ void QTextPanel::forceResize()
 {
     scene->setSceneRect( rectToScene());
     emit newPageFormatin();
+    matrixExchange();
 }
 
 
@@ -57,6 +63,20 @@ void QTextPanel::resizeEvent(QResizeEvent *event)
 {
 	scene->setSceneRect( rectToScene());
     QGraphicsView::resizeEvent(event);
+    matrixExchange();
+}
+
+void QTextPanel::setMatrix ( const QMatrix & matri, bool combine )
+{
+    QGraphicsView::setMatrix(matri,combine);
+}
+
+
+void QTextPanel::matrixExchange()
+{
+    const QRect viewr = viewport()->rect();
+    QPolygonF realpoli = mapToScene ( viewr );
+    BASE_TEXT->paintManager(matrix(),realpoli.boundingRect(),onPrintRender);
 }
 
 
@@ -65,15 +85,12 @@ void QTextPanel::viewDisplay(const QRectF area)
 	/* if scale to big return */
 	QMatrix matx = matrix();
 	qreal HHscaled = matx.m11();
-    
-    qDebug() << "### Matrix m11 ->" << HHscaled;
-
 	if (HHscaled > 1.4333333)
 	{
 		return;
 	}
-
 	QGraphicsView::ensureVisible(area);
+    matrixExchange();
 }
 
 QRectF QTextPanel::rectToScene()

@@ -5,7 +5,7 @@
 #include <math.h>
 ////////////#define M_PI 3.14159265  <math.h> !!!!
 
-#define _PARSE_DEBUG_FOP_  1
+#define _DEBUG_PAINT_ITEM_  0
 #define _DEFAULT_FONT_POINT_SIZE_  10
 #define _BOTTOM_VIEW_SPACE_RESERVE_  50
 static const int DefaultStartZoom = 300;
