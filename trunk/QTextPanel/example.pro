@@ -18,7 +18,7 @@ QT += xml \
     svg
 CONFIG += qt \
     release \
-    warn_off \
+    warn_on \
     console
 contains(QT_CONFIG, opengl):QT += opengl
 macx:# ########## only on work to view debug output

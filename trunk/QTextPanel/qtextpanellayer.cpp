@@ -408,7 +408,7 @@ void AbsoluteLayer::focusOutEvent(QFocusEvent * event)
 {
 	///////////qDebug() << "### AbsoluteLayer focusOutEvent ...";
 	QGraphicsItem::setSelected(false);
-	dev->txtControl()->setBlinkingCursorEnabled(false);
+	stopCursorBlink();
 	return QGraphicsItem::focusOutEvent(event);
 }
 
@@ -416,6 +416,11 @@ void AbsoluteLayer::inputMethodEvent(QInputMethodEvent * event)
 {
 	//~ qDebug() << "### inputMethodEvent ...";
 	return QGraphicsItem::inputMethodEvent(event);
+}
+
+void AbsoluteLayer::stopCursorBlink()
+{
+    dev->txtControl()->setBlinkingCursorEnabled(false);
 }
 
 

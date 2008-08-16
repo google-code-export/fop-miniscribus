@@ -13,6 +13,8 @@
 #include "qtextpaneldata.h"
 #include "qtextpanelcontrol.h"
 
+#include "config.h"
+
 const int TextTypeFloating = QGraphicsItem::UserType + TextFloatObjectName;
 
 class TextMount;
@@ -27,10 +29,13 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
         int PageRecords;  /* current page tot for rect*/
 		QRectF lastRect;
 		bool contextOpen;
+        bool printProcessRun;
 		TextMount *device;
 		QRectF lastUpdateRequest;
 		QRectF lastVisibleRequest;
 		bool headerActive, footerActive;
+        qreal lastViewMatrixM11;
+        QRectF lastViewPortRect;  /* translated from view !!! */
 
 	protected:
 		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -61,6 +66,8 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		void changePageModel(PanelPageSize e);
 		void setHeaderActive(bool active);
 		void setFooterActive(bool active);
+        /* dont repaint cursor if not need */
+        void paintManager(const QMatrix viewmat , const QRectF viewrect , bool printmodus = false );
 
 	signals:
 		void pageCountChange();
