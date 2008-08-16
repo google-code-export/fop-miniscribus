@@ -182,14 +182,12 @@ void Panel::resetView()
 void Panel::setupMatrix()
 {
 
-	///////////////////qDebug() << "### setupMatrix " << zoomSlider->value();
+	qDebug() << "### ZoomLevel " << zoomSlider->value();
 	qreal scale = ::pow(2.0, (zoomSlider->value() - DefaultStartZoom) / 50.0);
 	QMatrix matrix;
 	matrix.scale(scale, scale);
-	///////matrix.rotate(10);
 	textPanel->setMatrix(matrix);
 	setResetButtonEnabled();
-	/////////textPanel->displayTop();
 }
 
 void Panel::setResetButtonEnabled()

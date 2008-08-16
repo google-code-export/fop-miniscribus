@@ -971,6 +971,19 @@ void QTextPanelControl::Controller_keyPressEvent(QKeyEvent * e)
 		e->accept();
 		return;
 	}
+    /* need to stress Paint on developed time */
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_F)
+	{
+        FontText();
+		e->accept();
+		return;
+	}
+    if ((e->modifiers() & Qt::AltModifier) && e->key() == Qt::Key_F)
+	{
+        TXcolor();
+		e->accept();
+		return;
+	}
 
 	if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Z || e == QKeySequence::Undo)
 	{
