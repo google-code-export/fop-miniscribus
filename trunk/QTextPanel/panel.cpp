@@ -199,3 +199,23 @@ void Panel::displayTop()
 {
 	textPanel->displayTop();
 }
+
+
+
+void Panel::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_F10) {
+       qDebug() << "### Panel::keyPressEvent   ->" << e->key(); 
+        textPanel->stressTestPaint();
+    }
+	QFrame::keyPressEvent(e);
+}
+
+
+
+
+
+
+
+
+

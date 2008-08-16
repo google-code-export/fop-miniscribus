@@ -276,6 +276,11 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 	painter->setBrush(Qt::lightGray);
 	painter->drawRect(lastRect);
 	const int pageCount = qBound(1, document()->pageCount(), MaximumPages);
+    
+    if (pageCount >= MaximumPages) {
+      ///////return;  /* performance from maximum pages */
+    }
+    
 
 	/* draw white first background */
 	for (int x = 0; x < pageCount; ++x)

@@ -38,6 +38,7 @@ lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) | lessThan(QT_VER_PAT, 1) {
 # Input
 HEADERS += qtextpanel.h \
     panel.h \
+    config.h \
     qtextpanelimage.h \
     qtextpanelcontrol.h \
     qtextpanellayercontrol.h \
