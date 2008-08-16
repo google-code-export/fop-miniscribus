@@ -65,6 +65,8 @@ void QTextPanel::viewDisplay(const QRectF area)
 	/* if scale to big return */
 	QMatrix matx = matrix();
 	qreal HHscaled = matx.m11();
+    
+    qDebug() << "### Matrix m11 ->" << HHscaled;
 
 	if (HHscaled > 1.4333333)
 	{

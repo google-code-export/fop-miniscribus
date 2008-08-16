@@ -17,7 +17,7 @@
 #define _BOTTOM_VIEW_SPACE_RESERVE_  50
 
 
-static const int DefaultStartZoom = 220;
+static const int DefaultStartZoom = 300;
 
 /**
  * This class controls the display of Scene and Views
