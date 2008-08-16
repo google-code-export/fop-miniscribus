@@ -1009,7 +1009,6 @@ bool GraphicsScene::WakeUp(const QPointF incomming)
 
 void GraphicsScene::keyPressEvent(QKeyEvent *e)
 {
-	//////////////qDebug() << "### keyPressEvent scene ...";
 	QGraphicsScene::keyPressEvent(e);
 }
 

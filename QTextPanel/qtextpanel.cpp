@@ -38,7 +38,7 @@ QTextCursor QTextPanel::textCursor()
 }
 
 
-QTextDocument *QTextPanel::document()
+QTextDocument *QTextPanel::document() const
 {
 	return BASE_TEXT->document();
 }
@@ -81,10 +81,12 @@ QRectF QTextPanel::rectToScene()
 	PanelPageSize PAGE_MODEL = QTextPanelData::instance()->CurrentPageFormat();
     const QTextDocument *bdoc = BASE_TEXT->document()->clone();
     const int PageSumm = qBound (1,bdoc->pageCount(),MaximumPages);
+    /*
     if (PageSumm == MaximumPages) {
         QMessageBox::warning(this, tr("Alert.........."),
                            tr("You are try to cover maximum page %1!").arg(PageSumm));
     }
+    */
     const qreal fromTopY = PageSumm * PAGE_MODEL.G_regt.height();
     const qreal spacepage = (PageSumm - 1) * InterSpace;
     return QRectF(0,0,PAGE_MODEL.G_regt.width(),fromTopY + spacepage + _BOTTOM_VIEW_SPACE_RESERVE_);
@@ -126,3 +128,66 @@ QTextPanel::~QTextPanel()
 {
 	pageClear();
 }
+
+
+
+void QTextPanel::stressTestPaint()
+{
+    /////////pageClear();  /* remove all if exist text */
+    
+    
+    QTextDocument *playdoc = new QTextDocument();
+    QTextCursor c(playdoc);
+    c.setPosition(0,QTextCursor::MoveAnchor);
+    
+    int loop = -1;
+    c.beginEditBlock();
+    
+    QStringList colorNames = QColor::colorNames();
+    foreach (QString name, colorNames) {
+        loop++;
+        
+        if (loop != 0) { 
+        c.insertBlock();
+        }
+        
+        ////////qDebug() << "### name ->" << name;
+        
+        QPixmap e = createColorMaps( name );
+        playdoc->addResource(QTextDocument::ImageResource,QUrl(name),e);
+        QTextImageFormat format;
+        format.setName( name );
+        format.setHeight ( e.height() );
+        format.setWidth ( e.width() );
+        format.setToolTip(name);
+        c.insertImage( format );
+        c.insertText(QString(QChar::LineSeparator));   /* br */
+        QTextBlockFormat bbformat = c.blockFormat();
+        bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysAfter);
+        c.setBlockFormat(bbformat);
+        
+        for (int i = 0; i < 15; ++i)  {
+        c.insertText(name+ "   .");   
+        }
+        c.endEditBlock();
+        c.atBlockEnd();
+        
+    }
+    
+    setHeaderActive(false);
+	setFooterActive(true);  /* to display page nr */
+    BASE_TEXT->setDocument(playdoc->clone(),FOP);
+    /* update all chunk */
+    forceResize();
+}
+
+
+
+
+
+
+
+
+
+
+

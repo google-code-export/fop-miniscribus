@@ -4,20 +4,12 @@
 #include <QtCore>
 #include <QDebug>
 #include <QWidget>
-
+#include "config.h"
 #include "qtextpanelmime.h"
 #include "qtextpaneldata.h"
 #include <QGraphicsView>
 #include "qtextpanellayercontrol.h"
 
-
-
-#define _PARSE_DEBUG_FOP_  1
-#define _DEFAULT_FONT_POINT_SIZE_  10
-#define _BOTTOM_VIEW_SPACE_RESERVE_  50
-
-
-static const int DefaultStartZoom = 300;
 
 /**
  * This class controls the display of Scene and Views
@@ -37,11 +29,11 @@ class QTextPanel : public QGraphicsView
 		void resizeEvent(QResizeEvent *event);
 		QSettings setter;
         GraphicsScene *scene;
-
+    ////////  void setDocument(const QTextDocument * document , FileHandlerType Type = FOP);
 	public:
 		QRectF boundingRect();
         QTextCursor textCursor();
-        QTextDocument *document();
+        QTextDocument *document() const;
 		QRectF rectToScene();
 		QTextPanelLayerControl *BASE_TEXT;
 		QTextPanel(QWidget * parent  = 0);
@@ -54,6 +46,7 @@ class QTextPanel : public QGraphicsView
         void forceResize();
 		void setHeaderActive(bool active) {BASE_TEXT->setHeaderActive(active); scene->update();}
 		void setFooterActive(bool active) {BASE_TEXT->setFooterActive(active); scene->update();}
+        void stressTestPaint();
 
 	signals:
 		void sceneSwap();

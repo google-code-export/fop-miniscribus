@@ -30,6 +30,7 @@ class Panel : public QFrame
 		QToolButton *openGlButton;
 		QToolButton *headerButton;
 		QToolButton *footerButton;
+        void keyPressEvent(QKeyEvent *e);
 
 	private slots:
 		void resetView();
