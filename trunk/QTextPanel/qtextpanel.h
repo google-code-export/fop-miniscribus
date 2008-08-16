@@ -51,6 +51,11 @@ class QTextPanel : public QGraphicsView
         void newPageInit();  /* begin a new blank page */
         void stressTestPaint();
         void matrixExchange();
+        void viewPortchange();
+        
+    private slots:
+      void cursorChange();
+    
 
 	signals:
 		void sceneSwap();

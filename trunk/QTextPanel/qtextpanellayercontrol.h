@@ -36,6 +36,8 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		bool headerActive, footerActive;
         qreal lastViewMatrixM11;
         QRectF lastViewPortRect;  /* translated from view !!! */
+        int currentActivePager;  /* center from vieport */
+        int currentCursorPager;  /* cursor */
 
 	protected:
 		void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -60,6 +62,7 @@ class QTextPanelLayerControl : public QObject, public QGraphicsRectItem
 		int type() const {return TextTypeFloating;}
 		QRectF boundingRect() const;
 		QString pageName();
+        QStringList toolTipInfoCurrent();
 		QTextDocument *document();
 		void setDocument(const QTextDocument * document , FileHandlerType Type = FOP);
 		QTextCursor textCursor();

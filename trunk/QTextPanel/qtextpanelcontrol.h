@@ -290,7 +290,7 @@ class ScribePage : public QTextPanelControl
 		bool AllowedPosition(const QPointF inpos);
 		QRectF GroupboundingRect();
 		QRectF boundingRect();
-		void DrawPage(const int index  , QPainter * painter , const int cursorpage);
+		void DrawPage(const int index  , QPainter * painter );
 		QPointF PageIndexTopLeft(const int index);
 		PanelPageSize PAGE_MODEL;
 };
