@@ -27,6 +27,8 @@ void QTextPanel::pageClear()
     scene->addItem(BASE_TEXT);
 	connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
     connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
+    connect(BASE_TEXT, SIGNAL(autoCursorChange() ), this, SLOT(cursorChange()));
+    
     /* load document and recalculate the first time */
     QTimer::singleShot(22, this, SLOT(forceResize()));
 }
@@ -34,7 +36,14 @@ void QTextPanel::pageClear()
 void QTextPanel::newPageInit()
 {
     pageClear();
+    emit sceneSwap();
 }
+
+void QTextPanel::cursorChange()
+{
+    emit sceneSwap();
+}
+
 
 
 QTextCursor QTextPanel::textCursor()
@@ -91,6 +100,7 @@ void QTextPanel::viewDisplay(const QRectF area)
 	}
 	QGraphicsView::ensureVisible(area);
     matrixExchange();
+    emit sceneSwap();
 }
 
 QRectF QTextPanel::rectToScene()
@@ -109,10 +119,16 @@ QRectF QTextPanel::rectToScene()
     return QRectF(0,0,PAGE_MODEL.G_regt.width(),fromTopY + spacepage + _BOTTOM_VIEW_SPACE_RESERVE_);
 }
 
-void QTextPanel::printSetup(bool printok)
+void QTextPanel::viewPortchange()
+{
+	matrixExchange();
+}
+
+
+void QTextPanel::printSetup( bool printok )
 {
 	onPrintRender = printok;
-	update();
+	
 }
 
 void QTextPanel::swapPaper()
@@ -179,9 +195,9 @@ void QTextPanel::stressTestPaint()
         format.setToolTip(name);
         c.insertImage( format );
         c.insertText(QString(QChar::LineSeparator));   /* br */
-        QTextBlockFormat bbformat = c.blockFormat();
-        bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysAfter);
-        c.setBlockFormat(bbformat);
+        ////////////QTextBlockFormat bbformat = c.blockFormat();
+        /////////bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysAfter);
+        ////////c.setBlockFormat(bbformat);
         
         for (int i = 0; i < 15; ++i)  {
         c.insertText(name+ "   .");   

@@ -2201,20 +2201,21 @@ void ScribePage::paint(QPainter * painter , const QStyleOptionGraphicsItem *opti
 	for (int i = 0; i < PageSumm; ++i)
 	{
 		const QPointF topleft = PageIndexTopLeft(i);  /* page top left point */
-		DrawPage(i,painter,i);
+		DrawPage(i,painter);
 	}
 }
 
-void ScribePage::DrawPage(const int index  , QPainter * painter , const int cursorpage)
+void ScribePage::DrawPage(const int index  , QPainter * painter )
 {
 	const QPointF topleft = PageIndexTopLeft(index);
 	QAbstractTextDocumentLayout::PaintContext CTX;
 	CTX.palette.setColor(QPalette::Text, Qt::black);
 	const QRectF body = QRectF(0, topleft.y() ,Page_Edit_Rect.width(),Page_Edit_Rect.height()); /* on view */
 	QRectF view(0, index * body.height(), body.width(), body.height());    /* on doc */
-
-	if (index != cursorpage || !Edit_On())
+    
+	if (!Edit_On())
 	{
+        /* no cursor */
 		painter->save();
 		painter->translate(body.left(), body.top() - index * body.height());
 		painter->setClipRect(view);
@@ -2269,15 +2270,13 @@ void ScribePage::DrawPage(const int index  , QPainter * painter , const int curs
 
 	if (PlayCursorMode && !controlTextCursor.currentTable() && cursortime && Edit_On())
 	{
+        /* ScrLk  on */
 		painter->save();
-		/////////QLineF cursorLiner = BlinkCursorLine();
 		const QLineF cursorLiner2 = ViewBlinkedCursorLine();
 		painter->setPen(QPen(Qt::red,0.6));
 		painter->setBrush(Qt::red);
 		painter->drawLine(cursorLiner2);
-		/////////////painter->drawEllipse(cursorLiner2.p2(),5,5);
 		painter->restore();
-
 	}
 
 	/*

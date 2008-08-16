@@ -30,7 +30,9 @@ class Panel : public QFrame
 		QToolButton *openGlButton;
 		QToolButton *headerButton;
 		QToolButton *footerButton;
+        QLabel *pagesInfo;
         void keyPressEvent(QKeyEvent *e);
+        bool eventFilter(QObject *object, QEvent *e);
 
 	private slots:
 		void resetView();
@@ -39,10 +41,12 @@ class Panel : public QFrame
 		void displayTop();
 		void zoomIn();
 		void zoomOut();
-		void SceneChange();
+        /* cursor && sceneChange to rebuild later actions */
+		void sceneChange();  
 		void toggleOpenGL();
 		void PaperSwap(const int index);
         void catchUpdate();
+        void pageInfo();
 
 	public:
 		Panel(QWidget *parent = 0);

@@ -9,7 +9,7 @@ Panel::Panel(QWidget *parent)
 	textPanel->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 	//textPanel->setFooterActive(false);
 
-	setMinimumSize(999,508);
+	setMinimumSize(820,400);
 	int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);
 	QSize iconSize(size, size);
 
@@ -29,9 +29,13 @@ Panel::Panel(QWidget *parent)
 	footerButton->setCheckable(true);
 	footerButton->setChecked(true);
 
+    pagesInfo = new QLabel;
+
+
 	labelLayout->addWidget(openGlButton);
 	labelLayout->addWidget(headerButton);
 	labelLayout->addWidget(footerButton);
+    labelLayout->addWidget(pagesInfo);
 	labelLayout->addStretch();
 
 	PortraitPaper = new QComboBox;
@@ -82,17 +86,27 @@ Panel::Panel(QWidget *parent)
 	connect(textPanel->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(setResetButtonEnabled()));
 	connect(zoomInIcon, SIGNAL(clicked()), this, SLOT(zoomIn()));
 	connect(zoomOutIcon, SIGNAL(clicked()), this, SLOT(zoomOut()));
-	///////connect(textPanel, SIGNAL(sceneSwap()), this, SLOT(SceneChange()));
+	connect(textPanel, SIGNAL(sceneSwap()), this, SLOT(sceneChange()));
 	connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
 	connect(headerButton, SIGNAL(toggled(bool)), textPanel, SLOT(setHeaderActive(bool)));
 	connect(footerButton, SIGNAL(toggled(bool)), textPanel, SLOT(setFooterActive(bool)));
 	connect(PortraitPaper, SIGNAL(currentIndexChanged(int)), this, SLOT(PaperSwap(int)));
     
+    
+    textPanel->verticalScrollBar()->installEventFilter(this);
+    
     /*  view port wake up to paint correct */
     connect(resetButton, SIGNAL(clicked()), textPanel, SLOT(matrixExchange()));
-    connect(textPanel->verticalScrollBar(), SIGNAL(valueChanged (int)), textPanel, SLOT(matrixExchange()));
-    connect(textPanel->horizontalScrollBar(), SIGNAL(valueChanged (int)), textPanel, SLOT(matrixExchange()));
+    connect(textPanel->verticalScrollBar(), SIGNAL(valueChanged (int)), textPanel, SLOT(viewPortchange()));
+    connect(textPanel->horizontalScrollBar(), SIGNAL(valueChanged (int)),textPanel, SLOT(viewPortchange()));
+    connect(zoomSlider, SIGNAL(valueChanged (int)),textPanel, SLOT(viewPortchange()));
     /*  view port wake up to paint correct */
+    
+    connect(textPanel->editor(), SIGNAL(autoCursorChange()),this, SLOT(pageInfo()));
+    
+    
+    
+    
 
 	resetView();
 	QTimer::singleShot(10, this, SLOT(displayTop()));
@@ -101,7 +115,27 @@ Panel::Panel(QWidget *parent)
 	toggleOpenGL();
 #endif
 
+    pageInfo();
+
 }
+
+
+bool Panel::eventFilter(QObject *object, QEvent *e)
+{
+    //////qDebug() << "###  event scrollbar " << e->type();
+	if (textPanel->verticalScrollBar() != object) {
+		return false;
+	}
+
+	   if ( e->type() != QEvent::Paint) {
+        pageInfo();
+		return false;
+		}
+
+    return false;   /* cath all not needed */
+}
+
+
 
 void Panel::PaperSwap(const int index)
 {
@@ -157,9 +191,11 @@ void Panel::toggleOpenGL()
 }
 
 
-void Panel::SceneChange()
+void Panel::sceneChange()
 {
 	tievents++;
+    ///////qDebug() << "### SceneChange  " << tievents;
+    pageInfo();
 }
 
 void Panel::zoomIn()
@@ -174,13 +210,9 @@ void Panel::zoomOut()
 
 void Panel::resetView()
 {
-
-	const qreal Page_Width = QTextPanelData::instance()->CurrentPageFormat().G_regt.width();
 	zoomSlider->setValue(DefaultStartZoom);
 	setupMatrix();
-	///////textPanel->ensureVisible(QRectF(0, 0, Page_Width,10));
 	resetButton->setEnabled(false);
-	////////////////textPanel->fitInView(textPanel->scene->sceneRect(), Qt::KeepAspectRatio);
 }
 
 
@@ -199,8 +231,7 @@ void Panel::setupMatrix()
 
 void Panel::catchUpdate()
 {
-    textPanel->forceResize();
-    
+    textPanel->viewPortchange();
 }
 
 
@@ -213,9 +244,15 @@ void Panel::setResetButtonEnabled()
 void Panel::displayTop()
 {
 	textPanel->displayTop();
+    textPanel->viewPortchange();
 }
-
-
+/* draw page nummer */
+void Panel::pageInfo()
+{
+    QStringList data = textPanel->editor()->toolTipInfoCurrent();
+    /////qDebug() << "### pageInfo -> tip   .." << data;
+    pagesInfo->setText ( data.join(" ") );
+}
 
 void Panel::keyPressEvent(QKeyEvent *e)
 {
@@ -225,7 +262,15 @@ void Panel::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_F11) {
         textPanel->newPageInit();
     }
-    textPanel->matrixExchange();
+    textPanel->viewPortchange();
+    if (e->key() == Qt::Key_F12) {
+        displayTop();
+    }
+    if (e->key() == Qt::Key_F9) {
+        int maxscroll = textPanel->verticalScrollBar()->maximum();
+        textPanel->verticalScrollBar()->setValue ( maxscroll );
+    }
+    
 	QFrame::keyPressEvent(e);
 }
 

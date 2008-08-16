@@ -33,7 +33,7 @@ QTextPanelLayerControl::~QTextPanelLayerControl()
 
 QTextPanelLayerControl::QTextPanelLayerControl(QGraphicsItem *parent)
 		: QGraphicsRectItem(QRectF(0,0,100,100),parent),device(new TextMount),
-         contextOpen(false),PageRecords(1),printProcessRun(false),lastViewMatrixM11(1.00000)
+         contextOpen(false),PageRecords(1),currentActivePager(1),currentCursorPager(1),printProcessRun(false),lastViewMatrixM11(1.00000)
 {
 	//////qDebug() << "### init....";
 	device->q = this;
@@ -60,10 +60,20 @@ void QTextPanelLayerControl::setupHeaderFooter()
 {
 	setHeaderActive(true);
 	setFooterActive(true);
-    ///////////const QRectF allpagerect = boundingRect();
-    /////////QPolygonF viewareap = mapFromScene ( scene()->sceneRect() );
-    ///////lastViewPortRect = allpagerect.intersected ( viewareap.boundingRect() );
     lastViewPortRect = QRectF();
+    /*  focus first line  page */
+    setFocus();
+    //////
+    QGraphicsSceneMouseEvent *mouseEvent = new QGraphicsSceneMouseEvent(QEvent::GraphicsSceneMousePress);
+    mouseEvent->setAccepted(true);
+    mouseEvent->setPos(QPointF(1,1));
+    mouseEvent->setScenePos(QPointF(1,1));
+    //////mouseEvent->setScreenPos(QCursor::pos());
+    //////////mouseEvent->setButtonDownPos(QCursor::pos());
+    ///////////mouseEvent->setWidget(0);
+    mousePressEvent(mouseEvent);
+    delete mouseEvent;
+    device->txtControl()->CursorMovetoPosition(QPointF(1,1));
 }
 
 void QTextPanelLayerControl::setHeaderActive(bool active)
@@ -222,11 +232,7 @@ void QTextPanelLayerControl::updateArea(const QRect areas)
 
 
 
-void QTextPanelLayerControl::cursorStopIt()
-{
-	device->txtControl()->setBlinkingCursorEnabled(false);
-	sceneReload();
-}
+
 
 void QTextPanelLayerControl::pageSizeReload()
 {
@@ -274,6 +280,17 @@ QString QTextPanelLayerControl::pageName()
 	return device->txtControl()->Model().HName();
 }
 
+QStringList QTextPanelLayerControl::toolTipInfoCurrent()
+{
+    const int pageCount = qBound(1, document()->pageCount(), MaximumPages);
+    QStringList dd;
+    ///////dd.append(pageName());
+    dd.append(QString("Tot.%1").arg(pageCount));
+    dd.append(QString("ViewPage.%1").arg(currentActivePager));   /* current page on scroll not cursor */
+    dd.append(QString("CursorPage.%1").arg(currentCursorPager));   /* current page on scroll not cursor */
+    return dd;
+}
+
 void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	lastRect = device->txtControl()->boundingRect();
@@ -293,17 +310,30 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 	{
 		painter->save();
 		const QRectF pagen =  device->txtControl()->Model().PageExternal(x);
+        const QLineF cursorLiner2 = device->txtControl()->ViewBlinkedCursorLine();
+        if (pagen.contains(cursorLiner2.p1())) {
+             currentCursorPager = x + 1;
+        }
+        if ( !lastViewPortRect.isNull () ) {
+            if (pagen.contains(lastViewPortRect.center())) {
+            currentActivePager = x + 1;
+            }
+        }
 		painter->setBrush(QColor(Qt::white));
 		painter->setPen(QPen(Qt::black,0.3));
 		painter->drawRect(pagen);
 		painter->restore();
-		device->txtControl()->DrawPage(x, painter, x);
+		device->txtControl()->DrawPage(x,painter);
 		painter->save();
 
+        if ( !device->txtControl()->PlayCursorMode ) {
 		QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
 		QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
 		painter->fillRect(rightShadow, Qt::darkGray);
 		painter->fillRect(bottomShadow, Qt::darkGray);
+        }
+        
+        
 		/* small border */
 		painter->setBrush(Qt::NoBrush);
 		painter->setPen(QPen(Qt::black,0.3));
@@ -523,6 +553,15 @@ bool QTextPanelLayerControl::sceneEvent(QEvent *event)
 	//////}
 	return QGraphicsItem::sceneEvent(event);
 }
+
+
+
+void QTextPanelLayerControl::cursorStopIt()
+{
+	device->txtControl()->setBlinkingCursorEnabled(false);
+	sceneReload();
+}
+
 
 void QTextPanelLayerControl::paintManager(const QMatrix viewmat , const QRectF viewrect , bool printmodus )
 {
