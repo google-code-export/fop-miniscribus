@@ -32,6 +32,7 @@ public:
 protected:
     int doc_cur;
     int table_cur;
+    bool oldMiniScribusFormat;
     void read();
     void RootFramePaint( const QDomElement e );
     bool FoBlockTagPaint( const QDomElement e , QTextCursor Cursor  );  /* fo:block + fo:character + link */

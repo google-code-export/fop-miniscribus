@@ -61,7 +61,24 @@ class StreamFop
   QBuffer *d;
 }; 
 
-
+static inline bool isvalidXmlencoding( const QString xmlfile  )
+{
+    QFile *xfile = new QFile( xmlfile );
+    if (!xfile->exists()) {
+    return false;
+    }
+    QString Firstline;
+    bool validxml = false;
+    if (xfile->open(QIODevice::ReadOnly))    {
+             char buf[1024];
+             qint64 lineLength = xfile->readLine(buf, sizeof(buf));
+             Firstline = QString(buf);
+             if (lineLength > 10 && Firstline.contains("encoding")) {
+             validxml = true;
+             }  
+    }
+    return validxml;
+}
 
 
 

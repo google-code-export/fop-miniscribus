@@ -36,7 +36,7 @@ static inline QString RecoveryBreackLineParagraph()
         }
 }
 
-static bool AllowtoBreack( const QDomElement e )
+static inline bool AllowtoBreack( const QDomElement e )
 {
         const qreal founditx = e.attribute("speak-numeral").toDouble();
         if (ApplicationsVersionFopConvert == founditx) {
@@ -47,7 +47,21 @@ static bool AllowtoBreack( const QDomElement e )
 }
                
                
-               
+static inline QString FileFilterHaving()
+{
+  QString filter;
+  filter = "";
+  filter += QString( "MiniScribus file" ) + " (*.fop *.fop.gz);;";
+  filter += QString( "Apache Fop file" ) + " (*.fo *.fo.gz);;"; 
+  filter+= QString( "MiniScribus binary stream file" ) + " (*.page);;"; 
+  filter+= QString( "OpenOffice 1.1 file format" ) + " (*.sxw);;"; 
+  filter+= QString( "OpenOffice 2.4 file format" ) + " (*.odt);;"; 
+  filter+= QString( "XHTML file format" ) + " (*.htm *.html);;"; 
+  //////filter += ")";
+  return filter;
+}
+  
+        
                
 
 

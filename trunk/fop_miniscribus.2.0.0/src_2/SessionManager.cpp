@@ -27,9 +27,9 @@ ApiSession::ApiSession()
 	history_page_norms.clear();
   
   /* qsetting init to open */
-  QCoreApplication::setOrganizationName("CrossKern");
-  QCoreApplication::setOrganizationDomain("fop.ciz.ch");
-  QCoreApplication::setApplicationName("Dummy TextApi");
+  ///////QCoreApplication::setOrganizationName("CrossKern");
+  ////QCoreApplication::setOrganizationDomain("fop.ciz.ch");
+  ///////QCoreApplication::setApplicationName("Dummy TextApi");
   
   AppendPaper( A4 );  /* append default */
   

@@ -114,7 +114,7 @@ typedef enum {
 	SHOW_SOURCE_HTML = 703,
 	SHOW_SOURCE_SCRIBE = 704,
     SHOW_SOURCE_FOP = 705,
-	
+	OPEN_PAGE_CHUNK = 858,
 	MARGIN_CURRENT_ELEMENT			= 950,
 	/* Page group layer */
 	
@@ -273,22 +273,27 @@ public:
   void registerCommand_S(const StaticCmd&);
   void registerCommand_D(const DinamicCmd&);
   void registerCommand_F(const AbsoluteCmd&);
+  void recordmainaction(const StaticCmd&);
   QAction* actS(StaticCommandID);
   QAction* actD(DynamicCommandID);
   QAction* actF(AbsCommandID);
+  QAction* actM(StaticCommandID);
   inline void clearS() { Scmd_.clear(); }
   inline void clearD() { Dcmd_.clear(); }
   inline void clearF() { Fcmd_.clear(); }
+  inline void clearM() { Maincmd_.clear(); }
   inline int countD() { return Dcmd_.size(); }
   inline int countS() { return Scmd_.size(); }
   inline int countF() { return Fcmd_.size(); }
+  inline int countM() { return Maincmd_.size(); }
 
 private:
 	CommandStorage() { }
 	static CommandStorage* st_;
-        QMap<AbsCommandID, QAction*> Fcmd_;
+    QMap<AbsCommandID, QAction*> Fcmd_;
 	QMap<StaticCommandID, QAction*> Scmd_;
 	QMap<DynamicCommandID, QAction*> Dcmd_;
+    QMap<StaticCommandID, QAction*> Maincmd_;
 };
 
 #endif

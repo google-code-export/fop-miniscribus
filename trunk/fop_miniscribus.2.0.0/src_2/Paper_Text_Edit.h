@@ -46,19 +46,26 @@ signals:
    void dinamic_autocursor_swap();
 public slots:
    void DisplayTop();
-   void  ViewDisplay( const QRectF area );
-   void  SwapPaper();
+   void ViewDisplay( const QRectF area );
+   void SwapPaper();
    void ForceResize();
+   void openFile( const QString file );
+   void openFile();
 private slots:
     
 
 protected:
+    QString currentopenfilerunning;
+    QString currentopenfilealternate;
+    bool gzippedfile;
+    QTextCodec *currentfilecodec;
     void pageclear();
     QPixmap chessgrid;
     void PrintSetup( bool printok );
     void keyPressEvent(QKeyEvent *e );
     void resizeEvent(QResizeEvent *event);
     QSettings setter;
+    void recordActionHere();
 private:
     bool OnPrintRender;
 
@@ -111,6 +118,7 @@ public:
     PaperTextEdit( QWidget *parent = 0 );
     ~PaperTextEdit();
 private:
+    QToolBar *docbar;
     QToolBar *tb_0;
     QToolBar *tb_1;
     QToolBar *tb_2;

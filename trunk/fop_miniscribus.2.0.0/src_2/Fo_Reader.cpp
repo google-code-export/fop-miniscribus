@@ -12,20 +12,31 @@ Fo_Reader::~Fo_Reader()
 }
 
 Fo_Reader::Fo_Reader(  const QString readfile , QObject *parent  )
-        : Fo_Format( parent ),device( new StreamFop()),file(0),Qdoc(new QTextDocument()),Current_Block_Tree_Level(0)
+        : Fo_Format( parent ),device( new StreamFop()),
+         file(0),Qdoc(new QTextDocument()),
+         Current_Block_Tree_Level(0),oldMiniScribusFormat(false)
 {
     doc_cur = 0;
     QFont userfont( QApplication::font() );
     userfont.setPointSize(_DEFAULT_FONT_POINT_SIZE_);
     Qdoc->setDefaultFont ( userfont );
-
+    Tcursor = QTextCursor(Qdoc);
+    finfo = QFileInfo(readfile);
+    file = finfo.absoluteFilePath();
     ImageCount = 0;
     table_cur = 0;
+    LoadFopFile(file);
+}
+
+void Fo_Reader::LoadFopFile( const QString readfile )
+{
     if (device->LoadFile(readfile))
     {
         if (device->isValid())
         {
             finfo = QFileInfo(readfile);
+            const QString ext = finfo.completeSuffix().toLower();
+            oldMiniScribusFormat = ext == "fop" ? true : false;
             file = finfo.absoluteFilePath();
             read_dir = QDir(finfo.absolutePath());
             Xdoc = device->Dom();
@@ -34,8 +45,8 @@ Fo_Reader::Fo_Reader(  const QString readfile , QObject *parent  )
             read();
         }
     }
-    Tcursor = QTextCursor(Qdoc);
 }
+
 
 void Fo_Reader::read()
 {
@@ -1040,22 +1051,7 @@ void Fo_Reader::DocRootFrameDefault()
     Tframe->setFrameFormat(Ftf);
 }
 
-void Fo_Reader::LoadFopFile( const QString readfile )
-{
-    if (device->LoadFile(readfile))
-    {
-        if (device->isValid())
-        {
-            finfo = QFileInfo(readfile);
-            file = finfo.absoluteFilePath();
-            read_dir = QDir(finfo.absolutePath());
-            Xdoc = device->Dom();
-            delete device;
-            device = new StreamFop();
-            read();
-        }
-    }
-}
+
 
 bool Fo_Reader::FoChildBlockPaint( const QDomElement e , bool recursive )
 {

@@ -11,7 +11,7 @@
 using namespace ApacheFop;
 
 GraphicsView::GraphicsView( QWidget * parent )
-	: QGraphicsView( parent ),OnPrintRender(false)
+	: QGraphicsView( parent ),OnPrintRender(false),gzippedfile(false)
 {
 	 QApplication::restoreOverrideCursor();
    QPalette p = palette();
@@ -34,8 +34,91 @@ GraphicsView::GraphicsView( QWidget * parent )
    connect(scene, SIGNAL(MakeVisible(QRectF) ), this, SLOT(ViewDisplay(QRectF)));
    connect(BASE_TEXT, SIGNAL(PageCountChange() ), this, SLOT(ForceResize()));
    QTimer::singleShot(400, this, SLOT(ForceResize())); 
+   recordActionHere();
+}
+
+void GraphicsView::recordActionHere()
+{
+    CommandStorage *snc = CommandStorage::instance();
+    snc->recordmainaction(StaticCmd(OPEN_PAGE_CHUNK,tr("Open file"),QIcon(":/img/open-48x48.png"),QKeySequence("CTRL+O"),this,SLOT(openFile())));
     
 }
+
+void GraphicsView::openFile()
+{
+    QString file = QFileDialog::getOpenFileName(this, tr( "Choose a file to open" ), QString(setter.value("LastDir").toString()) , FileFilterHaving() );
+    if ( file.isEmpty() ) {
+    return;
+    }
+    QFileInfo fi(file);
+    setter.setValue("LastDir",fi.absolutePath() +"/");
+    openFile( file );
+}
+
+void GraphicsView::openFile( const QString file )
+{
+    QFileInfo fi(file);
+    ApiSession *session = ApiSession::instance();
+    const QString dir_ = QDir::currentPath();
+    QDir::setCurrent(fi.absolutePath());
+    StreamFop *buf = new StreamFop();
+    currentopenfilerunning = "";
+    gzippedfile = false;
+    ApiSession *sx = ApiSession::instance();
+    const QString ext = fi.completeSuffix().toLower();
+    currentopenfilealternate = fi.absolutePath() + QString("/") + fi.baseName() + QString(".tmpfox");
+    qt_unlink(currentopenfilealternate);
+    currentopenfilerunning =  fi.absoluteFilePath();
+    
+    if (ext == "fo" || ext == "fop" || ext == "fop.gz" || ext == "fo.gz") {
+        if (ext == "fop.gz" || ext == "fo.gz") {
+        const QByteArray  stream = OpenGzipOneFileByte( fi.absoluteFilePath() );
+        buf->device()->write(stream);
+        buf->PutOnFile( currentopenfilealternate );
+        delete buf;
+        gzippedfile = true;
+        } else {
+        currentopenfilealternate =  fi.absoluteFilePath();
+        currentopenfilerunning =  fi.absoluteFilePath();
+        }
+        if (!isvalidXmlencoding( currentopenfilealternate )) {
+        QMessageBox::warning(this, tr("Alert on %1").arg(_APPLICATIONS_NAME_),
+                           tr("Sorry file %1 dont having a correct xml encoding on first line!").arg(fi.baseName()));  
+        QDir::setCurrent(dir_);
+        return;
+        }
+        currentfilecodec = GetcodecfromXml( currentopenfilealternate  );
+        Fo_Reader * fops = new Fo_Reader(currentopenfilealternate);
+        const QTextDocument *fopdoc = fops->document()->clone();
+        fops->deleteLater(); 
+        BASE_TEXT->setDocument(fopdoc);
+        ForceResize();
+        QTimer::singleShot(90, this, SLOT(ForceResize())); 
+        QDir::setCurrent(dir_);
+        return;
+    } else if ( ext == "html" || ext == "htm" ) {
+        M_PageSize defaultA4Page;
+        defaultA4Page.P_margin = QRectF(MM_TO_POINT(10),MM_TO_POINT(10),MM_TO_POINT(10),MM_TO_POINT(10));
+        /* :-)  html not know is format !!!!!!! */
+        buf->LoadFile( currentopenfilerunning );
+        const QByteArray chunkhtml = buf->stream();
+        delete buf;
+        QTextDocument *htmldoc = new QTextDocument();
+        htmldoc->setHtml ( QString ( chunkhtml) );
+        htmldoc->setTextWidth ( defaultA4Page.G_regt.width() );
+        defaultA4Page.HandlePrint( htmldoc );
+        session->current_Page_Format = defaultA4Page;
+        session->AppendPaper(defaultA4Page);
+        BASE_TEXT->setDocument(htmldoc);
+        ForceResize();
+        QTimer::singleShot(90, this, SLOT(ForceResize())); 
+        QDir::setCurrent(dir_);
+    }
+    
+    QDir::setCurrent(dir_);
+}
+
+
 
 void GraphicsView::ForceResize()
 {
@@ -75,11 +158,11 @@ QRectF GraphicsView::rectToScene()
     M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
     const QTextDocument *bdoc = BASE_TEXT->document()->clone();
     const int PageSumm = qBound (1,bdoc->pageCount(),MaximumPages);
-    if (PageSumm == MaximumPages) {
+    ////if (PageSumm == MaximumPages) {
         /* save your chunk please ???? */
-        QMessageBox::warning(this, tr("Alert on %1").arg(_APPLICATIONS_NAME_),
-                           tr("You are try to cover maximum page %1!").arg(PageSumm));
-    }
+        //////QMessageBox::warning(this, tr("Alert on %1").arg(_APPLICATIONS_NAME_),
+              //////             tr("You are try to cover maximum page %1!").arg(PageSumm));
+    ////////}
     qDebug() << "### PageSumm request by view -------- " << PageSumm;
     const qreal fromTopY = PageSumm * PAGE_MODEL.G_regt.height();
     const qreal spacepage = (PageSumm - 1) * InterSpace;
@@ -356,18 +439,29 @@ PaperTextEdit::PaperTextEdit( QWidget *parent )
 {
     panel = new Panel(this);
     setCentralWidget (panel);
+    docbar = new QToolBar(this);
+    docbar->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    
     tb_0 = new QToolBar(this);
-    tb_0->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_0->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));   /* undo redo action from  auto  */
     tb_1 = new QToolBar(this);
-    tb_1->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_1->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));   /* paragraph block edita auto */
     tb_2 = new QToolBar(this);
-    tb_2->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    tb_2->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));    /* table action auto */
     tb_3 = new QToolBar(this);
     tb_3->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
     tb_4 = new QToolBar(this);
     tb_4->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
     tb_5 = new QToolBar(this);
     tb_5->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
+    
+    CommandStorage *dync = CommandStorage::instance();
+    
+    addToolBar(Qt::TopToolBarArea,docbar);
+    docbar->addAction(dync->actM(OPEN_PAGE_CHUNK));
+    
+      
+    
     
     addToolBar(Qt::TopToolBarArea,tb_0);
     addToolBar(Qt::TopToolBarArea,tb_1);
@@ -377,7 +471,7 @@ PaperTextEdit::PaperTextEdit( QWidget *parent )
     addToolBar(Qt::LeftToolBarArea,tb_4);
     addToolBar(Qt::LeftToolBarArea,tb_5);
     
-    CommandStorage *dync = CommandStorage::instance();
+    
     StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY , S_NONE };
          for (int x = 0; DocumentActions[x] != S_NONE; x++) {
                  StaticCommandID id = DocumentActions[x];
@@ -404,9 +498,12 @@ void PaperTextEdit::auto_page_dinamic()
 TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
     DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
+    
     tb_0->clear();
     tb_1->clear();
     tb_2->clear();
+    
+    
     tb_2->addAction(CommandStorage::instance()->actS(INSERT_TABLE));
     
      for (int j = 0; BasicActions[j] != D_NONE; j++) {

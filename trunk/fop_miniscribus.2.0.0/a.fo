@@ -1,504 +1,1217 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
+<fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
+     <fo:layout-master-set>
+          <fo:simple-page-master margin-left="8mm" page-height="200mm" master-name="CD-Label_128_x_128mm" margin-bottom="6.34999mm" margin-top="6.34999mm" margin-right="8mm" page-width="200mm" >
+               <fo:region-body margin-left="8mm" page-height="200mm" margin-bottom="6.34999mm" region-name="xsl-region-body" margin-top="6.34999mm" margin-right="8mm" page-width="200mm" />
+          </fo:simple-page-master>
+     </fo:layout-master-set>
+     <fo:page-sequence master-reference="CD-Label_128_x_128mm" >
+          <fo:flow flow-name="xsl-region-body" >
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+Lungo 248 km, il Ticino nasce sul </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Passo_della_Novena" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Passo della Novena</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+non lontano dal confine tra il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canton_Ticino" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canton Ticino</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+(dal quale il cantone trae il nome), la punta estrema nord della </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Provincia_del_Verbano_Cusio_Ossola" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >provincia del Verbano Cusio Ossola</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-  <!-- defines the layout master -->
-  <fo:layout-master-set>
-    <fo:simple-page-master master-name="first"
-                           page-height="29.7cm"
-                           page-width="21cm"
-                           margin-top="1cm"
-                           margin-bottom="2cm"
-                           margin-left="2.5cm"
-                           margin-right="2.5cm">
-      <fo:region-body margin-top="3cm"/>
-      <fo:region-before extent="3cm"/>
-      <fo:region-after extent="1.5cm"/>
-    </fo:simple-page-master>
-  </fo:layout-master-set>
+(Formazza) ed il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canton_Vallese" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canton Vallese</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Attraversa la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Val_Bedretto" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Val Bedretto</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Val_Leventina" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Val Leventina</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Val_Riviera&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Val Riviera</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, il Piano di Magadino per poi gettarsi nel </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lago_Maggiore" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lago Maggiore</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Nel tratto di attraversamento riceve gli affluenti </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Brenno_%28torrente%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Brenno</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, all'inizio della val Riviera e nei pressi di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Bellinzona" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Bellinzona</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-  <!-- starts actual layout -->
-  <fo:page-sequence master-reference="first">
+il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Moesa" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Moesa</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-  <fo:flow flow-name="xsl-region-body">
+e il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Morobbia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Morobbia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Altri affluenti minori lo alimentano sul Piano di Magadino. Nel tratto lacuale riceve il contributo 
+di svariati affluenti direttamente sfocianti nel lago, alcuni importanti come la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Maggia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Maggia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-      <!-- this defines a title level 1-->
-      <fo:block font-size="18pt"
-            font-family="sans-serif"
-            line-height="24pt"
-            space-after.optimum="15pt"
-            background-color="blue"
-            color="white"
-            text-align="center"
-            padding-top="3pt">
-        How to use table elements
-      </fo:block>
+(che da anche il nome al lago), il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Toce" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Toce</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-      <!-- this defines a title level 2-->
-      <fo:block font-size="16pt"
-            font-family="sans-serif"
-            space-after.optimum="15pt"
-            text-align="center">
-        A simple table, 3 columns, 4 rows
-      </fo:block>
+(suo principale tributario), la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Verzasca_%28fiume%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Verzasca</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+e il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Tresa" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Tresa</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- table start -->
-    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-body>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>good</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>bad</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>ugly</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>nice</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>dice</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>vice</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>literature</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>music</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>art</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>java</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>perl</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>python</fo:block></fo:table-cell>
-        </fo:table-row>
-      </fo:table-body>
-    </fo:table>
-    <!-- table end -->
+(che drena tutta la zona dei laghi di Lugano). All'uscita dal lago arricchito notevolmente di 
+acque, percorre la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Pianura_Padana" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Pianura Padana</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+sfiorando la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lomellina" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lomellina</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-<!-- **************************** NEW PAGE ************************************* -->
+e, dopo aver bagnato </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Vigevano" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Vigevano</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-      <!-- this defines a title level 2-->
-      <fo:block font-size="16pt"
-            font-family="sans-serif"
-            space-after.optimum="15pt"
-            text-align="center"
-            break-before="page">
-        A table with borders
-      </fo:block>
+e attraversato </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Pavia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Pavia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, confluisce da sinistra nel </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Po" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Po</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+nel territorio comunale di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Linarolo" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Linarolo</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, e precisamente al </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ponte_della_Becca&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Ponte della Becca</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. </fo:inline>
+               </fo:block>
+               <fo:block font-weight="bold" id="Regime_Idrologico_ed_Economia" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+egime Idrologico ed Economia </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=2" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+Il Ticino, grazie alla copiosità delle sue acque ha grande importanza per l'irrigazione ed è un'importante 
+fonte di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Energia_elettrica" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >energia elettrica</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Se infatti, fra gli affluenti del Po, occupa solo il 4º posto per lunghezza dopo 
+</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Adda" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Adda</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Oglio" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Oglio</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+e </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Tanaro" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Tanaro</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, ed il 3º per superficie di bacino dopo </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Tanaro" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Tanaro</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+e </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Adda" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Adda</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, è però di gran lunga quello più ricco d'acque in ogni stagione, sia come portata 
+media alla foce (ben 350 m³/s), sia come portata minima (54 m³/s in estate), sia come 
+portata massima (5.000 m³/s), al punto che il suo contributo idrico ed il suo regime sono 
+assolutamente determinanti per il Po, rappresentandone da metà ad 1/5 della portata. </fo:inline>
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+In territorio </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Italia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >italiano</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- table start -->
-    <fo:table border-width="0.5mm" border-style="solid" background-color="yellow" table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-body>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>good</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>bad</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>ugly</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>nice</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>dice</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>vice</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>literature</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>music</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>art</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>java</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>perl</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>python</fo:block></fo:table-cell>
-        </fo:table-row>
-      </fo:table-body>
-    </fo:table>
-    <!-- table end -->
+alimenta vari canali artificiali, tra cui il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Naviglio_Grande" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Naviglio Grande</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+che fin dall'epoca medioevale ha avuto grande importanza per i trasporti, oggi non è usato 
+per i trasporti ma per la produzione elettrica, con il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Canale_Industriale&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canale Industriale</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, a cui è collegato, permette il funzionamento di varie centrali idro e termoelettriche garantendo circa 
+il 30% del fabbisogno energetico lombardo. Per gli usi irrigui il Ticino alimenta, tra gli altri, 
+il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Canale_Regina_Elena&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canale Regina Elena</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+nella parte piemontese e il </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canale_Villoresi" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canale Villoresi</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+ nella parte lombarda. Altro canale del Ticino, che a dispetto delle ridotte dimensioni, ha avuto 
+rilevanza economica per l'</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Alto_Milanese" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Alto Milanese</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-<!-- **************************** NEW PAGE ************************************* -->
+è la </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Gora_Molinara" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Gora Molinara</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, che come dice il nome azionava diversi mulini lungo il suo corso. </fo:inline>
+               </fo:block>
+               <fo:block font-weight="bold" id="Ambiente" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+mbiente </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=3" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+fiume Ticino nei pressi di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Pavia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Pavia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-      <!-- this defines a title level 2-->
-      <fo:block font-size="16pt"
-            font-family="sans-serif"
-            space-after.optimum="15pt"
-            text-align="center"
-            break-before="page">
-        A table with thick borders
-      </fo:block>
+(Massaua di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Torre_d%27Isola" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Torre d'Isola</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+) </fo:inline>
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Ponte_Coperto_di_Pavia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Ponte Coperto</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+sul fiume Ticino, a </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Pavia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Pavia</fo:basic-link>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+Il percorso italiano del </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Fiume" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >fiume</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+ è interamente protetto da due parchi regionali, che formano nell'insieme il più grande parco fluviale 
+d'</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Europa" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Europa</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+: </fo:inline>
+               </fo:block>
+               <!--Start list block nr 0 from 2 .-->
+               <fo:list-block>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:inline font-size="8pt" >
+il </fo:inline>
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Parco_Lombardo_della_Valle_del_Ticino" font-style="italic underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Parco Lombardo della Valle del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" >
+, creato nel </fo:inline>
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/1974" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >1974</fo:basic-link>
+                                   <fo:inline font-size="8pt" >
+, copre 91.140 ettari, di cui 21.740 urbanizzati dove l'azione del parco è limitata ; </fo:inline>
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:inline font-size="8pt" >
+il </fo:inline>
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Parco_Naturale_della_Valle_del_Ticino" font-style="italic underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Parco Naturale della Valle del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" >
+, creato nel </fo:inline>
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/1978" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >1978</fo:basic-link>
+                                   <fo:inline font-size="8pt" >
+, copre 6.250 ha formanti una banda stretta lungo la riva destra del fiume. </fo:inline>
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <!--End list block nr 1 from 2 .-->
+               </fo:list-block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+In Svizzera, invece, all'immissione nel Lago Maggiore il fiume forma le </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Bolle_di_Magadino" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Bolle di Magadino</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, area naturalistica protetta ricca di flora e di fauna tipiche della zona. </fo:inline>
+               </fo:block>
+               <fo:block font-weight="bold" id="Il_problema_Arno" color="rgb(0,0,0,255)" >
+                    <fo:inline font-weight="bold" >
+l problema Arno </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=4" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+Nonostante il Ticino sia uno dei fiumi più puliti della </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lombardia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lombardia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+e del </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Piemonte" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Piemonte</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, dal 2000, le sue acque risentono di un serio problema, noto come </fo:inline>
+                    <fo:inline font-style="italic" font-size="8pt" >
+problema Arno</fo:inline>
+                    <fo:inline font-size="8pt" >
+. La questione ruota tutta attorno al torrente </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Arno_%28torrente%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Arno</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, modesto corso d'acqua del Varesotto e dell'Alto Milanese, le cui acque sono tra le più 
+sporche di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lombardia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lombardia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+e non solo. Il torrente, anticamente sfociava nel Ticino presso </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Turbigo" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Turbigo</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, dove ora si trova la cosiddetta </fo:inline>
+                    <fo:inline font-style="italic" font-size="8pt" >
+Roggia Arno</fo:inline>
+                    <fo:inline font-size="8pt" >
+, a causa, però, dell'alta permeabilità del suo alveo a valle di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Gallarate" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Gallarate</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, il torrente, perdeva le sue acque, spagliando nella campagna tra </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lonate_Pozzolo" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lonate Pozzolo</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Castano_Primo" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Castano Primo</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Nosate" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Nosate</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- table start -->
-    <fo:table border-width="3mm" border-style="solid" background-color="yellow" table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-body>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>good</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>bad</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>ugly</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>nice</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>dice</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>vice</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>literature</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>music</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>art</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell ><fo:block>java</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>perl</fo:block></fo:table-cell>
-          <fo:table-cell ><fo:block>python</fo:block></fo:table-cell>
-        </fo:table-row>
-      </fo:table-body>
-    </fo:table>
-    <!-- table end -->
+e </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Vanzaghello" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Vanzaghello</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Nel Novecento, a causa dei liquami riversati nell'Arno, l'alveo del torrente si è impermeabilizzato, causando, 
+sempre più sovente, allagamenti, che determinavano anche una situazione di degrado ambientale alle campagne circostanti. Nel 
+2000 si è così proceduto a bonificare l'area di spagliamento, e a realizzare dei vasconi per 
+lo spagliamento controllato tra Castano, Nosate e Lonate Pozzolo. I lavori, prevedevano che a causa di 
+portate elevatissime del torrente, l'acqua in eccesso andasse nel Canale Marinone e quindi nel Ticino. I 
+lavori non vennero, però svolti nella maniera più opportuna e questo causò l'impermeabilizzazione dei vasconi, determinando, 
+l'afflusso dell'Arno nel Ticino, molto spesso. Questa situazione influisce molto negativamente sulla qualità delle acque del 
+fiume, che pur restando di grado </fo:inline>
+                    <fo:inline font-style="italic" font-size="8pt" >
+buono</fo:inline>
+                    <fo:inline font-size="8pt" >
+, manifestano un notevole peggioramento a valle di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lonate_Pozzolo" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lonate Pozzolo</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, soprattutto in tempo di pioggia. </fo:inline>
+               </fo:block>
+               <fo:block font-weight="bold" id="Il_problema_dello_Scolmatore_di_Nord_Ovest" color="rgb(0,0,0,255)" >
+                    <fo:inline font-weight="bold" >
+l problema dello Scolmatore di Nord Ovest </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=5" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+Altro serio problema di cui soffrono le acque del fiume Ticino, è rappresentato dal </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canale_Scolmatore_di_Nord_Ovest" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canale Scolmatore di Nord Ovest</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, realizzato tra gli anni '60 e '80, per ovviare ai frequenti allagamenti di cui soffre 
+l'area milanese. Il canale venne realizzato per impedire gli allagamenti causati dal fiume </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Seveso_%28fiume%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Seveso</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start" start-indent="-3mm">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+a </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Milano" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Milano</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Questo piccolo fiume, è però uno dei più inquinati della Lombardia, e nei tempi di 
+pioggia, riversa nello scolmatore una notevole quantità di liquami, che finiscono poi nel Ticino presso 
+</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Abbiategrasso" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Abbiategrasso</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Nei momenti di forti e prolungate piogge il canale accoglie anche la portata in eccesso 
+del fiume </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Olona" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Olona</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, altro fiume la cui qualità delle sue acque è </fo:inline>
+                    <fo:inline font-style="italic" font-size="8pt" >
+scadente</fo:inline>
+                    <fo:inline font-size="8pt" >
+.
+Il fatto è che oltre a scaricare nel Ticino le luride acque del Seveso, il canale 
+si è pure sovente rivelato insufficiente ad evitare le inondazioni. Ad esempio nel novembre 2002, le 
+forti e continue piogge causarono lo staripamento del Ticino, dell'</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Olona" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Olona</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, del Seveso ed anche dello Scolamtore di Nord Ovest, che inondò le campagne di Abbiategrasso. 
+Queste situazioni, hanno da sempre causato le proteste degli ambientalisti, che hanno contestanto il canale, fin 
+dalla sua costruzione. </fo:inline>
+               </fo:block>
+               <fo:block font-weight="bold" id="Storia" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+toria </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=6" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+A partire dall'età del bronzo la Valle del Ticino fu culla di un importante civiltà nota 
+come </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Cultura_di_Golasecca" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >cultura di Golasecca</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. Inoltre il Ticino fu il teatro di una vittoria di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Annibale" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Annibale</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+nella </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Seconda_guerra_punica" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >seconda guerra punica</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+ (</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/218_a.C." font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >218 a.C.</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+), e nel </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/1848" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >1848</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-<!-- **************************** NEW PAGE ************************************* -->
+della prima mossa del </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Regno_di_Sardegna" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >regio esercito piemontese</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+ contro l'</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Austria" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Austria</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, che diede inizio alla </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Prima_guerra_d%27indipendenza" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >prima guerra d'indipendenza italiana</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+. </fo:inline>
+               </fo:block>
+               <fo:block id="Etimologia:" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+el </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/2002" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >2002</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+ la Valle del Ticino è stata istituita quale "Riserva della Biosfera " all'interno del programma 
+Man and Biosphere dell'</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/UNESCO" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >UNESCO</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, pertanto è annoverato tra i beni o Patrimoni dell'Umanità da tutelare. </fo:inline>
+               </fo:block>
+               <fo:block margin-bottom="12pt" font-weight="bold" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-weight="bold" font-size="8pt" >
+Etimologia: </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=7" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Nell'alto Ticino, il termine "tesin" (nome dialettale sia del fiume sia del Cantone) indica un corso 
+d'acqua. Proviene dalla radice gallica "teq" che indica scorrere. </fo:block>
+               <fo:block font-weight="bold" id="L.27oro_del_Ticino" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+'oro del Ticino </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=8" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-size="8pt" >
+Come tutti i fiumi che corrono ai piedi di catene montuose, anche il Ticino è un 
+bacino nel quale è possibile trovare dell'</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Oro" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >oro</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+.
+Gli antichi </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Impero_Romano" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Romani</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+lo sapevano molto bene, e lo avevano capito al punto da impiegare, come ci descrive 
+</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Plinio_il_Vecchio" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Plinio il Vecchio</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, una forza lavoro pari a 5.000 </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Schiavi" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >schiavi</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-      <!-- this defines a title level 2-->
-      <fo:block font-size="16pt"
-            font-family="sans-serif"
-            space-after.optimum="15pt"
-            text-align="center"
-            break-before="page">
-        A table with borders around the cells
-      </fo:block>
+per l'estrazione del prezioso metallo dai bacini fluviali della </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Gallia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Bassa Gallia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+ (</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Piemonte" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Piemonte</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
+e </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lombardia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lombardia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
 
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
+occidentale); ancora oggi, non a caso, lungo il corso del fiume è possibile individuare enormi 
+cumuli di massi ammonticchiati conosciuti come </fo:inline>
+                    <fo:inline font-style="italic" font-size="8pt" >
+vie Aurifodine</fo:inline>
+                    <fo:inline font-size="8pt" >
+, testimonianze di antiche miniere d'oro a cielo aperto distribuite lungo un percorso di quasi due 
+km nel territorio di </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Varallo_Pombia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Varallo Pombia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+.
+L'oro è presente in forma di pagliuzze generalmente non più lunghe di un millimetro, e la 
+potenzialità aurifera del Ticino è calcolata essere di 6-8 grammi per tonnellata di sabbia setacciata.
+La ricerca dell'oro alluvionale è oggi soltanto un'attività naturalistico-amatoriale, non remunerativa ma fonte di emozioni e 
+divertimento; questa passione accomuna numerose associazioni soprattutto nella </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Provincia_di_Pavia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >provincia di Pavia</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+.
+Nel </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/1997" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >1997</fo:basic-link>
+                    <fo:inline font-size="8pt" >
+, il Ticino è stato sede di un'edizione del Campionato Mondiale di ricerca dell'oro. </fo:inline>
+               </fo:block>
+               <fo:block font-weight="bold" id="Affluenti_del_Ticino" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+ffluenti del Ticino </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=9" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-style="italic" font-size="8pt" >
+In </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Svizzera" font-style="italic underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Svizzera</fo:basic-link>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <!--Start list block nr 0 from 5 .-->
+               <fo:list-block>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Piumogna&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Piumogna</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Fim_%28torrente%29&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Fim</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Brenno_%28fiume%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Brenno</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Iragna_%28torrente%29&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Iragna</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Moesa" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Moesa</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <!--End list block nr 4 from 5 .-->
+               </fo:list-block>
+               <fo:block line-height="8pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="8pt" leader-length="2.001%" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-style="italic" font-size="8pt" >
+Nel </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lago_Maggiore" font-style="italic underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lago Maggiore</fo:basic-link>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <!--Start list block nr 0 from 15 .-->
+               <fo:list-block>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Giona_%28torrente%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Giona</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Maggia" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Maggia</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Verzasca" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Verzasca</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Toce" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Toce</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Tresa" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Tresa</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Boesio" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Boesio</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Bardello_%28fiume%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Bardello</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Cannobino" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Cannobino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Erno&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Erno</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canale_Acqua_Nera" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Acqua Nera</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Monvallina&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Monvallina</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Molinera&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Molinera</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/San_Bernardino_%28torrente%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >San Bernardino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=San_Giovanni_%28torrente%29&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >San Giovanni</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Selva_Spessa&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Selva Spessa</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <!--End list block nr 14 from 15 .-->
+               </fo:list-block>
+               <fo:block line-height="8pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="8pt" leader-length="2.001%" />
+               </fo:block>
+               <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                    <fo:inline font-style="italic" font-size="8pt" >
+In </fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Italia" font-style="italic underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Italia</fo:basic-link>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <!--Start list block nr 0 from 7 .-->
+               <fo:list-block>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Strona_%28torrente_-_VA%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Strona</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Lenza" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Lenza</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Arno_%28torrente%29" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Arno</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Roggia_Cerana&amp;action=edit&amp;redlink=1" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Roggia Cerana</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canale_Scolmatore_di_Nord_Ovest" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canale Scolmatore di Nord Ovest</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Naviglio_Pavese" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Naviglio Pavese</fo:basic-link>
+                                   <fo:inline font-size="8pt" >
 
-
-    <!-- table start -->
-    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-body>
-        <fo:table-row>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>good</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>bad</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>ugly</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>nice</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>dice</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>vice</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>literature</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>music</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>art</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>java</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>perl</fo:block></fo:table-cell>
-          <fo:table-cell border-width="0.5mm" border-style="solid" background-color="yellow"><fo:block>python</fo:block></fo:table-cell>
-        </fo:table-row>
-      </fo:table-body>
-    </fo:table>
-    <!-- table end -->
-
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
-
-<!-- **************************** NEW PAGE ************************************* -->
-
-      <!-- this defines a title level 2-->
-      <fo:block font-size="16pt"
-            font-family="sans-serif"
-            space-after.optimum="15pt"
-            text-align="center"
-            break-before="page">
-        2 tables with thick borders around the cells
-      </fo:block>
-
-
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
-
-
-    <!-- table start -->
-    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-body>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>good</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>bad</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>ugly</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>nice</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>dice</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>vice</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>literature</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>music</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>art</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>java</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>perl</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>python</fo:block></fo:table-cell>
-        </fo:table-row>
-      </fo:table-body>
-    </fo:table>
-    <!-- table end -->
-
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
-
-    <!-- table start -->
-    <fo:table table-layout="fixed" width="100%" border-collapse="separate">
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-column column-width="50mm"/>
-      <fo:table-body>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>good</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>bad</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>ugly</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>nice</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>dice</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>vice</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>literature</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>music</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>art</fo:block></fo:table-cell>
-        </fo:table-row>
-        <fo:table-row>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>java</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>perl</fo:block></fo:table-cell>
-          <fo:table-cell border-width="2mm" border-style="solid" background-color="yellow"><fo:block>python</fo:block></fo:table-cell>
-        </fo:table-row>
-      </fo:table-body>
-    </fo:table>
-    <!-- table end -->
-
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
-
-<!-- **************************** NEW PAGE ************************************* -->
-
-      <!-- this defines a title level 2-->
-      <fo:block font-size="16pt"
-            font-family="sans-serif"
-            space-after.optimum="15pt"
-            text-align="center"
-            break-before="page">
-        5 tables with borders
-      </fo:block>
-
-
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
-
-
-      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
-        <fo:table-column column-width="150mm"/>
-        <fo:table-body>
-          <fo:table-row>
-            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
-          </fo:table-row>
-        </fo:table-body>
-      </fo:table>
-
-
-      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
-        <fo:table-column column-width="150mm"/>
-        <fo:table-body>
-          <fo:table-row>
-            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
-          </fo:table-row>
-        </fo:table-body>
-      </fo:table>
-
-
-      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
-        <fo:table-column column-width="150mm"/>
-        <fo:table-body>
-          <fo:table-row>
-            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
-          </fo:table-row>
-        </fo:table-body>
-      </fo:table>
-
-      <fo:table border-width="1.5mm" border-style="solid" background-color="rgb(100,210,250)" table-layout="fixed" width="100%" border-collapse="separate">
-        <fo:table-column column-width="150mm"/>
-        <fo:table-body>
-          <fo:table-row>
-            <fo:table-cell><fo:block>bad</fo:block></fo:table-cell>
-          </fo:table-row>
-        </fo:table-body>
-      </fo:table>
-
-    <!-- normal text -->
-    <fo:block text-align="start">this is normal text. this is normal text. this is normal text.
-                                 this is normal text. this is normal text. this is normal text.
-    </fo:block>
-
-
-<!-- **************************** NEW PAGE ************************************* -->
-      <fo:block font-size="16pt"
-                font-family="sans-serif"
-                line-height="20pt"
-                space-after.optimum="3pt"
-                break-before="page"
-                text-align="justify">
-          A Contents table
-      </fo:block>
-
-      <!-- Here starts the table -->
-      <fo:table table-layout="fixed" width="100%" border-collapse="separate">
-        <fo:table-column column-width="1cm"/>
-        <fo:table-column column-width="15cm"/>
-        <fo:table-body font-size="10pt" font-family="sans-serif">
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-          <fo:block text-align="end">A) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">What is FOP?</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">B) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Downloading FOP</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">C) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Running FOP</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">D) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Embedding FOP </fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">E) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">What's Implemented?</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">F) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Limitations</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">G) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Bugs</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">H) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Compiling FOP</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">I) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Getting involved</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">J) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">FOP Relevant Specifications</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        <fo:table-row line-height="12pt">
-        <fo:table-cell>
-        <fo:block text-align="end">K) </fo:block>
-        </fo:table-cell>
-        <fo:table-cell>
-        <fo:block text-align="start">Licence</fo:block>
-        </fo:table-cell>
-        </fo:table-row>
-        </fo:table-body>
-      </fo:table>
-    </fo:flow>
-  </fo:page-sequence>
+e Navigliaccio </fo:inline>
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Roggia_Vernavola" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Roggia Vernavola</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <!--End list block nr 6 from 7 .-->
+               </fo:list-block>
+               <fo:block font-weight="bold" id="Voci_correlate" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+oci correlate </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=10" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <!--Start list block nr 0 from 3 .-->
+               <fo:list-block>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Canton_Ticino" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Canton Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Battaglia_del_Ticino" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Battaglia del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://it.wikipedia.org/wiki/Bacino_val_d%27Arno_e_Ticino" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Bacino val d'Arno e Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <!--End list block nr 2 from 3 .-->
+               </fo:list-block>
+               <fo:block font-weight="bold" id="Collegamenti_esterni" color="rgb(0,0,0,255)" font-size="12pt" >
+                    <fo:inline font-weight="bold" font-size="12pt" >
+ollegamenti esterni </fo:inline>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+[</fo:inline>
+                    <fo:basic-link external-destination="http://it.wikipedia.org/w/index.php?title=Ticino&amp;action=edit&amp;section=11" font-style="underline" font-weight="bold" text-decoration="underline" color="rgb(0,0,255,255)" font-size="7pt" >modifica</fo:basic-link>
+                    <fo:inline font-weight="bold" font-size="7pt" >
+]</fo:inline>
+                    <fo:inline font-size="8pt" />
+               </fo:block>
+               <!--Start list block nr 0 from 7 .-->
+               <fo:list-block>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://www.ti.ch/" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Repubblica e Cantone Ticino, il sito ufficiale dell'Amministrazione cantonale</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://www.ticinohelp.ch/" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >TicinoHelp, il portale veloce ed efficiente di informazione sui siti web ticinesi e sul Cantone Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://www.parcodelticino.pmn.it/" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Parco piemontese della valle del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://www.parcoticino.it/" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Parco lombardo della valle del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://www.enel.it/PaesaggiElettriciHtml/PaesaggiElettricihtml/lombardia/percorso1/percorso.asp" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Paesaggi Elettrici : pista ciclabile Enel lungo il Parco del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://www.festivaldelticino.it/" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Festival del Ticino</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <fo:list-item>
+                         <fo:list-item-label end-indent="label-end()" >
+                              <fo:block>
+                                   <fo:instream-foreign-object content-width="11pt" >
+                                        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+                                             <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+                                        </svg:svg>
+                                   </fo:instream-foreign-object>
+                              </fo:block>
+                         </fo:list-item-label>
+                         <fo:list-item-body start-indent="body-start()" >
+                              <fo:block margin-bottom="12pt" margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" >
+                                   <fo:basic-link external-destination="http://elvetismi.googlepages.com/" font-style="underline" text-decoration="underline" color="rgb(0,0,255,255)" font-size="8pt" >Dizionario dell'italiano ticinese, grigionese e "federale"</fo:basic-link>
+                                   <fo:inline font-size="8pt" />
+                              </fo:block>
+                         </fo:list-item-body>
+                    </fo:list-item>
+                    <!--End list block nr 6 from 7 .-->
+               </fo:list-block>
+               <fo:block margin-top="12pt" color="rgb(0,0,0,255)" font-size="8pt" />
+          </fo:flow>
+     </fo:page-sequence>
 </fo:root>

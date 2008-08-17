@@ -11,6 +11,25 @@ CommandStorage* CommandStorage::instance() {
 	return st_;
 }
 
+void CommandStorage::recordmainaction(const StaticCmd& cmd) {
+	StaticCommandID id = cmd.id;
+
+	if (Scmd_.contains(id))
+		delete Scmd_[id];
+	
+	QString keya = QString(); /* not Shortcut */
+	if (!cmd.shortcut.isEmpty()) {
+		keya = QString(" ") + cmd.shortcut.toString(QKeySequence::NativeText);
+	}
+	QAction* action = new QAction(cmd.icon, cmd.name + keya, 0);
+	action->setShortcut(cmd.shortcut);
+	action->setData(id);
+	action->setIcon(cmd.icon);
+	QObject::connect(action, SIGNAL(triggered()), cmd.reciever, qPrintable(cmd.slot));
+	Maincmd_[id] = action;
+}
+
+
 void CommandStorage::registerCommand_S(const StaticCmd& cmd) {
 	StaticCommandID id = cmd.id;
 
@@ -28,6 +47,8 @@ void CommandStorage::registerCommand_S(const StaticCmd& cmd) {
 	QObject::connect(action, SIGNAL(triggered()), cmd.reciever, qPrintable(cmd.slot));
 	Scmd_[id] = action;
 }
+
+
 
 
 void CommandStorage::registerCommand_D(const DinamicCmd& cmd) {
@@ -79,6 +100,10 @@ void CommandStorage::registerCommand_F(const AbsoluteCmd& cmd) {
 
 QAction* CommandStorage::actS(StaticCommandID id) {
 	return Scmd_[id];
+}
+
+QAction* CommandStorage::actM(StaticCommandID id) {
+	return Maincmd_[id];
 }
 
 
