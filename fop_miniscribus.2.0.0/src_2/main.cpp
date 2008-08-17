@@ -1,15 +1,25 @@
 #include <QtGui>
 #include "Paper_Text_Edit.h"
-
-
+#include "Config.h"
+#include "SessionManager.h"
 
 
 int main( int argc, char ** argv )
 {
     QApplication app( argc, argv );
     
+    app.setOrganizationName("CrossKern");
+    app.setOrganizationDomain("crosskern.com");
+    app.setApplicationName(_APPLICATIONS_NAME_);
+    
+    ApiSession *sx = ApiSession::instance();
+    
+    
     PaperTextEdit *paperedit = new PaperTextEdit();
     paperedit->show();
+    
+    
+
     
     ////QTextEdit t;
     //////t.show();
