@@ -1,0 +1,57 @@
+    QTime st = QTime::currentTime();
+    qDebug() << "### init QThread compose doc ........ ";
+    RichDoc idoc;
+    QMap<QString,SPics> imglist;
+    QTextDocument *playdoc = new QTextDocument();
+    QTextCursor c(playdoc);
+    c.setPosition(0,QTextCursor::MoveAnchor);
+    
+    int loop = -1;
+    c.beginEditBlock();
+    
+    QStringList colorNames = QColor::colorNames();
+    foreach (QString name, colorNames) {
+        loop++;
+        
+        if (loop != 0) { 
+        c.insertBlock();
+        }
+        
+        ////////qDebug() << "### name ->" << name;
+        QImage e( 440,88,QImage::Format_ARGB32);
+               e.fill(QColor(name).rgb());
+        SPics x;
+        x.name = name;
+        x.set_pics(e);
+        imglist.insert(name,x);
+        playdoc->addResource(QTextDocument::ImageResource,QUrl(name),e);
+        QTextImageFormat format;
+        format.setName( name );
+        format.setHeight ( e.height() );
+        format.setWidth ( e.width() );
+        format.setToolTip(name);
+        c.insertImage( format );
+        c.insertText(QString(QChar::LineSeparator));   /* br */
+        ////////////QTextBlockFormat bbformat = c.blockFormat();
+        /////////bbformat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysAfter);
+        ////////c.setBlockFormat(bbformat);
+        
+        for (int i = 0; i < 200; ++i)  {
+        c.insertText(name+ "   -.-   ");   
+        }
+        c.endEditBlock();
+        c.atBlockEnd();
+        
+    }
+
+    idoc.Register(playdoc,imglist,QString());
+    qDebug() << "### QThread to create doc  ->" << st.msecsTo ( QTime::currentTime() );
+    //////////////   1500
+    emit generator(idoc);
+    /*
+    QTextPanel *item  = NULL;
+    if (item = qobject_cast<QTextPanel *>(receiver)) {
+        qDebug() << "### cast ok....  ";
+        item->editor()->setDocument(playdoc->clone(),FOP);
+    }
+    */
