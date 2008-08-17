@@ -270,8 +270,9 @@ class QTextPanelControl : public QObject
 
 
 
-////////class QTextPanelControl;
-/* line 1805 */
+
+//////////////class CachePainter
+/* auto floating formating text !!!!!!  */
 class ScribePage : public QTextPanelControl
 {
 	Q_OBJECT
@@ -280,25 +281,30 @@ class ScribePage : public QTextPanelControl
 		void SessionUserInput(int position = 0 , int charsRemoved = 0, int charsAdded  = 0);
 		void PageUpdate();
 		void ParaBlockPageBreackPolicyInsert();
+        void cstatus( const int currentdraw , const int tot );
+        void docCache( QPicture img );
 
 	public:
 		explicit ScribePage(PanelPageSize e);
-		void setDocument(const QTextDocument * document , FileHandlerType Type = FOP);
+		void setDocument(const QTextDocument * document , FileHandlerType Type = FOP , bool oncache =  true );
+        void setCacheDocument(const QTextDocument * document );
 		inline PanelPageSize  Model() const {return PAGE_MODEL;}
 		void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget);
 		void SwapPageModel(PanelPageSize e);
 		bool AllowedPosition(const QPointF inpos);
 		QRectF GroupboundingRect();
+        void startCache();
 		QRectF boundingRect();
 		void DrawPage(const int index  , QPainter * painter );
         void paintPage(const int index  , QPainter * painter , bool printer = false );
 		QPointF PageIndexTopLeft(const int index);
 		PanelPageSize PAGE_MODEL;
+        QPicture allPageCache;
 };
 
 
 
-
+/* absolute layer position or  header or footer formating text !!!!!!  */
 class LayerText : public QTextPanelControl
 {
 	Q_OBJECT
@@ -309,5 +315,25 @@ class LayerText : public QTextPanelControl
 		void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget);
 		void setDocument(const QTextDocument * document , FileHandlerType Type = FOP);
 };
+
+
+
+class CachePainter : public QThread
+{
+    Q_OBJECT
+public:
+    CachePainter( QObject *creator , PanelPageSize p ,  const QTextDocument * d );
+protected:
+    void run();
+signals:
+     void cstatus(int,int);  ///////page x from tot 
+     void cgenerator(QPicture);
+private:
+    QObject* receiver;
+    PanelPageSize page;
+    QTextDocument *doc;
+};
+
+
 
 #endif // QTEXTPANELCONTROL_H

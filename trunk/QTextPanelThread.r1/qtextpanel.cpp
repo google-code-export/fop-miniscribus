@@ -173,14 +173,63 @@ void QTextPanel::insert( RichDoc e )
 
 void QTextPanel::stressTestPaint()
 {
+    QTime st = QTime::currentTime();
+    qDebug() << "### init compose doc ........ ";
+    QTextDocument *playdoc = new QTextDocument();
+    QTextCursor c(playdoc);
+    c.setPosition(0,QTextCursor::MoveAnchor);
+    
+    int loop = -1;
+    c.beginEditBlock();
+    
+    QStringList colorNames = QColor::colorNames();
+    foreach (QString name, colorNames) {
+        loop++;
+        
+        if (loop != 0) { 
+        c.insertBlock();
+        }
+        
+        ////////qDebug() << "### name ->" << name;
+        QImage e( 440,88,QImage::Format_ARGB32);
+        e.fill(QColor(name).rgb());
+        playdoc->addResource(QTextDocument::ImageResource,QUrl(name),e);
+        QTextImageFormat format;
+        format.setName( name );
+        format.setHeight ( e.height() );
+        format.setWidth ( e.width() );
+        format.setToolTip(name);
+        c.insertImage( format );
+        c.insertText(QString(QChar::LineSeparator));   /* br */
+        for (int i = 0; i < 200; ++i)  {
+        c.insertText(name+ "   -.-   ");   
+        }
+        c.endEditBlock();
+        c.atBlockEnd();
+        
+    }
+    
+    BASE_TEXT->setDocument(playdoc->clone(),FOP);
+    forceResize();
+    
+    qDebug() << "### QThread to create doc  ->" << st.msecsTo ( QTime::currentTime() );
+    
+    
+    
+    /*
     
     PanelPageSize PAGE_MODEL = QTextPanelData::instance()->CurrentPageFormat();
     MountPage ddPage;
     ddPage.model = PAGE_MODEL;
     ComposeDoc *djob = new ComposeDoc(this,ddPage);
     djob->start (QThread::HighPriority);
-    ////////qRegisterMetaType<RichDoc>("RichDoc");
-    ////////connect(djob, SIGNAL(generator(RichDoc)), this, SLOT(insert(RichDoc)));
+    qRegisterMetaType<RichDoc>("RichDoc");
+    connect(djob, SIGNAL(generator(RichDoc)), this, SLOT(insert(RichDoc)));
+    */
+    
+    
+    
+    
 }
 
 

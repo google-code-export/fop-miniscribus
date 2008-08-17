@@ -24,22 +24,8 @@ private:
 
 
 
-/*
-class CachePainter : public QThread
-{
-    Q_OBJECT
-public:
-    CachePainter( QObject *creator , PanelPageSize p ,  QTextDocument * d );
-protected:
-    void run();
-signals:
-     void cstatus(int,int);  page x from tot 
-     void cgenerator(QPicture);
-private:
-    QObject* receiver;
-    MountPage page;
-};
-*/
+
+
 
 
 
