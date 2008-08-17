@@ -1,0 +1,74 @@
+QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+
+    ScribePage *docj = new ScribePage(page.model);
+    
+    QTime st = QTime::currentTime();
+    QTextDocument *playdoc = new QTextDocument();
+    QTextCursor c(playdoc);
+    c.setPosition(0,QTextCursor::MoveAnchor);
+    
+    int loop = -1;
+    c.beginEditBlock();
+    
+    QStringList colorNames = QColor::colorNames();
+    foreach (QString name, colorNames) {
+        loop++;
+        
+        if (loop != 0) { 
+        c.insertBlock();
+        }
+        
+        ////////qDebug() << "### name ->" << name;
+        QImage e( 440,88,QImage::Format_ARGB32);
+               e.fill(QColor(name).rgb());
+        playdoc->addResource(QTextDocument::ImageResource,QUrl(name),e);
+        QTextImageFormat format;
+        format.setName( name );
+        format.setHeight ( e.height() );
+        format.setWidth ( e.width() );
+        format.setToolTip(name);
+        c.insertImage( format );
+        c.insertText(QString(QChar::LineSeparator));   /* br */
+        for (int i = 0; i < 1200; ++i)  {
+        c.insertText(name+ "   -.-   ");   
+        }
+        c.endEditBlock();
+        c.atBlockEnd();
+        
+    }
+    
+    qDebug() << "### create doc 1 ->" << st.msecsTo ( QTime::currentTime() );
+    docj->setDocument(playdoc,FOP);
+    
+    const int pageCount = qBound(1,docj->document()->pageCount(),MaximumPages);
+    /* rect fromm all pages */
+    const QRectF grect = docj->GroupboundingRect();
+    
+    qDebug() << "### page summ ->" << pageCount;
+    qDebug() << "### rect ->" << grect;
+    
+    
+    
+    //////QImage  img(grect.width(),grect.height(),QImage::Format_RGB32);
+    /////img.fill(QColor(Qt::lightGray).rgb());
+    QPicture img;
+    QPainter painter(&img);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+    painter.setPen(Qt::NoPen);
+	painter.setBrush(Qt::lightGray);
+	painter.drawRect(grect);
+    
+    for (int x = 0; x < pageCount; ++x)  {
+        emit cstatus(x+1,pageCount);
+        qDebug() << "### pagei  ->" << x;
+        docj->paintPage(x,&painter);
+    }
+    
+    painter.end();
+    qDebug() << "### rect doc  ->" << grect;
+    img.save("ssss.pic");
+    qDebug() << "### create doc  3 ->" << st.msecsTo ( QTime::currentTime() );
+    //////  4828
+    QApplication::restoreOverrideCursor();
+    exit();
