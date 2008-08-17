@@ -2172,9 +2172,9 @@ void QTextPanelControl::showhtml()
 ScribePage::ScribePage(PanelPageSize e) : QTextPanelControl(PAGES)
 {
 	PageTotal = 1;
-	QTextDocument *dummy = new QTextDocument();
-	dummy->setHtml("<p></p>");    /////  ReadFile("a.html")
-	setDocument(dummy,FOP);
+	_d = new QTextDocument();
+	///////dummy->setHtml("<p></p>");    /////  ReadFile("a.html")
+	/////////setDocument(dummy,FOP);
 	SwapPageModel(e);
 }
 
@@ -2429,7 +2429,7 @@ void ScribePage::SwapPageModel(PanelPageSize e)
 
 
 
-void ScribePage::setDocument(const QTextDocument * document , FileHandlerType Type)
+void ScribePage::setDocument(const QTextDocument * document , FileHandlerType Type , bool oncache)
 {
 	if (_d)
 	{
@@ -2461,21 +2461,56 @@ void ScribePage::setDocument(const QTextDocument * document , FileHandlerType Ty
 	controlTextCursor = QTextCursor(_d);
 	controlTextCursor.setPosition(0,QTextCursor::MoveAnchor);
 	setBlinkingCursorEnabled(true);
-    
-    
-    
-    
+    if (oncache) {
+    qDebug() << "### start cache theard ";
+    startCache();  /* make first image cache */
+    }
 	QObject::connect(clipboard, SIGNAL(dataChanged()), this, SLOT(int_clipboard_new()));
 	QObject::connect(_d, SIGNAL(cursorPositionChanged(QTextCursor)), this, SLOT(cursorPosition(QTextCursor)));
 	QObject::connect(_d, SIGNAL(modificationChanged(bool)), this, SLOT(ChangeFormatDoc(bool)));
 	QObject::connect(_d, SIGNAL(documentLayoutChanged()), this, SLOT(ChangeFormatDoc()));
 	QObject::connect(_d, SIGNAL(contentsChange(int,int,int)), this, SLOT(SessionUserInput(int,int,int)));
-    
-    
-    
-    
+}
+
+void ScribePage::setCacheDocument(const QTextDocument * document )
+{
+    _d = const_cast<QTextDocument*>(document);
+	for (QTextBlock srcBlock = document->firstBlock(), dstBlock = _d->firstBlock();
+	      srcBlock.isValid() && dstBlock.isValid();
+	      srcBlock = srcBlock.next(), dstBlock = dstBlock.next())
+	{
+		dstBlock.layout()->setAdditionalFormats(srcBlock.layout()->additionalFormats());
+	}
     
 }
+
+
+void ScribePage::startCache()
+{
+    /*  from running theard is ok */
+    CachePainter *djob = new CachePainter(this,Model(),_d->clone());
+    djob->start (QThread::HighPriority);
+    qRegisterMetaType<PanelPageSize>("PanelPageSize");
+    qRegisterMetaType<QPicture>("QPicture");
+    connect(djob, SIGNAL(cgenerator(QPicture)), this, SLOT(docCache(QPicture)));
+    connect(djob, SIGNAL(cstatus(int,int)), this, SLOT(cstatus(int,int)));
+    
+}
+
+void ScribePage::cstatus( const int currentdraw , const int tot )
+{
+    
+    qDebug() << "### page draw ->   " << currentdraw << "/" << tot;
+}
+
+void ScribePage::docCache( QPicture img )
+{
+    allPageCache = img;
+    emit q_update_scene();
+}
+
+
+
 
 void ScribePage::PageUpdate()
 {
@@ -3382,3 +3417,57 @@ ScribeParser::~ScribeParser()
 {
 
 }
+
+
+
+
+
+
+
+CachePainter::CachePainter( QObject *creator , PanelPageSize p ,  const QTextDocument * d  )
+  : QThread(0)
+{
+  page = p;  
+  receiver = creator;
+  doc = d->clone();
+  setTerminationEnabled(true);
+}
+
+///////////////   24 32 
+void CachePainter::run()
+{
+    ScribePage *docj = new ScribePage(page);
+    QTime st = QTime::currentTime();
+    docj->setCacheDocument(doc->clone());
+    qDebug() << "### create doc 1 ->" << st.msecsTo ( QTime::currentTime() );
+    const int pageCount = qBound(1,docj->document()->pageCount(),MaximumPages);
+    /* rect fromm all pages + shadow  */
+    const QRectF grect = docj->GroupboundingRect();
+    QPicture img;
+    QPainter painter(&img);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+    painter.setPen(Qt::NoPen);
+	painter.setBrush(Qt::lightGray);
+	painter.drawRect(grect);
+    for (int x = 0; x < pageCount; ++x)  {
+        emit cstatus(x+1,pageCount);
+        qDebug() << "### pagei  ->" << x;
+        docj->paintPage(x,&painter,false);
+    }
+    painter.end();
+    qDebug() << "### create doc 2 ->" << st.msecsTo ( QTime::currentTime() );
+    emit cgenerator(img);
+    exit();
+}
+
+
+
+
+
+
+
+
+
+
+
+
