@@ -49,9 +49,6 @@ M_PageSize::M_PageSize()
     P_rect = QPrinter::A4;
     G_regt = QRectF(0,0,MM_TO_POINT(210),MM_TO_POINT(297));
     RealSize = G_regt.size();
-    const qreal mr = MM_TO_POINT(10);
-    P_margin = QRectF(mr,mr,mr,MM_TO_POINT(30));
-    //////P_margin = QRectF(0,0,0,0);  ////// css like QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
     AllowHeaderFooter = true;
 }
 
@@ -64,7 +61,7 @@ M_PageSize& M_PageSize::operator=( const M_PageSize& d )
     RealSize = d.RealSize;
     coolspace = d.coolspace;
     P_rect = d.P_rect;
-    P_margin = d.P_margin;
+    body = d.body;
     return *this;
 }
 
@@ -122,17 +119,17 @@ QTextDocument *M_PageSize::nulldoc( QString htm )
 /* form qtexdocument to this margin an papersize */
 void M_PageSize::HandlePrint( QTextDocument *doc )
 {
-    const qreal RightMargin = P_margin.y();
-    const qreal LeftMargin = P_margin.height();
+    const qreal RightMargin = body.margin_right;
+    const qreal LeftMargin = body.margin_left;
     const qreal LargeDoc = G_regt.width() - RightMargin  - LeftMargin;
     doc->setPageSize ( G_regt.size() );
     QTextFrame  *Tframe = doc->rootFrame();
     QTextFrameFormat Ftf = Tframe->frameFormat();
-    Ftf.setLeftMargin(P_margin.height());
-    Ftf.setBottomMargin(P_margin.width());
-    Ftf.setTopMargin(P_margin.x());
+    Ftf.setLeftMargin(body.margin_left);
+    Ftf.setBottomMargin(body.margin_bottom);
+    Ftf.setTopMargin(body.margin_top);
     Ftf.setBackground(QBrush(Qt::transparent));
-    Ftf.setRightMargin(P_margin.y());
+    Ftf.setRightMargin(body.margin_right);
     Ftf.setPadding ( 0);
     Tframe->setFrameFormat(Ftf);
     doc->setPageSize ( G_regt.size() );
@@ -142,10 +139,10 @@ void M_PageSize::HandlePrint( QTextDocument *doc )
 
 int M_PageSize::FillFopAttributes( QDomElement e )
 {
-    const qreal TopMargin = Pointo(P_margin.x(),"mm");
-    const qreal RightMargin = Pointo(P_margin.y(),"mm");
-    const qreal BottomMargin = Pointo(P_margin.width(),"mm");
-    const qreal LeftMargin = Pointo(P_margin.height(),"mm");
+    const qreal TopMargin = Pointo(body.margin_top,"mm");
+    const qreal RightMargin = Pointo(body.margin_right,"mm");
+    const qreal BottomMargin = Pointo(body.margin_bottom,"mm");
+    const qreal LeftMargin = Pointo(body.margin_left,"mm");
     e.setAttribute ("margin-top",QString("%1mm").arg(TopMargin));
     e.setAttribute ("margin-bottom",QString("%1mm").arg(BottomMargin));
     e.setAttribute ("margin-left",QString("%1mm").arg(LeftMargin));

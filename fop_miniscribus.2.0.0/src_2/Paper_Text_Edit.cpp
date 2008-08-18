@@ -25,6 +25,23 @@ GraphicsView::GraphicsView( QWidget * parent )
    setScene(scene);
    pageclear();
    recordActionHere();
+    
+    /* ony dev time */
+    Fo_Reader * fops = new Fo_Reader("ademo.fop");
+    const QTextDocument *fopdoc = fops->document()->clone();
+    QMap<int,RichDoc> floatingelement = fops->layers();
+    ///////////qDebug() << "### layers " << floatingelement.size();
+    
+    fops->deleteLater(); 
+    BASE_TEXT->setDocument(fopdoc);
+    BASE_TEXT->appendLayer( floatingelement );
+    /* ony dev time */
+    
+    
+    
+    
+    /* load document and recalculate the first time */
+    QTimer::singleShot(22, this, SLOT(forceResize()));
 }
 
 
@@ -33,21 +50,11 @@ void GraphicsView::pageclear()
     scene->clear();  /*  remove all item */
     BASE_TEXT = new TextLayer(0);
     scene->addItem(BASE_TEXT);
-	connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
+	//////////connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
     connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
     connect(BASE_TEXT, SIGNAL(autocursorchange() ), this, SLOT(cursorChange()));
     connect(BASE_TEXT, SIGNAL(absolutecursorchange() ), this, SLOT(cursorChange()));
-    Fo_Reader * fops = new Fo_Reader("a.fo");
-    const QTextDocument *fopdoc = fops->document()->clone();
-    QMap<int,RichDoc> floatingelement = fops->layers();
-    qDebug() << "### layers " << floatingelement.size();
     
-    fops->deleteLater(); 
-    BASE_TEXT->setDocument(fopdoc);
-    BASE_TEXT->appendLayer( floatingelement );
-    /* load document and recalculate the first time */
-    QTimer::singleShot(22, this, SLOT(forceResize()));
-
 }
 
 void GraphicsView::cursorChange()
@@ -69,6 +76,7 @@ void GraphicsView::openFile()
     if ( file.isEmpty() ) {
     return;
     }
+    
     QFileInfo fi(file);
     setter.setValue("LastDir",fi.absolutePath() +"/");
     openFile( file );
@@ -76,6 +84,8 @@ void GraphicsView::openFile()
 
 void GraphicsView::openFile( const QString file )
 {
+    pageclear();
+    
     QFileInfo fi(file);
     ApiSession *session = ApiSession::instance();
     const QString dir_ = QDir::currentPath();
@@ -109,6 +119,9 @@ void GraphicsView::openFile( const QString file )
         currentfilecodec = GetcodecfromXml( currentopenfilealternate  );
         Fo_Reader * fops = new Fo_Reader(currentopenfilealternate);
         const QTextDocument *fopdoc = fops->document()->clone();
+        
+        QMap<int,RichDoc> floatingelement = fops->layers();
+        BASE_TEXT->appendLayer( floatingelement );
         fops->deleteLater(); 
         BASE_TEXT->setDocument(fopdoc);
         forceResize();
@@ -117,7 +130,10 @@ void GraphicsView::openFile( const QString file )
         return;
     } else if ( ext == "html" || ext == "htm" ) {
         M_PageSize defaultA4Page;
-        defaultA4Page.P_margin = QRectF(MM_TO_POINT(10),MM_TO_POINT(10),MM_TO_POINT(10),MM_TO_POINT(10));
+        FoRegion  reghtml;
+        reghtml.toAll( MM_TO_POINT(10) );
+        reghtml.name ="qrichtext";
+        defaultA4Page.SetMargin(reghtml);
         /* :-)  html not know is format !!!!!!! */
         buf->LoadFile( currentopenfilerunning );
         const QByteArray chunkhtml = buf->stream();
@@ -182,7 +198,7 @@ QRectF GraphicsView::rectToScene()
         //////QMessageBox::warning(this, tr("Alert on %1").arg(_APPLICATIONS_NAME_),
               //////             tr("You are try to cover maximum page %1!").arg(PageSumm));
     ////////}
-    qDebug() << "### PageSumm request by view -------- " << PageSumm;
+    //////////////qDebug() << "### PageSumm request by view -------- " << PageSumm;
     const qreal fromTopY = PageSumm * PAGE_MODEL.G_regt.height();
     const qreal spacepage = (PageSumm - 1) * InterSpace;
     return QRectF(0,0,PAGE_MODEL.G_regt.width(),fromTopY + spacepage + _BOTTOM_VIEW_SPACE_RESERVE_);

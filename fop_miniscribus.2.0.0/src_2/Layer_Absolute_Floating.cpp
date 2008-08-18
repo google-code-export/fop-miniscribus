@@ -1,5 +1,9 @@
 #include "Layer_Absolute_Floating.h"
 
+
+#include "Fo_Format.h"
+#include "FoColorName.h"
+
 AbsoluteLayer::~AbsoluteLayer()
 {
   //~ qDebug() << "### destroy obj ...";
@@ -8,11 +12,18 @@ AbsoluteLayer::~AbsoluteLayer()
 
 
 AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
-    : QGraphicsRectItem(parent),dev(new AbsText),Rotate(0),OnMoveRects(false),id(10)
+    : QGraphicsRectItem(parent),dev(new AbsText),Rotate(0),OnMoveRects(false),id(10),xsl_fo_color(FopColor())
 {
     dev->q = this;
+    
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize e = sx->CurrentPageFormat();
+    printrectarea = e.PrintArea();
+    
+    penborder = QTextFrameFormat::BorderStyle_None;
     layermods = layermodus;
-    Background_Color = QColor(0,0,0,44);
+    internPadding = 0;
+    Background_Color = QColor(255,255,255,0);
     Border_Color = QColor(Qt::white);
     Border_Color_t = QColor(Qt::white);
     Border_Color_b = QColor(Qt::white);
@@ -25,7 +36,6 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
     _border_right = 0.;
 
     /////////qDebug() << "### init....";
-    ApiSession *sx = ApiSession::instance();
     ////const qreal widhtinit = sx->CurrentPageFormat().G_regt.width() - ( FooterHeaderPadding * 2 );
     //////const qreal hightinit = sx->CurrentPageFormat().P_margin.x() - ( FooterHeaderPadding * 2 );
     setAcceptsHoverEvents(true);
@@ -87,55 +97,80 @@ void AbsoluteLayer::setStyle( QString stylelist )
     if (layermods == DIV_HEADER | layermods == DIV_FOOTER ) {
      return;
     }
+    ApiSession *sx = ApiSession::instance();
+    internPadding = 0;
+    qDebug() << "### syle " << stylelist;
+    incss.clear();
     #define ALPHAHTML(alpha) ((alpha)*254.99999999)
-    
     QStringList syle = stylelist.split(";");
-    QStringList find;
+    css2list.clear();
     qreal hi,wi;
-    
     qreal maxi = 111.1;  
     qreal minimums = 10.1; 
+    css2list << "position" << "top" << "left" << "width" << "min-height" << "degree-rotation" << "rotate" << "reference-orientation" << "opacity";
+    css2list << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color";
+    css2list << "absolute-position" << "top" << "right" << "bottom" << "left" << "background-attachment" << "background-image";
+    css2list << "background-repeat" << "background-position-horizontal" << "background-position-vertical";
+    css2list << "border-before-color" << "border-before-style" << "border-before-width" << "border-after-color";
+    css2list << "border-after-style" << "border-after-width" << "border-start-color" << "border-start-style";
+    css2list << "border-start-width" << "border-end-color" << "border-end-style" << "border-end-width";
+    css2list << "border-top-color" << "border-top-style" << "border-top-width" << "border-bottom-color";
+    css2list << "border-bottom-style" << "border-bottom-width" << "border-left-color" << "border-left-style";
+    css2list << "border-left-width" << "border-right-color" << "border-right-style" << "border-right-width";
+    css2list << "padding-before" << "padding-after" << "padding-start" << "padding-end" << "padding-top" << "padding-bottom";
+    css2list << "padding-left" << "padding-right" << "margin-top" << "margin-bottom" << "margin-left" << "margin-right";
+    css2list << "space-before" << "space-after" << "start-indent" << "end-indent" << "block-progression-dimension";
+    css2list << "break-after" << "break-before" << "clip" << "display-align" << "height" << "id" << "inline-progression-dimension";
+    css2list << "intrusion-displace" << "keep-together" << "keep-with-next" << "keep-with-previous" << "overflow";
+    css2list << "border-style" << "docversion" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
     
     
-    find << "position" << "top" << "left" << "width" << "min-height" << "degree-rotation" << "opacity";
-    find << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color";
-    find << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
+    /*
+    A_before = 0,
+    A_after = 1, 
+    A_right = 2,
+    A_left = 3
+    */
     
+ 
     
-    qDebug() << "### find " << find;
-    qDebug() << "### syle " << syle;
+    ///////qDebug() << "### find " << find;
     
-    
-    
-    
-    QMap<QString,QVariant> incss; 
-    for (int o = 0; o < find.size(); ++o)  {
-         incss.insert(find.at(o),QString("0"));
+    for (int o = 0; o < css2list.size(); ++o)  {
+         incss.insert(css2list.at(o),QString());
     }
     for (int i = 0; i < syle.size(); ++i)  {
         QString values = syle.at(i).trimmed();
         QStringList css = values.split(":");
         if (css.size() == 2) {
         incss.insert(css.at(0),css.at(1));
+            
+            if (css.at(0).startsWith("padding-") ) {
+            internPadding = qMax(FopInt(css.at(1)),internPadding);
+            }
+            
         }
     }
+    
+    const qreal docvervion = incss.value("docversion").toDouble();
+    Q_ASSERT(docvervion > 1.1);
+    
     
     if (FopInt(incss.value("min-height").toString()) > 10) {
         hi = FopInt(incss.value("min-height").toString());
     }
     
-    qDebug() << "### left " << incss.value("left").toString();
-    qDebug() << "### left " << FopInt(incss.value("left").toString());
+    
+    
+    
     
     if (!incss.value("left").toString().isEmpty()) {
         setPos(QPointF(FopInt(incss.value("left").toString()),FopInt(incss.value("top").toString())));
     }
     if ( FopInt(incss.value("width").toString()) > 10 ) {
         wi = FopInt(incss.value("width").toString());
-            QTextFrame  *Tframe = document()->rootFrame();
-            QTextFrameFormat rootformats = Tframe->frameFormat();
-            rootformats.setWidth(wi); 
-            Tframe->setFrameFormat(rootformats);
+           
+       
     }
     if (FopInt(incss.value("height").toString()) > 10) {
         hi = FopInt(incss.value("height").toString());
@@ -149,30 +184,324 @@ void AbsoluteLayer::setStyle( QString stylelist )
     if (hi > 0 && wi > 0) {
     setRect(QRectF(0,0,wi,hi));
     }
-
-
+    
     
     if (incss.value("background-color").toString() !="0") {
-            Background_Color = QColor(incss.value("background-color").toString());
         
-          if (incss.value("opacity").toDouble() > 0) {
-              int alFaCol = qBound(0.00,ALPHAHTML(incss.value("opacity").toDouble()),255.00);
+            Background_Color = xsl_fo_color.foColor(incss.value("background-color").toString(),FopColor::Transparent);
+            /* old format compatible new not having */
+            if (incss.value("opacity").toInt() > 0) {
+              const int alFaCol = qBound(0,incss.value("opacity").toInt(),255);
+              qDebug() << "### alFaCol " << alFaCol;
               Background_Color.setAlpha(alFaCol);
-          }
+            }
           
           if (incss.value("background-color").toString() == "transparent") {
             Background_Color.setAlpha(0);
           }
-          
-          
+    }
+    penborder = QTextFrameFormat::BorderStyle_None;
+    QStringList bordspen;
+	bordspen << "border-style" << "border-before-style" << "border-bottom-style" << "border-left-style" << "border-right-style" << "border-start-style" << "border-top-style";
+    
+    for (int i = 0; i < bordspen.size(); ++i)  {
+              const QString borderstyler = bordspen.at(i);
+              if (incss.value(borderstyler).toString() !="0") {
+                penborder =  StyleBrushBorder(incss.value(borderstyler).toString());
+              }
+    }
+    
+    _border_top = borderWidth(A_before);
+    _border_bottom = borderWidth(A_after);
+    _border_left = borderWidth(A_left);
+    _border_right = borderWidth(A_right);
+    const qreal havingborder = qMax (qMax (_border_right,_border_left),
+    qMax(_border_top,_border_bottom));
+ 
+    if (havingborder > 0 || penborder != QTextFrameFormat::BorderStyle_None) {
+         penborder = QTextFrameFormat::BorderStyle_Solid;
+         /////////////qDebug() << "### pen style to border ........ -------- " << penborder;
+        
+        
+        
+                     for (int i = 0; i < bordspen.size(); ++i)  {
+                      const QString borderstyler = bordspen.at(i);
+                      if (incss.value(borderstyler).toString() !="0") {
+                        penborder =  StyleBrushBorder(incss.value(borderstyler).toString());
+                      }
+                    }
+                    
+                
+                /*  set all black if not found !! */
+                Border_Color_t = borderColor( A_before);
+                Border_Color_b = borderColor( A_after );
+                Border_Color_l = borderColor( A_left);
+                Border_Color_r = borderColor( A_right );
+                    
+                if (docvervion <= 1.9) {
+                /* bug on old version minor of 2.0 */
+                Border_Color_t = Border_Color_l;
+                Border_Color_b = Border_Color_l;
+                Border_Color_r = Border_Color_l; 
+                }
+
+               
+
+          /* having border style and not tickness */                    
+         if (havingborder < 0.2) {
+             _border_top = 0.8;
+             _border_bottom = 0.8;
+             _border_left = 0.8;
+             _border_right = 0.8;
+         }
+         
+         
+                if (docvervion <= 1.9) {
+                    /* border external from wi x hi */
+                    if (hi > 0 && wi > 0) {
+                      setRect(QRectF(0,0,wi + _border_left + _border_right ,hi + _border_top +  _border_bottom));
+                    }
+                    
+                }
+                    
+                
+    }
+    
+    M_PageSize e = sx->CurrentPageFormat();
+    qDebug() << "### docvervion  " << docvervion ;
+    printrectarea = e.PrintArea();
+    
+    
+    /*
+    
+    inline QDebug operator<<(QDebug debug, FoRegion& udoc)
+{
+    debug.nospace() << "FoRegion(name."
+    << udoc.name << ",top()"
+    << udoc.margin_top << ",bottom()"
+    << udoc.margin_bottom << ",right()"
+    << udoc.margin_right << ",left()"
+    << udoc.margin_left << ")";
+    return debug.space();
+}
+    
+    */
+    
+    if (docvervion > 1.3) {
+     /* translate absolute position on print area !!!! */
+		const qreal RightMargin = e.body.margin_right;
+		const qreal BottomMargin = e.body.margin_bottom;
+		const qreal LeftMargin = e.body.margin_left;
+        const qreal TopMargin = e.body.margin_top;
+        const qreal nowleft = pos().x();
+        const qreal nowtop = pos().y();
+        
+        qDebug() << "### nowleft nowleft nowleft " << nowleft;
+        qDebug() << "### nowleft LeftMargin " << LeftMargin;
+        
+        if (nowleft < printrectarea.left()) {
+        /////////setPos(QPointF(printrectarea.left(),nowtop)); 
+        } 
+    } else {
+        
     }
 
+    ///////ApiSession *sx = ApiSession::instance();
+    ////const qreal widhtinit = sx->CurrentPageFormat().G_regt.width() - ( FooterHeaderPadding * 2 );
+    
+    /* Layer orientation */
+    ////////"degree-rotation" << "rotate" << "reference-orientation" 
+    if (incss.value("rotate").toInt() !=0 || 
+         incss.value("degree-rotation").toInt() !=0 ||
+         incss.value("reference-orientation").toInt() !=0 ) {   
+       if (incss.value("reference-orientation").toDouble() !=0) {
+       Rotate =  incss.value("reference-orientation").toDouble();
+       }
+       if (incss.value("rotate").toDouble() !=0) {
+       Rotate =  incss.value("rotate").toDouble();
+       }
+       if (incss.value("degree-rotation").toDouble() !=0) {
+       Rotate =  incss.value("degree-rotation").toDouble();
+       }
+    }
+    /* reset zero from fop reader auto correct error */
+    if (incss.value("display-align").toString() == "auto") {
+       Rotate = 0;
+    }
+    
+    /* write lock enable 1 */
+    const int lockstatus = incss.value("l-lock").toInt();
+
+    
+    /* border padding check */
+    const qreal nwidht = rect().width();
+    document()->setPageSize ( QSizeF(nwidht,nwidht * 10));
 
     dev->txtControl()->setBlinkingCursorEnabled(false);
     UpdatePageFormat();
     
 }
 
+
+QColor AbsoluteLayer::borderColor( WMARGIN e )
+{
+   QStringList marginli;
+   marginli.clear();
+   qreal result = 0.;
+    if (e == A_before) {
+     marginli << "border-color" << "border-before-color" << "border-nord-color";
+    } else if (e == A_after) {
+     marginli << "border-color" << "border-after-color" << "border-sud-color";
+    } else if (e == A_right) {
+     marginli << "border-color" << "border-end-color" << "border-ost-color";
+    } else if (e == A_left) {
+     marginli << "border-color" << "border-start-color" << "border-west-color";
+    }
+     for (int i = 0; i < marginli.size(); ++i)  {
+              const QString param = marginli.at(i);
+              const QString value = incss.value(param).toString();
+              if (!value.isEmpty()) {
+               return xsl_fo_color.foColor(incss.value(param).toString(),FopColor::DarkColor);
+              }
+          
+            
+    }
+return xsl_fo_color.foColor("black",FopColor::DarkColor);
+}
+
+qreal AbsoluteLayer::borderWidth( WMARGIN e )
+{
+   QStringList marginli;
+   marginli.clear();
+   qreal result = 0.;
+    if (e == A_before) {
+     marginli << "border-top" << "border-before-width" << "border-nord" << "border-width";
+    } else if (e == A_after) {
+     marginli << "border-bottom" << "border-after-width" << "border-sud" << "border-width";
+    } else if (e == A_right) {
+     marginli << "border-right" << "border-end-width" << "border-ost" << "border-width";
+    } else if (e == A_left) {
+     marginli << "border-left" << "border-start-width" << "border-west" << "border-width";
+    }
+    for (int i = 0; i < marginli.size(); ++i)  {
+              const QString param = marginli.at(i);
+              const QString value = incss.value(param).toString();
+              if (!value.isEmpty()) {
+                  if (value == "thick") {
+                     result = 5.2; 
+                  }
+                  if (value == "thin") {
+                     result = 0.7; 
+                  }
+                  if (value == "small") {
+                     result = 1; 
+                  }
+                  result = qMax(FopInt(value),result);
+              }
+          
+            
+    }
+    
+    qDebug() << "### border widht......... -------- " << result;
+    
+    
+   return result;
+}
+
+void AbsoluteLayer::paintBorderLayer( QPainter *painter )
+{
+    const QRectF rec = boundingRect();
+    
+    if (_border_top > 0) {
+    const qreal bbwi = _border_top;
+    QPen tPen(QBrush(Border_Color_t),bbwi);
+    painter->setPen(tPen);
+    QLineF Line(rec.topLeft() + QPointF(bbwi / 2, bbwi /2 ),rec.topRight() + QPointF(bbwi / 2, bbwi /2 ));
+    Line.setLength ( rec.width() -  bbwi );
+    painter->drawLine(Line);
+    }
+    
+    if (_border_bottom > 0) {
+    const qreal bbwi = _border_bottom;
+    QPen tPen(QBrush(Border_Color_b),bbwi);
+    painter->setPen(tPen);
+    QLineF Line(rec.bottomLeft() + QPointF(+(bbwi /2),-(bbwi /2)),rec.bottomRight() + QPointF(+(bbwi /2),-(bbwi /2)));
+    Line.setLength ( rec.width() -  bbwi );
+    painter->drawLine(Line);
+    }
+    
+    if (_border_left > 0) {
+    const qreal bbwi = _border_left;
+    QPen tPen(QBrush(Border_Color_l),bbwi);
+    painter->setPen(tPen);
+    QLineF Line(rec.topLeft() + QPointF(bbwi / 2, bbwi /2 ), rec.bottomLeft() + QPointF(+(bbwi /2),-(bbwi /2)) );
+    Line.setLength ( rec.height() -  bbwi );
+    painter->drawLine(Line);
+    }
+    
+    if (_border_right > 0) {
+    const qreal bbwi = _border_right;
+    QPen tPen(QBrush(Border_Color_r),bbwi);
+    painter->setPen(tPen);
+    QLineF Line(rec.topRight() + QPointF(bbwi / 2, bbwi /2 ), rec.bottomRight() + QPointF(+(bbwi /2),-(bbwi /2)) );
+    Line.setLength ( rec.height() -  bbwi );
+    painter->drawLine(Line);
+    }
+    
+    
+    
+    
+    
+    
+    /*
+    
+      Border_Color_t = xsl_fo_color.foColor(incss.value("border-start-color").toString(),FopColor::Transparent);
+                Border_Color_b = xsl_fo_color.foColor(incss.value("border-start-color").toString(),FopColor::Transparent);
+                Border_Color_l = xsl_fo_color.foColor(incss.value("border-start-color").toString(),FopColor::Transparent);
+                Border_Color_r = xsl_fo_color.foColor(incss.value("border-start-color").toString(),FopColor::Transparent);
+                _border_top = FopInt(incss.value("border-width").toString()); 
+                _border_bottom = FopInt(incss.value("border-width").toString()); 
+                _border_left = FopInt(incss.value("border-width").toString()); 
+                _border_right = FopInt(incss.value("border-width").toString()); 
+    
+    */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}
+
+void AbsoluteLayer::UpdateDots()
+{
+    Angle_1->setPos(boundingRect().topLeft());
+    Angle_4->setPos(boundingRect().bottomRight());
+    Angle_2->setPos(boundingRect().topRight());
+    if (layermods == DIV_ABSOLUTE) {
+    document()->setPageSize ( QSizeF(boundingRect().width(),boundingRect().height()));
+    /* frame root */
+                 QTextFrame  *RootFrame = document()->rootFrame();
+                 QTextFrameFormat formatibb = RootFrame->frameFormat(); 
+                 formatibb.setLeftMargin(_border_left);
+                 formatibb.setBottomMargin(_border_bottom);
+                 formatibb.setTopMargin(_border_top);
+                 formatibb.setRightMargin(_border_right);
+                 formatibb.setPadding ( internPadding);
+                 RootFrame->setFrameFormat(formatibb);
+     /*
+     document()->setPageSize ( QSizeF(boundingRect().width() - (_border_left + _border_right ),
+                  boundingRect().height() - (_border_top + _border_bottom )));
+    */
+        
+        
+    emit pagesize_swap();
+    }
+    
+}
 
 void AbsoluteLayer::setDocument( const QTextDocument * doc , FileHandlerType Type )
 {
@@ -181,7 +510,8 @@ void AbsoluteLayer::setDocument( const QTextDocument * doc , FileHandlerType Typ
     if (layermods == DIV_HEADER | layermods == DIV_FOOTER ) {
     document()->setMaximumBlockCount(FooterHeaderMaxBlocks);
     }
-    
+    ApiSession *session = ApiSession::instance();
+    session->ensureImageDoc(document());
 }
 
 QTextCursor AbsoluteLayer::textCursor() 
@@ -213,13 +543,14 @@ void AbsoluteLayer::UpdatePageFormat()
    UpdateDots();
 }
 
-void AbsoluteLayer::UpdateDots()
-{
-    Angle_1->setPos(boundingRect().topLeft());
-    Angle_4->setPos(boundingRect().bottomRight());
-    Angle_2->setPos(boundingRect().topRight());
-    
-}
+
+/*
+const qreal RightMargin = e.body.margin_right;
+		const qreal BottomMargin = e.body.margin_bottom;
+		const qreal LeftMargin = e.body.margin_left;
+        const qreal TopMargin = e.body.margin_top;
+
+*/
 
 
 void AbsoluteLayer::updatearea( const QRect areas )
@@ -236,13 +567,13 @@ void AbsoluteLayer::updatearea( const QRect areas )
       if (txtrect.height() != rect().height()) {
          setRect(QRectF(0,0,rect().width(),txtrect.height()));
          ApiSession *sx = ApiSession::instance();
-         const QRectF mold = sx->CurrentPageFormat().P_margin;
+         /////const QRectF mold = sx->CurrentPageFormat().P_margin;
          //////QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
          if (layermods == DIV_HEADER ) {
-         sx->current_Page_Format.SetMargin(QRectF(txtrect.height() + anspace ,mold.y(),mold.width(),mold.height()));
+         ///////sx->current_Page_Format.SetMargin(QRectF(txtrect.height() + anspace ,mold.y(),mold.width(),mold.height()));
          }
          if (layermods == DIV_FOOTER ) {
-         sx->current_Page_Format.SetMargin(QRectF(mold.x(),mold.y(),txtrect.height() + anspace ,mold.height()));
+         //////sx->current_Page_Format.SetMargin(QRectF(mold.x(),mold.y(),txtrect.height() + anspace ,mold.height()));
          setPos(sx->CurrentPageFormat().FooterInitPoints(0));
          }
          emit pagesize_swap();
@@ -417,6 +748,7 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setBrush(Background_Color);
     painter->setPen(Qt::NoPen);
     painter->drawRect(rect());
+    
     const qreal hi = rect().height();
     const qreal wi = rect().width();
     QRectF pagen = rect();
@@ -458,7 +790,7 @@ void AbsoluteLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setOpacity(1.0);
     }
                 
-  
+    paintBorderLayer(painter);
     /*
     painter->setPen(Qt::NoPen);
     QColor Visiblerecord(Qt::red);

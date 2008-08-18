@@ -204,6 +204,71 @@ http://de.selfhtml.org/css/eigenschaften/randabstand.htm#margin
 */
 
 
+class FoRegion
+{
+public:
+  FoRegion() {
+    name = "region-body"; /* e.tagName().toLower().right(2) */
+    margin_top = 2.7;
+    margin_bottom = 2.7;
+    margin_left = 2.7;
+    margin_right = 2.7;
+    bg = QColor(Qt::white);
+    }
+    FoRegion& operator=( const FoRegion& d )
+    {
+    name = d.name;
+    bg = d.bg;
+    margin_top = d.margin_top;
+    margin_bottom = d.margin_bottom;
+    margin_left = d.margin_left;
+    margin_right = d.margin_right;
+    edom = d.edom;
+    return *this;
+   }
+   operator QVariant() const
+   {
+    return QVariant::fromValue(*this);
+   }
+   void toAll( const qreal unique )
+   {
+    margin_top = unique;
+    margin_bottom = unique;
+    margin_left = unique;
+    margin_right = unique;
+   }
+   
+   
+  QColor bg; /* background color */
+  QString name;
+  qreal margin_top;
+  qreal margin_bottom;
+  qreal margin_left;
+  qreal margin_right;
+  QByteArray edom;   /* dome element*/
+};
+
+
+Q_DECLARE_METATYPE(FoRegion);
+
+
+inline QDebug operator<<(QDebug debug, FoRegion& udoc)
+{
+    debug.nospace() << "FoRegion(name."
+    << udoc.name << ",top()"
+    << udoc.margin_top << ",bottom()"
+    << udoc.margin_bottom << ",right()"
+    << udoc.margin_right << ",left()"
+    << udoc.margin_left << ")";
+    return debug.space();
+}
+
+
+
+////////const qreal TopMargin = Pointo(P_margin.x(),"mm");
+//////const qreal RightMargin = Pointo(P_margin.y(),"mm");
+//////const qreal BottomMargin = Pointo(P_margin.width(),"mm");
+/////const qreal LeftMargin = Pointo(P_margin.height(),"mm");
 
 
 class M_PageSize
@@ -218,32 +283,32 @@ public:
     }
     inline QRectF HeaderBoundingrect()
     {
-        return  QRectF(0,0,width(),P_margin.x() - ( FooterHeaderPadding * 2 ));
+        return  QRectF(0,0,width(),body.margin_top - ( FooterHeaderPadding * 2 ));
     }
 
     inline QPointF HeaderInitPoints( const int index = 0 )
     {
         const qreal fromTopY = index * G_regt.height();
         const qreal spacepage = index * InterSpace;
-        return QPointF(P_margin.height(),fromTopY + spacepage + FooterHeaderPadding);
+        return QPointF(body.margin_left,fromTopY + spacepage + FooterHeaderPadding);
     }
 
     inline QPointF FooterInitPoints( const int index = 0 )
     {
         const qreal fromTopY = index * G_regt.height();
-        const qreal Ytop = G_regt.height() - P_margin.width();
+        const qreal Ytop = G_regt.height() - body.margin_bottom;
         if (index ==  0)
         {
-            return QPointF(P_margin.height(),Ytop + FooterHeaderPadding);
+            return QPointF(body.margin_left,Ytop + FooterHeaderPadding);
         }
         const qreal spacepage = index * InterSpace;
-        return QPointF(P_margin.height(),fromTopY + spacepage + Ytop + FooterHeaderPadding);
+        return QPointF(body.margin_left,fromTopY + spacepage + Ytop + FooterHeaderPadding);
     }
 
 
     inline QRectF FooterBoundingrect()
     {
-        return  QRectF(0,0,width(),P_margin.width() - ( FooterHeaderPadding * 2 ));
+        return  QRectF(0,0,width(),body.margin_bottom - ( FooterHeaderPadding * 2 ));
     }
 
     QString HName();
@@ -251,34 +316,34 @@ public:
     void Register( QString n , QPrinter::PageSize pp , bool La = false );
     inline qreal hight()
     {
-        return G_regt.height() - P_margin.width() - P_margin.x() + 0.5;  ////  -bottom - top
+        return G_regt.height() - body.margin_bottom - body.margin_top + 0.5;  ////  -bottom - top
     }
     qreal width()
     {
-        return G_regt.width() - P_margin.height() - P_margin.y() + 0.5; /////////  -lef , - right
+        return G_regt.width() - body.margin_left - body.margin_right + 0.5; /////////  -lef , - right
     }
     QSizeF internal_size()
     {
         return QSizeF(width(),hight());
     }
-    void SetMargin( QRectF rectp )
+    void SetMargin( FoRegion e )
     {
-        P_margin = rectp;
+        body = e;
     }
     QRectF BoundingPageSumme( const int summe );
 
     QRectF MarginArea()   /* page 0 */
     {
-        const qreal LargeDoc = G_regt.width() - P_margin.y()  - P_margin.height();
-        const qreal InnHightDoc = G_regt.height() - P_margin.x()  - P_margin.width();
-        return QRectF(P_margin.height(),P_margin.x(),LargeDoc,InnHightDoc);
+        const qreal LargeDoc = G_regt.width() - body.margin_right  - body.margin_left;
+        const qreal InnHightDoc = G_regt.height() - body.margin_top  - body.margin_bottom;
+        return QRectF(body.margin_left,body.margin_top,LargeDoc,InnHightDoc);
     }
     /* swap right - left margin  */
     QRectF MarginSwapArea()   /* page /0\ */
     {
-        const qreal LargeDoc = G_regt.width() - P_margin.y()  - P_margin.height();
-        const qreal InnHightDoc = G_regt.height() - P_margin.x()  - P_margin.width();
-        return QRectF(P_margin.y(),P_margin.x(),LargeDoc,InnHightDoc);
+        const qreal LargeDoc = G_regt.width() - body.margin_right  - body.margin_left;
+        const qreal InnHightDoc = G_regt.height() - body.margin_top  - body.margin_bottom;
+        return QRectF(body.margin_right,body.margin_top,LargeDoc,InnHightDoc);
     }
 
     QRectF DocumentInternal( const int index )
@@ -297,7 +362,7 @@ public:
     {
         const qreal fromTopY = index * G_regt.height();
         const qreal spacepage = index * InterSpace;
-        return QRectF(QPointF(P_margin.height(),fromTopY + spacepage + P_margin.x()),internal_size());
+        return QRectF(QPointF(body.margin_left,fromTopY + spacepage + body.margin_top),internal_size());
     }
     /* external rect document */
     QRectF PageExternal( const int index )
@@ -306,16 +371,25 @@ public:
         const qreal spacepage = index * InterSpace;
         return QRectF(QPointF(0,fromTopY + spacepage),G_regt.size());
     }
+    
+    QRectF PrintArea()
+    {
+        return QRectF(QPointF(body.margin_left,body.margin_top),QSizeF(width(),G_regt.height() * MaximumPages));
+    }
+    
+    
+    
+    
     QPointF MarginTranslate()
     {
-        return QPointF(P_margin.height(),P_margin.x());
+        return QPointF(body.margin_left,body.margin_top);
     }
     void ReportPage( QDomElement e )
     {
-		const qreal TopMargin = Pointo(P_margin.x(),"mm");
-		const qreal RightMargin = Pointo(P_margin.y(),"mm");
-		const qreal BottomMargin = Pointo(P_margin.width(),"mm");
-		const qreal LeftMargin = Pointo(P_margin.height(),"mm");
+		const qreal TopMargin = Pointo(body.margin_top,"mm");
+		const qreal RightMargin = Pointo(body.margin_right,"mm");
+		const qreal BottomMargin = Pointo(body.margin_bottom,"mm");
+		const qreal LeftMargin = Pointo(body.margin_left,"mm");
 		e.setAttribute ("margin-top",QString("%1mm").arg(TopMargin));
     e.setAttribute ("margin-bottom",QString("%1mm").arg(BottomMargin));
     e.setAttribute ("margin-left",QString("%1mm").arg(LeftMargin));
@@ -335,7 +409,7 @@ public:
     ////////QPixmap PicfromMime( QMimeData *mime );
     QPrinter::PageSize P_rect;
     QRectF G_regt;
-    QRectF P_margin;
+    FoRegion body;
     QSizeF RealSize;
     QString name;
     bool landscape;

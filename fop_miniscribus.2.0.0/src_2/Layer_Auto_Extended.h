@@ -70,7 +70,7 @@ private:
 
 
 signals:
-  void PageCountChange();
+  void pageCountChange();
   void autocursorchange();
   void absolutecursorchange();
 public slots:

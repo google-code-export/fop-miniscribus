@@ -33,19 +33,21 @@ ApiSession::ApiSession()
   
   AppendPaper( A4 );  /* append default */
   
+    
+    /*
+    
      M_PageSize CDLabel;
      CDLabel.name = "CD-Label (128 x 128mm)";
      CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(128),MM_TO_POINT(128));
      CDLabel.P_rect = QPrinter::Custom;
      CDLabel.RealSize = CDLabel.G_regt.size();
      const qreal margindd = MM_TO_POINT(8);
-     /* qtext document minimum size bug not break line at 128mm */
      CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(200),MM_TO_POINT(200));
-  
-     CDLabel.P_margin = QRectF(margindd,margindd,margindd,margindd);   
-  
-  AppendPaper( CDLabel );  /* append default */
-  
+    FoRegion cdregion;
+    cdregion.toAll( margindd );
+    CDLabel.body = cdregion;
+     AppendPaper( CDLabel );
+  */
   
   
   
@@ -181,8 +183,15 @@ void ApiSession::SaveMimeTmp()
     
 }
 
-
-
+void ApiSession::ensureImageDoc( QTextDocument * doc  ) 
+{
+    QMapIterator<QString,SPics> o(ImagePageList);
+					while (o.hasNext()) {
+                     o.next();
+                     SPics img = o.value();
+                     doc->addResource( QTextDocument::ImageResource,QUrl(o.key()),img.pix());
+                   }
+}
 
 void ApiSession::Set_Translate_File( const QString file ) 
 { 
