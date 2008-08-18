@@ -1749,6 +1749,20 @@ void  TextProcessor::ImageonCursor( const QString file )
             QApplication::restoreOverrideCursor();
             QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
         resultimage = LoadPS( fixurl.absoluteFilePath() );
+        } else if (extension.contains("pic")) {
+            QApplication::restoreOverrideCursor();
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+            QPicture qimg;
+             if (qimg.load(file)) {
+                 QRect ire = qimg.boundingRect();
+                  QPixmap tmpimg(ire.size());
+                    QPainter *painter = new QPainter(&tmpimg);
+                    painter->drawPicture(QPointF(0,0),qimg);
+                    painter->end();
+                    resultimage = tmpimg;
+                   
+                 
+             }
         } else if (extension.contains("pdf")) {
             QApplication::restoreOverrideCursor();
             int page = QInputDialog::getInteger(0, tr("Render Page Nr."),tr("Page:"),1, 1, 100, 1);
@@ -1839,6 +1853,8 @@ QString TextProcessor::ImageFilterHaving() const
    filterSimple += tr( "PostScript Vector Graphics" ) + " (*.ps *.eps);;"; 
    filterSimple += tr( "PDF Page units" ) + " (*.pdf);;"; 
   }
+  
+  filterSimple += tr( "QPicture qt4.1 > " ) + " (*.pic);;"; 
   
   for ( int y = 0; y < formats.count(); ++y ) {
 

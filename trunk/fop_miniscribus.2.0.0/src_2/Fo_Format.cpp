@@ -27,6 +27,26 @@ QTextListFormat Fo_Format::TextListFromFromDom(const QDomElement e)
     return pf;
 }
 
+
+/* css2 like format attributes */
+QStringList Fo_Format::attributeList(const QDomElement e)
+{
+    QStringList pf;
+    QDomNamedNodeMap attlist = e.attributes();
+    for (int i=0; i<attlist.count(); i++) {
+    QDomNode nod = attlist.item(i);
+    QString line = QString("%1:%2").arg(nod.nodeName().toLower()).arg(nod.nodeValue());
+    pf.append(line);
+    }
+    return pf;
+}
+
+
+
+
+
+
+
 QTextBlockFormat Fo_Format::TextBlockFormFromDom( const QDomElement e , QTextBlockFormat pf  ) 
 {
     /* pf = parent format */

@@ -28,7 +28,10 @@ public:
     {
         return PageSize ;
     }
-
+    QMap<int,RichDoc> layers()
+    {
+        return layerList;
+    }
 protected:
     int doc_cur;
     int table_cur;
@@ -68,6 +71,10 @@ protected:
     void MoveEndDocNow();
     void DocRootFrameDefault();
     void PaintMessage(  QTextCursor Curs , const QString msg );
+    
+    
+    bool placeNewAbsoluteLayer( const QDomElement e );
+    
 
 private:
     int Current_Block_Tree_Level;
@@ -81,7 +88,8 @@ private:
     M_PageSize PageSize;
     qreal Docwidth;
     int ImageCount;
-
+    int LayerCount;
+    QMap<int,RichDoc> layerList;
     QVector<QTextLength> LastTableCON;
 
 signals:

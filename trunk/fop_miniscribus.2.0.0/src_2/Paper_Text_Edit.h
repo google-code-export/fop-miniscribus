@@ -41,16 +41,17 @@ public:
    TextLayer *BASE_TEXT;
    
 signals:
-   void SceneSwap();
+   void sceneSwap();
    void NewPageFormatin();
    void dinamic_autocursor_swap();
 public slots:
    void DisplayTop();
    void ViewDisplay( const QRectF area );
    void SwapPaper();
-   void ForceResize();
+   void forceResize();
    void openFile( const QString file );
    void openFile();
+   void cursorChange();
 private slots:
     
 

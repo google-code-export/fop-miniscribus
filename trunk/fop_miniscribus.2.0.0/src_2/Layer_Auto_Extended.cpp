@@ -53,6 +53,31 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     QTimer::singleShot(1, this, SLOT(cursor_wake_up())); 
 }
 
+void TextLayer::appendLayer( QMap<int,RichDoc> floatingelement  )
+{
+               QMapIterator<int,RichDoc> o(floatingelement);
+					while (o.hasNext()) {
+                     o.next();
+				             RichDoc record = o.value();
+						     AbsoluteLayer *absolute = new AbsoluteLayer(this,DIV_ABSOLUTE);
+                             absolute->setDocument(record.todoc(),FOP);
+                             absolute->setPos( QPointF(10,10) );   //////
+                             absolute->setStyle( record.style );
+                             connect(absolute, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
+                             connect(absolute, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
+					}
+}
+
+
+
+
+
+
+
+
+
+
+
 void TextLayer::SetupHeaderFooter()
 {
     Aheader = new AbsoluteLayer(this,DIV_HEADER);

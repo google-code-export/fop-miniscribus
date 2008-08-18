@@ -11,31 +11,50 @@
 using namespace ApacheFop;
 
 GraphicsView::GraphicsView( QWidget * parent )
-	: QGraphicsView( parent ),OnPrintRender(false),gzippedfile(false)
+	: QGraphicsView( parent ),
+    OnPrintRender(false),BASE_TEXT(new TextLayer(0)),
+    gzippedfile(false)
 {
-	 QApplication::restoreOverrideCursor();
+   QApplication::restoreOverrideCursor();
    QPalette p = palette();
    p.setColor(QPalette::Window,Qt::lightGray);
    p.setColor(QPalette::Base,Qt::lightGray);
    setPalette(p);
-    
-   BASE_TEXT = new TextLayer(0);
-   Fo_Reader * fops = new Fo_Reader("a.fo");
-    
    scene = new GraphicsScene(rectToScene(),this);
    setCacheMode(CacheBackground);
    setScene(scene);
-    
-   
-   const QTextDocument *fopdoc = fops->document()->clone();
-   fops->deleteLater(); 
-   BASE_TEXT->setDocument(fopdoc);
-   scene->addItem(BASE_TEXT);
-   connect(scene, SIGNAL(MakeVisible(QRectF) ), this, SLOT(ViewDisplay(QRectF)));
-   connect(BASE_TEXT, SIGNAL(PageCountChange() ), this, SLOT(ForceResize()));
-   QTimer::singleShot(400, this, SLOT(ForceResize())); 
+   pageclear();
    recordActionHere();
 }
+
+
+void GraphicsView::pageclear()
+{
+    scene->clear();  /*  remove all item */
+    BASE_TEXT = new TextLayer(0);
+    scene->addItem(BASE_TEXT);
+	connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
+    connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
+    connect(BASE_TEXT, SIGNAL(autocursorchange() ), this, SLOT(cursorChange()));
+    connect(BASE_TEXT, SIGNAL(absolutecursorchange() ), this, SLOT(cursorChange()));
+    Fo_Reader * fops = new Fo_Reader("a.fo");
+    const QTextDocument *fopdoc = fops->document()->clone();
+    QMap<int,RichDoc> floatingelement = fops->layers();
+    qDebug() << "### layers " << floatingelement.size();
+    
+    fops->deleteLater(); 
+    BASE_TEXT->setDocument(fopdoc);
+    BASE_TEXT->appendLayer( floatingelement );
+    /* load document and recalculate the first time */
+    QTimer::singleShot(22, this, SLOT(forceResize()));
+
+}
+
+void GraphicsView::cursorChange()
+{
+    emit sceneSwap();
+}
+
 
 void GraphicsView::recordActionHere()
 {
@@ -92,8 +111,8 @@ void GraphicsView::openFile( const QString file )
         const QTextDocument *fopdoc = fops->document()->clone();
         fops->deleteLater(); 
         BASE_TEXT->setDocument(fopdoc);
-        ForceResize();
-        QTimer::singleShot(90, this, SLOT(ForceResize())); 
+        forceResize();
+        QTimer::singleShot(90, this, SLOT(forceResize())); 
         QDir::setCurrent(dir_);
         return;
     } else if ( ext == "html" || ext == "htm" ) {
@@ -110,8 +129,8 @@ void GraphicsView::openFile( const QString file )
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
         BASE_TEXT->setDocument(htmldoc);
-        ForceResize();
-        QTimer::singleShot(90, this, SLOT(ForceResize())); 
+        forceResize();
+        QTimer::singleShot(90, this, SLOT(forceResize())); 
         QDir::setCurrent(dir_);
     }
     
@@ -120,7 +139,7 @@ void GraphicsView::openFile( const QString file )
 
 
 
-void GraphicsView::ForceResize()
+void GraphicsView::forceResize()
 {
     scene->setSceneRect( rectToScene());
     emit NewPageFormatin();
@@ -206,12 +225,7 @@ void GraphicsView::DisplayTop()
 	verticalScrollBar()->setValue(0);
 }
 
-void GraphicsView::pageclear()
-{
-	  scene->clear();  /*  remove all item */
-    BASE_TEXT = new TextLayer(0);
-    scene->addItem(BASE_TEXT);
-}
+
 
 GraphicsView::~GraphicsView()
 {
@@ -408,7 +422,7 @@ void Panel::setupMatrix()
     ///////matrix.rotate(10);
     graphicsView->setMatrix(matrix);
     setResetButtonEnabled();
-    graphicsView->ForceResize();
+    graphicsView->forceResize();
 }
 
 void Panel::setResetButtonEnabled()
