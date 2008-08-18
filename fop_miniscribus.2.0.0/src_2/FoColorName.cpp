@@ -9,7 +9,7 @@ FopColor::FopColor( const QString colorchunk , FopColor::AlternateColor col )
      
     #ifdef _USELISTAPACHECOLOR_
 
-    qDebug() << "### record long hand list    ";
+    /////////qDebug() << "### record long hand list    ";
     
     record("aliceblue" 	,QColor(240, 248, 255,255));
     record("authoren"	,QColor(240, 255, 255,255));
@@ -189,9 +189,9 @@ FopColor::FopColor( const QString colorchunk , FopColor::AlternateColor col )
           }
     foplist.clear();
           
-    qDebug() << "### avaiablelist.size()   " << avaiablelist.size();
-          
+    /////////////qDebug() << "### color size   " << avaiablelist.size();
     currentcolor = foColor(colorchunk,col);
+    ///////qDebug() << "### color name  " << currentcolor.name();
 }
 
 

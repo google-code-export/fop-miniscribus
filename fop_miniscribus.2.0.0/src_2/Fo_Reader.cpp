@@ -117,7 +117,7 @@ region-start [st]
     session->AppendPaper(PageSize);
     
     
-    qDebug() << "### bodyregion " << bodyregion;
+    qDebug() << "### bodyregion " << bodyregion << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
     
     Docwidth = PageSize.width();
     session->CurrentDocWidth = Docwidth;

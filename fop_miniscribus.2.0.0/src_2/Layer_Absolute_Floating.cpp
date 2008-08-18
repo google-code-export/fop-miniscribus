@@ -15,6 +15,9 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
     : QGraphicsRectItem(parent),dev(new AbsText),Rotate(0),OnMoveRects(false),id(10),xsl_fo_color(FopColor())
 {
     dev->q = this;
+    qDebug() << "### init  absolute layer .... a";
+    
+    
     
     ApiSession *sx = ApiSession::instance();
     M_PageSize e = sx->CurrentPageFormat();
@@ -88,6 +91,7 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
     setDocument(dummy,FOP);
     dev->txtControl()->SetRect ( rect() );
     UpdateDots();
+    qDebug() << "### init  absolute layer .... z";
     
     
 }
@@ -482,8 +486,9 @@ void AbsoluteLayer::UpdateDots()
     Angle_4->setPos(boundingRect().bottomRight());
     Angle_2->setPos(boundingRect().topRight());
     if (layermods == DIV_ABSOLUTE) {
+        
     document()->setPageSize ( QSizeF(boundingRect().width(),boundingRect().height()));
-    /* frame root */
+        
                  QTextFrame  *RootFrame = document()->rootFrame();
                  QTextFrameFormat formatibb = RootFrame->frameFormat(); 
                  formatibb.setLeftMargin(_border_left);
@@ -492,12 +497,6 @@ void AbsoluteLayer::UpdateDots()
                  formatibb.setRightMargin(_border_right);
                  formatibb.setPadding ( internPadding);
                  RootFrame->setFrameFormat(formatibb);
-     /*
-     document()->setPageSize ( QSizeF(boundingRect().width() - (_border_left + _border_right ),
-                  boundingRect().height() - (_border_top + _border_bottom )));
-    */
-        
-        
     emit pagesize_swap();
     }
     
@@ -558,28 +557,45 @@ void AbsoluteLayer::updatearea( const QRect areas )
     lastUpdateRequest = areas; 
     ////////qDebug() << "### updatearea " << areas;
     const qreal anspace = FooterHeaderPadding * 2;
-    const QRectF txtrect = dev->txtControl()->boundingRect();
-    if (rect().height() < txtrect.height()) {
-    setRect(QRectF(0,0,rect().width(),txtrect.height()));
+    const QRectF txtHightCurrent = dev->txtControl()->boundingRect();
+    if (rect().height() < txtHightCurrent.height()) {
+    setRect(QRectF(0,0,rect().width(),txtHightCurrent.height()));
     }
+    
+    
     if (layermods == DIV_HEADER | layermods == DIV_FOOTER ) {
     
-      if (txtrect.height() != rect().height()) {
-         setRect(QRectF(0,0,rect().width(),txtrect.height()));
+      if (txtHightCurrent.height() != rect().height()) {
+         setRect(QRectF(0,0,rect().width(),txtHightCurrent.height()));
+         QRectF pagefloating(pos(),rect().size());
+         qreal headerPlacerHight = txtHightCurrent.height() + anspace;
+         /* minimal margin top hight is now headerPlacerHight !!!!!!  pagefloating.bottom()  !!!!!!!! */
+          
          ApiSession *sx = ApiSession::instance();
-         /////const QRectF mold = sx->CurrentPageFormat().P_margin;
-         //////QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
+         FoRegion pbody = sx->CurrentPageFormat().body;
+          
+          
+          /////pbody.margin_bottom;
+          ///////pbody.margin_left;
+          ////////pbody.margin_right;
+          //////// pbody.margin_top;
+          
+
          if (layermods == DIV_HEADER ) {
-         ///////sx->current_Page_Format.SetMargin(QRectF(txtrect.height() + anspace ,mold.y(),mold.width(),mold.height()));
+            pbody.margin_top = qMax(pbody.margin_top,headerPlacerHight);
+            sx->current_Page_Format.body = pbody;
+            setPos(sx->CurrentPageFormat().HeaderInitPoints(0));
          }
          if (layermods == DIV_FOOTER ) {
-         //////sx->current_Page_Format.SetMargin(QRectF(mold.x(),mold.y(),txtrect.height() + anspace ,mold.height()));
-         setPos(sx->CurrentPageFormat().FooterInitPoints(0));
+            pbody.margin_bottom = qMax(headerPlacerHight,pbody.margin_bottom);
+            sx->current_Page_Format.body = pbody;
+            setPos(sx->CurrentPageFormat().FooterInitPoints(0));
          }
          emit pagesize_swap();
       }
     
     }
+    
     UpdateDots();
     update(areas);
 }

@@ -19,7 +19,8 @@ ApiSession::~ApiSession()
 ApiSession::ApiSession()
 : transfile(0),pdev(new QPrinter(QPrinter::ScreenResolution)) 
 { 
-  /////history_pics.clear();
+  qDebug() << "### session init....";
+    
   FF_db = QFontDatabase();
   SessionID = qrand () % 1000;
   M_PageSize A4;

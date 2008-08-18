@@ -209,10 +209,10 @@ class FoRegion
 public:
   FoRegion() {
     name = "region-body"; /* e.tagName().toLower().right(2) */
-    margin_top = 2.7;
-    margin_bottom = 2.7;
-    margin_left = 2.7;
-    margin_right = 2.7;
+    margin_top = CM_TO_POINT(2.5);
+    margin_bottom = CM_TO_POINT(2.5);
+    margin_left = CM_TO_POINT(1.5);
+    margin_right = CM_TO_POINT(1.5);
     bg = QColor(Qt::white);
     }
     FoRegion& operator=( const FoRegion& d )
