@@ -84,7 +84,7 @@ public:
     QLineF LineTops();
     QLineF Diagonal();
     QPicture LayerImage( const int pagenr = 0 );  /* draw header or footer */
-
+    void setStyle( QString stylelist );
     QTextDocument *document();
     void setDocument( const QTextDocument * doc , FileHandlerType Type = FOP );
     QTextCursor textCursor();

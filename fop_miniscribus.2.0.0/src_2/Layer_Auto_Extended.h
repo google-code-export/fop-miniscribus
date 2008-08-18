@@ -33,6 +33,7 @@ public:
     QString PageName();
     QTextDocument *document();
     void setDocument( const QTextDocument * document , FileHandlerType Type = FOP );
+    void appendLayer( QMap<int,RichDoc> floatingelement  );
     QTextCursor textCursor();
     void SwapPageModel( M_PageSize e );
     

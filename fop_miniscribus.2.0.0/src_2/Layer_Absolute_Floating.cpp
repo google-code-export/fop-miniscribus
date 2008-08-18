@@ -82,6 +82,97 @@ AbsoluteLayer::AbsoluteLayer(QGraphicsItem *parent , LAYERTYPE layermodus )
     
 }
 
+void AbsoluteLayer::setStyle( QString stylelist )
+{
+    if (layermods == DIV_HEADER | layermods == DIV_FOOTER ) {
+     return;
+    }
+    #define ALPHAHTML(alpha) ((alpha)*254.99999999)
+    
+    QStringList syle = stylelist.split(";");
+    QStringList find;
+    qreal hi,wi;
+    
+    qreal maxi = 111.1;  
+    qreal minimums = 10.1; 
+    
+    
+    find << "position" << "top" << "left" << "width" << "min-height" << "degree-rotation" << "opacity";
+    find << "height" << "background-color" << "z-index" << "id" << "border-width" << "border-color";
+    find << "border-style" << "l-lock";  //////  border-color:#FFFF00; border-width:2px; border-style:solid;
+    
+    
+    qDebug() << "### find " << find;
+    qDebug() << "### syle " << syle;
+    
+    
+    
+    
+    QMap<QString,QVariant> incss; 
+    for (int o = 0; o < find.size(); ++o)  {
+         incss.insert(find.at(o),QString("0"));
+    }
+    for (int i = 0; i < syle.size(); ++i)  {
+        QString values = syle.at(i).trimmed();
+        QStringList css = values.split(":");
+        if (css.size() == 2) {
+        incss.insert(css.at(0),css.at(1));
+        }
+    }
+    
+    if (FopInt(incss.value("min-height").toString()) > 10) {
+        hi = FopInt(incss.value("min-height").toString());
+    }
+    
+    qDebug() << "### left " << incss.value("left").toString();
+    qDebug() << "### left " << FopInt(incss.value("left").toString());
+    
+    if (!incss.value("left").toString().isEmpty()) {
+        setPos(QPointF(FopInt(incss.value("left").toString()),FopInt(incss.value("top").toString())));
+    }
+    if ( FopInt(incss.value("width").toString()) > 10 ) {
+        wi = FopInt(incss.value("width").toString());
+            QTextFrame  *Tframe = document()->rootFrame();
+            QTextFrameFormat rootformats = Tframe->frameFormat();
+            rootformats.setWidth(wi); 
+            Tframe->setFrameFormat(rootformats);
+    }
+    if (FopInt(incss.value("height").toString()) > 10) {
+        hi = FopInt(incss.value("height").toString());
+    }
+
+    if (incss.value("z-index").toInt() > 1) {
+        const qreal Ziindex = qBound(minimums,incss.value("z-index").toDouble(),maxi);
+        setZValue(Ziindex);   
+    }
+
+    if (hi > 0 && wi > 0) {
+    setRect(QRectF(0,0,wi,hi));
+    }
+
+
+    
+    if (incss.value("background-color").toString() !="0") {
+            Background_Color = QColor(incss.value("background-color").toString());
+        
+          if (incss.value("opacity").toDouble() > 0) {
+              int alFaCol = qBound(0.00,ALPHAHTML(incss.value("opacity").toDouble()),255.00);
+              Background_Color.setAlpha(alFaCol);
+          }
+          
+          if (incss.value("background-color").toString() == "transparent") {
+            Background_Color.setAlpha(0);
+          }
+          
+          
+    }
+
+
+    dev->txtControl()->setBlinkingCursorEnabled(false);
+    UpdatePageFormat();
+    
+}
+
 
 void AbsoluteLayer::setDocument( const QTextDocument * doc , FileHandlerType Type )
 {

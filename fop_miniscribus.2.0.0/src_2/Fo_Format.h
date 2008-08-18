@@ -11,7 +11,7 @@
 #include "SessionManager.h"
 #include "Fop_Leader_Element.h"
 
-
+#include "Image_Page_Struct_Mime.h"
 
 
 /*
@@ -297,6 +297,8 @@ public:
     qreal TrLineMaxHight( const QDomElement e , const QVector<QTextLength> constraints );
     qreal ColumnLarge( const QVector<QTextLength> constraints , int atcool );
     QDomDocument DomelenentToString ( const QDomElement e , const QString msg );
+    
+    QStringList attributeList(const QDomElement e);
     QRectF MarginPage;
 
     /* back qt 2 dom */

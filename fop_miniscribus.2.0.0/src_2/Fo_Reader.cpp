@@ -13,7 +13,7 @@ Fo_Reader::~Fo_Reader()
 
 Fo_Reader::Fo_Reader(  const QString readfile , QObject *parent  )
         : Fo_Format( parent ),device( new StreamFop()),
-         file(0),Qdoc(new QTextDocument()),
+         file(0),Qdoc(new QTextDocument()),LayerCount(0),
          Current_Block_Tree_Level(0),oldMiniScribusFormat(false)
 {
     doc_cur = 0;
@@ -121,6 +121,22 @@ void Fo_Reader::read()
     */
 
     doc_cur = Tcursor.position();
+}
+
+bool Fo_Reader::placeNewAbsoluteLayer( const QDomElement e )
+{
+    QStringList attri = attributeList(e);
+    LayerCount++;
+    QMap<QString,SPics> list;
+    const QString style = attri.join(";");
+    qDebug() << "### inite an absolute  " << style;
+    QTextDocument *ldoc = new QTextDocument();
+    QTextCursor layercursor(ldoc);
+    FrameDomIterator(e.firstChild(),layercursor);
+    RichDoc xlayer;
+    xlayer.Register(ldoc,list,style);
+    layerList.insert(LayerCount,xlayer);
+    return true;
 }
 
 void Fo_Reader::RootFramePaint( const QDomElement e )
@@ -413,7 +429,6 @@ void Fo_Reader::FootNoteSave( const QDomElement e  , QTextCursor Cursor )
 
 bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , bool skipborder )  /* default false */
 {
-    ////////////////qDebug() << "#### InlineBlockLoop ##### _LINE_ " << __LINE__;
 
     if (FoTag(e) != BLOCK_TAG)
     {
@@ -455,7 +470,7 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
         HandleSpace = false;
     }
     int BlockNummer = Cinline.block().position();
-    ////////////////qDebug() << "### InlineBlockLoop top margin  " << bbformat.topMargin() << "BB nr.->" << BlockNummer << "BB tree level->" << Current_Block_Tree_Level;
+    qDebug() << "### InlineBlockLoop top margin  " << bbformat.topMargin() << "BB nr.->" << BlockNummer << "BB tree level->" << Current_Block_Tree_Level;
     Cinline.setBlockFormat(blf);
     Cinline.setCharFormat(Charformat);
 
@@ -653,10 +668,20 @@ bool Fo_Reader::FoBlockContainerPaint( const QDomElement e , QTextCursor Cinline
     ///////if (IsAbsoluteLayer(e))
     const int rotateD = e.attribute("reference-orientation","0").toInt();
     qreal LargeWi = Unit(e.attribute("width","0"));
-    QTextLength wiiiiii = BlockMesure(e);
-    //////qDebug() << "### fo:block-containerPaint c " << wiiiiii.rawValue();
+    qreal lleft = Unit(e.attribute("left","0"));
+    qreal ltop = Unit(e.attribute("top","0"));
+    QTextLength wide = BlockMesure(e);
+    qDebug() << "### fo:block-containerPaint c " << wide.rawValue();
+    
+    /* check if absolute */
+    if (wide.rawValue() > 9 && !e.attribute("left").isEmpty() && !e.attribute("top").isEmpty()) {
+    return placeNewAbsoluteLayer(e);
+    }
+    
+    
+    
     QTextFrameFormat frame = xx.format;
-    frame.setWidth(wiiiiii);
+    frame.setWidth(wide);
     QTextFrameFormat FrameFormat = PaintFrameFormat(e,frame);
 
 
@@ -1666,13 +1691,15 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
 {
     int LastCellCurorrisPos = Cinline.position();
     QDomElement LastElementParent;
-
+    int loop = -1;
     while ( !node.isNull() )
     {
+         loop++;
+        
         if ( node.isElement() )
         {
             const QDomElement el = node.toElement();
-            qDebug() << "### FrameDomIterator " << el.tagName() << " cursor->" << LastCellCurorrisPos;
+            qDebug() << "### FrameDomIterator " << el.tagName() << " cursor->" << LastCellCurorrisPos << "-" << loop;
             if ( FoTag(el) == INLINE_BR )
             {
                 Cinline.insertText(QString(QChar::LineSeparator));
@@ -1683,6 +1710,11 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
             }
             else if (FoTag(el) == BLOCK_TAG)
             {
+                if (loop !=0) {
+                Cinline.insertBlock();
+                Cinline.setBlockFormat(DefaultMargin());
+                }
+                
                 InlineBlockLoop(el,Cinline,true);
             }
             else if ( FoTag(el) == BLOCK_CONTAINER)
