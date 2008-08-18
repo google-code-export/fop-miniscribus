@@ -15,8 +15,9 @@ int main( int argc, char ** argv )
     ApiSession *sx = ApiSession::instance();
     
     
-    PaperTextEdit *paperedit = new PaperTextEdit();
-    paperedit->show();
+    
+    PaperTextEdit p;
+    p.show();
     
     
 

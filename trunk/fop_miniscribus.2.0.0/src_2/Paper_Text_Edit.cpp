@@ -16,6 +16,8 @@ GraphicsView::GraphicsView( QWidget * parent )
     gzippedfile(false)
 {
    QApplication::restoreOverrideCursor();
+   recordActionHere();
+   qDebug() << "### init  gview .... a";
    QPalette p = palette();
    p.setColor(QPalette::Window,Qt::lightGray);
    p.setColor(QPalette::Base,Qt::lightGray);
@@ -23,25 +25,38 @@ GraphicsView::GraphicsView( QWidget * parent )
    scene = new GraphicsScene(rectToScene(),this);
    setCacheMode(CacheBackground);
    setScene(scene);
-   pageclear();
-   recordActionHere();
+   qDebug() << "### init  gview .... b";
+    
+   scene->addItem(BASE_TEXT);
+   connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
+   connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
+   connect(BASE_TEXT, SIGNAL(autocursorchange() ), this, SLOT(cursorChange()));
+   connect(BASE_TEXT, SIGNAL(absolutecursorchange() ), this, SLOT(cursorChange()));
+   
+    qDebug() << "### init  gview .... c";
+   ///////////pageclear();
+    ///////
     
     /* ony dev time */
-    Fo_Reader * fops = new Fo_Reader("ademo.fop");
+  
+    /* ony dev time */
+    
+    /*
+      Fo_Reader * fops = new Fo_Reader("ademo.fop");
     const QTextDocument *fopdoc = fops->document()->clone();
     QMap<int,RichDoc> floatingelement = fops->layers();
-    ///////////qDebug() << "### layers " << floatingelement.size();
-    
+    qDebug() << "### layers " << floatingelement.size();
+    qDebug() << "### init  gview .... d";
     fops->deleteLater(); 
     BASE_TEXT->setDocument(fopdoc);
     BASE_TEXT->appendLayer( floatingelement );
-    /* ony dev time */
+    */
     
     
-    
-    
+    qDebug() << "### init  gview .... e";
     /* load document and recalculate the first time */
     QTimer::singleShot(22, this, SLOT(forceResize()));
+    qDebug() << "### init  gview .... z";
 }
 
 
@@ -50,7 +65,7 @@ void GraphicsView::pageclear()
     scene->clear();  /*  remove all item */
     BASE_TEXT = new TextLayer(0);
     scene->addItem(BASE_TEXT);
-	//////////connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
+	connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
     connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
     connect(BASE_TEXT, SIGNAL(autocursorchange() ), this, SLOT(cursorChange()));
     connect(BASE_TEXT, SIGNAL(absolutecursorchange() ), this, SLOT(cursorChange()));
@@ -175,7 +190,7 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 }
 
 
-void GraphicsView::ViewDisplay( const QRectF area )
+void GraphicsView::viewDisplay( const QRectF area )
 {
     ////////qDebug() << "### GraphicsView::ViewDisplay -------- " << area;
     /* if scale to big return */
@@ -469,6 +484,11 @@ PaperTextEdit::PaperTextEdit( QWidget *parent )
 {
     panel = new Panel(this);
     setCentralWidget (panel);
+    bool maketool = true;
+    
+    
+    
+    if (maketool) {
     docbar = new QToolBar(this);
     docbar->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
     
@@ -517,6 +537,7 @@ PaperTextEdit::PaperTextEdit( QWidget *parent )
            
      
     connect(panel->view()->autopage(), SIGNAL(autocursorchange()),this, SLOT(auto_page_dinamic()));
+    }
 }
 
 

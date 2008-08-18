@@ -33,24 +33,31 @@ TextLayer::~TextLayer()
 TextLayer::TextLayer( QGraphicsItem *parent  )
     : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount),ContextOpen(false),PageRecords(1)
 {
-    //////qDebug() << "### init....";
+    qDebug() << "### init  auto layer ....";
     dev->q = this;
     Aheader = 0;
     Afooter = 0;
     setAcceptsHoverEvents(true);
     setAcceptDrops(true);
+    /////////QTextDocument *dummy = new QTextDocument();
+    ////////dummy->setHtml("<p>Hello world text </p>"); /////  
+    ////////////////setDocument(dummy,FOP);
     
-    /////QTextDocument *dummy = new QTextDocument();
-    /////dummy->setHtml(ReadFile("a.html")); /////  
-    ///////setDocument(dummy,FOP);
+    ApiSession *sx = ApiSession::instance();
+    FoRegion pbody = sx->CurrentPageFormat().body;
+    qDebug() << "### init auto layer margin show " << pbody;
+    
+    
+    
+    
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
     setZValue (0.555555);
     LastRect = dev->txtControl()->boundingRect();
-    QGraphicsRectItem::setRect(LastRect);
+    setRect(LastRect);
     LastUpdateRequest = LastRect;
     SetupHeaderFooter();
-    QTimer::singleShot(1, this, SLOT(cursor_wake_up())); 
+    QTimer::singleShot(0, this, SLOT(cursor_wake_up())); 
 }
 
 void TextLayer::appendLayer( QMap<int,RichDoc> floatingelement  )

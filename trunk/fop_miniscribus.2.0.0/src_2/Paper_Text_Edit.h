@@ -46,7 +46,7 @@ signals:
    void dinamic_autocursor_swap();
 public slots:
    void DisplayTop();
-   void ViewDisplay( const QRectF area );
+   void viewDisplay( const QRectF area );
    void SwapPaper();
    void forceResize();
    void openFile( const QString file );
