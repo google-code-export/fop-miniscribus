@@ -31,8 +31,8 @@ static const int BookMarkInternalID = 23465;
 
 
 
-
-
+void drawPageShadow( QPainter * painter , const int index , M_PageSize  e );
+void drawPageGround( QPainter * painter , const int index , M_PageSize  e );
 
 
 class TextProcessor : public QObject

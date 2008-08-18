@@ -1,7 +1,7 @@
 #include "Fo_Reader.h"
 
 #include "Config.h"
-
+#include "Tools_Basic.h"
 
 using namespace ApacheFop;
 
@@ -13,8 +13,8 @@ Fo_Reader::~Fo_Reader()
 
 Fo_Reader::Fo_Reader(  const QString readfile , QObject *parent  )
         : Fo_Format( parent ),device( new StreamFop()),
-         file(0),Qdoc(new QTextDocument()),LayerCount(0),
-         Current_Block_Tree_Level(0),oldMiniScribusFormat(false)
+         file(0),Qdoc(new QTextDocument()),LayerCount(0),readerFopVersionDocument(2.0),
+         Current_Block_Tree_Level(0),oldMiniScribusFormat(false),layerYCurrentRead(0)
 {
     doc_cur = 0;
     QFont userfont( QApplication::font() );
@@ -40,6 +40,19 @@ void Fo_Reader::LoadFopFile( const QString readfile )
             file = finfo.absoluteFilePath();
             read_dir = QDir(finfo.absolutePath());
             Xdoc = device->Dom();
+            const QString foxml = Xdoc.toString (5);
+            const QString signature = oldMiniscribusSignature(  foxml );
+            const QString builddoc = documentBuild( foxml  );
+            if (signature.contains("FOP converter to")) {
+            oldMiniScribusFormat = true;
+            readerFopVersionDocument = 1.3;
+            } else {
+            oldMiniScribusFormat = false;
+            }
+            
+            ////qDebug() << "### signaturesignaturesignaturesignature " << signature;
+            /////qDebug() << "### signaturesignaturesignaturesignature " << builddoc;
+            /////////////qDebug() << "### signaturesignaturesignaturesignature " << readerFopVersionDocument;
             delete device;
             device = new StreamFop();
             read();
@@ -56,59 +69,65 @@ void Fo_Reader::read()
     {
         return;
     }
+    
+    /*
+    qreal xBottomMargin =  0;
+    qreal xTopMargin =  0;
+    qreal xRightMargin = 0;
+    qreal xLeftMargin = 0;
+    */
+    
+    
     ApiSession *session = ApiSession::instance();
     QDomElement layout_master = root.firstChildElement("fo:layout-master-set");
     QDomElement layout = layout_master.firstChildElement("fo:simple-page-master");
     qreal pwi = Unit(layout.attribute ("page-width",QString("210mm")));
     qreal phi = Unit(layout.attribute ("page-height",QString("297mm")));
     PageSize = session->FindPagePsize(QRect(0,0,pwi,phi));
-    QString yourname = layout.attribute("master-name");
     const qreal largefront = qMax (pwi,phi);
-    
+    layerYCurrentRead = 0;
+  
 
     while (!layout.isNull())
     {
-        qreal xBottomMargin =  Unit(layout.attribute ("margin-bottom",QString("1cm")));
-        qreal xTopMargin =  Unit(layout.attribute ("margin-top",QString("1cm")));
-        qreal xRightMargin = Unit(layout.attribute ("margin-right",QString("1cm")));
-        qreal xLeftMargin = Unit(layout.attribute ("margin-left",QString("1cm")));
+        
+    
+        bodyregion = FindMargin(layout.firstChildElement("fo:region-body"));
+        headereregion = FindMargin(layout.firstChildElement("region-before"));
+        rightregion = FindMargin(layout.firstChildElement("fo:region-end"));
+        footeregion = FindMargin(layout.firstChildElement("fo:region-after"));
+        leftregion = FindMargin(layout.firstChildElement("fo:region-start"));
         
         
+ /*     
+region-after [st]
+region-before [st]
+region-body [st]
+region-end [st]
+region-start [st] 
+*/  
         
-        MarginPage = QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
-        //////////////////  QRectF(top,right,bottom,left);
-        if (yourname.size() < 5) {
-        yourname = layout.attribute("master-name");
-        }
-        ////// QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
-
-        QDomElement body = layout.firstChildElement("fo:region-body");
-        FindMargin(body);
-        QDomElement footer = layout.firstChildElement("fo:region-after");
-        FindMargin(footer);
+        
         layout = layout.nextSiblingElement("fo:simple-page-master");
     }
-    PageSize.SetMargin( MarginPage );
+    PageSize.SetMargin( bodyregion );
     PageSize.landscape = largefront == phi ? false : true;
     PageSize.P_rect = QPrinter::Custom;
-    if (yourname.size() > 5) {
-    PageSize.name = yourname;
-    }
     session->current_Page_Format = PageSize;
     session->AppendPaper(PageSize);
     
     
+    qDebug() << "### bodyregion " << bodyregion;
     
-    Docwidth = pwi - MarginPage.y() - MarginPage.height();
+    Docwidth = PageSize.width();
     session->CurrentDocWidth = Docwidth;
-    Qdoc->setPageSize ( QSizeF( Docwidth , phi - MarginPage.x() - MarginPage.width() ) );
-    Qdoc->setTextWidth ( Docwidth );  /* remove margin */
+    PageSize.HandlePrint(Qdoc);
     QDomElement master = root.firstChildElement("fo:page-sequence");
     Tcursor.setPosition(0);
     /* header & footer here ! */
     QDomElement page = master.firstChildElement("fo:flow");
-    qDebug() << "### Docwidth  " << Docwidth;
-    qDebug() << "### START READ DOCUMENT ################################################################";
+    //////////qDebug() << "### Docwidth  " << Docwidth;
+    ///////////qDebug() << "### START READ DOCUMENT ################################################################";
     RootFramePaint(page);
     /*
     QString debugtext = session->DebugAttributes();
@@ -126,13 +145,52 @@ void Fo_Reader::read()
 bool Fo_Reader::placeNewAbsoluteLayer( const QDomElement e )
 {
     QStringList attri = attributeList(e);
+    const int rotateD = e.attribute("reference-orientation","0").toInt();
+    qreal LargeWi = Unit(e.attribute("width","-1"));
+    qreal lleft = Unit(e.attribute("left","-1"));
+    qreal ltop = Unit(e.attribute("top","-1"));
+    qreal LargeHi = Unit(e.attribute("height","0"));
+    
+    
+    
+    
+    
     LayerCount++;
     QMap<QString,SPics> list;
-    const QString style = attri.join(";");
-    qDebug() << "### inite an absolute  " << style;
+    
+    
     QTextDocument *ldoc = new QTextDocument();
     QTextCursor layercursor(ldoc);
     FrameDomIterator(e.firstChild(),layercursor);
+    
+    QTextFrame  *RootFrame = ldoc->rootFrame();
+    QTextFrameFormat rf = RootFrame->frameFormat(); 
+    const QRectF rect = ldoc->documentLayout()->frameBoundingRect(RootFrame);
+    const qreal lastLayerFromtop = layerYCurrentRead;
+    /* not first layer */
+    if (LayerCount !=1 && e.attribute("top").isEmpty() ) {
+    layerYCurrentRead = qMax(lastLayerFromtop + rect.height(),layerYCurrentRead);
+    layerYCurrentRead = qMax(lastLayerFromtop + LargeHi,layerYCurrentRead);
+    }
+    attri.append(QString("docversion:%1").arg(readerFopVersionDocument));
+    if (LargeHi < 1) {
+    attri.append(QString("height:%1pt").arg(rect.height()));
+    attri.append(QString("display-align:auto"));  
+    }
+    if (ltop < 1 && e.attribute("top").isEmpty()) {
+    attri.append(QString("top:%1pt").arg(layerYCurrentRead));
+    attri.append(QString("display-align:auto")); 
+    }
+    if (lleft < 1 && e.attribute("left").isEmpty() ) {
+    attri.append(QString("left:%1pt").arg(PSize().body.margin_left));
+    attri.append(QString("display-align:auto")); 
+    }
+    /* unique attributes */
+    const QString style = attri.join(";");
+    qDebug() << "### inite an absolute  " << style;
+    
+    
+    
     RichDoc xlayer;
     xlayer.Register(ldoc,list,style);
     layerList.insert(LayerCount,xlayer);
@@ -186,7 +244,7 @@ void Fo_Reader::RootFramePaint( const QDomElement e )
             {
                 FoBlockTagPaint(el,Tcursor);  /* root blocks */
                 MoveEndDocNow();
-                qDebug() << "### paragraph  " << tagposition << " ------------------------------------------------------------------------------";
+                /////////////qDebug() << "### paragraph  " << tagposition << " ------------------------------------------------------------------------------";
             }
             else if ( FoTag(el) == FOOTNOTEBOTTOM  )
             {
@@ -239,7 +297,7 @@ void Fo_Reader::RootFramePaint( const QDomElement e )
     doc_cur = Tcursor.position();
     MoveEndDocNow();
 
-    qDebug() << "### END READ DOCUMENT ################################################################";
+    ///////////////qDebug() << "### END READ DOCUMENT ################################################################";
 }
 /* only root block */
 
@@ -674,7 +732,7 @@ bool Fo_Reader::FoBlockContainerPaint( const QDomElement e , QTextCursor Cinline
     qDebug() << "### fo:block-containerPaint c " << wide.rawValue();
     
     /* check if absolute */
-    if (wide.rawValue() > 9 && !e.attribute("left").isEmpty() && !e.attribute("top").isEmpty()) {
+    if (LargeWi > 0 ) {
     return placeNewAbsoluteLayer(e);
     }
     

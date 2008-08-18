@@ -35,6 +35,7 @@ public:
 protected:
     int doc_cur;
     int table_cur;
+    qreal readerFopVersionDocument;
     bool oldMiniScribusFormat;
     void read();
     void RootFramePaint( const QDomElement e );
@@ -78,6 +79,7 @@ protected:
 
 private:
     int Current_Block_Tree_Level;
+    qreal layerYCurrentRead;
     QString file;
     QFileInfo finfo;
     QDir read_dir;

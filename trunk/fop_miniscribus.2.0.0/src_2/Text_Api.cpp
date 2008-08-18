@@ -6,6 +6,30 @@
 #include "getmargin.h"
 
 
+void drawPageShadow( QPainter * painter , const int index , M_PageSize  e )
+{
+    const QRectF pagen =  e.PageExternal(index);
+    painter->save();
+    QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
+    QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
+    painter->fillRect(rightShadow, Qt::darkGray);
+    painter->fillRect(bottomShadow, Qt::darkGray);
+    painter->restore();
+}
+
+
+void drawPageGround( QPainter * painter , const int index , M_PageSize  e)
+{
+    const QRectF pagen =  e.PageExternal(index);
+    painter->save();
+    painter->setBrush(QColor(Qt::white));
+    painter->setPen(QPen(Qt::black,0.3));
+    painter->drawRect(pagen);
+    painter->restore();
+}
+
+
+
 
 
 static QRectF boundingRectOfFrame(const QTextCursor &cursor)

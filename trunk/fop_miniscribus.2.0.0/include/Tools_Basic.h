@@ -80,7 +80,39 @@ static inline bool isvalidXmlencoding( const QString xmlfile  )
     return validxml;
 }
 
+static inline QString oldMiniscribusSignature( QString streamxml   )
+{
+    QRegExp expression( "editor=[\"\'](.*)[\"\']", Qt::CaseInsensitive );
+    expression.setMinimal(true);
+    QString semencoding = "";
+    int iPosition = 0;
+    while( (iPosition = expression.indexIn( streamxml , iPosition )) != -1 ) {
+        semencoding = expression.cap( 0 );
+        semencoding = semencoding.mid(8,semencoding.size() - 9);
+        iPosition += expression.matchedLength();
+        /////////qDebug() << "### semencoding" << semencoding;
+    }
+    
+    return semencoding;
+}
 
+
+
+static inline QString documentBuild( QString streamxml   )
+{
+    QRegExp expression( "build=[\"\'](.*)[\"\']", Qt::CaseInsensitive );
+    expression.setMinimal(true);
+    QString semencoding = "";
+    int iPosition = 0;
+    while( (iPosition = expression.indexIn( streamxml , iPosition )) != -1 ) {
+        semencoding = expression.cap( 0 );
+        semencoding = semencoding.mid(7,semencoding.size() - 8);
+        iPosition += expression.matchedLength();
+        /////////qDebug() << "### semencoding" << semencoding;
+    }
+    
+    return semencoding;
+}
 
 /* correct codex from xml file read only first line */
 static inline QTextCodec *GetcodecfromXml( const QString xmlfile  )

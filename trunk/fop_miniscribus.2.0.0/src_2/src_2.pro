@@ -21,7 +21,7 @@ OBJECTS_DIR = build/.obj
 
 
 
-CONFIG +=  qt release warn_off console
+CONFIG +=  qt debug warn_off console
 LIBS += $$BUILD_TREE_PATH/lib/libtxtscribe.$$LIB_EXTENSION
 DESTDIR	+= ../
 QT += xml
@@ -38,6 +38,7 @@ SOURCES += ../modules/xslt/xslt_convert.cpp
 HEADERS += Config.h \
            Paper_Text_Edit.h \
            Fo_Format.h \
+           FoColorName.h \
            Fo_Reader.h \
            Fo_Writter.h \
            Fop_Leader_Element.h \
@@ -51,6 +52,7 @@ SOURCES += Paper_Text_Edit.cpp \
            Fo_Format.cpp \
            Fo_Reader.cpp \
            Fo_Writter.cpp \
+           FoColorName.cpp \
            Fop_Leader_Element.cpp \
            Layer_Absolute_Floating.cpp \
            Layer_Auto_Extended.cpp \

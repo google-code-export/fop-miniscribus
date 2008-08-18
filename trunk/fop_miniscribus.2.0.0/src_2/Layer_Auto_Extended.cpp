@@ -40,9 +40,9 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     setAcceptsHoverEvents(true);
     setAcceptDrops(true);
     
-    QTextDocument *dummy = new QTextDocument();
-    dummy->setHtml(ReadFile("a.html")); /////  
-    setDocument(dummy,FOP);
+    /////QTextDocument *dummy = new QTextDocument();
+    /////dummy->setHtml(ReadFile("a.html")); /////  
+    ///////setDocument(dummy,FOP);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
     setZValue (0.555555);
@@ -136,9 +136,11 @@ QTextDocument *TextLayer::document()
 
 
 
-void TextLayer::setDocument( const QTextDocument * document , FileHandlerType Type )
+void TextLayer::setDocument( const QTextDocument * documentin , FileHandlerType Type )
 {
-    dev->txtControl()->setDocument(document,Type);
+    dev->txtControl()->setDocument(documentin,Type);
+    ApiSession *session = ApiSession::instance();
+    session->ensureImageDoc(document());
     MakeActionHere();
 }
 
@@ -172,7 +174,7 @@ void TextLayer::cursor_wake_up()
     if (PageRecords != PageSumm) {
     PageRecords = PageSumm;
     SceneReload();
-    emit PageCountChange();
+    emit pageCountChange();
     }
     MakeDinamicCommand();  /* redraw action depending cursor */
     emit autocursorchange();
@@ -213,23 +215,20 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->drawRect(LastRect);
     const int PageSumm = qBound (1,document()->pageCount(),MaximumPages);
     PageRecords = PageSumm;
+    
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize e = sx->CurrentPageFormat();
+    QRectF printrectarea = e.PrintArea();
+    
+    
 
     /* draw white first background */
     for (int o = 0; o < PageSumm; ++o)  {
         painter->save();
         const QRectF pagen =  dev->txtControl()->Model().PageExternal(o);
-        painter->setBrush(QColor(Qt::white));
-        painter->setPen( QPen(Qt::black,0.3) );
-        painter->drawRect(pagen);
-        painter->restore();
+        drawPageGround(painter,o,dev->txtControl()->Model());
         dev->txtControl()->DrawPage(o,painter,o);
-        painter->save();
-
-        
-        QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
-        QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
-        painter->fillRect(rightShadow, Qt::darkGray);
-        painter->fillRect(bottomShadow, Qt::darkGray);
+        drawPageShadow(painter,o,dev->txtControl()->Model());
         /* small border */
         painter->setBrush(Qt::NoBrush);
         painter->setPen( QPen(Qt::black,0.3) );
@@ -251,12 +250,12 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
        painter->restore();
     }
     
-    /*
+   
     QColor Visiblerecord(Qt::red);
 		Visiblerecord.setAlpha(22);
     painter->setBrush(Visiblerecord);
-    painter->drawRect(LastUpdateRequest);
-*/
+    painter->drawRect(printrectarea);
+
     
     
     
@@ -288,7 +287,7 @@ void TextLayer::focusInEvent ( QFocusEvent * event )
     if (PageRecords != PageSumm) {
     PageRecords = PageSumm;
     SceneReload();
-    emit PageCountChange();
+    emit pageCountChange();
     return;
     }
     QGraphicsItem::setSelected(true);

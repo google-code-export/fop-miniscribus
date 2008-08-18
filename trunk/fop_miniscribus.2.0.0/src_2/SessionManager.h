@@ -25,6 +25,7 @@ public:
   void LoadFontDir( const QString path );
   inline QString tra_file() const  { return transfile; }
   void Set_Translate_File( const QString file );
+  void ensureImageDoc( QTextDocument * doc  );
   inline QMap<int,M_PageSize> mpages() { return history_page_norms; }
   inline QStringList  FontList() { return FF_db.families(); }
   M_PageSize FindPagePsize( const QRect paper );

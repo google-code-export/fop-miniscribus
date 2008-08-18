@@ -1,5 +1,41 @@
 #include "Fo_Format.h"
 
+
+
+QByteArray elementToStream(  const QDomElement e )
+{
+  
+    QDomDocument em;
+    QDomProcessingInstruction header = em.createProcessingInstruction( "xml", "version=\"1.0\" standalone=\"no\"" );
+    em.appendChild( header );
+    QDomElement root = em.createElement(e.tagName().toLower());
+    em.appendChild( root );
+    QDomNamedNodeMap attlist = e.attributes();
+    for (int i=0; i<attlist.count(); i++){
+    QDomNode nod = attlist.item(i);
+    root.setAttribute(nod.nodeName().toLower(),nod.nodeValue()); 
+    }
+    
+                              QDomNode child = e.firstChild();
+                               while ( !child.isNull() ) {
+                                   if ( child.isElement() ) {
+                                    root.appendChild(em.importNode(child,true).toElement());
+                                   }
+                                 child = child.nextSibling();            
+                               }
+  
+    return em.toByteArray(1);   /////QByteArray toByteArray ( int indent = 1 ) const
+}
+
+
+
+
+
+
+
+
+
+
 using namespace ApacheFop;
 
 
@@ -321,7 +357,12 @@ QTextFrameFormat::BorderStyle Fo_Format::StyleBorder( const QDomElement e )
 
 
 /* dom to qtext */
-QTextFrameFormat::BorderStyle Fo_Format::StyleBorder( const QString Sborder ) 
+QTextFrameFormat::BorderStyle Fo_Format::StyleBorder( const QString Sborder )
+{
+    return StyleBrushBorder(Sborder);
+}
+
+QTextFrameFormat::BorderStyle StyleBrushBorder( const QString Sborder )
 {
     QTextFrameFormat::BorderStyle BBorder = QTextFrameFormat::BorderStyle_None;
     if (Sborder.size() < 1) {
@@ -329,7 +370,7 @@ QTextFrameFormat::BorderStyle Fo_Format::StyleBorder( const QString Sborder )
     } else {
 			
         const QString borderpaint = Sborder;
-        if (borderpaint == "solid") {
+        if (borderpaint == "solid" || borderpaint == "inset" ) {
         return QTextFrameFormat::BorderStyle_Solid;
         } else if (borderpaint == "dotted") {
         return QTextFrameFormat::BorderStyle_Dotted;
@@ -464,49 +505,61 @@ QColor Fo_Format::ColorFromFoString( QString focolor )
 	return QColor(Qt::transparent);
 }
 
+/*
+
+margin_top = 2.7;
+    margin_bottom = 2.7;
+    margin_left = 2.7;
+    margin_right = 2.7;
+
+*/
 
 
-
-void Fo_Format::FindMargin( const QDomElement e )
+FoRegion Fo_Format::FindMargin( const QDomElement e )
 {
 	  if (!e.hasAttributes()) {
-		return;
+          FoRegion nullregion;
+          nullregion.name = "error";
+		return nullregion;
 		}
-		//////////////////  QRectF(top,right,bottom,left);
-		/////////////////// QRectF ( qreal x, qreal y, qreal width, qreal height )
-		////////  MarginPage = QRectF(xTopMargin,xRightMargin,xBottomMargin,xLeftMargin);
+        
+    FoRegion MarginPage;
+    MarginPage.name = e.tagName().toLower().right(2);
+    MarginPage.edom = elementToStream(e);
+        
+        
     qreal Boleft = Unit(e.attribute ("margin-top",QString("0")));
 		if (Boleft !=0) {
-			MarginPage.setX ( Boleft );
+			MarginPage.margin_top = Boleft;
 		}
     qreal Botop = Unit(e.attribute ("margin-bottom",QString("0")));
 		if (Botop !=0) {
-			MarginPage.setWidth( Botop );
+			MarginPage.margin_bottom = Botop ;
 		}
     qreal Bobotto = Unit(e.attribute ("margin-left",QString("0")));
 		if (Bobotto !=0) {
-			MarginPage.setHeight ( Bobotto );
+			MarginPage.margin_left = Bobotto;
 		}
     qreal Bobright = Unit(e.attribute ("margin-right",QString("0")));
 		
     if (Bobright !=0) {
-			MarginPage.setY ( Bobright );
+			MarginPage.margin_right = Bobright;
 		}
     qreal Bolefta = Unit(e.attribute ("margin-start",QString("0")));
 		if (Bolefta !=0) {
-			MarginPage.setX ( Bolefta );
+			MarginPage.margin_left = Bolefta;
 		}
     qreal Botopa = Unit(e.attribute ("margin-end",QString("0")));
 		if (Botopa !=0) {
-			MarginPage.setX ( Botopa );
+			MarginPage.margin_right= Botopa;
 		}
     qreal Bobottoa = Unit(e.attribute ("margin-after",QString("0")));
 		if (Bobottoa !=0) {
-			MarginPage.setX ( Bobottoa );
+			MarginPage.margin_bottom = Bobottoa;
 		}
     qreal Bobrighta = Unit(e.attribute ("margin-before",QString("0")));
 		if (Bobrighta !=0) {
-			MarginPage.setX ( Bobrighta );
+			MarginPage.margin_top = Bobrighta;
 		}
 	  
 	
