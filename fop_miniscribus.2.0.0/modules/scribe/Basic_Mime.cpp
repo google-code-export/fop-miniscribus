@@ -42,7 +42,7 @@ QPixmap BruschChess( qreal chesswidth )
 
 M_PageSize::~M_PageSize()
 {
-   delete &body;
+   
 }
 
 

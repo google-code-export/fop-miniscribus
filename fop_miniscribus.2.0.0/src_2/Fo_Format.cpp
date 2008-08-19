@@ -519,12 +519,12 @@ FoRegion Fo_Format::FindMargin( const QDomElement e )
 {
 	  if (!e.hasAttributes()) {
           FoRegion nullregion;
-          nullregion.name = "error";
+          nullregion.name = 0;
 		return nullregion;
 		}
         
     FoRegion MarginPage;
-    MarginPage.name = e.tagName().toLower().right(2);
+    MarginPage.name = e.tagName().toLower().size();
     MarginPage.edom = elementToStream(e);
         
         

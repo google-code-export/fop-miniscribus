@@ -45,7 +45,9 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     
     ApiSession *sx = ApiSession::instance();
     FoRegion pbody = sx->CurrentPageFormat().body;
-    qDebug() << "### init auto layer margin show " << pbody;
+    Q_ASSERT(pbody.name == 1);
+    
+    qDebug() << "### init auto layer margin show " << pbody.margin_top;
     
     
     

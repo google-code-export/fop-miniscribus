@@ -23,16 +23,15 @@ ApiSession::ApiSession()
     
   FF_db = QFontDatabase();
   SessionID = qrand () % 1000;
-  M_PageSize A4;
-  current_Page_Format = A4;
-	history_page_norms.clear();
+  
+  history_page_norms.clear();
   
   /* qsetting init to open */
   ///////QCoreApplication::setOrganizationName("CrossKern");
   ////QCoreApplication::setOrganizationDomain("fop.ciz.ch");
   ///////QCoreApplication::setApplicationName("Dummy TextApi");
   
-  AppendPaper( A4 );  /* append default */
+
   
     
     /*
@@ -92,7 +91,7 @@ ApiSession::ApiSession()
     
     
     
-    
+    current_Page_Format = history_page_norms[1];
     
     /* other mesure size go to file and append here on load */
     
@@ -106,16 +105,23 @@ void ApiSession::FormatRegister( const QString txt , QPrinter::PageSize pp )
 {
 	   M_PageSize Lxx;
 	              Lxx.Register(txt,pp,false);
+       if (Lxx.body.name == 1 ) {
 	   history_page_norms.insert(history_page_norms.size() + 1,Lxx);
+       }
   
 	   M_PageSize Pxx;
 	              Pxx.Register(txt,pp,true);
+       if (Pxx.body.name == 1 ) {
 	   history_page_norms.insert(history_page_norms.size() + 1,Pxx);
+       qDebug() << "###register " << txt << "-" << Pxx.body ;
+       }
 }
 
 void ApiSession::AppendPaper( M_PageSize cur )
 {
-  history_page_norms.insert(history_page_norms.size() + 1,cur);
+    if (cur.body.name == 1 ) {
+     history_page_norms.insert(history_page_norms.size() + 1,cur);   
+    }
 }
 
 

@@ -208,13 +208,13 @@ class FoRegion
 {
 public:
   FoRegion() {
-    name = "region-body"; /* e.tagName().toLower().right(2) */
     margin_top = CM_TO_POINT(2.5);
     margin_bottom = CM_TO_POINT(2.5);
     margin_left = CM_TO_POINT(1.5);
     margin_right = CM_TO_POINT(1.5);
     bg = QColor(Qt::white);
-    edom = QByteArray("scribe");
+    edom = QByteArray("<scribe/>");
+    name = 1;
     }
     FoRegion& operator=( const FoRegion& d )
     {
@@ -241,7 +241,7 @@ public:
    
    
   QColor bg; /* background color */
-  QString name;
+  int name;
   qreal margin_top;
   qreal margin_bottom;
   qreal margin_left;
