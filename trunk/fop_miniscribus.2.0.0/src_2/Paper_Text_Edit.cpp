@@ -147,7 +147,6 @@ void GraphicsView::openFile( const QString file )
         M_PageSize defaultA4Page;
         FoRegion  reghtml;
         reghtml.toAll( MM_TO_POINT(10) );
-        reghtml.name ="qrichtext";
         defaultA4Page.SetMargin(reghtml);
         /* :-)  html not know is format !!!!!!! */
         buf->LoadFile( currentopenfilerunning );
