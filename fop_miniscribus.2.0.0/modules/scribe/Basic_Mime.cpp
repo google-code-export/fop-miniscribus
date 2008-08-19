@@ -40,9 +40,17 @@ QPixmap BruschChess( qreal chesswidth )
     return m_tile;
 }
 
+M_PageSize::~M_PageSize()
+{
+   delete &body;
+}
+
+
+
 M_PageSize::M_PageSize()
 {
     landscape = false;
+    body = FoRegion();
     coolspace = 0;
     modus = 0;
     name = "A4 (210 x 297 mm, 8.26 x 11.7 inches)";  ////////  G_regt.size()
