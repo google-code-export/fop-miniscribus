@@ -4,6 +4,11 @@
 #include "SessionManager.h"
 
 
+#include "Fo_Reader.h"
+
+using namespace ApacheFop;
+
+
 int main( int argc, char ** argv )
 {
     QApplication app( argc, argv );
@@ -22,16 +27,16 @@ int main( int argc, char ** argv )
     
 
     
-    ////QTextEdit t;
-    //////t.show();
+    /////////QTextEdit t;
+   ///////////// t.show();
 
     ////QMap<QString,QString> Params;
     //////Params.insert(QString("ca ne"),QString("Giallo-sera"));
     //////Xslt_Convert *job = new Xslt_Convert("key.xml","key.xsl",Params);
     //////t.setPlainText ( job->dmg() );
     
-    ///////Fo_Reader * fops = new Fo_Reader("a.fo");
-    //////t.setDocument (fops->document() );
+   ///// Fo_Reader * fops = new Fo_Reader("ademo.fop");
+    /////////t.setDocument (fops->document() );
     
     return app.exec();
 }

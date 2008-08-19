@@ -37,21 +37,6 @@ static QRectF boundingRectOfFrame(const QTextCursor &cursor)
     QRectF r;
     QTextFrame *frame = cursor.currentFrame();
 	  return frame->document()->documentLayout()->frameBoundingRect(frame);
-	
-	/*
-    const QList<QTextFrame *> children = frame->childFrames();
-
-    const QList<QTextFrame *>::ConstIterator firstFrame = qLowerBound(children.constBegin(), children.constEnd(),
-                                                                      cursor.selectionStart(), firstFramePosLessThanCursorPos);
-    const QList<QTextFrame *>::ConstIterator lastFrame = qUpperBound(children.constBegin(), children.constEnd(),
-                                                                     cursor.selectionEnd(), cursorPosLessThanLastFramePos);
-    for (QList<QTextFrame *>::ConstIterator it = firstFrame; it != lastFrame; ++it) {
-        if ((*it)->frameFormat().position() != QTextFrameFormat::InFlow)
-            r |= frame->document()->documentLayout()->frameBoundingRect(*it);
-    }
-    return r;
-	*/
-	
 }
 
 
@@ -71,13 +56,6 @@ static bool HavingLink(  const QTextBlock para )
 				}
         return false;
 }
-
-
-
-
-
-
-
 
 
 
@@ -1991,13 +1969,12 @@ void TextProcessor::showhtml()
 
 
 ScribePage::ScribePage( M_PageSize e )
- : TextProcessor(PAGES)
+ : TextProcessor(PAGES),pageChangeTime(0),PageTotal(1)
 {
-	PageTotal = 1;
-	QTextDocument *dummy = new QTextDocument();
-	dummy->setHtml ( "<p></p>" ); /////  ReadFile("a.html")
-	setDocument(dummy,FOP);
-	SwapPageModel(e);
+    M_PageSize A4;
+    A4.name = "Initer_ScribePage";
+    PAGE_MODEL = A4;
+	formatDoc(e);
 }
 
 
@@ -2182,18 +2159,19 @@ QRectF ScribePage::GroupboundingRect()
 
 
 
-void ScribePage::SwapPageModel( M_PageSize e )
+void ScribePage::formatDoc( M_PageSize e )
 {
-
-        loop
-	ApiSession *sx = ApiSession::instance();
-        /* tage from session if change must place on session and not overwirite self .... */
-	/* must make a hasch  to ensure is different != e from session  */
-	PAGE_MODEL = sx->CurrentPageFormat();
-
-        qDebug() << "### SwapPageModel  " << PAGE_MODEL.body;
-
-
+    
+    if ( PAGE_MODEL.hashmodel() == e.hashmodel() ) {
+    /* same format nothing change!!!!! */
+    return;
+    }
+    pageChangeTime++;
+	PAGE_MODEL = e;
+    qDebug() << "### SwapPageModel  " << PAGE_MODEL.body;
+    qDebug() << "### SwapPageModel  " << PAGE_MODEL.name;
+    qDebug() << "### SwapPageModel  " << pageChangeTime;
+    
 	QTextOption opt;
 	opt.setUseDesignMetrics(true);
 	opt.setTabStop(8);
@@ -2201,14 +2179,13 @@ void ScribePage::SwapPageModel( M_PageSize e )
 	_d->setDefaultTextOption(opt);
 	
 	PAGE_MODEL.HandlePrint(_d); /* set page format margin  */
-  Q_ASSERT(_d->pageSize().isValid());
+    Q_ASSERT(_d->pageSize().isValid());
 	_d->setUseDesignMetrics (true);
 	Page_Width = PAGE_MODEL.G_regt.width();
-  Page_Height = PAGE_MODEL.G_regt.height();
-  Page_Edit_Rect = PAGE_MODEL.G_regt;
-  _d->setPageSize(QSizeF(Page_Width,Page_Height));
-	Q_ASSERT(_d->pageSize().isValid());
-  (void)_d->documentLayout(); /* reform margin wake up */
+    Page_Height = PAGE_MODEL.G_regt.height();
+    Page_Edit_Rect = PAGE_MODEL.G_regt;
+    _d->setPageSize(QSizeF(Page_Width,Page_Height));
+    (void)_d->documentLayout(); /* reform margin wake up */
 	PageTotal = _d->pageCount();
 	q_update(boundingRect().toRect());
 }
@@ -2238,7 +2215,7 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
         }
 	_d->setUndoRedoEnabled(false);
 	M_PageSize DefaultSizeDoc;
-	SwapPageModel(DefaultSizeDoc);
+	formatDoc(DefaultSizeDoc);
   PageTotal = _d->pageCount();
   Q_ASSERT(PageTotal > 0);	
   C_cursor = QTextCursor(_d);
@@ -2253,15 +2230,15 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
 				
 				
 }
-
+/*
 void ScribePage::PageUpdate()
 {
-	SwapPageModel(PAGE_MODEL);
+	formatDoc(PAGE_MODEL);
 	ChangeFormatDoc(true);
 	ALL_Page_Edit_Rect = this->boundingRect();
 	emit q_update_scene();
 }
-
+*/
 /* story board of text input */
 void ScribePage::SessionUserInput( int position, int charsRemoved, int charsAdded  )
 {
@@ -2681,7 +2658,8 @@ void  TextProcessor::SetElementMargin()
 			 c.setBlockFormat(bbformat); 
 		 }
 		 
-		 PageUpdate();
+		 /* redraw  large scale */
+         emit q_update_scene();
 		 
 	 }
  }

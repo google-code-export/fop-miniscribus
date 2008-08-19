@@ -53,8 +53,8 @@ ApiSession::ApiSession()
   
   
     
-	  FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm, 8.26 x 11.7 inches)"), QPrinter::A4);
-	  FormatRegister(QT_TR_NOOP("A4 (211 x 297 mm, 8.26 x 11.7 inches)"), QPrinter::A4);
+	  FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm)"), QPrinter::A4);
+	  FormatRegister(QT_TR_NOOP("A4 (211 x 297 mm)"), QPrinter::A4);
 	  FormatRegister(QT_TR_NOOP("A0 (841 x 1189 mm)"), QPrinter::A0);
     FormatRegister(QT_TR_NOOP("A1 (594 x 841 mm)"), QPrinter::A1);
     FormatRegister(QT_TR_NOOP("A2 (420 x 594 mm)"), QPrinter::A2);
@@ -93,9 +93,9 @@ ApiSession::ApiSession()
     
     current_Page_Format = history_page_norms[1];
     
-    /* other mesure size go to file and append here on load */
     
-    //////LoadFontDir(QDir::currentPath()); 
+    qDebug() << "### current format faktor name " << current_Page_Format.faktor() << "-" << current_Page_Format.HName();
+    qDebug() << "### current format margin hash" << current_Page_Format.body << "-" << current_Page_Format.hashmodel();
     
 }
 
@@ -107,13 +107,14 @@ void ApiSession::FormatRegister( const QString txt , QPrinter::PageSize pp )
 	              Lxx.Register(txt,pp,false);
        if (Lxx.body.name == 1 ) {
 	   history_page_norms.insert(history_page_norms.size() + 1,Lxx);
+        //////////qDebug() << "###register " << txt << "-" << Lxx.hashmodel();
        }
   
 	   M_PageSize Pxx;
 	              Pxx.Register(txt,pp,true);
        if (Pxx.body.name == 1 ) {
 	   history_page_norms.insert(history_page_norms.size() + 1,Pxx);
-       qDebug() << "###register " << txt << "-" << Pxx.body ;
+        ////////////qDebug() << "###register " << txt << "-" << Pxx.hashmodel();
        }
 }
 

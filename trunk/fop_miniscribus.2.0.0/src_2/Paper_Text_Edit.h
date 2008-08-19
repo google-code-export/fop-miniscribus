@@ -32,11 +32,11 @@ class GraphicsView : public QGraphicsView
      Q_OBJECT
 //
 public:
-   GraphicsView( QWidget * parent  = 0 );
+   GraphicsView( M_PageSize format , QWidget * parent  = 0 );
    ~GraphicsView();
    QRectF boundingRect();
    GraphicsScene *scene;
-   QRectF rectToScene();
+   QRectF rectToScene() const;
    TextLayer *autopage() { return BASE_TEXT; }
    TextLayer *BASE_TEXT;
    
@@ -47,7 +47,7 @@ signals:
 public slots:
    void DisplayTop();
    void viewDisplay( const QRectF area );
-   void SwapPaper();
+   void swapPaper();
    void forceResize();
    void openFile( const QString file );
    void openFile();
