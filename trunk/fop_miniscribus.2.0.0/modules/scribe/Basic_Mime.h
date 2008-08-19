@@ -214,6 +214,7 @@ public:
     margin_left = CM_TO_POINT(1.5);
     margin_right = CM_TO_POINT(1.5);
     bg = QColor(Qt::white);
+    edom = QByteArray("scribe");
     }
     FoRegion& operator=( const FoRegion& d )
     {
@@ -276,6 +277,7 @@ class M_PageSize
 public:
     enum { MAGICNUMBER = 0xFFAAFFAA, VERSION = 2 };
     M_PageSize();
+    ~M_PageSize();
     M_PageSize& operator=( const M_PageSize& d );
     operator QVariant() const
     {
