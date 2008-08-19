@@ -2184,9 +2184,16 @@ QRectF ScribePage::GroupboundingRect()
 
 void ScribePage::SwapPageModel( M_PageSize e )
 {
+
+        loop
 	ApiSession *sx = ApiSession::instance();
-	sx->SetPageFormat(e);
-	PAGE_MODEL = e;
+        /* tage from session if change must place on session and not overwirite self .... */
+	/* must make a hasch  to ensure is different != e from session  */
+	PAGE_MODEL = sx->CurrentPageFormat();
+
+        qDebug() << "### SwapPageModel  " << PAGE_MODEL.body;
+
+
 	QTextOption opt;
 	opt.setUseDesignMetrics(true);
 	opt.setTabStop(8);
