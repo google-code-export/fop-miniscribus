@@ -30,24 +30,27 @@ TextLayer::~TextLayer()
 
 
 
-TextLayer::TextLayer( M_PageSize format , QGraphicsItem *parent  )
-    : QGraphicsRectItem(0),dev(new TextMount),ContextOpen(false),PageRecords(1)
+TextLayer::TextLayer( QGraphicsItem *parent  )
+    : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount),ContextOpen(false),PageRecords(1)
 {
-    qDebug() << "### init  auto layer ....";
+    //////qDebug() << "### init....";
     dev->q = this;
     Aheader = 0;
     Afooter = 0;
     setAcceptsHoverEvents(true);
     setAcceptDrops(true);
-    qDebug() << "### init auto layer margin show " << format.body.margin_top;
+    
+    QTextDocument *dummy = new QTextDocument();
+    dummy->setHtml(ReadFile("a.html")); /////  
+    setDocument(dummy,FOP);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
     setZValue (0.555555);
     LastRect = dev->txtControl()->boundingRect();
-    setRect(LastRect);
+    QGraphicsRectItem::setRect(LastRect);
     LastUpdateRequest = LastRect;
-    /////////SetupHeaderFooter();
-    //////QTimer::singleShot(0, this, SLOT(cursor_wake_up())); 
+    SetupHeaderFooter();
+    QTimer::singleShot(1, this, SLOT(cursor_wake_up())); 
 }
 
 void TextLayer::appendLayer( QMap<int,RichDoc> floatingelement  )
@@ -64,6 +67,16 @@ void TextLayer::appendLayer( QMap<int,RichDoc> floatingelement  )
                              connect(absolute, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
 					}
 }
+
+
+
+
+
+
+
+
+
+
 
 void TextLayer::SetupHeaderFooter()
 {
@@ -97,24 +110,22 @@ void TextLayer::Append_Layer()
     connect(absolute, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
 }
 
-M_PageSize TextLayer::pageModelFormat()
-{
-    dev->txtControl()->Model();
-}
 
 QTextCursor TextLayer::textCursor() 
 {
   return dev->txtControl()->textCursor();
 }
 
-void TextLayer::swapPageModel( M_PageSize e )
+void TextLayer::SwapPageModel( M_PageSize e )
 {
-    dev->txtControl()->formatDoc(e);
+    dev->txtControl()->SwapPageModel(e);
+ 
     if (Aheader && Afooter) {
       Aheader->UpdatePageFormat();
       Afooter->UpdatePageFormat();
     }
-    ////////SceneReload();
+
+    SceneReload();
 }
 
 
@@ -125,11 +136,9 @@ QTextDocument *TextLayer::document()
 
 
 
-void TextLayer::setDocument( const QTextDocument * documentin , FileHandlerType Type )
+void TextLayer::setDocument( const QTextDocument * document , FileHandlerType Type )
 {
-    dev->txtControl()->setDocument(documentin,Type);
-    ApiSession *session = ApiSession::instance();
-    session->ensureImageDoc(document());
+    dev->txtControl()->setDocument(document,Type);
     MakeActionHere();
 }
 
@@ -137,7 +146,7 @@ void TextLayer::updatearea( const QRect areas )
 {
     LastRect = dev->txtControl()->boundingRect();
     QGraphicsRectItem::setRect(LastRect);
-    qDebug() << "### updatearea " << areas;
+    ////////////qDebug() << "### updatearea " << areas;
     LastUpdateRequest = areas;
     update(areas);
 }
@@ -152,11 +161,8 @@ void TextLayer::cursor_stop_it()
 
 void TextLayer::PageSizeReload()
 {
-    
-    qDebug() << "### PageSizeReload()";
-    
-    /////ApiSession *sx = ApiSession::instance();
-    ////////SwapPageModel( sx->CurrentPageFormat() );
+    ApiSession *sx = ApiSession::instance();
+    SwapPageModel( sx->CurrentPageFormat() );
 }
 
 
@@ -166,7 +172,7 @@ void TextLayer::cursor_wake_up()
     if (PageRecords != PageSumm) {
     PageRecords = PageSumm;
     SceneReload();
-    emit pageCountChange();
+    emit PageCountChange();
     }
     MakeDinamicCommand();  /* redraw action depending cursor */
     emit autocursorchange();
@@ -175,6 +181,7 @@ void TextLayer::cursor_wake_up()
 
 void TextLayer::SceneReload()
 {
+     /////////qDebug() << "### SceneReload page count " << document()->pageCount();
      GraphicsScene *sc;
      if (sc = qobject_cast<GraphicsScene *>(scene())) {
      sc->clearSelection();
@@ -200,46 +207,56 @@ QString TextLayer::PageName()
 void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     LastRect = dev->txtControl()->boundingRect();
-    M_PageSize model = dev->txtControl()->Model();
     painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setPen( Qt::NoPen );
     painter->setBrush(Qt::lightGray);
     painter->drawRect(LastRect);
     const int PageSumm = qBound (1,document()->pageCount(),MaximumPages);
     PageRecords = PageSumm;
-    const QRectF printrectarea = model.PrintArea();
-    
-    
 
     /* draw white first background */
     for (int o = 0; o < PageSumm; ++o)  {
         painter->save();
-        const QRectF pagen =  model.PageExternal(o);
-        drawPageGround(painter,o,model);
+        const QRectF pagen =  dev->txtControl()->Model().PageExternal(o);
+        painter->setBrush(QColor(Qt::white));
+        painter->setPen( QPen(Qt::black,0.3) );
+        painter->drawRect(pagen);
+        painter->restore();
         dev->txtControl()->DrawPage(o,painter,o);
-        drawPageShadow(painter,o,model);
+        painter->save();
+
+        
+        QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
+        QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
+        painter->fillRect(rightShadow, Qt::darkGray);
+        painter->fillRect(bottomShadow, Qt::darkGray);
+        /* small border */
+        painter->setBrush(Qt::NoBrush);
+        painter->setPen( QPen(Qt::black,0.3) );
+        painter->drawRect(pagen);
+        painter->setPen( Qt::NoPen );
     
         
-       if (o !=0 && Aheader && Afooter ) {
+       if (o !=0) {
        /* draw  header */
        QPicture headerpaint = Aheader->LayerImage(o);
-       QPointF posheader = model.HeaderInitPoints(o);
+       QPointF posheader = dev->txtControl()->Model().HeaderInitPoints(o);
        painter->drawPicture(posheader, headerpaint);
        /* draw footer */
        QPicture footerpaint = Afooter->LayerImage(o);
-       QPointF posfooter = model.FooterInitPoints(o);
+       QPointF posfooter = dev->txtControl()->Model().FooterInitPoints(o);
        painter->drawPicture(posfooter, footerpaint);
        }
       
        painter->restore();
     }
     
-   
+    /*
     QColor Visiblerecord(Qt::red);
 		Visiblerecord.setAlpha(22);
     painter->setBrush(Visiblerecord);
-    painter->drawRect(printrectarea);
-
+    painter->drawRect(LastUpdateRequest);
+*/
     
     
     
@@ -271,7 +288,7 @@ void TextLayer::focusInEvent ( QFocusEvent * event )
     if (PageRecords != PageSumm) {
     PageRecords = PageSumm;
     SceneReload();
-    emit pageCountChange();
+    emit PageCountChange();
     return;
     }
     QGraphicsItem::setSelected(true);

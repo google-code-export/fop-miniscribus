@@ -10,14 +10,12 @@
 
 using namespace ApacheFop;
 
-GraphicsView::GraphicsView( M_PageSize format , QWidget * parent )
+GraphicsView::GraphicsView( QWidget * parent )
 	: QGraphicsView( parent ),
-    OnPrintRender(false),BASE_TEXT(new TextLayer(format,0)),
+    OnPrintRender(false),BASE_TEXT(new TextLayer(0)),
     gzippedfile(false)
 {
    QApplication::restoreOverrideCursor();
-   recordActionHere();
-   qDebug() << "### init  gview .... a";
    QPalette p = palette();
    p.setColor(QPalette::Window,Qt::lightGray);
    p.setColor(QPalette::Base,Qt::lightGray);
@@ -25,67 +23,31 @@ GraphicsView::GraphicsView( M_PageSize format , QWidget * parent )
    scene = new GraphicsScene(rectToScene(),this);
    setCacheMode(CacheBackground);
    setScene(scene);
-   qDebug() << "### init  gview .... b";
-    
-   scene->addItem(BASE_TEXT);
-   connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
-   connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
-   connect(BASE_TEXT, SIGNAL(autocursorchange() ), this, SLOT(cursorChange()));
-   connect(BASE_TEXT, SIGNAL(absolutecursorchange() ), this, SLOT(cursorChange()));
-   
-    qDebug() << "### init  gview .... c";
-   ///////////pageclear();
-    ///////
-    
-    /* ony dev time */
-  
-    /* ony dev time */
-    
-    /*
-      Fo_Reader * fops = new Fo_Reader("ademo.fop");
-    const QTextDocument *fopdoc = fops->document()->clone();
-    QMap<int,RichDoc> floatingelement = fops->layers();
-    qDebug() << "### layers " << floatingelement.size();
-    qDebug() << "### init  gview .... d";
-    fops->deleteLater(); 
-    BASE_TEXT->setDocument(fopdoc);
-    BASE_TEXT->appendLayer( floatingelement );
-    */
-    
-    
-    qDebug() << "### init  gview .... e";
-    /* load document and recalculate the first time */
-    ////////////QTimer::singleShot(22, this, SLOT(forceResize()));
-    qDebug() << "### init  gview .... z";
-}
-
-
-
-QRectF GraphicsView::rectToScene() const
-{
-    
-    ApiSession *sx = ApiSession::instance();
-    M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
-    const QTextDocument *bdoc = BASE_TEXT->document()->clone();
-    const int PageSumm = qBound (1,bdoc->pageCount(),MaximumPages);
-    const qreal fromTopY = PageSumm * PAGE_MODEL.pageBoundingRect().height();
-    const qreal spacepage = (PageSumm - 1) * InterSpace;
-    return QRectF(0,0,PAGE_MODEL.pageBoundingRect().width(),fromTopY + spacepage + _BOTTOM_VIEW_SPACE_RESERVE_);
+   pageclear();
+   recordActionHere();
 }
 
 
 void GraphicsView::pageclear()
 {
     scene->clear();  /*  remove all item */
-    ApiSession *sx = ApiSession::instance();
-    M_PageSize format = sx->CurrentPageFormat();
-    BASE_TEXT = new TextLayer(format,0);
+    BASE_TEXT = new TextLayer(0);
     scene->addItem(BASE_TEXT);
 	connect(scene, SIGNAL(MakeVisible(QRectF)), this, SLOT(viewDisplay(QRectF)));
     connect(BASE_TEXT, SIGNAL(pageCountChange() ), this, SLOT(forceResize()));
     connect(BASE_TEXT, SIGNAL(autocursorchange() ), this, SLOT(cursorChange()));
     connect(BASE_TEXT, SIGNAL(absolutecursorchange() ), this, SLOT(cursorChange()));
+    Fo_Reader * fops = new Fo_Reader("a.fo");
+    const QTextDocument *fopdoc = fops->document()->clone();
+    QMap<int,RichDoc> floatingelement = fops->layers();
+    qDebug() << "### layers " << floatingelement.size();
     
+    fops->deleteLater(); 
+    BASE_TEXT->setDocument(fopdoc);
+    BASE_TEXT->appendLayer( floatingelement );
+    /* load document and recalculate the first time */
+    QTimer::singleShot(22, this, SLOT(forceResize()));
+
 }
 
 void GraphicsView::cursorChange()
@@ -107,7 +69,6 @@ void GraphicsView::openFile()
     if ( file.isEmpty() ) {
     return;
     }
-    
     QFileInfo fi(file);
     setter.setValue("LastDir",fi.absolutePath() +"/");
     openFile( file );
@@ -115,15 +76,14 @@ void GraphicsView::openFile()
 
 void GraphicsView::openFile( const QString file )
 {
-    pageclear();
-    
     QFileInfo fi(file);
-    ApiSession *sx = ApiSession::instance();
+    ApiSession *session = ApiSession::instance();
     const QString dir_ = QDir::currentPath();
     QDir::setCurrent(fi.absolutePath());
     StreamFop *buf = new StreamFop();
     currentopenfilerunning = "";
     gzippedfile = false;
+    ApiSession *sx = ApiSession::instance();
     const QString ext = fi.completeSuffix().toLower();
     currentopenfilealternate = fi.absolutePath() + QString("/") + fi.baseName() + QString(".tmpfox");
     qt_unlink(currentopenfilealternate);
@@ -149,9 +109,6 @@ void GraphicsView::openFile( const QString file )
         currentfilecodec = GetcodecfromXml( currentopenfilealternate  );
         Fo_Reader * fops = new Fo_Reader(currentopenfilealternate);
         const QTextDocument *fopdoc = fops->document()->clone();
-        
-        QMap<int,RichDoc> floatingelement = fops->layers();
-        BASE_TEXT->appendLayer( floatingelement );
         fops->deleteLater(); 
         BASE_TEXT->setDocument(fopdoc);
         forceResize();
@@ -160,19 +117,17 @@ void GraphicsView::openFile( const QString file )
         return;
     } else if ( ext == "html" || ext == "htm" ) {
         M_PageSize defaultA4Page;
-        FoRegion  reghtml;
-        reghtml.toAll( MM_TO_POINT(10) );
-        defaultA4Page.SetMargin(reghtml);
+        defaultA4Page.P_margin = QRectF(MM_TO_POINT(10),MM_TO_POINT(10),MM_TO_POINT(10),MM_TO_POINT(10));
         /* :-)  html not know is format !!!!!!! */
         buf->LoadFile( currentopenfilerunning );
         const QByteArray chunkhtml = buf->stream();
         delete buf;
         QTextDocument *htmldoc = new QTextDocument();
         htmldoc->setHtml ( QString ( chunkhtml) );
-        htmldoc->setTextWidth ( defaultA4Page.pageBoundingRect().width() );
+        htmldoc->setTextWidth ( defaultA4Page.G_regt.width() );
         defaultA4Page.HandlePrint( htmldoc );
-        sx->current_Page_Format = defaultA4Page;
-        sx->AppendPaper(defaultA4Page);
+        session->current_Page_Format = defaultA4Page;
+        session->AppendPaper(defaultA4Page);
         BASE_TEXT->setDocument(htmldoc);
         forceResize();
         QTimer::singleShot(90, this, SLOT(forceResize())); 
@@ -204,7 +159,7 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
 }
 
 
-void GraphicsView::viewDisplay( const QRectF area )
+void GraphicsView::ViewDisplay( const QRectF area )
 {
     ////////qDebug() << "### GraphicsView::ViewDisplay -------- " << area;
     /* if scale to big return */
@@ -216,7 +171,22 @@ void GraphicsView::viewDisplay( const QRectF area )
     QGraphicsView::ensureVisible(area);
 }
 
-
+QRectF GraphicsView::rectToScene()
+{
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
+    const QTextDocument *bdoc = BASE_TEXT->document()->clone();
+    const int PageSumm = qBound (1,bdoc->pageCount(),MaximumPages);
+    ////if (PageSumm == MaximumPages) {
+        /* save your chunk please ???? */
+        //////QMessageBox::warning(this, tr("Alert on %1").arg(_APPLICATIONS_NAME_),
+              //////             tr("You are try to cover maximum page %1!").arg(PageSumm));
+    ////////}
+    qDebug() << "### PageSumm request by view -------- " << PageSumm;
+    const qreal fromTopY = PageSumm * PAGE_MODEL.G_regt.height();
+    const qreal spacepage = (PageSumm - 1) * InterSpace;
+    return QRectF(0,0,PAGE_MODEL.G_regt.width(),fromTopY + spacepage + _BOTTOM_VIEW_SPACE_RESERVE_);
+}
 
 void GraphicsView::PrintSetup( bool printok )
 {
@@ -224,13 +194,16 @@ void GraphicsView::PrintSetup( bool printok )
     update();
 }
 
-void GraphicsView::swapPaper()
+void GraphicsView::SwapPaper()
 {
    const QRectF rectscene = rectToScene();
    scene->setSceneRect( rectscene );
-   ApiSession *sx = ApiSession::instance();
-   M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
-   BASE_TEXT->swapPageModel(PAGE_MODEL);
+    
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize PAGE_MODEL = sx->CurrentPageFormat();
+    
+    
+   BASE_TEXT->SwapPageModel(PAGE_MODEL);
 }
 
 
@@ -268,10 +241,7 @@ Panel::Panel( QWidget *parent)
     : QFrame(parent),tievents(0),NotPaperUpdate(true)
 {
     setFrameStyle(Sunken | StyledPanel);
-    
-    ApiSession *sx = ApiSession::instance();
-    M_PageSize format = sx->CurrentPageFormat();
-    graphicsView = new GraphicsView(format,this);
+    graphicsView = new GraphicsView(this);
     graphicsView->setObjectName(QString("graphicsView"));
     graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     /* first call graphicsView to become all action */
@@ -370,8 +340,9 @@ void Panel::PaperSwap( const int index )
    QMap<int,M_PageSize> allpaper = sx->mpages();
    M_PageSize OtherFormat = allpaper[PaperNr];
    sx->SetPageFormat(OtherFormat);
-   qDebug() << "### PaperSwap  " << OtherFormat.name;
-   graphicsView->swapPaper();
+   //////qDebug() << "### PaperSwap  " << OtherFormat.HName();
+   /////M_PageSize current
+   graphicsView->SwapPaper();
 }
 
 void Panel::FillPaperSize()
@@ -399,9 +370,8 @@ void Panel::FillPaperSize()
     PortraitPaper->setCurrentIndex ( activeindex );
     ///////PortraitPaper = new QComboBox;
    //////////LandscapePaper = new QComboBox;
-   graphicsView->swapPaper();
    NotPaperUpdate = false;
-   
+   graphicsView->SwapPaper();
 }
 
 
@@ -483,11 +453,6 @@ PaperTextEdit::PaperTextEdit( QWidget *parent )
 {
     panel = new Panel(this);
     setCentralWidget (panel);
-    bool maketool = true;
-    
-    
-    
-    if (maketool) {
     docbar = new QToolBar(this);
     docbar->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
     
@@ -536,7 +501,6 @@ PaperTextEdit::PaperTextEdit( QWidget *parent )
            
      
     connect(panel->view()->autopage(), SIGNAL(autocursorchange()),this, SLOT(auto_page_dinamic()));
-    }
 }
 
 
