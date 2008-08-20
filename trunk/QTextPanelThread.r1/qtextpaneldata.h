@@ -34,7 +34,7 @@ class QTextPanelData
 	   QPrinter *pdev;
 	   QRectF SceneViewPort;
 	   int CurrentDocWidth;
-	   QMap<QString,SPics> ImagePageList;   /* image on all documents cache */
+	   QMap<QString,TPics> ImagePageList;   /* image on all documents cache */
 	   QMap<int,QString> LastCharOpen;
 	   QMap<int,QString> LastBlockOpen;
 	   QMap<QString,QByteArray> SvgList;

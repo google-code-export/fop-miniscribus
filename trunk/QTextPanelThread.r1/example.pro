@@ -39,7 +39,6 @@ lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) | lessThan(QT_VER_PAT, 1) {
 HEADERS += qtextpanel.h \
     panel.h \
     config.h \
-    qtextpaintmashine.h \
     qtextpanelimage.h \
     qtextpanelcontrol.h \
     qtextpanellayercontrol.h \
@@ -50,7 +49,6 @@ HEADERS += qtextpanel.h \
     qtextpaneltable.h
 SOURCES += qtextpanel.cpp \
     panel.cpp \
-    qtextpaintmashine.cpp \
     qtextpanelimage.cpp \
     qtextpanelcontrol.cpp \
     qtextpanellayercontrol.cpp \

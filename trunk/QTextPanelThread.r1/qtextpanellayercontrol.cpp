@@ -294,13 +294,26 @@ QStringList QTextPanelLayerControl::toolTipInfoCurrent()
 void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	lastRect = device->txtControl()->boundingRect();
-	painter->setRenderHint(QPainter::TextAntialiasing);
+    painter->setRenderHint(QPainter::TextAntialiasing);
+    bool pageOutViewOnCache = false;
+    QImage cachePageAll = device->txtControl()->imgCache();
+    painter->save();
+    QPointF  cachepoint(0,0);
+    if (!cachePageAll.isNull() && !lastViewPortRect.isNull() ) {
+        cachepoint = lastViewPortRect.topLeft();
+        QImage viewarea = cachePageAll.copy(lastViewPortRect.toRect());
+        painter->drawImage(cachepoint,viewarea);
+        pageOutViewOnCache = true; 
+    }
+    
+    if (!pageOutViewOnCache) {
 	painter->setPen(Qt::NoPen);
 	painter->setBrush(Qt::lightGray);
 	painter->drawRect(lastRect);
+    }
+    painter->restore();
     
-    
-	const int pageCount = qBound(1, document()->pageCount(), MaximumPages);
+    const int pageCount = qBound(1, document()->pageCount(), MaximumPages);
     int drawViewPage = 0;
     int drawCursorPage = 0;
 
@@ -318,24 +331,24 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
             drawViewPage = i;
             }
         }
-        
-        painter->save();
-		painter->setBrush(QColor(Qt::white));
-		painter->setPen(QPen(Qt::black,0.3));
-		painter->drawRect(pagen);
-		
-        
-        if ( !device->txtControl()->PlayCursorMode ) {
-		QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
-		QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
-		painter->fillRect(rightShadow, Qt::darkGray);
-		painter->fillRect(bottomShadow, Qt::darkGray);
+        if (!pageOutViewOnCache) {
+            
+                painter->save();
+                painter->setBrush(QColor(Qt::white));
+                painter->setPen(QPen(Qt::black,0.3));
+                painter->drawRect(pagen);
+                if ( !device->txtControl()->PlayCursorMode ) {
+                QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
+                QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
+                painter->fillRect(rightShadow, Qt::darkGray);
+                painter->fillRect(bottomShadow, Qt::darkGray);
+                }
+                painter->restore();
         }
         
-        painter->restore();
-        
     }
-	/* draw white first background */
+    painter->save();
+    
 	for (int x = 0; x < pageCount; ++x)
 	{
         /* draw only on view or cursor page */
@@ -343,45 +356,15 @@ void QTextPanelLayerControl::paint(QPainter *painter, const QStyleOptionGraphics
 		device->txtControl()->DrawPage(x,painter);
         }
 	}
-
-	/*
-	QColor Visiblerecord(Qt::red);
-	Visiblerecord.setAlpha(22);
-	painter->setBrush(Visiblerecord);
-	painter->drawRect(lastUpdateRequest);
-	*/
     
-    if ( device->txtControl()->PlayCursorMode ) {
-
-    if ( !lastViewPortRect.isNull () ) {
-    QColor Visiblerecord(Qt::red);
-	Visiblerecord.setAlpha(14);
-    painter->setPen(QPen(Qt::darkMagenta,2));
-	painter->setBrush(Visiblerecord);
-	painter->drawRect(lastViewPortRect);
-    }
     
-    }
+    painter->restore();
+    
+    
+    
+    
     
 
-	/*
-	 QColor BackHightlight("#a6ffc7");
-	BackHightlight.setAlpha(80);
-
-	 painter->setPen( Qt::NoPen );
-	 painter->setBrush(BackHightlight);
-	painter->drawRect(lastUpdateRequest);
-
-
-
-	 QColor Visiblerecord(Qt::red);
-	Visiblerecord.setAlpha(45);
-
-	 if (!lastVisibleRequest.isNull()) {
-	 painter->setBrush(Visiblerecord);
-	painter->drawRect(lastVisibleRequest);
-	 }
-	 */
 
 }
 

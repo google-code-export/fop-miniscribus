@@ -31,6 +31,8 @@ typedef enum
 
 static const int BookMarkInternalID = 23465;
 
+QMap<QString,QVariant> loadResourceImage( const QTextDocument *doc );
+
 
 class ScribeParser
 {
@@ -148,7 +150,7 @@ class QTextPanelControl : public QObject
 	   QTextCursor textCursor();
 
 	   void insertPixmap(QPixmap p);    /* on cursor insert */
-	   void RegisterImage(SPics e , bool insert);
+	   void RegisterImage(TPics e , bool insert);
 	   void ImageonCursor(const QString file);
 	   QString ImageFilterHaving() const;
 
@@ -271,18 +273,21 @@ class QTextPanelControl : public QObject
 
 
 
-//////////////class CachePainter
+class CachePainter;
 /* auto floating formating text !!!!!!  */
 class ScribePage : public QTextPanelControl
 {
 	Q_OBJECT
+    private:
+    CachePainter *cacheJob;
 
 	private slots:
 		void SessionUserInput(int position = 0 , int charsRemoved = 0, int charsAdded  = 0);
 		void PageUpdate();
 		void ParaBlockPageBreackPolicyInsert();
         void cstatus( const int currentdraw , const int tot );
-        void docCache( QPicture img );
+        void docCache( QImage img );
+        
 
 	public:
 		explicit ScribePage(PanelPageSize e);
@@ -290,16 +295,17 @@ class ScribePage : public QTextPanelControl
         void setCacheDocument(const QTextDocument * document );
 		inline PanelPageSize  Model() const {return PAGE_MODEL;}
 		void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget);
-		void SwapPageModel(PanelPageSize e);
+		void SwapPageModel(PanelPageSize e, bool firstime = false);
 		bool AllowedPosition(const QPointF inpos);
 		QRectF GroupboundingRect();
+        QImage imgCache() { return allPageCache; }
         void startCache();
 		QRectF boundingRect();
 		void DrawPage(const int index  , QPainter * painter );
         void paintPage(const int index  , QPainter * painter , bool printer = false );
 		QPointF PageIndexTopLeft(const int index);
 		PanelPageSize PAGE_MODEL;
-        QPicture allPageCache;
+        QImage allPageCache;
 };
 
 
@@ -322,16 +328,14 @@ class CachePainter : public QThread
 {
     Q_OBJECT
 public:
-    CachePainter( QObject *creator , PanelPageSize p ,  const QTextDocument * d );
+    CachePainter( QRichPage p );
 protected:
     void run();
 signals:
      void cstatus(int,int);  ///////page x from tot 
-     void cgenerator(QPicture);
+     void cgenerator(QImage);
 private:
-    QObject* receiver;
-    PanelPageSize page;
-    QTextDocument *doc;
+    QRichPage page;
 };
 
 

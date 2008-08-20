@@ -4,7 +4,8 @@
 #include <QtOpenGL>
 #endif
 
-#include "qtextpaintmashine.h"
+
+
 
 
 QTextPanel::QTextPanel(QWidget * parent)
@@ -183,6 +184,11 @@ void QTextPanel::stressTestPaint()
     c.beginEditBlock();
     
     QStringList colorNames = QColor::colorNames();
+    /////////qSort(colorNames.end(), colorNames.begin() );
+
+    
+    
+    
     foreach (QString name, colorNames) {
         loop++;
         
@@ -191,7 +197,7 @@ void QTextPanel::stressTestPaint()
         }
         
         ////////qDebug() << "### name ->" << name;
-        QImage e( 440,88,QImage::Format_ARGB32);
+        QImage e( 440,22,QImage::Format_ARGB32);
         e.fill(QColor(name).rgb());
         playdoc->addResource(QTextDocument::ImageResource,QUrl(name),e);
         QTextImageFormat format;
@@ -201,13 +207,15 @@ void QTextPanel::stressTestPaint()
         format.setToolTip(name);
         c.insertImage( format );
         c.insertText(QString(QChar::LineSeparator));   /* br */
-        for (int i = 0; i < 200; ++i)  {
-        c.insertText(name+ "   -.-   ");   
+        for (int i = 0; i < 220; ++i)  {
+        c.insertText(name+ "   -.-   "+QString("%1").arg(i));   
         }
         c.endEditBlock();
         c.atBlockEnd();
         
     }
+    
+    
     
     BASE_TEXT->setDocument(playdoc->clone(),FOP);
     forceResize();
