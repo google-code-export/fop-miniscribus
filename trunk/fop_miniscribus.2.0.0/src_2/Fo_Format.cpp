@@ -269,12 +269,10 @@ QTextCharFormat Fo_Format::GlobalCharFormat( const QDomElement e , QTextCharForm
                   
                   
                   if (nod.nodeName().toLower() == "letter-spacing" ) {
-                      const qreal hundertpro = f.fontPointSize();
                       const qreal needspace = Unit(nod.nodeValue(),FONT);
-                      qreal bigger = qMax (needspace,hundertpro);
-                      qreal smaller = qMin (needspace,hundertpro);
-                      qreal unitNormal  = bigger / smaller * 100;
-                      f.setFontLetterSpacing(unitNormal);
+                      QFont ss = f.font();
+                      ss.setLetterSpacing(QFont::AbsoluteSpacing,needspace);
+                      f.setFont(ss);
                   }
                   
                  
