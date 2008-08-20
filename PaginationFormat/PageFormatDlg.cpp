@@ -73,6 +73,15 @@ PageFormatDlg::PageFormatDlg( QWidget* parent )
     connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(recalcAll()));
     
     
+    connect(yesheader_2, SIGNAL(clicked(bool)), this, SLOT(recalcAll()));
+    connect(yesheader_3, SIGNAL(clicked(bool)), this, SLOT(recalcAll()));
+    connect(yesheader_4, SIGNAL(clicked(bool)), this, SLOT(recalcAll()));
+    connect(yesheader, SIGNAL(clicked(bool)), this, SLOT(recalcAll()));
+    
+    
+    
+    
+    
     
     QList<QDoubleSpinBox*> wnr;
     wnr << doubleSpinBox << doubleSpinBox_2 << doubleSpinBox_3 << doubleSpinBox_5 << doubleSpinBox_4;
@@ -591,7 +600,7 @@ void PageFormatDlg::DrawPageResult()
     matrix.scale (scalexy,scalexy);
     
     QRectF inpaperwi =  matrix.mapRect(currentP.pageBoundingRect());
-    QRectF margip = matrix.mapRect(QRectF(currentP.body.margin_left,currentP.body.margin_top,currentP.width() - 0.5,currentP.height() - 0.5));
+    QRectF margip = matrix.mapRect(QRectF(currentP.body.margin_left,currentP.body.margin_top,currentP.width() - 0.2,currentP.height() - 0.2));
     
     const QRectF PageRect(0,0, quadra, quadra );
     
@@ -601,17 +610,21 @@ void PageFormatDlg::DrawPageResult()
     /* image as label space */
     QPainter *painter = new QPainter(&img);
     painter->setRenderHint(QPainter::TextAntialiasing);
-    painter->setPen(QPen(Qt::red,0.4));
+    painter->setPen(QPen(Qt::NoPen));
     painter->setOpacity ( 0.4);
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(PageRect);
     painter->setOpacity ( 1.);
     
+    /*   diagonale 
     painter->setPen(QPen(Qt::red,0.5));
     QLineF diagonal(PageRect.topLeft(),PageRect.bottomRight());
     QLineF diagonal1(PageRect.topRight(),PageRect.bottomLeft());
     painter->drawLine(diagonal);
     painter->drawLine(diagonal1);
+    */
+    
+    
     
     /* image as label space */
     
@@ -626,6 +639,39 @@ void PageFormatDlg::DrawPageResult()
     painter->drawRect(PageIconRect);
     /* papers */
     
+    /*
+    currentP.area[0].enable = yesheader->isChecked();
+    currentP.area[1].enable = yesheader_2->isChecked();
+    currentP.area[2].enable = yesheader_3->isChecked();
+    currentP.area[3].enable = yesheader_4->isChecked();
+    
+    
+      FoRegion region_before() const { return area[0]; }
+    FoRegion region_after() const { return area[1]; }
+    FoRegion region_start() const  { return area[2]; }
+    FoRegion region_end()  const { return area[3]; }
+    
+    */
+    
+    /* header rect */
+    if (yesheader->isChecked())  {
+    QRectF Theader =  matrix.mapRect(currentP.headerRect());
+    Theader.moveTopLeft ( PageIconRect.topLeft() );
+    painter->setBrush(currentP.area[0].bg.name() != QColor(Qt::white).name() ? currentP.area[0].bg :  QColor("gold") );
+    painter->setPen(QPen(Qt::black,0.3));
+    painter->drawRect(Theader);
+    }
+    
+    if (yesheader_2->isChecked())  {
+    /* footer rect */
+    QRectF Tfooter =  matrix.mapRect(currentP.footerRect());
+    Tfooter.moveBottomLeft ( PageIconRect.bottomLeft() );
+    
+    painter->setBrush(currentP.area[1].bg.name() != QColor(Qt::white).name() ? currentP.area[1].bg :  QColor("gold") );
+    painter->setPen(QPen(Qt::black,0.3));
+    painter->drawRect(Tfooter);
+    }
+    
     
     
     QColor border_color_set =  currentP.body.bog;
@@ -637,11 +683,8 @@ void PageFormatDlg::DrawPageResult()
     } else {
     painter->setPen(QPen(border_color_set,0.3));
     }        
-    
-    
-    
     painter->drawRect(margip);
-    
+    /* internal margin  page */
     
     
     
