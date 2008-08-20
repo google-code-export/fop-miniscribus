@@ -246,11 +246,50 @@ void  PageFormatDlg::fillColorBox()
     comboBox_11->clear();
     comboBox_13->clear();
     insertItemColorBox(tr("None Transparent"),QColor(Qt::white));
+    
     for (int i = 0; i < l_colors.size(); ++i)  {
         const QString col = l_colors.at(i);
         QColor current(fopC->foColor(col));
         insertItemColorBox(col,current);
     }
+    
+    comboBox_3->clear();
+    comboBox_6->clear();
+    comboBox_15->clear();
+    comboBox_9->clear();
+    comboBox_12->clear();
+    
+    comboBox_3->setIconSize ( QSize(60,25) );
+    comboBox_6->setIconSize ( QSize(60,25) );
+    comboBox_15->setIconSize ( QSize(60,25) );
+    comboBox_9->setIconSize ( QSize(60,25) );
+    comboBox_12->setIconSize ( QSize(60,25) );
+    
+    
+    
+    FoRegion one;
+    
+     QMapIterator<QString,QPen> i(one.penstyle());
+         while (i.hasNext()) {
+             i.next();
+             QPen current = i.value();
+             QString humanname = i.key();
+             const QIcon colorIcon  = createPenStyleIco(current);
+                comboBox_3->addItem(colorIcon,humanname,current);
+                comboBox_15->addItem(colorIcon,humanname,current);
+                comboBox_9->addItem(colorIcon,humanname,current);
+                comboBox_12->addItem(colorIcon,humanname,current);
+                comboBox_6->addItem(colorIcon,humanname,current);
+         }
+
+    comboBox_3->setIconSize ( QSize(60,25) );
+    comboBox_6->setIconSize ( QSize(60,25) );
+    comboBox_15->setIconSize ( QSize(60,25) );
+    comboBox_9->setIconSize ( QSize(60,25) );
+    comboBox_12->setIconSize ( QSize(60,25) );
+    
+    
+    
 }
 
 
@@ -389,6 +428,17 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
          groupBox_9->setEnabled(henda);  /* end , right */
          groupBox_10->setEnabled(henda);  /* end , right */
          
+
+       /*
+       
+           comboBox_3->addItem(colorIcon,humanname,current);
+                comboBox_15->addItem(colorIcon,humanname,current);
+                comboBox_15->addItem(colorIcon,humanname,current);
+                comboBox_9->addItem(colorIcon,humanname,current);
+                comboBox_12->addItem(colorIcon,humanname,current);
+       
+       */
+
 
 
     if ( e.region_before().enable ) {

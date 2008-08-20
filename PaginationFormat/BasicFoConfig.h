@@ -14,6 +14,9 @@
 
 /* help functions */
 QPixmap BruschChess( qreal chesswidth = 50. );
+
+QIcon createPenStyleIco( QPen item);
+
 /* allowed char on file name image to save */
 QString Imagename( const  QString txt );
 /* 12mm to point , 12cm , 2inch */
