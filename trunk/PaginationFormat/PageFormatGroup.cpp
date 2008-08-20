@@ -24,16 +24,37 @@ FoRegion::FoRegion()
     margin_left = CM_TO_POINT(1.5);
     margin_right = CM_TO_POINT(1.5);
     bg = QColor(Qt::white);
-    bog = QColor(Qt::white);
+    bog = QColor(Qt::black);
     edom = QByteArray("<scribe/>");
-    name = 1;  /* 1 body 2 header  3 footer  4 start 5 end */
-    border = 0.;
-    enable = true;
+    border = 0.;  /* border > 0 draw */
+    rpen = QPen(Qt::black,0.5,Qt::DotLine);
+    enable = false;
 }
+
+
+QString FoRegion::hash() const
+{
+        QByteArray unique("Hash-Forerin:");
+        const QString header = QString("%1|%2|%3|%4|").arg(margin_top).arg(margin_bottom)
+                               .arg(margin_right).arg(margin_left);
+        const QString margin = QString("%1|%2|%3").arg(bg.name()).arg(bog.name())
+                               .arg(border);
+         QString  position = "Disable";
+         if (enable) {
+             position = "Enable";
+         }
+         unique.append(position);
+         unique.append(header);
+         unique.append(margin);
+         QCryptographicHash enmd5( QCryptographicHash::Sha1 );
+         enmd5.addData ( unique );
+         const QByteArray chunkha = enmd5.result();
+         return QString(chunkha.toHex());
+}
+
 
 FoRegion& FoRegion::operator=( const FoRegion& d )
 {
-    name = d.name;
     bg = d.bg;
     bog = d.bog;
     margin_top = d.margin_top;
@@ -42,6 +63,8 @@ FoRegion& FoRegion::operator=( const FoRegion& d )
     margin_right = d.margin_right;
     edom = d.edom;
     border = d.border;
+    enable = d.enable;
+    rpen = d.rpen;
     return *this;
 }
 
@@ -80,6 +103,10 @@ QByteArray M_PageSize::hashmodel() const
          unique.append(position);
          unique.append(header);
          unique.append(margin);
+         const int totr = (int)region;
+         for (int i = 0; i < totr; ++i) {
+             unique.append(area[i].hash());
+         }
          QCryptographicHash enmd5( QCryptographicHash::Sha1 );
          enmd5.addData ( unique );
          const QByteArray chunkha = enmd5.result();
@@ -106,6 +133,54 @@ M_PageSize::M_PageSize()
     G_regt = QRectF(0,0,MM_TO_POINT(210),MM_TO_POINT(297));
     RealSize = G_regt.size();
     AllowHeaderFooter = true;
+    
+    FoRegion topR;
+    FoRegion bottomR;
+    FoRegion leftR;
+    FoRegion rightR;
+    
+    area[0] = topR;
+    area[1] = bottomR;
+    area[2] = leftR;
+    area[3] = rightR;
+    
+    
+      /*
+      FoRegion region_before() const { return area[0]; }
+    FoRegion region_after() const { return area[1]; }
+    FoRegion region_start() const  { return area[2]; }
+    FoRegion region_end()  const { return area[3]; }
+    
+    */
+    
+    area[0].margin_top = CM_TO_POINT(0.4);
+    area[0].margin_bottom = CM_TO_POINT(0.4);
+    area[0].margin_left = CM_TO_POINT(0);
+    area[0].margin_right = CM_TO_POINT(0);
+    
+    
+    area[1].margin_top = CM_TO_POINT(0.4);
+    area[1].margin_bottom = CM_TO_POINT(0.4);
+    area[1].margin_left = CM_TO_POINT(0);
+    area[1].margin_right = CM_TO_POINT(0);
+    
+    
+    area[2].margin_top = CM_TO_POINT(0);
+    area[2].margin_bottom = CM_TO_POINT(0);
+    area[2].margin_left = CM_TO_POINT(0);
+    area[2].margin_right = CM_TO_POINT(0);
+   
+    
+    area[3].margin_top = CM_TO_POINT(0);
+    area[3].margin_bottom = CM_TO_POINT(0);
+    area[3].margin_left = CM_TO_POINT(0);
+    area[3].margin_right = CM_TO_POINT(0);
+    
+    area[0].enable = false;
+    area[1].enable = false;
+    area[2].enable = false;
+    area[3].enable = false;
+    
 }
 
 M_PageSize& M_PageSize::operator=( const M_PageSize& d )
@@ -118,6 +193,10 @@ M_PageSize& M_PageSize::operator=( const M_PageSize& d )
     coolspace = d.coolspace;
     P_rect = d.P_rect;
     body = d.body;
+    area[0] = d.area[0];
+    area[1] = d.area[1];
+    area[2] = d.area[2];
+    area[3] = d.area[3];
     return *this;
 }
 

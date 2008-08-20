@@ -17,12 +17,12 @@ ApiSession::~ApiSession()
 }
 
 ApiSession::ApiSession()
-: transfile(0),pdev(new QPrinter(QPrinter::ScreenResolution)) 
+: pdev(new QPrinter(QPrinter::ScreenResolution)) 
 { 
-  qDebug() << "### session init....";
-    
-  FF_db = QFontDatabase();
+  
+  /////////FF_db = QFontDatabase();
   SessionID = qrand () % 1000;
+  qDebug() << "### session init...."  << SessionID;
   
   history_page_norms.clear();
   
@@ -45,16 +45,10 @@ ApiSession::ApiSession()
     FoRegion cdregion;
     cdregion.toAll( margindd );
     CDLabel.body = cdregion;
-     
-  
-  
-  
-  
-  
     
-	  FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm)"), QPrinter::A4);
-	  FormatRegister(QT_TR_NOOP("A4 (211 x 297 mm)"), QPrinter::A4);
-	  FormatRegister(QT_TR_NOOP("A0 (841 x 1189 mm)"), QPrinter::A0);
+    FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm)"), QPrinter::A4);
+    FormatRegister(QT_TR_NOOP("A4 (211 x 297 mm)"), QPrinter::A4);
+    FormatRegister(QT_TR_NOOP("A0 (841 x 1189 mm)"), QPrinter::A0);
     FormatRegister(QT_TR_NOOP("A1 (594 x 841 mm)"), QPrinter::A1);
     FormatRegister(QT_TR_NOOP("A2 (420 x 594 mm)"), QPrinter::A2);
     FormatRegister(QT_TR_NOOP("A3 (297 x 420 mm)"), QPrinter::A3);
@@ -86,7 +80,7 @@ ApiSession::ApiSession()
     
     
     
-    AppendPaper( CDLabel );
+    AppendPaper( CDLabel , true );
     
     
     
@@ -133,23 +127,54 @@ bool ApiSession::is_OnChain( M_PageSize e )
 }
 
 
+bool ApiSession::coreSave( M_PageSize e )
+{
+    bool cansave= false;
+    
+         QMapIterator<int,M_PageSize> i(mpages());
+         while (i.hasNext()) {
+             i.next();
+             M_PageSize current = i.value();
+             if ( e.HName() == current.HName()) {
+                 cansave= true;
+                 const int dove = i.key();
+                 history_page_norms[dove]= e;
+             }
+         }
+    return cansave;
+}
+
+
 
 void ApiSession::FormatRegister( const QString txt , QPrinter::PageSize pp )
 {
   
 	   M_PageSize Pxx;
-	              Pxx.Register(txt,pp);
-       if (Pxx.body.name == 1 ) {
-	   history_page_norms.insert(history_page_norms.size() + 1,Pxx);
-        ////////////qDebug() << "###register " << txt << "-" << Pxx.hashmodel();
-       }
+       Pxx.Register(txt,pp);
+       AppendPaper(Pxx);
+       
 }
 
-void ApiSession::AppendPaper( M_PageSize cur )
+void ApiSession::AppendPaper( M_PageSize cur , bool enableregion )
 {
-    if (cur.body.name == 1 ) {
-     history_page_norms.insert(history_page_norms.size() + 1,cur);   
-    }
+    
+    qDebug() << "### AppendPaper  "  << enableregion  ;
+    
+    cur.area[0].enable = enableregion;
+    cur.area[1].enable = enableregion;
+    cur.area[2].enable = enableregion;
+    cur.area[3].enable = enableregion;
+    /*
+      FoRegion region_before() const { return area[0]; }
+    FoRegion region_after() const { return area[1]; }
+    FoRegion region_start() const  { return area[2]; }
+    FoRegion region_end()  const { return area[3]; }
+    
+    */
+    
+    
+    
+    history_page_norms.insert(history_page_norms.size() + 1,cur);   
 }
 
 
