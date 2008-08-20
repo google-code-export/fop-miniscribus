@@ -1,3 +1,15 @@
 20.08.08
 restore to svn version 239 - 245 whitout theard
 prepare /svn/trunk/PaginationFormat/  page format dialog
+
+
+backslant
+line-through underline overline
+fop -> backslant =qt  line-through underline overline
+
+text-decoration="line-through underline overline" 
+
+none | [ [ underline | no-underline] || [ overline | no-overline ] || [ line-through | no-line-through ] || [ blink | no-blink ] ] | inherit
+
+
+letter-spacing="2cm"  fop is lengh qt %  100%

@@ -346,7 +346,7 @@ void FopDom::HandleBlock( QTextBlock  para  , QDomElement appender )
 		
 		
 		//////qDebug() << "### block init build ..  ";
-    const QString Actual_Text_Param = para.text();
+    const QString Actual_Text_Param = Qt::escape(para.text()).simplified();
     QDomElement paragraph;
     QTextImageFormat Pics;
     QTextTableFormat Tabl;
@@ -358,6 +358,7 @@ void FopDom::HandleBlock( QTextBlock  para  , QDomElement appender )
 		bool nobreackline = false;
 		int positioner = -1;
 		paragraph = dom.createElement("fo:block");
+        paragraph.setAttribute("id",QString("blocknr_%1").arg(para.blockNumber()));    
 		if (para.blockFormat().nonBreakableLines()) {
 		paragraph.setAttribute("white-space-collapse","false");
 		nobreackline = true;
@@ -513,6 +514,11 @@ void FopDom::SendBreakLine( QDomElement appender , bool blockcreate )
 	spaceline.setAttribute("leader-pattern","space");
 	spaceline.setAttribute("leader-length",RecoveryBreackLineParagraph());
     spaceline.setAttribute("speak-numeral",ApplicationsVersionFopConvert);   
+        
+    spaceline.appendChild(dom.createComment(QString("\nSipmle Breack line / empty Paragraph version %1. \nUse margin space to make space!\n").arg(ApplicationsVersionFopConvert)));
+        
+        
+        
 	appender.appendChild(spaceline);	
 	}
 }
@@ -830,15 +836,15 @@ void FopDom::PaintFopCharFormat( QDomElement e , QTextCharFormat bf  )
 			fontvario.append("italic");
 			}
 			if (bf.fontStrikeOut() ) {
-			fontvario.append("line-through");
+			///////fontvario.append("line-through");
 			txtdeco.append("line-through");
 			}  
 			if (bf.fontUnderline() ) {
-			fontvario.append("underline");
+			//////fontvario.append("underline");
 			txtdeco.append("underline");
 			}
 			if (bf.fontOverline()) {
-			fontvario.append("overline");
+			////////fontvario.append("overline");
 			txtdeco.append("overline");
 			}
 			
@@ -850,10 +856,15 @@ void FopDom::PaintFopCharFormat( QDomElement e , QTextCharFormat bf  )
 			e.setAttribute ("text-decoration",txtdeco.join(" "));
 			}
 			
-			int hundert = bf.fontLetterSpacing();
-			if (hundert !=0) {
-			e.setAttribute ("letter-spacing",QString("%1\%").arg(hundert));
-			}
+			///////int hundert = bf.fontLetterSpacing();
+			///////if (hundert !=0 && hundert != 100.00) {
+                  QFont userfontee = bf.font();
+            
+                  if ( userfontee.letterSpacingType() != QFont::PercentageSpacing) {
+                     e.setAttribute ("letter-spacing",QString("%1pt").arg(userfontee.letterSpacing()));
+                  }
+                  
+			/////}
 			if (bf.verticalAlignment() == QTextCharFormat::AlignSuperScript) {
 			e.setAttribute ("baseline-shift","super");
 			}

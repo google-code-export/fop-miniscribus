@@ -2442,15 +2442,17 @@ void TextProcessor::ParaBGcolor()
 
 void TextProcessor::FontsLetterSpacing()
  {
-   const qreal spacingnow = textCursor().charFormat().fontLetterSpacing();
+   const qreal spacingnow = textCursor().charFormat().font().letterSpacing();  /////// QFont userfont = bf.font();
    bool ok;
    qreal space = QInputDialog::getDouble(0, tr("Font Letter Spacing"),
-                                        tr("Space:"),spacingnow,90,2000, 2, &ok);
+                                        tr("Space:"),spacingnow,1,1000, 2, &ok);
     if (space > 0 && ok) {
     QTextCursor c = textCursor();
     QTextCharFormat format = c.charFormat();
-    format.setFontLetterSpacing(space);
-    c.setCharFormat(format);
+        QFont ss = format.font();
+        ss.setLetterSpacing(QFont::AbsoluteSpacing,space);
+        format.setFont(ss);
+	    c.setCharFormat(format);
     }
  }
 
