@@ -26,17 +26,16 @@ class TextLayer : public QObject, public QGraphicsRectItem
 
 public:
     
-    TextLayer( M_PageSize format , QGraphicsItem *parent = 0 );
+    TextLayer( QGraphicsItem *parent = 0 );
     ~TextLayer();
     int type() const {return TextTypeFloating;}
     QRectF boundingRect() const;
     QString PageName();
-    M_PageSize pageModelFormat();
     QTextDocument *document();
     void setDocument( const QTextDocument * document , FileHandlerType Type = FOP );
     void appendLayer( QMap<int,RichDoc> floatingelement  );
     QTextCursor textCursor();
-    void swapPageModel( M_PageSize e );
+    void SwapPageModel( M_PageSize e );
     
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -71,7 +70,7 @@ private:
 
 
 signals:
-  void pageCountChange();
+  void PageCountChange();
   void autocursorchange();
   void absolutecursorchange();
 public slots:

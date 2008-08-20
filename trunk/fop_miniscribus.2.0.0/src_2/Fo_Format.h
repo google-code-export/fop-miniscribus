@@ -12,7 +12,8 @@
 #include "Fop_Leader_Element.h"
 
 #include "Image_Page_Struct_Mime.h"
-#include "FoColorName.h"
+
+
 /*
   buffer all resource image normal + svg
   to be resave if need
@@ -20,8 +21,6 @@
   using namespace ApacheFop;
 */
 
-
-QByteArray elementToStream(  const QDomElement e  );
 
 extern inline QByteArray  OpenGzipOneFileByte( QString fileName )
 {
@@ -216,7 +215,7 @@ static inline QString ImagesrcUrl( const QDomElement e )
 }
 
 
-QTextFrameFormat::BorderStyle StyleBrushBorder( const QString Sborder );
+
 
 
 
@@ -287,7 +286,7 @@ public:
     QTextFrameFormat PaintFrameFormat( const QDomElement e , QTextFrameFormat format );
     QColor ColorFromFoString( QString focolor );
     qreal TakeOnePadding( const QDomElement e );
-    FoRegion FindMargin( const QDomElement e );  /* grep attributes from name region margin ecc... */
+    void FindMargin( const QDomElement e );
     bool IsAbsoluteLayer( const QDomElement e );
     QPixmap RenderSvg(  const QDomElement e  ,  const QString nameresource );
     Qt::Alignment TagAlignElement(const QDomElement e );
@@ -300,12 +299,7 @@ public:
     QDomDocument DomelenentToString ( const QDomElement e , const QString msg );
     
     QStringList attributeList(const QDomElement e);
-    
-    FoRegion bodyregion;
-    FoRegion footeregion;
-    FoRegion headereregion;
-    FoRegion leftregion;
-    FoRegion rightregion;
+    QRectF MarginPage;
 
     /* back qt 2 dom */
     QString BorderStyleCss(QTextFrameFormat::BorderStyle style);

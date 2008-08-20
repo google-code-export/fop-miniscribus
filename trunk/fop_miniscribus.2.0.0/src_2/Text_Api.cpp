@@ -6,30 +6,6 @@
 #include "getmargin.h"
 
 
-void drawPageShadow( QPainter * painter , const int index , M_PageSize  e )
-{
-    const QRectF pagen =  e.PageExternal(index);
-    painter->save();
-    QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
-    QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
-    painter->fillRect(rightShadow, Qt::darkGray);
-    painter->fillRect(bottomShadow, Qt::darkGray);
-    painter->restore();
-}
-
-
-void drawPageGround( QPainter * painter , const int index , M_PageSize  e)
-{
-    const QRectF pagen =  e.PageExternal(index);
-    painter->save();
-    painter->setBrush(QColor(Qt::white));
-    painter->setPen(QPen(Qt::black,0.3));
-    painter->drawRect(pagen);
-    painter->restore();
-}
-
-
-
 
 
 static QRectF boundingRectOfFrame(const QTextCursor &cursor)
@@ -37,6 +13,21 @@ static QRectF boundingRectOfFrame(const QTextCursor &cursor)
     QRectF r;
     QTextFrame *frame = cursor.currentFrame();
 	  return frame->document()->documentLayout()->frameBoundingRect(frame);
+	
+	/*
+    const QList<QTextFrame *> children = frame->childFrames();
+
+    const QList<QTextFrame *>::ConstIterator firstFrame = qLowerBound(children.constBegin(), children.constEnd(),
+                                                                      cursor.selectionStart(), firstFramePosLessThanCursorPos);
+    const QList<QTextFrame *>::ConstIterator lastFrame = qUpperBound(children.constBegin(), children.constEnd(),
+                                                                     cursor.selectionEnd(), cursorPosLessThanLastFramePos);
+    for (QList<QTextFrame *>::ConstIterator it = firstFrame; it != lastFrame; ++it) {
+        if ((*it)->frameFormat().position() != QTextFrameFormat::InFlow)
+            r |= frame->document()->documentLayout()->frameBoundingRect(*it);
+    }
+    return r;
+	*/
+	
 }
 
 
@@ -56,6 +47,13 @@ static bool HavingLink(  const QTextBlock para )
 				}
         return false;
 }
+
+
+
+
+
+
+
 
 
 
@@ -1969,12 +1967,13 @@ void TextProcessor::showhtml()
 
 
 ScribePage::ScribePage( M_PageSize e )
- : TextProcessor(PAGES),pageChangeTime(0),PageTotal(1)
+ : TextProcessor(PAGES)
 {
-    M_PageSize A4;
-    A4.name = "Initer_ScribePage";
-    PAGE_MODEL = A4;
-	formatDoc(e);
+	PageTotal = 1;
+	QTextDocument *dummy = new QTextDocument();
+	dummy->setHtml ( "<p></p>" ); /////  ReadFile("a.html")
+	setDocument(dummy,FOP);
+	SwapPageModel(e);
 }
 
 
@@ -2159,19 +2158,11 @@ QRectF ScribePage::GroupboundingRect()
 
 
 
-void ScribePage::formatDoc( M_PageSize e )
+void ScribePage::SwapPageModel( M_PageSize e )
 {
-    
-    if ( PAGE_MODEL.hashmodel() == e.hashmodel() ) {
-    /* same format nothing change!!!!! */
-    return;
-    }
-    pageChangeTime++;
+	ApiSession *sx = ApiSession::instance();
+	sx->SetPageFormat(e);
 	PAGE_MODEL = e;
-    qDebug() << "### SwapPageModel  " << PAGE_MODEL.body;
-    qDebug() << "### SwapPageModel  " << PAGE_MODEL.name;
-    qDebug() << "### SwapPageModel  " << pageChangeTime;
-    
 	QTextOption opt;
 	opt.setUseDesignMetrics(true);
 	opt.setTabStop(8);
@@ -2179,13 +2170,14 @@ void ScribePage::formatDoc( M_PageSize e )
 	_d->setDefaultTextOption(opt);
 	
 	PAGE_MODEL.HandlePrint(_d); /* set page format margin  */
-    Q_ASSERT(_d->pageSize().isValid());
+  Q_ASSERT(_d->pageSize().isValid());
 	_d->setUseDesignMetrics (true);
 	Page_Width = PAGE_MODEL.G_regt.width();
-    Page_Height = PAGE_MODEL.G_regt.height();
-    Page_Edit_Rect = PAGE_MODEL.G_regt;
-    _d->setPageSize(QSizeF(Page_Width,Page_Height));
-    (void)_d->documentLayout(); /* reform margin wake up */
+  Page_Height = PAGE_MODEL.G_regt.height();
+  Page_Edit_Rect = PAGE_MODEL.G_regt;
+  _d->setPageSize(QSizeF(Page_Width,Page_Height));
+	Q_ASSERT(_d->pageSize().isValid());
+  (void)_d->documentLayout(); /* reform margin wake up */
 	PageTotal = _d->pageCount();
 	q_update(boundingRect().toRect());
 }
@@ -2215,7 +2207,7 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
         }
 	_d->setUndoRedoEnabled(false);
 	M_PageSize DefaultSizeDoc;
-	formatDoc(DefaultSizeDoc);
+	SwapPageModel(DefaultSizeDoc);
   PageTotal = _d->pageCount();
   Q_ASSERT(PageTotal > 0);	
   C_cursor = QTextCursor(_d);
@@ -2230,15 +2222,15 @@ void ScribePage::setDocument ( const QTextDocument * document , FileHandlerType 
 				
 				
 }
-/*
+
 void ScribePage::PageUpdate()
 {
-	formatDoc(PAGE_MODEL);
+	SwapPageModel(PAGE_MODEL);
 	ChangeFormatDoc(true);
 	ALL_Page_Edit_Rect = this->boundingRect();
 	emit q_update_scene();
 }
-*/
+
 /* story board of text input */
 void ScribePage::SessionUserInput( int position, int charsRemoved, int charsAdded  )
 {
@@ -2658,8 +2650,7 @@ void  TextProcessor::SetElementMargin()
 			 c.setBlockFormat(bbformat); 
 		 }
 		 
-		 /* redraw  large scale */
-         emit q_update_scene();
+		 PageUpdate();
 		 
 	 }
  }

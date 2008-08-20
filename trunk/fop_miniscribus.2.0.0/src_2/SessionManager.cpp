@@ -19,42 +19,40 @@ ApiSession::~ApiSession()
 ApiSession::ApiSession()
 : transfile(0),pdev(new QPrinter(QPrinter::ScreenResolution)) 
 { 
-  qDebug() << "### session init....";
-    
+  /////history_pics.clear();
   FF_db = QFontDatabase();
   SessionID = qrand () % 1000;
-  
-  history_page_norms.clear();
+  M_PageSize A4;
+  current_Page_Format = A4;
+	history_page_norms.clear();
   
   /* qsetting init to open */
   ///////QCoreApplication::setOrganizationName("CrossKern");
   ////QCoreApplication::setOrganizationDomain("fop.ciz.ch");
   ///////QCoreApplication::setApplicationName("Dummy TextApi");
   
-
+  AppendPaper( A4 );  /* append default */
   
-    
-    /*
-    
      M_PageSize CDLabel;
      CDLabel.name = "CD-Label (128 x 128mm)";
      CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(128),MM_TO_POINT(128));
      CDLabel.P_rect = QPrinter::Custom;
      CDLabel.RealSize = CDLabel.G_regt.size();
      const qreal margindd = MM_TO_POINT(8);
+     /* qtext document minimum size bug not break line at 128mm */
      CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(200),MM_TO_POINT(200));
-    FoRegion cdregion;
-    cdregion.toAll( margindd );
-    CDLabel.body = cdregion;
-     AppendPaper( CDLabel );
-  */
+  
+     CDLabel.P_margin = QRectF(margindd,margindd,margindd,margindd);   
+  
+  AppendPaper( CDLabel );  /* append default */
+  
   
   
   
   
     
-	  FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm)"), QPrinter::A4);
-	  FormatRegister(QT_TR_NOOP("A4 (211 x 297 mm)"), QPrinter::A4);
+	  FormatRegister(QT_TR_NOOP("A4 (210 x 297 mm, 8.26 x 11.7 inches)"), QPrinter::A4);
+	  FormatRegister(QT_TR_NOOP("A4 (211 x 297 mm, 8.26 x 11.7 inches)"), QPrinter::A4);
 	  FormatRegister(QT_TR_NOOP("A0 (841 x 1189 mm)"), QPrinter::A0);
     FormatRegister(QT_TR_NOOP("A1 (594 x 841 mm)"), QPrinter::A1);
     FormatRegister(QT_TR_NOOP("A2 (420 x 594 mm)"), QPrinter::A2);
@@ -91,11 +89,11 @@ ApiSession::ApiSession()
     
     
     
-    current_Page_Format = history_page_norms[1];
     
     
-    qDebug() << "### current format faktor name " << current_Page_Format.faktor() << "-" << current_Page_Format.HName();
-    qDebug() << "### current format margin hash" << current_Page_Format.body << "-" << current_Page_Format.hashmodel();
+    /* other mesure size go to file and append here on load */
+    
+    //////LoadFontDir(QDir::currentPath()); 
     
 }
 
@@ -105,24 +103,16 @@ void ApiSession::FormatRegister( const QString txt , QPrinter::PageSize pp )
 {
 	   M_PageSize Lxx;
 	              Lxx.Register(txt,pp,false);
-       if (Lxx.body.name == 1 ) {
 	   history_page_norms.insert(history_page_norms.size() + 1,Lxx);
-        //////////qDebug() << "###register " << txt << "-" << Lxx.hashmodel();
-       }
   
 	   M_PageSize Pxx;
 	              Pxx.Register(txt,pp,true);
-       if (Pxx.body.name == 1 ) {
 	   history_page_norms.insert(history_page_norms.size() + 1,Pxx);
-        ////////////qDebug() << "###register " << txt << "-" << Pxx.hashmodel();
-       }
 }
 
 void ApiSession::AppendPaper( M_PageSize cur )
 {
-    if (cur.body.name == 1 ) {
-     history_page_norms.insert(history_page_norms.size() + 1,cur);   
-    }
+  history_page_norms.insert(history_page_norms.size() + 1,cur);
 }
 
 
@@ -191,15 +181,8 @@ void ApiSession::SaveMimeTmp()
     
 }
 
-void ApiSession::ensureImageDoc( QTextDocument * doc  ) 
-{
-    QMapIterator<QString,SPics> o(ImagePageList);
-					while (o.hasNext()) {
-                     o.next();
-                     SPics img = o.value();
-                     doc->addResource( QTextDocument::ImageResource,QUrl(o.key()),img.pix());
-                   }
-}
+
+
 
 void ApiSession::Set_Translate_File( const QString file ) 
 { 

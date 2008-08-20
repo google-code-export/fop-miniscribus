@@ -31,8 +31,8 @@ static const int BookMarkInternalID = 23465;
 
 
 
-void drawPageShadow( QPainter * painter , const int index , M_PageSize  e );
-void drawPageGround( QPainter * painter , const int index , M_PageSize  e );
+
+
 
 
 class TextProcessor : public QObject
@@ -268,7 +268,7 @@ public:
   void setDocument ( const QTextDocument * document , FileHandlerType Type = FOP );
   inline M_PageSize  Model() const { return PAGE_MODEL; }
   void paint(QPainter * painter , const QStyleOptionGraphicsItem *option , QWidget *widget   );
-  void formatDoc( M_PageSize e );
+  void SwapPageModel( M_PageSize e );
   bool AllowedPosition( const QPointF inpos );
   QRectF GroupboundingRect();
   QRectF boundingRect();
@@ -276,11 +276,11 @@ public:
   QPointF PageIndexTopLeft( const int index  );
   M_PageSize PAGE_MODEL;
 private:
-  uint pageChangeTime;
-  int PageTotal;
+  
+
 private slots:
   void SessionUserInput( int position = 0 , int charsRemoved = 0, int charsAdded  = 0);
-  //////////void PageUpdate();
+  void PageUpdate();
   void ParaBlockPageBreackPolicyInsert();
 
 
