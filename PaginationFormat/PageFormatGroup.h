@@ -28,19 +28,27 @@ public:
   {
     return QVariant::fromValue(*this);
   }
+  QString hash() const;
   /* same margin to all */
   void toAll( const qreal unique );
   QColor bg; /* background color */
   QColor bog; /* border color */
-  int name;
   qreal margin_top;
   qreal margin_bottom;
   qreal margin_left;
   qreal margin_right;
   qreal border;
+  QPen rpen;
   bool enable;
   QByteArray edom;   /* dome element*/
 };
+
+/*
+
+QPen::QPen ( const QBrush & brush, qreal width, Qt::PenStyle style = Qt::SolidLine, Qt::PenCapStyle cap = Qt::SquareCap, Qt::PenJoinStyle join = Qt::BevelJoin )
+
+
+*/
 
 
 Q_DECLARE_METATYPE(FoRegion);
@@ -48,8 +56,8 @@ Q_DECLARE_METATYPE(FoRegion);
 
 inline QDebug operator<<(QDebug debug, FoRegion& udoc)
 {
-    debug.nospace() << "FoRegion(name."
-    << udoc.name << ",top()"
+    debug.nospace() << "FoRegion(Enable."
+    << udoc.enable << ",top()"
     << udoc.margin_top << ",bottom()"
     << udoc.margin_bottom << ",right()"
     << udoc.margin_right << ",left()"
@@ -122,12 +130,27 @@ public:
     
     void ReportPage( QDomElement e );
     
+    enum { region = 4 };  
+   //////// FoRegion area[region];
+    
+    //////inline int header() { return 0; }
+    //////inline int footer() { return 1; }
+    //////inline int start() { return 2; }
+    /////////inline int end() { return 3; }
+    
+    FoRegion area[region];
+    FoRegion region_before() const { return area[0]; }
+    FoRegion region_after() const { return area[1]; }
+    FoRegion region_start() const  { return area[2]; }
+    FoRegion region_end()  const { return area[3]; }
+    
     /* open or set a qtexdocument from this */
     QTextDocument *nulldoc( QString htm );
     /* form qtexdocument to this margin an papersize */
     void HandlePrint( QTextDocument *doc );
     
-    
+     
+    /*  | region-before = header 0 |  region-after = footer 1 | region-start = left  2 |> region-end = right  3 >*/
     
     QPrinter::PageSize P_rect;
     QRectF G_regt;
