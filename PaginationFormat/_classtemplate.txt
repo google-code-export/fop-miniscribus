@@ -1,0 +1,34 @@
+#ifndef BaseFORMAT_H
+#define BaseFORMAT_H
+
+#endif
+
+#include "Base.h"
+
+/*  search & replace */
+
+class Base
+{
+  public:
+    // Constructors & Destructors
+    Base(void);
+    Base(const Base& copy);
+    virtual ~Base(void);
+
+    // Operator overloading
+    Base& operator = (const Base& other);
+    int operator == (const Base& other) const;
+
+    // Output
+    friend ostream& operator << (ostream& os, const Base& other);
+};
+
+Base::Base()
+{
+
+}
+
+Base::~Base()
+{
+
+}
