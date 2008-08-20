@@ -227,26 +227,6 @@ public:
         const qreal spacepage = index * InterSpace;
         return QPointF(P_margin.height(),fromTopY + spacepage + FooterHeaderPadding);
     }
-    
-    inline QByteArray hashmodel() const
-    {
-        QByteArray unique("Hash-PageFormat:");
-        const QString header = QString("%1|%2|%3|%4|").arg(name).arg(G_regt.width())
-                               .arg(G_regt.height()).arg(modus);
-        const QString margin = QString("%1|%2|%3|%4").arg(body.margin_top).arg(body.margin_bottom)
-                               .arg(body.margin_right).arg(body.margin_left);
-         QString  position = "Portrait";
-         if (landscape) {
-             position = "Landscape";
-         }
-         unique.append(position);
-         unique.append(header);
-         unique.append(margin);
-         QCryptographicHash enmd5( QCryptographicHash::Sha1 );
-         enmd5.addData ( unique );
-         const QByteArray chunkha = enmd5.result();
-         return chunkha.toHex();
-    }
 
     inline QPointF FooterInitPoints( const int index = 0 )
     {
@@ -284,10 +264,6 @@ public:
     void SetMargin( QRectF rectp )
     {
         P_margin = rectp;
-    }
-    QRectF pageBoundingRect() 
-    {
-        return G_regt;
     }
     QRectF BoundingPageSumme( const int summe );
 
