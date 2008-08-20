@@ -295,7 +295,7 @@ bool Fo_Reader::FoLeaderPaint( const QDomElement e  , QTextCursor Cursor )
         AllowtoBreack(e)) {
       /* breack line br check line hight ???? */
        Cursor.setBlockFormat(DefaultMargin());
-       Cursor.insertText("",DefaultCharFormats());
+       Cursor.insertText(" ",DefaultCharFormats());
        Cursor.setCharFormat ( DefaultCharFormats() );
        Cursor.endEditBlock();
        Cursor.atBlockEnd();
