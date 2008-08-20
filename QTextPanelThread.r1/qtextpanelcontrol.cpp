@@ -10,6 +10,57 @@ static QRectF boundingRectOfFrame(const QTextCursor &cursor)
 	return frame->document()->documentLayout()->frameBoundingRect(frame);
 }
 
+
+static void drawPageShadow( QPainter * painter , const int index , PanelPageSize  e )
+{
+    const QRectF pagen =  e.PageExternal(index);
+    painter->save();
+    QRectF rightShadow(pagen.right(), pagen.top() + BorderShadow, BorderShadow, pagen.height());
+    QRectF bottomShadow(pagen.left() + BorderShadow, pagen.bottom(), pagen.width(), BorderShadow);
+    painter->fillRect(rightShadow, Qt::darkGray);
+    painter->fillRect(bottomShadow, Qt::darkGray);
+    painter->restore();
+}
+
+
+static void drawPageGround( QPainter * painter , const int index , PanelPageSize  e )
+{
+    const QRectF pagen =  e.PageExternal(index);
+    painter->save();
+    painter->setBrush(QColor(Qt::white));
+    painter->setPen(QPen(Qt::black,0.3));
+    painter->drawRect(pagen);
+    painter->restore();
+}
+
+
+QMap<QString,QVariant> loadResourceImage( const QTextDocument *doc )
+{
+    QMap<QString,QVariant> imagelist;
+    QVector<QTextFormat> iter = doc->allFormats();
+         for (int i = 0; i < iter.size(); ++i) {
+             QTextFormat pline = iter.at(i);
+             if (pline.isImageFormat() ) {
+                 QTextImageFormat ipic = pline.toImageFormat();
+                 /////////////qDebug() << "### ipic  ->" << ipic.name();
+                 const QVariant xx = doc->resource(QTextDocument::ImageResource,QUrl(ipic.name()));
+                 if (!xx.isNull()) {
+                     imagelist.insert(ipic.name(),xx);
+                     /////QImage qi = xx.value<QImage>();
+                     //////QPixmap qp = xx.value<QPixmap>();
+                 }                     
+             }  
+         }
+   return imagelist;
+}
+
+
+
+
+
+
+
+
 /* contains link on block */
 static bool HavingLink(const QTextBlock para)
 {
@@ -1661,8 +1712,8 @@ QMimeData *QTextPanelControl::createMimeDataFromSelection()
 		QVariant xx = pico.property(_IMAGE_PICS_ITEM_);
 		if (!xx.isNull())
 		{
-			SPics pic = xx.value<SPics>();
-			QList<SPics> li;
+			TPics pic = xx.value<TPics>();
+			QList<TPics> li;
 			li.append(pic);
 			QString Sdd = SaveImageGroup(li);
 			QMimeData *mimeData = new QMimeData;
@@ -1725,10 +1776,10 @@ void QTextPanelControl::InsertMimeDataOnCursor(const QMimeData *md)
 	if (md->hasFormat(QLatin1String("application/x-picslists")))
 	{
 		QByteArray dd = md->data("application/x-picslists");
-		QList<SPics> li = OpenImageGroup(QString(dd));
+		QList<TPics> li = OpenImageGroup(QString(dd));
 		for (int i=0; i<li.size(); i++)
 		{
-			SPics conni = li[i];
+			TPics conni = li[i];
 			RegisterImage(conni,true);
 		}
 		controlTextCursor.clearSelection();
@@ -1851,7 +1902,7 @@ void QTextPanelControl::insertPixmap(QPixmap p)
 	if (!scaledsimage.isNull())
 	{
 		const QString nami = imageName(TimestampsMs);
-		SPics  xpix;
+		TPics  xpix;
 		xpix.name = nami;
 		if (_DRAWMODUS_WEB_ == 1)
 		{
@@ -1867,10 +1918,10 @@ void QTextPanelControl::insertPixmap(QPixmap p)
 	}
 }
 
-void  QTextPanelControl::RegisterImage(SPics e , bool insert)
+void  QTextPanelControl::RegisterImage(TPics e , bool insert)
 {
 	QApplication::restoreOverrideCursor();
-	SPics base;
+	TPics base;
 
 	bool ok;
 	if (e.info == base.info)
@@ -2008,7 +2059,7 @@ void  QTextPanelControl::ImageonCursor(const QString file)
 	if (!scaledsimage.isNull())
 	{
 		const QString nami = imageName(fixurl.baseName());
-		SPics  xpix;
+		TPics  xpix;
 		xpix.name = nami;
 		if (_DRAWMODUS_WEB_ == 1)
 		{
@@ -2173,9 +2224,7 @@ ScribePage::ScribePage(PanelPageSize e) : QTextPanelControl(PAGES)
 {
 	PageTotal = 1;
 	_d = new QTextDocument();
-	///////dummy->setHtml("<p></p>");    /////  ReadFile("a.html")
-	/////////setDocument(dummy,FOP);
-	SwapPageModel(e);
+	SwapPageModel(e,true);
 }
 
 
@@ -2255,15 +2304,7 @@ void ScribePage::DrawPage(const int index  , QPainter * painter )
 	CTX.palette.setColor(QPalette::Text, Qt::black);
 	const QRectF body = QRectF(0, topleft.y() ,Page_Edit_Rect.width(),Page_Edit_Rect.height()); /* on view */
 	QRectF view(0, index * body.height(), body.width(), body.height());    /* on doc */
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    drawPageGround(painter,index,Model());
     
 	if (!Edit_On())
 	{
@@ -2350,9 +2391,7 @@ void ScribePage::DrawPage(const int index  , QPainter * painter )
 
 QPointF ScribePage::PageIndexTopLeft(const int index)
 {
-	const qreal fromTopY = index * Page_Edit_Rect.height();
-	const qreal spacepage = index * InterSpace;
-	return QPointF(0,fromTopY + spacepage);
+	return Model().PageIndexTopLeft(index);
 }
 
 /*
@@ -2386,6 +2425,7 @@ QRectF ScribePage::boundingRect()
 	if (PageTotal != page)
 	{
 		PageTotal = page;
+        startCache();
 
 		for (int i = OnPageClick; i < _d->pageCount(); ++i)
 		{
@@ -2404,7 +2444,7 @@ QRectF ScribePage::GroupboundingRect()
 	return QRectF(0,0,onlypage.width() + BorderShadow,onlypage.height() + BorderShadow);
 }
 
-void ScribePage::SwapPageModel(PanelPageSize e)
+void ScribePage::SwapPageModel(PanelPageSize e , bool firstime )
 {
 	QTextPanelData::instance()->SetPageFormat(e);
 	PAGE_MODEL = e;
@@ -2424,6 +2464,9 @@ void ScribePage::SwapPageModel(PanelPageSize e)
 	Q_ASSERT(_d->pageSize().isValid());
 	(void)_d->documentLayout(); /* reform margin wake up */
 	PageTotal = _d->pageCount();
+    if (!firstime) {
+    startCache();
+    }
 	q_update(boundingRect().toRect());
 }
 
@@ -2455,7 +2498,7 @@ void ScribePage::setDocument(const QTextDocument * document , FileHandlerType Ty
 	}
 	_d->setUndoRedoEnabled(false);
 	PanelPageSize DefaultSizeDoc;
-	SwapPageModel(DefaultSizeDoc);
+	SwapPageModel(DefaultSizeDoc,true);
 	PageTotal = _d->pageCount();
 	Q_ASSERT(PageTotal > 0);
 	controlTextCursor = QTextCursor(_d);
@@ -2487,13 +2530,22 @@ void ScribePage::setCacheDocument(const QTextDocument * document )
 
 void ScribePage::startCache()
 {
+    if (!allPageCache.isNull()) {
+    allPageCache = QImage();
+    /* remove before next paint grab */
+    }
+    
     /*  from running theard is ok */
-    CachePainter *djob = new CachePainter(this,Model(),_d->clone());
-    djob->start (QThread::HighPriority);
+    ////////this,Model(),_d->clone()
+    
+    QRichPage streamDoc;
+    streamDoc.load(_d,Model());
+    cacheJob = new CachePainter(streamDoc);
+    cacheJob->start (QThread::HighPriority);
     qRegisterMetaType<PanelPageSize>("PanelPageSize");
     qRegisterMetaType<QPicture>("QPicture");
-    connect(djob, SIGNAL(cgenerator(QPicture)), this, SLOT(docCache(QPicture)));
-    connect(djob, SIGNAL(cstatus(int,int)), this, SLOT(cstatus(int,int)));
+    connect(cacheJob, SIGNAL(cgenerator(QImage)), this, SLOT(docCache(QImage)));
+    connect(cacheJob, SIGNAL(cstatus(int,int)), this, SLOT(cstatus(int,int)));
     
 }
 
@@ -2503,9 +2555,14 @@ void ScribePage::cstatus( const int currentdraw , const int tot )
     qDebug() << "### page draw ->   " << currentdraw << "/" << tot;
 }
 
-void ScribePage::docCache( QPicture img )
+void ScribePage::docCache( QImage img )
 {
+    if (!img.isNull()) {
     allPageCache = img;
+    }
+    if (cacheJob) {
+    cacheJob = NULL;
+    }
     emit q_update_scene();
 }
 
@@ -3424,38 +3481,68 @@ ScribeParser::~ScribeParser()
 
 
 
-CachePainter::CachePainter( QObject *creator , PanelPageSize p ,  const QTextDocument * d  )
+CachePainter::CachePainter( QRichPage p )
   : QThread(0)
 {
-  page = p;  
-  receiver = creator;
-  doc = d->clone();
+  page = p;
   setTerminationEnabled(true);
 }
 
 ///////////////   24 32 
 void CachePainter::run()
 {
-    ScribePage *docj = new ScribePage(page);
     QTime st = QTime::currentTime();
-    docj->setCacheDocument(doc->clone());
-    qDebug() << "### create doc 1 ->" << st.msecsTo ( QTime::currentTime() );
-    const int pageCount = qBound(1,docj->document()->pageCount(),MaximumPages);
-    /* rect fromm all pages + shadow  */
-    const QRectF grect = docj->GroupboundingRect();
-    QPicture img;
+	QTextOption opt;
+	opt.setUseDesignMetrics(true);
+	opt.setTabStop(8);
+	opt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    
+    QTextDocument *doc = new QTextDocument;
+    doc->setHtml ( QString(page.html) );
+    page.imageToDoc(doc);
+	doc->setDefaultTextOption(opt);
+	page.model.HandlePrint(doc); /* set page format margin  */
+	doc->setUseDesignMetrics(true);
+	qreal Page_Width = page.model.G_regt.width();
+	qreal Page_Height = page.model.G_regt.height();
+	doc->setPageSize(QSizeF(Page_Width,Page_Height));
+	(void)doc->documentLayout(); /* reform margin wake up */
+	const int pageCount = qBound(1,doc->pageCount(),MaximumPages);
+    qDebug() << "### create doc a ->" << st.msecsTo ( QTime::currentTime() );
+    const qreal spacer = pageCount + ((pageCount - 1) * InterSpace);
+    const qreal pagesummhi = pageCount * Page_Height;
+    const QRectF grect(0,0,Page_Width,pagesummhi + spacer);
+    const int hi = grect.height() + 100;
+    const int wi = Page_Width + 100;
+    QImage img(wi,hi,QImage::Format_ARGB32 );
+    img.fill(QColor(Qt::lightGray).rgb());
     QPainter painter(&img);
     painter.setRenderHint(QPainter::TextAntialiasing);
-    painter.setPen(Qt::NoPen);
-	painter.setBrush(Qt::lightGray);
-	painter.drawRect(grect);
+    
+    
+    ///////QAbstractTextDocumentLayout::PaintContext CTX;
+    //////CTX.cursorPosition = -1;
+    ////CTX.palette.setColor(QPalette::Text, Qt::black);
+    
+    
     for (int x = 0; x < pageCount; ++x)  {
-        emit cstatus(x+1,pageCount);
-        qDebug() << "### pagei  ->" << x;
-        docj->paintPage(x,&painter,false);
+        const QRectF pagen =  page.model.PageExternal(x);
+        const QPointF topleft = page.model.PageIndexTopLeft(x);
+        drawPageGround(&painter,x,page.model);
+	    /////////////const QRectF body = QRectF(0, topleft.y() ,Page_Width,Page_Height); /* on view */
+	    //////////QRectF view(0, x * body.height(), body.width(), body.height());
+        ////////////painter.save();
+        /* printer not translate ??? */
+		//////painter.translate(body.left(), body.top() - x * body.height());
+		/////////painter.setClipRect(view);
+		////////CTX.clip = view;
+		//////////////doc->documentLayout()->draw(&painter,CTX);
+		/////////////painter.restore(); 
+        drawPageShadow(&painter,x,page.model);        
     }
     painter.end();
-    qDebug() << "### create doc 2 ->" << st.msecsTo ( QTime::currentTime() );
+    qDebug() << "### create doc b ->" << st.msecsTo ( QTime::currentTime() );
+    qDebug() << "###  must go false ->" << img.isNull();
     emit cgenerator(img);
     exit();
 }

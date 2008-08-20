@@ -1,23 +1,23 @@
 #include "qtextpanelimage.h"
 
-#include "qtextpanelmime.h"
 
 
-SPics::~SPics()
+
+TPics::~TPics()
 {
   ////////delete &data;
 }
 
 
 
-SPics::SPics()
+TPics::TPics()
 {
 	name = "error";
 	info = "Image Description to blind people";
 	extension = QByteArray("PNG");
 }
 
-SPics& SPics::operator=(const SPics& d)
+TPics& TPics::operator=(const TPics& d)
 {
 	name = d.name;
 	info = d.info;
@@ -26,7 +26,7 @@ SPics& SPics::operator=(const SPics& d)
 	return *this;
 }
 /* md5 hash from data byte ? */
-bool SPics::operator!=(const SPics& d)
+bool TPics::operator!=(const TPics& d)
 {
 	if (name != d.name)
 	{
@@ -38,14 +38,14 @@ bool SPics::operator!=(const SPics& d)
 	}
 }
 
-QUrl SPics::indoc()
+QUrl TPics::indoc()
 {
 	const int grep = name.size() -  name.indexOf(".");
 	QString webname = name.left(grep);
 	return QUrl(QString("./%1.%2").arg(name).arg(QString(extension.data()).toLower()));
 }
 
-void SPics::set_pics(QPixmap barcode)
+void TPics::set_pics(QPixmap barcode)
 {
 	if (barcode.isNull())
 	{
@@ -59,7 +59,7 @@ void SPics::set_pics(QPixmap barcode)
     data = bytes;
 }
 
-void SPics::set_pics(const QPixmap * barcode)
+void TPics::set_pics(const QPixmap * barcode)
 {
 	if (barcode->isNull())
 	{
@@ -73,7 +73,7 @@ void SPics::set_pics(const QPixmap * barcode)
     data = bytes;
 }
 
-void SPics::set_pics( QImage barcode )
+void TPics::set_pics( QImage barcode )
 {
 	if (barcode.isNull())
 	{
@@ -90,7 +90,7 @@ void SPics::set_pics( QImage barcode )
 
 
 
-void SPics::SavePixThread(QString dir)
+void TPics::SavePixThread(QString dir)
 {
 	QString fullpath = dir + FileName();
 	QFile f(fullpath);
@@ -102,12 +102,12 @@ void SPics::SavePixThread(QString dir)
 
 }
 
-QString SPics::FileName()
+QString TPics::FileName()
 {
 	return imageName(name) + "." + QString(extension.data()).toLower();
 }
 
-QPixmap SPics::pix()
+QPixmap TPics::pix()
 {
 	if (data.size() < 1)
 	{
@@ -123,7 +123,7 @@ QPixmap SPics::pix()
 	return resultimage;
 }
 
-QPixmap SPics::erno_pix()
+QPixmap TPics::erno_pix()
 {
 
 	QPixmap pError = QPixmap(20, 20);
@@ -135,7 +135,7 @@ QPixmap SPics::erno_pix()
 	return pError;
 }
 
-QString SPics::web()
+QString TPics::web()
 {
 	QString flusches;
 	if (data.size() < 1)
@@ -150,7 +150,7 @@ QString SPics::web()
 
 
 
-QString SaveImageGroup(QList<SPics> li)
+QString SaveImageGroup(QList<TPics> li)
 {
 	if (li.size() < 1)
 	{
@@ -165,13 +165,13 @@ QString SaveImageGroup(QList<SPics> li)
 	QDataStream ds(&buffer);
 	/* place header */
 	ds.setVersion(QDataStream::Qt_4_2);
-	ds << (quint32)SPics::MAGICNUMBER;
-	ds << (quint32)SPics::VERSION;
+	ds << (quint32)TPics::MAGICNUMBER;
+	ds << (quint32)TPics::VERSION;
 	/* place header */
 	///////QApplication::setOverrideCursor(Qt::WaitCursor);
 	for (int i=0; i<li.size(); i++)
 	{
-		SPics conni = li[i];
+		TPics conni = li[i];
 		ds << conni;
 	}
 	//////QApplication::restoreOverrideCursor();
@@ -182,11 +182,11 @@ QString SaveImageGroup(QList<SPics> li)
 
 
 /* decoded base64 stream to put on mysql row , file or network streams */
-QList<SPics> OpenImageGroup(const QString datastream_base64)
+QList<TPics> OpenImageGroup(const QString datastream_base64)
 {
 
 
-	QList<SPics> li;
+	QList<TPics> li;
 	QByteArray xcode("");
 	xcode.append(datastream_base64);
 	quint32 magic, version;
@@ -200,20 +200,20 @@ QList<SPics> OpenImageGroup(const QString datastream_base64)
 	/* place header */
 	ds.setVersion(QDataStream::Qt_4_2);
 	ds >> magic;
-	if ((quint32)SPics::MAGICNUMBER != magic)
+	if ((quint32)TPics::MAGICNUMBER != magic)
 	{
-		qDebug() << "######## SPics::MAGICNUMBER not ok  ";
+		qDebug() << "######## TPics::MAGICNUMBER not ok  ";
 		buffer.close();
 		return li;
 	}
 	ds >> version;
-	if ((quint32)SPics::VERSION != version)
+	if ((quint32)TPics::VERSION != version)
 	{
-		qDebug() << "######## SPics::VERSION not ok  ";
+		qDebug() << "######## TPics::VERSION not ok  ";
 		buffer.close();
 		return li;
 	}
-	SPics appoint;
+	TPics appoint;
 	/* place header */
 	while (!ds.atEnd())
 	{
@@ -251,11 +251,11 @@ QString SaveRichDoc(RichDoc e)
 	/* place header */
 	ds << e.html;
 	ds << e.style;
-	QMapIterator<QString,SPics> i(e.resource);
+	QMapIterator<QString,TPics> i(e.resource);
 	while (i.hasNext())
 	{
 		i.next();
-		SPics record = i.value();
+		TPics record = i.value();
 		ds << record;
 	}
 	buffer.close();
@@ -299,7 +299,7 @@ RichDoc OpenRichDoc(const QString datastream_base64)
 	ds >> s;
 	li.style = s;
 	li.html = h;
-	SPics appoint;
+	TPics appoint;
 	while (!ds.atEnd())
 	{
 		ds >> appoint;

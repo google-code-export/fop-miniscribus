@@ -1068,10 +1068,10 @@ QPixmap ImagefromMime(const QMimeData *mime)
 	if (dli.contains("application/x-picslists"))
 	{
 		QByteArray dd = mime->data("application/x-picslists");
-		QList<SPics> li = OpenImageGroup(QString(dd.data()));
+		QList<TPics> li = OpenImageGroup(QString(dd.data()));
 		if (li.size() > 0)
 		{
-			SPics primoi = li.first();
+			TPics primoi = li.first();
 			return primoi.pix();
 		}
 
@@ -1084,10 +1084,10 @@ QPixmap ImagefromMime(const QMimeData *mime)
 		QTextDocument *picdoc = new QTextDocument();
 		picdoc->setHtml(QString(dd.data()));
 		/*
-		           QMapIterator<QString,SPics> i(imglist());
+		           QMapIterator<QString,TPics> i(imglist());
 		               while (i.hasNext()) {
 		                   i.next();
-		           SPics e  = i.value();
+		           TPics e  = i.value();
 		             picdoc->addResource(QTextDocument::ImageResource,QUrl(e.name),e.pix());
 		       }
 		*/
