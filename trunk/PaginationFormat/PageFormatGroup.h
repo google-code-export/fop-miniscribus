@@ -116,6 +116,16 @@ public:
         const qreal InnHightDoc = G_regt.height() - body.margin_top  - body.margin_bottom;
         return QRectF(body.margin_left,body.margin_top,LargeDoc,InnHightDoc);
     }
+    
+    QRectF headerRect()   /* page 0 */
+    {
+        return QRectF(0,0,width() + body.margin_right + body.margin_left ,body.margin_top);
+    }
+    
+    QRectF footerRect()   /* page 0 */
+    {
+        return QRectF(0,0,width() + body.margin_right + body.margin_left ,body.margin_bottom);
+    }
 
     /* internal rect whitout margin */
     QRectF PageInternal( const int index = 0 );
