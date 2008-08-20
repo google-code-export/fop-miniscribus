@@ -31,6 +31,7 @@ public:
   QString hash() const;
   /* same margin to all */
   void toAll( const qreal unique );
+  QMap<QString,QPen> penstyle();  /* return avaiable pen */
   QColor bg; /* background color */
   QColor bog; /* border color */
   qreal margin_top;

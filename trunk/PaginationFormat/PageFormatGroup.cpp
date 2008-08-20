@@ -32,6 +32,21 @@ FoRegion::FoRegion()
 }
 
 
+QMap<QString,QPen> FoRegion::penstyle()
+{
+    QMap<QString,QPen> plist;
+         plist.insert( QString("0.0mm empty border") ,QPen(Qt::NoPen));
+        plist.insert( QString("0.5mm solid") ,QPen(Qt::black,MM_TO_POINT(0.5),Qt::SolidLine));
+        plist.insert( QString("0.5mm dotline") ,QPen(Qt::black,MM_TO_POINT(0.5),Qt::DotLine));
+    for (int i = 1; i < 9; ++i)  {
+        plist.insert( QString("%1mm solid").arg(i) ,QPen(Qt::black,MM_TO_POINT(i),Qt::SolidLine));
+        plist.insert( QString("%1mm dotline").arg(i) ,QPen(Qt::black,MM_TO_POINT(i),Qt::DotLine));
+        plist.insert( QString("%1mm dashline").arg(i) ,QPen(Qt::black,MM_TO_POINT(i),Qt::DashLine));
+    }
+   return plist;
+}
+
+
 QString FoRegion::hash() const
 {
         QByteArray unique("Hash-Forerin:");

@@ -16,6 +16,23 @@ QIcon createColorToolButtonIcon(const QString &imageFile,QColor color)
     return QIcon(pixmap);
 }
 
+QIcon createPenStyleIco( QPen item)
+{
+    QPixmap pixmap(60,25);
+    pixmap.fill(Qt::white);
+    QPainter painter(&pixmap);
+    QRect rr = pixmap.rect();
+    qreal fromtop = rr.center().y();
+    const qreal diffr = 0.5;
+    QLine penline(QPoint(0,fromtop + diffr ),QPoint(100,fromtop + diffr) );
+    painter.setPen ( item );
+    painter.drawLine ( penline );
+    painter.end();
+    return QIcon(pixmap);
+}
+
+
+
 QIcon createColorIcon( QColor color )
 {
     QPixmap pixmap(50, 50);
