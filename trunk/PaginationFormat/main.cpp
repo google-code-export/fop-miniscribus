@@ -5,16 +5,32 @@
 #include <QApplication>
 #include <QTextEdit>
 #include "FoColorName.h"
+#include "PageFormatDlg.h"
+#include "SessionManager.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+    
+    ApiSession *sx = ApiSession::instance();
+
+    
     QTextEdit t;
-    FopColor *fc = new FopColor();
+    t.show();
+    /////FopColor *fc = new FopColor();
     
     qDebug() << "### load color   ";
  
     
+
+    int rec = PageFormatDlg::self( 0 )->exec();
+    
+    if (rec == 1) {
+        qDebug() << "### responder   " << rec;
+    }
+
+    
+    /*
     QStringList items = fc->fopListColor();
     for (int i = 0; i < items.size(); ++i)  {
         const QString name = items.at(i);
@@ -28,10 +44,10 @@ int main(int argc, char *argv[])
         format.setToolTip(name);
         t.textCursor().insertImage( format );
     }
+    */
     
     
-    
-    t.show();
+    /////////t.show();
 	a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
 	return a.exec();
 }
