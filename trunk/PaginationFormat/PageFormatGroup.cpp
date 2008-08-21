@@ -24,10 +24,10 @@ FoRegion::FoRegion()
     margin_left = CM_TO_POINT(1.5);
     margin_right = CM_TO_POINT(1.5);
     bg = QColor(Qt::white);
-    bog = QColor(Qt::black);
+    bog = QColor(Qt::transparent);
     edom = QByteArray("<scribe/>");
     border = 0.;  /* border > 0 draw */
-    rpen = QPen(Qt::black,0.5,Qt::DotLine);
+    rpen = QPen(Qt::NoPen);
     enable = false;
 }
 

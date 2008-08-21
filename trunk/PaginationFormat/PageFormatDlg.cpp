@@ -39,6 +39,7 @@ PageFormatDlg::PageFormatDlg( QWidget* parent )
 	: QDialog( parent )
 {
 	 setupUi( this );
+     saveOriginal();  /* save the original session chain as undo if .... */
      doubleSpinBox->setDecimals(3);
      doubleSpinBox_2->setDecimals(3);
     
@@ -78,7 +79,7 @@ PageFormatDlg::PageFormatDlg( QWidget* parent )
     connect(yesheader_4, SIGNAL(clicked(bool)), this, SLOT(recalcAll()));
     connect(yesheader, SIGNAL(clicked(bool)), this, SLOT(recalcAll()));
     
-    
+    connect(pushButton_4, SIGNAL(clicked()),this, SLOT(restoreOriginal()));
     
     
     
@@ -104,8 +105,10 @@ PageFormatDlg::PageFormatDlg( QWidget* parent )
 void PageFormatDlg::recalcAll()
 {
     if (!allowUpdate) {
+      qDebug() << "### recalcAll working ......................................... ";
      return;
     }
+    allowUpdate = false;
     bool insertasnewone = false;
     ApiSession *sx = ApiSession::instance();
     qDebug() << "### recalcAll  ";
@@ -113,6 +116,13 @@ void PageFormatDlg::recalcAll()
      currentP.name = lineEdit->text();
      insertasnewone = true;
     }
+    
+    /*
+     QList<QComboBox*> cli;
+    cli << comboBox_14 << comboBox_2 << comboBox_4 << comboBox_5 << comboBox_16;
+    cli << comboBox_7 << comboBox_8 << comboBox_10 << comboBox_11 << comboBox_13 << comboBox_15;
+    */
+    
     
     
     currentP.body.margin_left = ToPoint(doubleSpinBox_3->value(),unit); ////left
@@ -134,6 +144,18 @@ void PageFormatDlg::recalcAll()
     
     */
     
+    ///////findeSetItemData(comboBox_14,e.body.bg);
+    ///////findeSetItemData(comboBox_15,e.body.bog);
+    //////findeSetItemData(comboBox_16,e.body.rpen);
+    
+    currentP.body.bg = currentItemData(comboBox_14).value<QColor>();
+    currentP.body.bog = currentItemData(comboBox_16).value<QColor>();
+    currentP.body.rpen = currentItemData(comboBox_15).value<QPen>();
+    
+    
+    //////const QPen cursor = box->itemData(i).value<QPen>();
+    
+    
     
     if ( yesheader->isChecked() ) {
     /* header before */
@@ -141,9 +163,10 @@ void PageFormatDlg::recalcAll()
     currentP.area[0].margin_right = ToPoint(doubleSpinBox_8->value(),unit); ////right
     currentP.area[0].margin_top = ToPoint(doubleSpinBox_9->value(),unit); ////top
     currentP.area[0].margin_bottom = ToPoint(doubleSpinBox_10->value(),unit);  /// bottom
-    currentP.area[0].bg = qvariant_cast<QColor>(currentItemData(comboBox_2));
+    currentP.area[0].bg = currentItemData(comboBox_2).value<QColor>();
     /* background color */
-    currentP.area[0].bog = qvariant_cast<QColor>(currentItemData(comboBox_4));
+    currentP.area[0].bog = currentItemData(comboBox_4).value<QColor>();
+    currentP.area[0].rpen = currentItemData(comboBox_3).value<QPen>();
     /* border color */
     }
     
@@ -153,10 +176,11 @@ void PageFormatDlg::recalcAll()
     currentP.area[1].margin_right = ToPoint(doubleSpinBox_12->value(),unit); ////right
     currentP.area[1].margin_top = ToPoint(doubleSpinBox_13->value(),unit); ////top
     currentP.area[1].margin_bottom = ToPoint(doubleSpinBox_14->value(),unit);  /// bottom
-    currentP.area[1].bg = qvariant_cast<QColor>(currentItemData(comboBox_5));
+    currentP.area[1].bg = currentItemData(comboBox_5).value<QColor>();
     /* background color */
-    currentP.area[1].bog = qvariant_cast<QColor>(currentItemData(comboBox_7));
+    currentP.area[1].bog = currentItemData(comboBox_7).value<QColor>();
     /* border color */
+    currentP.area[1].rpen = currentItemData(comboBox_6).value<QPen>();
     }
     
     if ( yesheader_3->isChecked() ) {
@@ -165,10 +189,11 @@ void PageFormatDlg::recalcAll()
     currentP.area[2].margin_right = ToPoint(doubleSpinBox_16->value(),unit); ////right
     currentP.area[2].margin_top = ToPoint(doubleSpinBox_17->value(),unit); ////top
     currentP.area[2].margin_bottom = ToPoint(doubleSpinBox_18->value(),unit);  /// bottom
-     currentP.area[2].bg = qvariant_cast<QColor>(currentItemData(comboBox_8));
+     currentP.area[2].bg = currentItemData(comboBox_8).value<QColor>();
     /* background color */
-    currentP.area[2].bog = qvariant_cast<QColor>(currentItemData(comboBox_10));
+    currentP.area[2].bog = currentItemData(comboBox_10).value<QColor>();
     /* border color */
+    currentP.area[2].rpen = currentItemData(comboBox_9).value<QPen>();
     }
     
     if ( yesheader_4->isChecked() ) {
@@ -177,10 +202,11 @@ void PageFormatDlg::recalcAll()
     currentP.area[3].margin_right = ToPoint(doubleSpinBox_20->value(),unit); ////right
     currentP.area[3].margin_top = ToPoint(doubleSpinBox_22->value(),unit); ////top
     currentP.area[3].margin_bottom = ToPoint(doubleSpinBox_23->value(),unit);  /// bottom
-     currentP.area[3].bg = qvariant_cast<QColor>(currentItemData(comboBox_11));
+     currentP.area[3].bg = currentItemData(comboBox_11).value<QColor>();
     /* background color */
-    currentP.area[3].bog = qvariant_cast<QColor>(currentItemData(comboBox_13));
+    currentP.area[3].bog = currentItemData(comboBox_13).value<QColor>();
     /* border color */
+    currentP.area[3].rpen = currentItemData(comboBox_12).value<QPen>();
     }
     
     
@@ -189,10 +215,6 @@ void PageFormatDlg::recalcAll()
     
     currentP.G_regt = QRectF(0,0,ToPoint(doubleSpinBox->value(),unit),ToPoint(doubleSpinBox_2->value(),unit));
     currentP.RealSize = currentP.G_regt.size();
-    
-    
-    currentP.body.bg = qvariant_cast<QColor>(currentItemData(comboBox_14));
-    currentP.body.bog = qvariant_cast<QColor>(currentItemData(comboBox_16));
     
      ////////doubleSpinBox->setMaximum(maxpageavaiablepaper);   /* largo*/
     ////////////doubleSpinBox_2->setMaximum(maxpageavaiablepaper);  /* alto */
@@ -206,6 +228,15 @@ void PageFormatDlg::recalcAll()
      currentP.landscape = true;
         
     }
+    
+    const QColor bordercolor = currentItemData(comboBox_16).value<QColor>();
+    
+    qDebug() << "### save border color rgba"  << bordercolor.rgba();
+    
+    
+    currentP.body.bg = currentItemData(comboBox_14).value<QColor>();
+    currentP.body.bog = bordercolor;
+    currentP.body.rpen = currentItemData(comboBox_15).value<QPen>();
     
     sx->SetPageFormat(currentP);
     if (insertasnewone) {
@@ -224,6 +255,7 @@ void PageFormatDlg::recalcAll()
     }
     /* check if exist if not insert on chain */
     DrawPageResult();
+    allowUpdate = true;
 }
 
 
@@ -244,6 +276,8 @@ void PageFormatDlg::insertItemColorBox( const QString txt , const QColor qcol )
 
 void  PageFormatDlg::fillColorBox()
 {
+    allowUpdate = false;
+    
     comboBox_14->clear();
     comboBox_2->clear();
     comboBox_4->clear();
@@ -254,13 +288,14 @@ void  PageFormatDlg::fillColorBox()
     comboBox_10->clear();
     comboBox_11->clear();
     comboBox_13->clear();
-    insertItemColorBox(tr("None Transparent"),QColor(Qt::white));
+    
     
     for (int i = 0; i < l_colors.size(); ++i)  {
         const QString col = l_colors.at(i);
         QColor current(fopC->foColor(col));
         insertItemColorBox(col,current);
     }
+    
     
     comboBox_3->clear();
     comboBox_6->clear();
@@ -296,12 +331,12 @@ void  PageFormatDlg::fillColorBox()
     comboBox_15->setIconSize ( QSize(60,25) );
     comboBox_9->setIconSize ( QSize(60,25) );
     comboBox_12->setIconSize ( QSize(60,25) );
-    
-    
-    
+    insertItemColorBox(tr("None Transparent"),QColor(Qt::transparent));
+         
+    allowUpdate = true;
 }
 
-
+  
 
 
 void PageFormatDlg::formatPageChange( const int index )
@@ -310,6 +345,15 @@ void PageFormatDlg::formatPageChange( const int index )
     return;
    }
    allowUpdate = false;
+   ///////////reset all combo a not comboBox color style .... 
+    QList<QComboBox*> cli;
+    cli << comboBox_14 << comboBox_2 << comboBox_4 << comboBox_5 << comboBox_16;
+    cli << comboBox_7 << comboBox_8 << comboBox_10 << comboBox_11 << comboBox_13 << comboBox_15;
+    for (int i = 0; i < cli.size(); ++i) {
+        cli[i]->setCurrentIndex(0);
+    }
+   
+   
    const int PaperNr = comboBox->itemData(index).toInt();
    ///////qDebug() << "### PaperSwap  " << index;
    ApiSession *sx = ApiSession::instance();
@@ -368,7 +412,32 @@ void PageFormatDlg::closeEvent( QCloseEvent* e )
 /* QDomDocument doc;*/ 
 /* QDomElement root;*/ 
 
+void PageFormatDlg::saveOriginal()
+{
+    original.clear();
+    ApiSession *sx = ApiSession::instance();
+    QMapIterator<int,M_PageSize> i(sx->mpages());
+         while (i.hasNext()) {
+             i.next();
+             M_PageSize current = i.value();
+             original.insert(i.key(),current);
+         }
+    
+}
 
+void PageFormatDlg::restoreOriginal()
+{
+    ApiSession *sx = ApiSession::instance();
+    QMapIterator<int,M_PageSize> i(original);
+         while (i.hasNext()) {
+             i.next();
+             M_PageSize current = i.value();
+             sx->coreSave(current);
+         }
+    /* check if new names */
+    saveOriginal();
+    fillFormat( original[1]  );  /* fill current top from original active */
+}
 
 
 
@@ -380,10 +449,12 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
      SessionBigerPaper = sx->maximumPage();
     
      lineEdit->setText( e.name );
+     findeSetItemData(comboBox_14,e.body.bg);
+     findeSetItemData(comboBox_16,e.body.bog);
+     findeSetItemPen(comboBox_15,e.body.rpen);
     
     
-    
-    
+    ///////////////original
      ///////M_PageSize fpage = sx->CurrentPageFormat();  /* user define or other */
      const QByteArray currentname = e.hashmodel();
      int posi = -1;
@@ -450,45 +521,62 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
 
 
 
-    if ( e.region_before().enable ) {
+    ///////////if ( e.region_before().enable ) {
     /* header before */
+        findeSetItemData(comboBox_2,currentP.area[0].bg);
+        findeSetItemData(comboBox_4,currentP.area[0].bog);
+        findeSetItemPen(comboBox_3,currentP.area[0].rpen);
+        
     ////currentP.area[0].bg = qvariant_cast<QColor>(currentItemData(comboBox_2));
     /////currentP.area[0].bog = qvariant_cast<QColor>(currentItemData(comboBox_4));
     doubleSpinBox_7->setValue ( ToUnit(currentP.region_before().margin_left,unit) ); ////left
     doubleSpinBox_8->setValue ( ToUnit(currentP.region_before().margin_right,unit) ); ////right
     doubleSpinBox_9->setValue ( ToUnit(currentP.region_before().margin_top,unit) ); ////top
     doubleSpinBox_10->setValue ( ToUnit(currentP.region_before().margin_bottom,unit) );  /// bottom
-    }
+    ////////////}
     
-    if ( e.region_after().enable ) {
+    /////////////if ( e.region_after().enable ) {
     /* footer after  */
+        findeSetItemData(comboBox_5,currentP.area[1].bg);
+        findeSetItemData(comboBox_7,currentP.area[1].bog);
+        findeSetItemPen(comboBox_6,currentP.area[1].rpen);
+        
     doubleSpinBox_11->setValue ( ToUnit(currentP.region_after().margin_left,unit) ); ////left
     doubleSpinBox_12->setValue ( ToUnit(currentP.region_after().margin_right,unit) ); ////right
     doubleSpinBox_13->setValue ( ToUnit(currentP.region_after().margin_top,unit) ); ////top
     doubleSpinBox_14->setValue ( ToUnit(currentP.region_after().margin_bottom,unit) );  /// bottom
     ///////currentP.area[1].bg = qvariant_cast<QColor>(currentItemData(comboBox_5));
     //////currentP.area[1].bog = qvariant_cast<QColor>(currentItemData(comboBox_7));
-    }
+    ////////////}
     
-    if ( e.region_start().enable ) {
+    /////////////if ( e.region_start().enable ) {
     /* region_start()   */
+        findeSetItemData(comboBox_8,currentP.area[2].bg);
+        findeSetItemData(comboBox_10,currentP.area[2].bog);
+        findeSetItemPen(comboBox_9,currentP.area[2].rpen);
+        
     doubleSpinBox_15->setValue ( ToUnit(currentP.region_start().margin_left,unit) ); ////left
     doubleSpinBox_16->setValue ( ToUnit(currentP.region_start().margin_right,unit) ); ////right
     doubleSpinBox_17->setValue ( ToUnit(currentP.region_start().margin_top,unit) ); ////top
     doubleSpinBox_18->setValue ( ToUnit(currentP.region_start().margin_bottom,unit) );  /// bottom
     /////currentP.area[2].bg = qvariant_cast<QColor>(currentItemData(comboBox_8));
     //////currentP.area[2].bog = qvariant_cast<QColor>(currentItemData(comboBox_10));
-    }
+    ///////////}
     
-    if ( e.region_end().enable ) {
+    //////////////if ( e.region_end().enable ) {
     /* region_end()   */
+        findeSetItemData(comboBox_11,currentP.area[3].bg);
+        findeSetItemData(comboBox_13,currentP.area[3].bog);
+        findeSetItemPen(comboBox_12,currentP.area[3].rpen);
+        
+        
     doubleSpinBox_19->setValue ( ToUnit(currentP.region_end().margin_left,unit) ); ////left
     doubleSpinBox_20->setValue ( ToUnit(currentP.region_end().margin_right,unit) ); ////right
     doubleSpinBox_21->setValue ( ToUnit(currentP.region_end().margin_top,unit) ); ////top
     doubleSpinBox_22->setValue ( ToUnit(currentP.region_end().margin_bottom,unit) );  /// bottom
     //////currentP.area[3].bg = qvariant_cast<QColor>(currentItemData(comboBox_11));
     ////currentP.area[3].bog = qvariant_cast<QColor>(currentItemData(comboBox_13));
-    }
+    ////////////////}
          
          
          
@@ -521,6 +609,9 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
     qreal maxpageavaiablepaper = sx->maximumPage();
     qreal PageLargo = ToUnit(rect.width(),unit);
     const qreal marginmax = PageLargo / 3;
+    
+    
+    
          
     doubleSpinBox_3->setValue ( ToUnit(e.body.margin_left,unit) ); ////left
     doubleSpinBox_5->setValue ( ToUnit(e.body.margin_right,unit) ); ////right
@@ -572,10 +663,14 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
     
     /* incomming data from */
          qDebug() << "### incomming name  "  << e.name;
+         qDebug() << "### body pen  "  << e.body.rpen;
          qDebug() << "### 0 "  << headera;
          qDebug() << "### 1 "  << hfoota;
          qDebug() << "### 2 "  << hstarta;
          qDebug() << "### 3 "  <<  henda;
+    
+    
+        qDebug() << "### body region  "  << e.body;
     
     allowUpdate = true;
 }
@@ -653,11 +748,31 @@ void PageFormatDlg::DrawPageResult()
     
     */
     
+    /* start rect */
+    if (yesheader_3->isChecked())  {
+    QRectF Tstart =  matrix.mapRect(currentP.startRect());
+    Tstart.moveTopLeft ( PageIconRect.topLeft() );
+    painter->setBrush(currentP.area[2].bg.rgba() != QColor(Qt::transparent).rgba() ? currentP.area[2].bg :  QColor("goldenrod") );
+    painter->setPen(QPen(Qt::black,0.3));
+    painter->drawRect(Tstart);
+    }
+    
+    
+    /* end rect */
+    if (yesheader_4->isChecked())  {
+    QRectF Tstart =  matrix.mapRect(currentP.endRect());
+    Tstart.moveTopRight( PageIconRect.topRight() );
+    painter->setBrush(currentP.area[3].bg.rgba() != QColor(Qt::transparent).rgba() ? currentP.area[3].bg :  QColor("goldenrod") );
+    painter->setPen(QPen(Qt::black,0.3));
+    painter->drawRect(Tstart);
+    }
+    
+    
     /* header rect */
     if (yesheader->isChecked())  {
     QRectF Theader =  matrix.mapRect(currentP.headerRect());
     Theader.moveTopLeft ( PageIconRect.topLeft() );
-    painter->setBrush(currentP.area[0].bg.name() != QColor(Qt::white).name() ? currentP.area[0].bg :  QColor("gold") );
+    painter->setBrush(currentP.area[0].bg.rgba() != QColor(Qt::transparent).rgba() ? currentP.area[0].bg :  QColor("gold") );
     painter->setPen(QPen(Qt::black,0.3));
     painter->drawRect(Theader);
     }
@@ -667,7 +782,7 @@ void PageFormatDlg::DrawPageResult()
     QRectF Tfooter =  matrix.mapRect(currentP.footerRect());
     Tfooter.moveBottomLeft ( PageIconRect.bottomLeft() );
     
-    painter->setBrush(currentP.area[1].bg.name() != QColor(Qt::white).name() ? currentP.area[1].bg :  QColor("gold") );
+    painter->setBrush(currentP.area[1].bg.rgba() != QColor(Qt::transparent).rgba() ? currentP.area[1].bg :  QColor("gold") );
     painter->setPen(QPen(Qt::black,0.3));
     painter->drawRect(Tfooter);
     }
@@ -676,9 +791,11 @@ void PageFormatDlg::DrawPageResult()
     
     QColor border_color_set =  currentP.body.bog;
     
+    qDebug() << "### border_color_set "  << border_color_set.rgba();
+    
     /* internal margin  page */
     painter->setBrush(currentP.body.bg);
-    if (border_color_set.name() == QColor(Qt::white).name()) {
+    if (border_color_set.rgba() == QColor(Qt::transparent).rgba()) {
     painter->setPen(QPen(Qt::black,0.3));
     } else {
     painter->setPen(QPen(border_color_set,0.3));
@@ -722,8 +839,50 @@ QVariant PageFormatDlg::currentItemData(QComboBox *Box)
  {
      return Box->itemData(Box->currentIndex());
  }
+ 
+ 
+void PageFormatDlg::findeSetItemData(QComboBox *box  , QVariant e )
+ {
+     
+     int const tot = box->count();
+     const QColor findcolor = e.value<QColor>();
+     int index = 0;
+     for (int i = 0; i < tot ; ++i)  {
+           const QColor cursor = box->itemData(i).value<QColor>();
+          if ( cursor.rgba() == findcolor.rgba() ) {
+              
+              //////////qDebug() << "###  pen  found -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_:-)"  << e.width();
+              
+              box->setCurrentIndex(i);
+              return;
+          } else {
+              //////qDebug() << "### pen ll "  << cursor.width();
+          }
+     }
+     box->setCurrentIndex(0);
+ }
 
-
+void PageFormatDlg::findeSetItemPen(QComboBox *box  , const QPen e )
+ {
+     ///////////qDebug() << "### search pen  "  << e.width();
+     
+     int const tot = box->count();
+     int index = 0;
+     for (int i = 0; i < tot ; ++i)  {
+           const QPen cursor = box->itemData(i).value<QPen>();
+          if ( cursor.width() == e.width() && e.style() == cursor.style()) {
+              
+              //////////qDebug() << "###  pen  found -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_:-)"  << e.width();
+              
+              box->setCurrentIndex(i);
+              return;
+          } else {
+              //////qDebug() << "### pen ll "  << cursor.width();
+          }
+     }
+     box->setCurrentIndex(0);
+      ////////////qDebug() << "### pen  not found .......................................... "  << e.width();
+ }
 
 
 
