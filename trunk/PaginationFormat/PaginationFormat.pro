@@ -26,6 +26,7 @@ contains(QT_CONFIG, opengl):QT += opengl
 # Input
 HEADERS += BasicFoConfig.h \
            config.h \
+           XML_Editor.h \
            SessionManager.h \
            FoColorName.h \
            PageFormatDlg.h \
@@ -34,6 +35,7 @@ FORMS += ui/pageformatdlg.ui
 SOURCES += BasicFoConfig.cpp \
            FoColorName.cpp \
            main.cpp \
+           XML_Editor.cpp \
            SessionManager.cpp \
            PageFormatDlg.cpp \
            PageFormatGroup.cpp

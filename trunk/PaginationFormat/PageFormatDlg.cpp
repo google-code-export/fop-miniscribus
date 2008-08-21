@@ -117,6 +117,8 @@ void PageFormatDlg::recalcAll()
      insertasnewone = true;
     }
     
+    
+    
     /*
      QList<QComboBox*> cli;
     cli << comboBox_14 << comboBox_2 << comboBox_4 << comboBox_5 << comboBox_16;
@@ -661,6 +663,8 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
     currentP = e;
     DrawPageResult();
     
+    /////QDomDocument  M_PageSize::fopMeta()
+    
     /* incomming data from */
          qDebug() << "### incomming name  "  << e.name;
          qDebug() << "### body pen  "  << e.body.rpen;
@@ -670,7 +674,7 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
          qDebug() << "### 3 "  <<  henda;
     
     
-        qDebug() << "### body region  "  << e.body;
+        qDebug() << "### body region  "  << e.fopMeta().toString( 1 );
     
     allowUpdate = true;
 }
@@ -680,6 +684,7 @@ void  PageFormatDlg::fillFormat( M_PageSize e  )
 void PageFormatDlg::DrawPageResult()
 {
     //// M_PageSize currentP 
+    xmledit->setPlainText( currentP.fopMeta().toString( 1 ) );
     qreal quadra = 1000 * 100;
     QList<QLabel*> wlist;
     wlist << preview << preview_6 << preview_2 << preview_3 << preview_4 << preview_5;
