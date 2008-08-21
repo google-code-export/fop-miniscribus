@@ -2,6 +2,8 @@
 #include "BasicFoConfig.h"
 #include "config.h"
 
+#include "FoColorName.h"
+
 /*
 
 Element:  	simple-page-master
@@ -442,10 +444,184 @@ QRectF M_PagesizeMake( QPrinter::PageSize psize , bool landscape)
 
 
 
+QDomDocument  M_PageSize::fopMeta()
+{
+    QDomDocument dom;
+    ////QString FopColor::foName( const QColor e )
+    FopColor hc = FopColor();   ////  hc.foName( const QColor e )
+    QDomProcessingInstruction header = dom.createProcessingInstruction( "xml",QString("version=\"1.0\" encoding=\"utf-8\"" ));
+	dom.appendChild( header );
+	//////QDateTime timer1( QDateTime::currentDateTime() );  /* time root */
+	QDomElement basexslforoot = dom.createElement("fo:root");
+                basexslforoot.setAttribute ("xmlns:fo","http://www.w3.org/1999/XSL/Format");
+                basexslforoot.setAttribute ("xmlns:svg","http://www.w3.org/2000/svg");
+                basexslforoot.setAttribute ("xmlns:cms","http://www.pulitzer.ch/2007/CMSFormat");
+                basexslforoot.setAttribute ("xmlns:fox","http://xmlgraphics.apache.org/fop/extensions");
+    dom.appendChild( basexslforoot );
+    
+    QDomElement layout = dom.createElement("fo:layout-master-set");
+    layout.setAttribute ("writing-mode","lr-tb");
+    layout.setAttribute ("master-name","scribe");
+	basexslforoot.appendChild( layout );
 
-
-
-
+	QDomElement pmaster = dom.createElement("fo:simple-page-master");
+    pmaster.setAttribute ("master-name","scribe");
+    pmaster.setAttribute ("page-width",metrics(pageBoundingRect().width()));
+    pmaster.setAttribute ("page-height",metrics(pageBoundingRect().height()));
+    layout.appendChild( pmaster );
+    
+    QDomElement rbody = dom.createElement("fo:region-body");
+	rbody.setAttribute ("region-name","xsl-region-body");
+    rbody.setAttribute ("background-color",hc.foName(body.bg));
+    rbody.setAttribute ("margin-top",metrics(body.margin_top));
+    rbody.setAttribute ("margin-bottom",metrics(body.margin_bottom));
+    rbody.setAttribute ("margin-left",metrics(body.margin_left));
+    rbody.setAttribute ("margin-right",metrics(body.margin_right));
+      
+    if ( body.rpen.widthF() > 0 ) {
+        /* make border */
+        ////rbody.setAttribute ("background-color",body.penString());
+    }
+    
+    
+	pmaster.appendChild( rbody );
+    
+    
+    /*
+    
+     //////inline int header() { return 0; }
+    //////inline int footer() { return 1; }
+    //////inline int start() { return 2; }
+    /////////inline int end() { return 3; }
+    
+    */
+    
+    
+    QDomElement rbefore = dom.createElement("fo:region-before");
+	rbefore.setAttribute ("region-name","xsl-region-before");
+    rbefore.setAttribute ("background-color",hc.foName(area[0].bg));
+    rbefore.setAttribute ("extent",metrics(body.margin_top));
+    
+    
+	pmaster.appendChild( rbefore );
+    
+    
+    /*
+    
+     pmaster.setAttribute ("margin-top",QString("%1pt").arg(body.margin_top));
+    pmaster.setAttribute ("margin-bottom",QString("%1pt").arg(body.margin_bottom));
+    pmaster.setAttribute ("margin-left",QString("%1pt").arg(body.margin_left));
+    pmaster.setAttribute ("margin-right",QString("%1pt").arg(body.margin_right));
+    
+    */
+    
+    
+    
+    
+    
+    
+    
+    QDomElement rafter = dom.createElement("fo:region-after");
+	rafter.setAttribute ("region-name","xsl-region-after");
+    rafter.setAttribute ("background-color",hc.foName(area[1].bg));
+    rafter.setAttribute ("extent",metrics(body.margin_bottom));
+	pmaster.appendChild( rafter );
+    
+    
+    QDomElement rstart = dom.createElement("fo:region-start");
+	rstart.setAttribute ("region-name","xsl-region-start");
+    rstart.setAttribute ("background-color",hc.foName(area[2].bg));
+    rstart.setAttribute ("extent",metrics(body.margin_left));
+	pmaster.appendChild( rstart );
+    
+    QDomElement rend = dom.createElement("fo:region-end");
+	rend.setAttribute ("region-name","xsl-region-end");
+    rend.setAttribute ("background-color",hc.foName(area[3].bg));
+    rend.setAttribute ("extent",metrics(body.margin_right));
+	pmaster.appendChild( rend );
+    
+    
+  	QDomElement pageseq1 = dom.createElement("fo:page-sequence");
+	pageseq1.setAttribute ("master-reference","scribe");
+	basexslforoot.appendChild( pageseq1 );
+    
+    QDomElement txt_1 = dom.createElement("fo:static-content");
+    txt_1.setAttribute ("flow-name","xsl-region-before");
+    QDomElement a_txt_1 = dom.createElement("fo:block-container");
+    txt_1.appendChild( a_txt_1 );
+    QDomElement b_txt_1 = dom.createElement("fo:block");
+    b_txt_1.setAttribute ("color",hc.foName(area[0].bg));
+    b_txt_1.appendChild( dom.createTextNode ( "." )  );
+    a_txt_1.appendChild( b_txt_1 );
+    b_txt_1.appendChild( dom.createComment(QString("Header region / xsl-region-before ")) );
+    pageseq1.appendChild( txt_1 );
+    
+    
+    QDomElement txt_2 = dom.createElement("fo:static-content");
+    txt_2.setAttribute ("flow-name","xsl-region-after");
+    QDomElement a_txt_2 = dom.createElement("fo:block-container");
+    txt_2.appendChild( a_txt_2 );
+    QDomElement b_txt_2 = dom.createElement("fo:block");
+    b_txt_2.setAttribute ("color",hc.foName(area[1].bg));
+    b_txt_2.appendChild( dom.createTextNode ( "." )  );
+    a_txt_2.appendChild( b_txt_2 );
+    b_txt_2.appendChild( dom.createComment(QString("Footer region / xsl-region-after ")) );
+    pageseq1.appendChild( txt_2 );
+    
+    
+    QDomElement txt_3 = dom.createElement("fo:static-content");
+    txt_3.setAttribute ("flow-name","xsl-region-start");
+    QDomElement a_txt_3 = dom.createElement("fo:block-container");
+    txt_3.appendChild( a_txt_3 );
+    QDomElement b_txt_3 = dom.createElement("fo:block");
+    b_txt_3.setAttribute ("color",hc.foName(area[2].bg));
+    b_txt_3.appendChild( dom.createTextNode ( "." )  );
+    a_txt_3.appendChild( b_txt_3 );
+    b_txt_3.appendChild( dom.createComment(QString("Left  region / xsl-region-start ")) );
+    pageseq1.appendChild( txt_3 );
+    
+    
+    QDomElement txt_4 = dom.createElement("fo:static-content");
+    txt_4.setAttribute ("flow-name","xsl-region-end");
+    QDomElement a_txt_4 = dom.createElement("fo:block-container");
+    txt_4.appendChild( a_txt_4 );
+    QDomElement b_txt_4 = dom.createElement("fo:block");
+    b_txt_4.setAttribute ("color",hc.foName(area[3].bg));
+    b_txt_4.appendChild( dom.createTextNode ( "." )  );
+    a_txt_4.appendChild( b_txt_4 );
+    b_txt_4.appendChild( dom.createComment(QString("Right  region / xsl-region-end ")) );
+    pageseq1.appendChild( txt_4 );
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    QDomElement body = dom.createElement("fo:flow");
+	body.setAttribute ("flow-name","xsl-region-body");
+    body.appendChild( dom.createComment (QString("body blocks")) );
+    
+    
+    QDomElement sample = dom.createElement("fo:block");
+    sample.appendChild( dom.createTextNode ( "Hello World!" )  );
+    body.appendChild( sample );
+    
+    
+    
+    
+    
+    pageseq1.appendChild( body );
+    
+    
+   //////////// body.appendChild( dom.createComment (QString("body blocks")) );
+    
+    
+    
+    return dom;
+}
 
 
 

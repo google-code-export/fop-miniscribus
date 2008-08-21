@@ -57,6 +57,7 @@ typedef enum
 ///static 
 FopColor( const QString colorchunk = QString() , FopColor::AlternateColor col = Transparent );
 QColor foColor( const QString colorchunk , FopColor::AlternateColor col = DarkColor );
+QString foName( const QColor e );
 QPixmap createColorMap( const QString colorchunk );
 /////  static to retun name human readable ? 
 inline QStringList fopListColor() { return fopcolorNames; }

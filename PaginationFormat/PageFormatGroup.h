@@ -79,6 +79,7 @@ public:
     ~M_PageSize();
     /* to use as operator !=  == */
     QByteArray hashmodel() const;
+    QDomDocument fopMeta();  /* dom meta to save fops */
     
     bool operator!= ( const M_PageSize& d );
     
@@ -166,6 +167,12 @@ public:
     FoRegion region_after() const { return area[1]; }
     FoRegion region_start() const  { return area[2]; }
     FoRegion region_end()  const { return area[3]; }
+    
+    
+    QString metrics( const qreal screenpoint ) const
+    {
+        return QString("%1cm").arg(Pointo(screenpoint,"cm"));
+    }
     
     /* open or set a qtexdocument from this */
     QTextDocument *nulldoc( QString htm );

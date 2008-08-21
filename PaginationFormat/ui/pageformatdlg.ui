@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>492</height>
+    <height>461</height>
    </rect>
   </property>
   <property name="maximumSize" >
@@ -1596,10 +1596,51 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_7" >
+      <attribute name="title" >
+       <string>XSL-FO meta result</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_31" >
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_26" >
+         <item>
+          <widget class="QLabel" name="label_47" >
+           <property name="text" >
+            <string>Copy this result to write fo file on simple text</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="XMLTextEdit" name="xmledit" />
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XMLTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header location="global" >XML_Editor.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

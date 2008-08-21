@@ -195,6 +195,20 @@ FopColor::FopColor( const QString colorchunk , FopColor::AlternateColor col )
 }
 
 
+QString FopColor::foName( const QColor e )
+{
+    ////////QColor
+    QStringList icoli = fopListColor();
+    foreach (QString name, icoli) {
+        const QColor runn = foColor(name);
+        if (e.rgba() == runn.rgba()) {
+            return name;
+        }
+    }
+    
+  return QString("transparent");
+}
+
 
 
 QColor FopColor::foColor( const QString colorchunk , FopColor::AlternateColor col  )
