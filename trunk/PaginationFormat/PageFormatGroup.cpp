@@ -459,6 +459,9 @@ QDomDocument  M_PageSize::fopMeta()
                 basexslforoot.setAttribute ("xmlns:fox","http://xmlgraphics.apache.org/fop/extensions");
     dom.appendChild( basexslforoot );
     
+    const int blocks = 10;
+    ////////////  fox:outline
+    
     QDomElement layout = dom.createElement("fo:layout-master-set");
     layout.setAttribute ("writing-mode","lr-tb");
     layout.setAttribute ("master-name","scribe");
@@ -485,17 +488,37 @@ QDomDocument  M_PageSize::fopMeta()
     
     
 	pmaster.appendChild( rbody );
+    /* bookmark here ..........   */
+    
+    QDomElement bbtree = dom.createElement("fo:bookmark-tree");
     
     
-    /*
+    QDomElement root_bookmark = dom.createElement("fo:bookmark");
+    bbtree.appendChild( root_bookmark);
+    root_bookmark.setAttribute ("internal-destination","sec0");
     
-     //////inline int header() { return 0; }
-    //////inline int footer() { return 1; }
-    //////inline int start() { return 2; }
-    /////////inline int end() { return 3; }
+    QDomElement tree_a = dom.createElement("fo:bookmark-title");
+    tree_a .appendChild( dom.createTextNode ( "Internal dest.0" )  );
+    root_bookmark.appendChild( tree_a );
     
-    */
+       for (int i = 1; i < blocks; ++i) {
+           
+           QDomElement sub = dom.createElement("fo:bookmark");
+           sub.setAttribute ("internal-destination",QString("sec%1").arg(i));
+           
+           QDomElement label= dom.createElement("fo:bookmark-title");
+           label.appendChild( dom.createTextNode ( QString("Internal dest.%1" ).arg(i)  ));
+           sub.appendChild( label );
+           
+           root_bookmark.appendChild( sub );
+       }
     
+    
+    
+    basexslforoot.appendChild( bbtree );
+       
+       
+
     
     QDomElement rbefore = dom.createElement("fo:region-before");
 	rbefore.setAttribute ("region-name","xsl-region-before");
@@ -595,8 +618,7 @@ QDomDocument  M_PageSize::fopMeta()
     
     
     
-    
-    
+ 
     
     
     
@@ -606,8 +628,22 @@ QDomDocument  M_PageSize::fopMeta()
     
     
     QDomElement sample = dom.createElement("fo:block");
-    sample.appendChild( dom.createTextNode ( "Hello World!" )  );
+    sample.setAttribute ("break-after","page");
+    sample.setAttribute ("id",QString("sec0"));
+    sample.setAttribute ("margin-top","2cm");
+    sample.appendChild( dom.createTextNode ( "Hello World! .........." )  );
     body.appendChild( sample );
+       
+       
+          for (int i = 1; i < blocks; ++i) {
+           
+           QDomElement bloc = dom.createElement("fo:block");
+           bloc.setAttribute ("margin-top","2cm");
+           bloc.setAttribute ("id",QString("sec%1").arg(i));
+           bloc.setAttribute ("break-after","page");
+           bloc.appendChild( dom.createTextNode ( QString("Hello World nr.%1" ).arg(i)  ));
+           body.appendChild( bloc );
+       }
     
     
     
