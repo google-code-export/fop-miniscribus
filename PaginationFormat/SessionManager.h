@@ -27,7 +27,7 @@ public:
 
 
   inline QMap<int,M_PageSize> mpages() { return history_page_norms; }
-  bool coreSave( M_PageSize e );
+  bool coreSave( M_PageSize e );   /* to restore original from dlg pageformat */
    M_PageSize FindPagePsize( const QRect paper );
   void AppendPaper( M_PageSize cur , bool enableregion = false );
   bool is_OnChain( M_PageSize e );

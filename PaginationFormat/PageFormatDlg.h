@@ -24,15 +24,20 @@ public:
 
 protected:
     QStringList l_colors;
+    QMap<int,M_PageSize> original;
+    void saveOriginal();
     FopColor *fopC;
     bool allowUpdate;
     qreal SessionBigerPaper;  /* big quadra to display it */
     void resizeEvent ( QResizeEvent * event );
     QVariant currentItemData(QComboBox *Box);
+    void findeSetItemData(QComboBox *box  , QVariant e );
+    void findeSetItemPen(QComboBox *box  , const QPen e );
 private:
   QString unit;
   M_PageSize currentP;
  void DrawPageResult();
+
  void insertItemColorBox( const QString txt , const QColor qcol );
  void  fillColorBox();
  PageFormatDlg( QWidget* = 0 );
@@ -41,8 +46,8 @@ private:
 signals:
 public slots:
     void formatPageChange( const int index );
-
-   void recalcAll();
+    void restoreOriginal();
+    void recalcAll();
 
 };
 //

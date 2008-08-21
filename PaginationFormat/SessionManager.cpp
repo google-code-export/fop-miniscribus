@@ -41,8 +41,12 @@ ApiSession::ApiSession()
      CDLabel.G_regt = QRectF(0,0,MM_TO_POINT(128),MM_TO_POINT(128));
      CDLabel.P_rect = QPrinter::Custom;
      CDLabel.RealSize = QSizeF(MM_TO_POINT(220),MM_TO_POINT(220));  //////CDLabel.G_regt.size();
-     const qreal margindd = MM_TO_POINT(5);
+     const qreal margindd = MM_TO_POINT(10);
     FoRegion cdregion;
+    cdregion.rpen = QPen(Qt::black,MM_TO_POINT(2),Qt::DashLine);
+    cdregion.border = 1;
+    cdregion.bog = QColor("tomato");
+    
     cdregion.toAll( margindd );
     CDLabel.body = cdregion;
     

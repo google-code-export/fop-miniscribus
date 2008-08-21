@@ -58,11 +58,13 @@ Q_DECLARE_METATYPE(FoRegion);
 inline QDebug operator<<(QDebug debug, FoRegion& udoc)
 {
     debug.nospace() << "FoRegion(Enable."
-    << udoc.enable << ",top()"
-    << udoc.margin_top << ",bottom()"
-    << udoc.margin_bottom << ",right()"
-    << udoc.margin_right << ",left()"
-    << udoc.margin_left << ")";
+    << udoc.enable << ",top(),"
+    << udoc.margin_top << ",bottom(),"
+    << udoc.margin_bottom << ",right(),"
+    << udoc.margin_right << ",left(),"
+    << udoc.margin_left << ",PenWi(),"
+    << udoc.rpen.widthF() << ",PenStyle(),"
+    << udoc.rpen.style() << ")";
     return debug.space();
 }
 
@@ -117,14 +119,24 @@ public:
         return QRectF(body.margin_left,body.margin_top,LargeDoc,InnHightDoc);
     }
     
-    QRectF headerRect()   /* page 0 */
+    QRectF headerRect()   /* page 0 move to topLeft()  point */
     {
         return QRectF(0,0,width() + body.margin_right + body.margin_left ,body.margin_top);
     }
     
-    QRectF footerRect()   /* page 0 */
+    QRectF footerRect()   /* page 0 move to bottomLeft()  point */
     {
         return QRectF(0,0,width() + body.margin_right + body.margin_left ,body.margin_bottom);
+    }
+    
+    QRectF startRect()   /* page 0 move to topLeft()  point */
+    {
+        return QRectF(0,0,body.margin_left ,height() + body.margin_top  + body.margin_bottom );
+    }
+    
+    QRectF endRect()   /* page 0 move to rightLeft()  point */
+    {
+        return QRectF(0,0,body.margin_right,height() + body.margin_top  + body.margin_bottom );
     }
 
     /* internal rect whitout margin */
