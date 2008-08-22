@@ -1,0 +1,194 @@
+<ui version="4.0" >
+ <class>MeSearchDlg</class>
+ <widget class="QWidget" name="MeSearchDlg" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Search or Query replace  CTR+F</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <layout class="QVBoxLayout" >
+     <item>
+      <widget class="QTextEdit" name="wquery" >
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <property name="acceptRichText" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="ramplace" >
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
+       <property name="documentTitle" >
+        <string/>
+       </property>
+       <property name="acceptRichText" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="oosensi" >
+       <property name="text" >
+        <string>case sensitive</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="ooregularex" >
+       <property name="text" >
+        <string>regular expression</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="ooalldocs" >
+       <property name="text" >
+        <string>on all open document</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1" >
+    <layout class="QVBoxLayout" >
+     <item>
+      <widget class="QPushButton" name="dd1" >
+       <property name="text" >
+        <string>Search word</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="dd2" >
+       <property name="text" >
+        <string>Next</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="dd3" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>Replace</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox" >
+       <property name="title" >
+        <string>Direction</string>
+       </property>
+       <layout class="QGridLayout" >
+        <item row="1" column="0" >
+         <widget class="QRadioButton" name="ssup" >
+          <property name="text" >
+           <string>search up</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QRadioButton" name="ssdown" >
+          <property name="text" >
+           <string>search down</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="dd4" >
+       <property name="text" >
+        <string>Abort</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>dd4</sender>
+   <signal>clicked()</signal>
+   <receiver>MeSearchDlg</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>310</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>163</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wquery</sender>
+   <signal>undoAvailable(bool)</signal>
+   <receiver>dd3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>140</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>323</x>
+     <y>87</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
