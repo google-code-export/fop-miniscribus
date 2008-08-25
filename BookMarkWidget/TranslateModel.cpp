@@ -186,9 +186,137 @@ QDomElement ModelDomRead::linkPdf( QModelIndex first ,  QModelIndex second )
            return xlink;
 }
     
+
+
+
+
+
+
+BooksDelegate::BooksDelegate( QObject *parent  , QStringList link )
+   :QItemDelegate(parent)
+{
+  setParent(parent);
+  xi = link;
+}
+
+void BooksDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    const int radius = 10;
     
+    QPainterPath titlePath;
+    titlePath.moveTo( option.rect.bottomLeft() );
+    titlePath.lineTo( option.rect.topLeft()+QPoint( 0, radius ) );
+    titlePath.arcTo( option.rect.left(), option.rect.top(), 2*radius, 2*radius, 180, -90 );
+    titlePath.lineTo( option.rect.topRight()-QPoint( radius, 0 ) );
+    titlePath.arcTo( option.rect.right()-2*radius, option.rect.top(), 2*radius, 2*radius, 90, -90 );
+    titlePath.lineTo( option.rect.bottomRight() );
+    titlePath.closeSubpath();
+    
+    
+    QLinearGradient titleGradient( option.rect.topLeft(), option.rect.topRight() );
+    titleGradient.setColorAt( 0.0, Qt::white );
+    titleGradient.setColorAt( 0.5, Qt::white );
+    titleGradient.setColorAt( 1.0, QColor("#e6e6e6") );
+    
+    
+    QLinearGradient titleGradient1( option.rect.topLeft(), option.rect.topRight() );
+    titleGradient1.setColorAt( 0.0, QColor("#e6e6e6") );
+    titleGradient1.setColorAt( 0.5, QColor("#e6e6e6") );
+    titleGradient1.setColorAt( 1.0, Qt::white );
+    
+    
+    
+  if (index.column() == 0 ) {
+       painter->save();
+       QPen line_pen(QBrush(Qt::red),1,Qt::DotLine,Qt::RoundCap);
+       painter->setPen(Qt::NoPen); 
+       painter->setBrush(titleGradient);
+       painter->drawRect(option.rect);
+       painter->restore(); 
+  }
+  
+   if (index.column() == 2 ) {
+       painter->save();
+       QPen line_pen(QBrush(Qt::red),1,Qt::DotLine,Qt::RoundCap);
+       painter->setPen(Qt::NoPen);
+       painter->setBrush(titleGradient1);
+       painter->drawRect(option.rect);
+       painter->restore(); 
+  }
+  
+     if (index.column() == 1 ) {
+       painter->save();
+       QPen line_pen(QBrush(Qt::red),1,Qt::DotLine,Qt::RoundCap);
+       painter->setPen(Qt::NoPen);
+       painter->setBrush(QColor("#d4ffdf"));
+       painter->drawPath( titlePath );
+       painter->restore(); 
+  }
+  
+  
+  
+  
+  
+   QItemDelegate::paint(painter,option,index);
+}
+
+QWidget *BooksDelegate::createEditor(QWidget *parent0, const QStyleOptionViewItem &option, const QModelIndex &index) const 
+{
+   if (index.column() == 1) {
+         QComboBox *editor = new QComboBox(parent0);
+         editor->setEditable ( true );
+         editor->clear();
+         for (int i = 0; i < xi.size(); ++i) {
+         editor->addItem(xi.at(i));
+         }
+         return editor;
+         
+   }  else {
+        QLineEdit *editor = new QLineEdit(parent0); 
+        return editor;
+   }
+}
+
+void BooksDelegate::setEditorData(QWidget *editor, const QModelIndex &index)
+{
+    if (!index.isValid()) {
+        return;
+    } else {
+        const QString dateuser = index.data(Qt::DisplayRole).toString();
+        
+        if (index.column() == 1) {
+            QComboBox *editorax = qobject_cast<QComboBox *>(editor);
+            editorax->setItemText(0,dateuser);
+        } else {
+           QLineEdit *editorax = qobject_cast<QLineEdit *>(editor);
+           editorax->setText(dateuser); 
+        }
+    }
+}
+
+QSize BooksDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+   if (index.column() == 2) 
+    return QSize( 25, 25 );
+  else
+    return QSize( 140, 25 );
+}
 
 
+void BooksDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const 
+{
+    if (index.column() == 0) {
+        return;
+     } 
+     
+     if (index.column() == 1) {
+            QComboBox *editorax = qobject_cast<QComboBox *>(editor);
+            model->setData(index,editorax->currentText());
+     } else {
+             QLineEdit *editorax = qobject_cast<QLineEdit *>(editor);
+             model->setData(index,editorax->text());
+     }
+ }
 
 
     

@@ -63,8 +63,26 @@ class ModelDomRead : public QObject
 }
 
 
+class BooksDelegate : public QItemDelegate
+{
+    Q_OBJECT
+   
+    
+public:
+   BooksDelegate( QObject *parent  , QStringList link );
+   void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+   QWidget *createEditor(QWidget *parent0, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+   void setEditorData(QWidget *editor, const QModelIndex &index);
+   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const ;
+   QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
+signals:
+public slots:
+private:
+    QStringList xi;
 
+};
+  
 
 
 
