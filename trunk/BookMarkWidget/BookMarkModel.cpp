@@ -128,7 +128,7 @@ QList<QStandardItem *> BookMarkModelRead::Compose( const QDomElement e , const i
     }
     const QString link = e.attribute("internal-destination","null");
     internalLinkFound.append(link);
-    qDebug() << "### read -> " << txt <<  "-" << treeLoop;
+    //////////////qDebug() << "### read -> " << txt <<  "-" << treeLoop;
 
 
                     QStandardItem *item0 = new QStandardItem(txt);
@@ -214,7 +214,7 @@ void BookMarkModelRead::read( const QDomElement e )
 {
          QDomElement child = e.firstChildElement();
            while (!child.isNull()) {
-               qDebug() << "### loop reed -> " << child.tagName();
+               /////////////qDebug() << "### loop reed -> " << child.tagName();
                         if ( child.tagName()  == "fo:bookmark-tree") {
                             openRootBookmark( child );
                         } else if (!child.firstChild().isNull()) {
@@ -240,7 +240,7 @@ void BookMarkModelRead::read()
      QDomElement child = r.firstChildElement();
            while (!child.isNull()) {
                
-               qDebug() << "### loop reed -> " << child.tagName();
+               ///////////////qDebug() << "### loop reed -> " << child.tagName();
                
                if ( child.tagName()  == "fo:bookmark-tree") {
                    openRootBookmark( child );

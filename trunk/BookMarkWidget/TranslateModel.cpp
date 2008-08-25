@@ -311,7 +311,10 @@ void BooksDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, con
      
      if (index.column() == 1) {
             QComboBox *editorax = qobject_cast<QComboBox *>(editor);
-            model->setData(index,editorax->currentText());
+            QString ilink = editorax->currentText();
+            ilink = ilink.replace(" ","");
+            model->setData(index,ilink.simplified());
+         
      } else {
              QLineEdit *editorax = qobject_cast<QLineEdit *>(editor);
              model->setData(index,editorax->text());
