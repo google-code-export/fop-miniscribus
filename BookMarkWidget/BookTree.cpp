@@ -138,7 +138,7 @@ void BookTree::InsertOnRoot()
     QList<QStandardItem *> oLine = xmlmode->newLine(0);
     pm->invisibleRootItem()->appendRow(oLine);
     insertModel( pm );
-    qDebug() << "### InsertOnRoot    ";
+    ////////////qDebug() << "### InsertOnRoot    ";
 }
 
 
