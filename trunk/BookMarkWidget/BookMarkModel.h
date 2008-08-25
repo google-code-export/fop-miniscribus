@@ -93,6 +93,7 @@ public:
        void openStream( const QByteArray xml );
        QAbstractItemModel *bookModel() { return model; }
        QList<QStandardItem *> newLine( int level );
+       inline QStringList linkList() { return internalLinkFound; }
 protected:
        bool foundTree;
        QStringList internalLinkFound;

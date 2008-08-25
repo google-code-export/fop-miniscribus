@@ -23,12 +23,13 @@ public:
 protected:
     void contextMenuEvent ( QContextMenuEvent * e );
     int maximumID();
-    void insertModel( QAbstractItemModel *m );
+    void insertModel( QAbstractItemModel *m , QStringList avaiablelist = QStringList() );
     BookMarkModelRead *xmlmode;
     QModelIndex touchCell;
     int onRowCurrent;
     int touchlevel;
 private:
+    QStringList currentLinker;
 signals:
 public slots:
     void InsertOnRoot();  /* general insert at root index top tree */

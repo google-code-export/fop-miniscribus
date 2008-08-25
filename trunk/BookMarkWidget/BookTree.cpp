@@ -17,23 +17,30 @@ BookTree::BookTree( QWidget* parent )
 	: QTreeView( parent )
 {
    onRowCurrent =-1;
+   currentLinker.clear();
    xmlmode = new BookMarkModelRead("a.fo");
    QAbstractItemModel *pma = xmlmode->bookModel();
-   insertModel( pma );
+   insertModel( pma , xmlmode->linkList() );
    
     
 }
 
-void BookTree::insertModel( QAbstractItemModel *m )
+void BookTree::insertModel( QAbstractItemModel *m , QStringList avaiablelist )
 {
    setModel(m);
+   if (avaiablelist.size() > 0) {
+    /* session append others to delegate */
+   currentLinker = avaiablelist;
+   }
+   setItemDelegate(new BooksDelegate(this,currentLinker));
    expandAll();
-   setColumnWidth (0,280);
+   setColumnWidth (0,180);
+   setColumnWidth (2,25);
    setDragEnabled ( false );
     setAcceptDrops ( false);
     setDragDropOverwriteMode ( false );
-   setIndentation (11);
-   setIconSize ( QSize(6,6) );
+   setIndentation (15);
+   setIconSize ( QSize(11,11) );
     onRowCurrent =-1;
     ///////setColumnHidden (2,true);
    connect(this, SIGNAL(clicked(QModelIndex)), this , SLOT(activeTree(QModelIndex)));
@@ -77,15 +84,19 @@ void BookTree::insertSubOnCurrent()
     QStandardItem *ix =  pm->itemFromIndex(touchCell);
     QList<QStandardItem *> oLine = xmlmode->newLine(currlevel + 1);
     ix->appendRow(oLine);
-    insertModel( pm );
+    
+    QStandardItemModel *pam = qobject_cast<QStandardItemModel *>(model());
+    ModelDomRead *ponte = new ModelDomRead(pam);
+    QByteArray dataxml = ponte->Domdocument()->toByteArray(1);
+    xmlmode->openStream(dataxml);
+    QAbstractItemModel *pma = xmlmode->bookModel();
+    insertModel( pma , xmlmode->linkList() );
     delete &touchCell;
 }
 
 
 void BookTree::removeOnCurrent()
 {
-    qDebug() << "### rem a ";
-    
     if (onRowCurrent == -1) {
     /* select a item !!! */
     return;
@@ -97,16 +108,13 @@ void BookTree::removeOnCurrent()
     const int r = touchCell.row();
     QStandardItemModel *pm = qobject_cast<QStandardItemModel *>(model());
     const QString removelinkt = touchCell.data(Qt::UserRole).toString();
-    
-    
-    
-    qDebug() << "### removelinkt " << removelinkt;
+    //////qDebug() << "### removelinkt " << removelinkt;
     ModelDomRead *ponte = new ModelDomRead(pm,Mommit,removelinkt);
     QByteArray dataxml = ponte->Domdocument()->toByteArray(1);
-    qDebug() << "### dataxml" << dataxml;
+    ////////qDebug() << "### dataxml" << dataxml;
     xmlmode->openStream(dataxml);
     QAbstractItemModel *pma = xmlmode->bookModel();
-    insertModel( pma );
+    insertModel( pma , xmlmode->linkList() );
     delete &touchCell;
 }
 
