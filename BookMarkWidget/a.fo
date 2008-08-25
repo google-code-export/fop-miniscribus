@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
+     <fo:layout-master-set master-name="scribe" writing-mode="lr-tb" >
+          <fo:simple-page-master page-height="29.7052cm" master-name="scribe" page-width="20.9888cm" >
+               <fo:region-body margin-left="1.5cm" background-color="white" region-name="xsl-region-body" margin-bottom="2.5cm" margin-top="2.5cm" margin-right="1.5cm" />
+               <fo:region-before background-color="white" region-name="xsl-region-before" extent="2.5cm" />
+               <fo:region-after background-color="white" region-name="xsl-region-after" extent="2.5cm" />
+               <fo:region-start background-color="white" region-name="xsl-region-start" extent="1.5cm" />
+               <fo:region-end background-color="white" region-name="xsl-region-end" extent="1.5cm" />
+          </fo:simple-page-master>
+     </fo:layout-master-set>
+     <fo:bookmark-tree>
+          <fo:bookmark internal-destination="dest_40" >
+               <fo:bookmark-title>Base 0</fo:bookmark-title>
+          </fo:bookmark>
+          <fo:bookmark internal-destination="dest_375" >
+               <fo:bookmark-title>Base 1</fo:bookmark-title>
+               <fo:bookmark internal-destination="dest_1535" >
+                    <fo:bookmark-title>Sub 0</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="dest_421" >
+                    <fo:bookmark-title>Sub 1</fo:bookmark-title>
+                    <fo:bookmark internal-destination="dest_1633" >
+                         <fo:bookmark-title>Sub 1a1</fo:bookmark-title>
+                         <fo:bookmark internal-destination="dest_1859" >
+                              <fo:bookmark-title>Sub1a1a ultimo</fo:bookmark-title>
+                         </fo:bookmark>
+                    </fo:bookmark>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="dest_1031" >
+                    <fo:bookmark-title>Sub 3</fo:bookmark-title>
+               </fo:bookmark>
+          </fo:bookmark>
+          <fo:bookmark internal-destination="dest_506" >
+               <fo:bookmark-title>Base 2</fo:bookmark-title>
+          </fo:bookmark>
+          <fo:bookmark internal-destination="dest_611" >
+               <fo:bookmark-title>Base 3</fo:bookmark-title>
+          </fo:bookmark>
+          
+     </fo:bookmark-tree>
+     <fo:page-sequence master-reference="scribe" >
+          <fo:static-content flow-name="xsl-region-before" >
+               <fo:block-container>
+                    <fo:block color="white" >.<!--Header region / xsl-region-before -->
+                    </fo:block>
+               </fo:block-container>
+          </fo:static-content>
+          <fo:static-content flow-name="xsl-region-after" >
+               <fo:block-container>
+                    <fo:block color="white" >.<!--Footer region / xsl-region-after -->
+                    </fo:block>
+               </fo:block-container>
+          </fo:static-content>
+          <fo:static-content flow-name="xsl-region-start" >
+               <fo:block-container>
+                    <fo:block color="white" >.<!--Left  region / xsl-region-start -->
+                    </fo:block>
+               </fo:block-container>
+          </fo:static-content>
+          <fo:static-content flow-name="xsl-region-end" >
+               <fo:block-container>
+                    <fo:block color="white" >.<!--Right  region / xsl-region-end -->
+                    </fo:block>
+               </fo:block-container>
+          </fo:static-content>
+          <fo:flow flow-name="xsl-region-body" >
+               <!--body blocks-->
+               <fo:block break-after="page" id="sec0" margin-top="2cm" >Hello World! ..........</fo:block>
+               <fo:block break-after="page" id="sec1" margin-top="2cm" >Hello World nr.1</fo:block>
+               <fo:block break-after="page" id="sec2" margin-top="2cm" >Hello World nr.2</fo:block>
+               <fo:block break-after="page" id="sec3" margin-top="2cm" >Hello World nr.3</fo:block>
+               <fo:block break-after="page" id="sec4" margin-top="2cm" >Hello World nr.4</fo:block>
+               <fo:block break-after="page" id="sec5" margin-top="2cm" >Hello World nr.5</fo:block>
+               <fo:block break-after="page" id="sec6" margin-top="2cm" >Hello World nr.6</fo:block>
+               <fo:block break-after="page" id="sec7" margin-top="2cm" >Hello World nr.7</fo:block>
+               <fo:block break-after="page" id="sec8" margin-top="2cm" >Hello World nr.8</fo:block>
+               <fo:block break-after="page" id="sec9" margin-top="2cm" >Hello World nr.9</fo:block>
+          </fo:flow>
+     </fo:page-sequence>
+</fo:root>
