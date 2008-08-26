@@ -17,7 +17,7 @@ RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
 
 
-
+INCLUDEPATH += $$BUILD_TREE_PATH/modules/zip
 
 
 

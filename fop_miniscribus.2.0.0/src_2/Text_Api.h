@@ -27,7 +27,7 @@ typedef enum
   PAGES = 2,    /* paginate display pages */
 } DisplayModus;
 
-static const int BookMarkInternalID = 23465;
+
 
 
 

@@ -12,6 +12,7 @@
 #include "Text_Api.h"
 #include "xslt_convert.h"
 #include "Fo_Reader.h"
+#include "Tools_Basic.h"
 
 
 #define _MAINICONSIZE_  18
