@@ -37,6 +37,9 @@ void MainWindow::CheckFileApps()
 {
     Cache(_APPSCACHE_);
     QFileInfo fi(_OOOV1FILE_);
+    
+    
+    
     if (!fi.exists()) {
         /* user can edit style and save on apps cache */
         StreamFop *buf = new StreamFop();
@@ -56,6 +59,7 @@ void MainWindow::CheckFileApps()
     
 }
 
+  
 
 void MainWindow::prepareDocks()
 {
@@ -120,6 +124,13 @@ toolBar->addAction(actioBooks);
            SLOT(incommingBookmark(QStringList,QStandardItemModel*)));
     connect(edit->view(), SIGNAL(sceneSwap(bool)),this, SLOT(menuUpdate(bool)));
     connect(convertFop, SIGNAL(triggered()),edit->view(), SLOT(apacheFopConvert()));
+    connect(savescribePage, SIGNAL(triggered()),edit->view(), SLOT(saveOnPageBinFile()));
+    connect(openScribe, SIGNAL(triggered()),edit->view(), SLOT(openFile()));
+    connect(edit->view(), SIGNAL(fileBaseOpen(QString)),this, SLOT(setWindowTitle(QString)));
+    connect(actionNewDoc, SIGNAL(triggered()),edit->view(), SLOT(pageclear()));
+    
+    
+    
     
     
     
@@ -298,7 +309,7 @@ GraphicsView::GraphicsView( QWidget* parent )
     connect(pageFull, SIGNAL(inBookmark(QStringList)),this, SLOT(sendinBookmark(QStringList)));
     
     QTimer::singleShot(5, this, SLOT(DisplayTop()));
-    QTimer::singleShot(100, this, SLOT(openDebugFile()));
+    QTimer::singleShot(50, this, SLOT(openMasterMainFile()));
 }
 
 bool GraphicsView::eventFilter(QObject *obj, QEvent *e)
@@ -307,10 +318,13 @@ bool GraphicsView::eventFilter(QObject *obj, QEvent *e)
          return false;
      }
      
+     
+     
              /* find file to open not gz file */
             if (e->type() == QEvent::GraphicsSceneDrop) {
+                QStringList indexf = KnowMimeFile();
                 QGraphicsSceneDragDropEvent *ev = static_cast<QGraphicsSceneDragDropEvent *>(e);
-                   qDebug("Tipe event  %d", e->type()); 
+                   /////////qDebug("Tipe event  %d", e->type()); 
                     bool filefound = false;
                    const QMimeData *md = ev->mimeData();
                        if ( md->hasUrls() )  {
@@ -319,9 +333,18 @@ bool GraphicsView::eventFilter(QObject *obj, QEvent *e)
                                QUrl gettyurl(urls.at(i));
                               if (gettyurl.scheme() == "file") {
                                   QFileInfo fi(gettyurl.toLocalFile());
-                                  if (KnowMimeFile( fi.completeSuffix().toLower() )) {
+                                  const QString extension = fi.completeSuffix().toLower();
+                                  const int havingmime = indexf.indexOf(extension);
+                                  ////////////qDebug() << "### event drag ............ " << fi.absoluteFilePath();
+                                  //////////qDebug() << "### event extension ............ " << havingmime;
+                                  ///////////qDebug() << "### event extension ............ " << extension;
+                                  
+                                  if (havingmime) {
                                       openFile( fi.absoluteFilePath() );
+                                      //////////qDebug() << "### event dd yes";
                                       filefound = true;
+                                  } else {
+                                     ////////////// qDebug() << "### event dd no";
                                   }
                                   
                               }
@@ -347,6 +370,7 @@ void GraphicsView::pageclear()
     connect(pageFull, SIGNAL(autocursorchange(bool) ), this, SLOT(cursorChange(bool)));
     connect(pageFull, SIGNAL(inBookmark(QStringList)),this, SLOT(sendinBookmark(QStringList)));
     QTimer::singleShot(5, this, SLOT(DisplayTop()));
+    emit fileBaseOpen(_APPLICATIONS_NAME_ + " / Untitled Document");
 }
 
 
@@ -363,11 +387,9 @@ void GraphicsView::openFile()
     openFile( file );
 }
 
-void GraphicsView::openDebugFile()
+void GraphicsView::openMasterMainFile()
 {
-    ////////hide();
-    openFile("bo.fo");
-    
+    openFile(":/file/recfile/main_doc.page");
 }
 
 void GraphicsView::openFile( const QString file )
@@ -383,6 +405,11 @@ void GraphicsView::openFile( const QString file )
     pageclear();  /* clean old item if  having */
     ////////////ApiSession *sx = ApiSession::instance();
     const QString ext = fi.completeSuffix().toLower();
+    emit fileBaseOpen(_APPLICATIONS_NAME_ + " / " + fi.fileName ());
+    
+    qDebug() << "### openFile  " << fi.absoluteFilePath() << " - " << ext;
+    
+    
     currentopenfilealternate = fi.absolutePath() + QString("/") + fi.baseName() + QString(".tmpfox");
     qt_unlink(currentopenfilealternate);
     currentopenfilerunning =  fi.absoluteFilePath();
@@ -521,6 +548,26 @@ void GraphicsView::openFile( const QString file )
         QDir::setCurrent(dir_);
         QTimer::singleShot(1, this, SLOT(zoomChain())); 
         return;
+    }  else if ( ext == "page" ) {
+        M_PageSize defaultA4Page;
+        qDebug() << "### pageload .......... ";
+        buf->LoadFile( fi.absoluteFilePath() );
+        const QByteArray chunkhtml = buf->stream();
+        delete buf;
+        PageDoc binDoc;
+                binDoc.open( chunkhtml );
+        QTextDocument *autodoc = binDoc.scripePrepare();
+        defaultA4Page.HandlePrint( autodoc );
+        session->current_Page_Format = defaultA4Page;
+        session->AppendPaper(defaultA4Page);
+        pageFull->setDocument(autodoc->clone());
+        pageFull->appendLayer(binDoc.absolute);
+        BookMarkModelRead  *booki = new BookMarkModelRead();
+        QStandardItemModel *dat = booki->bookModel();
+        emit inBookmark(QStringList(),dat);
+        QDir::setCurrent(dir_);
+        QTimer::singleShot(1, this, SLOT(zoomChain())); 
+        return;
     }
     
     
@@ -600,7 +647,34 @@ void GraphicsView::saveOnFile()
     }
 }
 
-
+void GraphicsView::saveOnPageBinFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save Page file format",QString(setter.value("LastDir").toString()) , "*.page");
+     
+    if (fileName.isEmpty()) {
+        return;
+    }
+    
+    QFileInfo fi(fileName);
+        const QString ext = fi.completeSuffix().toLower();
+        if (ext == "page") {
+          /* ok */
+        } else {
+        fileName = fileName+".page"; 
+        }
+        
+        /* get chunk */
+        PageDoc xpage = pageFull->binaryPageFormat();
+        
+        
+    
+         QFile f(fi.absoluteFilePath()); 
+                if (f.open(QIODevice::WriteOnly)) {
+                    f.write(xpage.save());
+                    f.close();
+                } 
+    
+}
 
 
 void GraphicsView::apacheFopConvert()
@@ -636,7 +710,14 @@ void GraphicsView::apacheFopConvert()
     
     if (exefop.isEmpty()) {
          exefop = QFileDialog::getOpenFileName(this, tr("Place of Fop \"%1\" application ").arg(foptipe),"",tr("fop (*)"));
+         
+        
+         if (exefop.isEmpty()) {
+          return;
+         }
+         
          setter.setValue("FopApplicationfi",exefop);  /* modus on cms not editor !!! */
+        
     } else {
         
             QString msgDB =tr("Use fop %2 location path = %1 ?").arg(exefop).arg(foptipe);
@@ -657,6 +738,12 @@ void GraphicsView::apacheFopConvert()
              }
     }
     
+    
+         if (exefop.isEmpty()) {
+          return;
+         }
+         
+    
     qDebug() << "# file fop " << exefop;
     /* dont try to save if extern chunk is from hand make destroy!!!!! */
     QFileInfo fi(currentopenfilerunning);
@@ -667,7 +754,13 @@ void GraphicsView::apacheFopConvert()
     
     /* save location */
     impdf = QFileDialog::getSaveFileName(this, "Save as",QString(setter.value("LastDirPDFSave").toString())+fi.baseName()+".pdf", "Pdf  (*.pdf)");
-            if (impdf.endsWith(".pdf")) {
+        if (impdf.isEmpty()) {
+          return;
+         }
+          
+
+
+    if (impdf.endsWith(".pdf")) {
              /* ok */
             } else {
             impdf = impdf+".pdf";  

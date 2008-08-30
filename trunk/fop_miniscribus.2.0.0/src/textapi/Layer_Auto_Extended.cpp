@@ -53,7 +53,7 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     setAcceptDrops(true);
     
     QTextDocument *dummy = new QTextDocument();
-    dummy->setHtml(ReadFile("a.html")); /////  
+    //////dummy->setHtml(ReadFile("a.html")); /////  
     setDocument(dummy,FOP);
     QGraphicsItem::setFlags(this->flags() | QGraphicsItem::ItemIsFocusable );
     setFlag(QGraphicsItem::ItemIsMovable,false);
@@ -64,6 +64,28 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     /////////////SetupHeaderFooter();
     QTimer::singleShot(1, this, SLOT(cursor_wake_up()));
     SetupHeaderFooter();
+}
+
+
+PageDoc TextLayer::binaryPageFormat()
+{
+    PageDoc o;
+    ScribeParser *pari = new ScribeParser(document(),ScribeParser::Psave);
+    RichDoc autop = pari->mimeDocument();
+    o.Listening.insert(o.Listening.size() + 1 , autop);
+    QList<QGraphicsItem *> subLevelItems = childItems();
+     for (int i = 0; i < subLevelItems.size(); ++i) { 
+               AbsoluteLayer *e = 0;
+               e = layer_cast<AbsoluteLayer *>(subLevelItems[i]);
+               if (e) {
+                 if (e->blockType() == DIV_ABSOLUTE) {
+                     RichDoc absoluti = e->mimeDocumentLayer();
+                     o.Listening.insert(o.Listening.size() + 1 ,absoluti);
+                 }
+                 
+             }
+     }
+  return o;
 }
 
 
@@ -173,7 +195,7 @@ void TextLayer::SetupHeaderFooter()
 {
     
     Astartreg = new AbsoluteLayer(this,DIV_START);
-    Astartreg->setDocument(new QTextDocument("Start pageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"),FOP);
+    Astartreg->setDocument(new QTextDocument("Start page"),FOP);
     connect(Astartreg, SIGNAL(close_main_cursor() ),this, SLOT(cursor_stop_it()));
     connect(Astartreg, SIGNAL(pagesize_swap() ),this, SLOT(PageSizeReload()));
     connect(Astartreg, SIGNAL(scene_wakeup() ),this, SLOT(SceneReload()));

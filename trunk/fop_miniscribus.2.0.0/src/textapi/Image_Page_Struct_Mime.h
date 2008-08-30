@@ -415,7 +415,50 @@ public:
             Listening.insert(Layers.first,Layers.second);
         }
         buffer.close();
+        
+        
+        qWarning() << "######## PageDoc summ Listening  " << Listening.size();
+        
     }
+    
+    QTextDocument *scripePrepare()
+    {
+        if (Listening.size() < 1) {
+         return new QTextDocument();
+        }
+        QByteArray ahtml; 
+        RichDoc autofloat;
+        ///// QMap<QString,SPics> resource;
+        absolute.clear();
+        QMapIterator<int,RichDoc> o(Listening);
+					while (o.hasNext()) {
+                    o.next();
+                    RichDoc e = o.value();
+                           if (e.isAbsolute()) {
+                               absolute.insert(absolute.size() + 1, e );
+                           } else {
+                                     /* insert html chain */
+                                     ahtml.append(e.html);
+                                     /* take image */
+                                     QMapIterator<QString,SPics> x(e.resource);
+                                     while (x.hasNext()) {
+                                     x.next();
+                                           SPics ae = x.value();
+                                            autofloat.resource.insert(x.key(),ae);
+                                     }
+                               
+                           }
+					}
+                    
+	      autofloat.html = ahtml;
+          /* image having */
+          QTextDocument *bigdog = autofloat.todoc();
+          return bigdog;
+        
+    }
+    
+    QMap<int,RichDoc> absolute; 
+    
     QRectF rect;
     QByteArray smd5;
     int modus;

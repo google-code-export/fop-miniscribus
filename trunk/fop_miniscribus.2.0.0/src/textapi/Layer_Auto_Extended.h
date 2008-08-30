@@ -31,7 +31,8 @@ public:
     enum { Type = UserType + 1 };
     int type() const {return Type;}
     QRectF boundingRect() const;
-    QDomDocument *fopPagedoc();
+    PageDoc binaryPageFormat();   /* binary format qtextdocumet + images no bookmark no page size format or header/footer  */
+    QDomDocument *fopPagedoc();   /* xsl-fo xml format all option inside */
     QString PageName();
     QTextDocument *document();
     void setDocument( const QTextDocument * document , FileHandlerType Type = FOP );

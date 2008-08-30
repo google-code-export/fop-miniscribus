@@ -235,7 +235,8 @@ void AbsoluteLayer::setStyle( QString stylelist )
         hi = FopInt(incss.value("min-height").toString());
     }
     
-   ////// qDebug() << "### left " << incss.value("left").toString();
+   ////// 
+    
     /////////qDebug() << "### left " << FopInt(incss.value("left").toString());
     
     if (!incss.value("left").toString().isEmpty()) {
@@ -299,12 +300,24 @@ void AbsoluteLayer::setStyle( QString stylelist )
     incss.take("l-lock");
     incss.take("min-height");
     incss.take("opacity");
+    incss.take("-moz-opacity");  /* from html */
+    
     
      
     /* sure to remove */
     dev->txtControl()->setBlinkingCursorEnabled(false);
     UpdatePageFormat();
     
+    QStringList css;
+    QMapIterator<QString,QVariant> x(layerStyle());
+         while (x.hasNext()) {
+             x.next();
+             const QString valuecss = x.value().toString();
+             if ( !valuecss.isEmpty() ) {
+             css.append(QString("%1:%2").arg(x.key()).arg(valuecss));
+             } 
+         }
+   ////////////qDebug() << "### css stay inside  " << css.join(";");
 }
 
 
@@ -1159,8 +1172,9 @@ void AbsoluteLayer::RotateLayer( const int ro )
 
 void AbsoluteLayer::cursor_wake_up()
 { 
-   qDebug() << "### cursor_wake_up ";
+   //////qDebug() << "### cursor_wake_up ";
    ///////update();
+    emit close_main_cursor();
 }
 
 FoRegion AbsoluteLayer::foRegion() const

@@ -85,12 +85,13 @@ protected:
 
 
 private:
-    void pageclear();
+    
 signals:
   void sceneSwap(bool);
   void NewPageFormatin();
   void inBookmark(QStringList);
   void inBookmark(QStringList,QStandardItemModel*);
+  void fileBaseOpen(QString);
 public slots:
     void viewDisplay( const QRectF area );
      void DisplayTop();
@@ -103,12 +104,15 @@ public slots:
     void zoomChain();
     void zoomChainStop();
     void apacheFopConvert();
+    void saveOnPageBinFile();
+    void pageclear();
+
 
 private slots:
 void forceResizeIntern();
 void cursorChange(bool);
 void sendinBookmark(QStringList);
-void openDebugFile();
+void openMasterMainFile();
 };
 
 

@@ -44,7 +44,9 @@ static const qreal NEWLAYERHI= 40;
 
 static const qreal MINIMUMJAVAVERSION= 1.6;
 
-static const qreal SCRIBEVERSION= 2.0;
+
+
+#define SCRIBEVERSION  "2.0.0"
 
 
 #define _APPLICATIONS_NAME_ \
@@ -164,11 +166,11 @@ static inline bool AllowtoBreack( const QDomElement e )
         }
 }
 
-static inline bool KnowMimeFile( const QString exte )
+static inline QStringList KnowMimeFile()
 {
  QStringList support;
  support << "fo" << "fop" << "page" "fop.gz" << "fo.gz" << "sxw" << "stw" << "odt" << "ott" << "htm" << "html"; 
- return support.contains(exte);
+ return support;
 }
                
                

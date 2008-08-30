@@ -32,6 +32,10 @@
     <addaction name="actionSaveAs" />
     <addaction name="separator" />
     <addaction name="convertFop" />
+    <addaction name="savescribePage" />
+    <addaction name="openScribe" />
+    <addaction name="separator" />
+    <addaction name="actionNewDoc" />
    </widget>
    <addaction name="menuFile" />
   </widget>
@@ -46,9 +50,12 @@
    <attribute name="toolBarBreak" >
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNewDoc" />
    <addaction name="actionGenralSave" />
    <addaction name="convertFop" />
    <addaction name="actionSaveAs" />
+   <addaction name="savescribePage" />
+   <addaction name="openScribe" />
    <addaction name="pagereformat" />
   </widget>
   <action name="actionExit" >
@@ -103,6 +110,33 @@
    </property>
    <property name="text" >
     <string>Apache FOP convert</string>
+   </property>
+  </action>
+  <action name="savescribePage" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/img/wp_save.png</normaloff>:/img/wp_save.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save as Page Scribe Format</string>
+   </property>
+  </action>
+  <action name="openScribe" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/img/wp_open.png</normaloff>:/img/wp_open.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Open Scribe Page Format</string>
+   </property>
+  </action>
+  <action name="actionNewDoc" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/img/edit.png</normaloff>:/img/edit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>New Document</string>
    </property>
   </action>
  </widget>

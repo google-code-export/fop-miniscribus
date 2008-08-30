@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
  <fo:layout-master-set>
-  <fo:simple-page-master page-height="297.052mm" master-name="A4_210_x_297_mm" page-width="209.888mm" >
+  <fo:simple-page-master page-height="297mm" master-name="A4_210_x_297_mm" page-width="210mm" >
    <fo:region-body margin-left="25mm" background-color="white" region-name="xsl-region-body" margin-bottom="25mm" margin-top="25mm" margin-right="15mm" />
   </fo:simple-page-master>
  </fo:layout-master-set>
@@ -9,269 +9,96 @@
  <fo:page-sequence master-reference="A4_210_x_297_mm" >
   <fo:title>MiniScribus ver. 2 - Untitled Document</fo:title>
   <fo:flow flow-name="xsl-region-body" >
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
+   <fo:block-container reference-orientation="0" width="103.313mm" margin-left="0mm" z-index="34.5061" absolute-position="absolute" background-color="rgb(231,231,231,255)" height="55.3805mm" left="95.3888mm" margin-bottom="0mm" position="absolute" id="layer_15" padding="0mm" margin-top="0mm" margin-right="0mm" top="47.8758mm" imgcount="0" >
+    <fo:block line-height="8pt" color="rgb(0,0,0,255)" font-size="8pt" >
+     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="8pt" leader-length="2.001%" >
+      <!--
 Sipmle Breack line / empty Paragraph version 1.001. 
 Use margin space to make space!
 -->
-    </fo:leader>
-   </fo:block>
-   <fo:table border-right-style="outset" border-left-style="outset" border-top-color="rgb(0,0,0)" background-color="rgb(255,255,255,255)" border-bottom-width="1pt" border-bottom-style="outset" border-top-style="outset" border-left-width="1pt" border-top-width="1pt" border-left-color="rgb(0,0,0)" border-right-color="rgb(0,0,0)" border-bottom-color="rgb(0,0,0)" border-right-width="1pt" >
-    <fo:table-column column-width="300pt" />
-    <fo:table-column column-width="200pt" />
-    <fo:table-body border-right-style="outset" border-left-style="outset" border-top-color="rgb(0,0,0)" background-color="rgb(255,255,255,255)" border-bottom-width="1pt" border-bottom-style="outset" border-top-style="outset" border-left-width="1pt" border-top-width="1pt" border-left-color="rgb(0,0,0)" border-right-color="rgb(0,0,0)" border-bottom-color="rgb(0,0,0)" border-right-width="1pt" >
-     <fo:table-row>
-      <fo:table-cell>
-       <fo:block color="rgb(0,0,0,255)" font-size="16pt" >
-Miniscribus</fo:block>
-       <fo:block margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
-version 2.0.0 beta</fo:block>
-       <fo:block margin-bottom="1pt" line-height="17pt" color="rgb(0,0,0,255)" font-size="16pt" >
-        <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="17pt" leader-length="2.001%" >
-         <!--
+     </fo:leader>
+    </fo:block>
+    <fo:block margin-left="11pt" font-family="Arial" margin-bottom="1pt" margin-top="22pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Main place from all static lib</fo:block>
+    <fo:block margin-left="11pt" font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+modules/</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" line-height="14pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="14pt" leader-length="2.001%" >
+      <!--
 Sipmle Breack line / empty Paragraph version 1.001. 
 Use margin space to make space!
 -->
-        </fo:leader>
-       </fo:block>
-       <fo:block margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-this is a complete new project fork from Miniscribus version 1.3</fo:block>
-       <fo:block margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-and a this moment is still beta.</fo:block>
-      </fo:table-cell>
-      <fo:table-cell>
-       <fo:block line-height="10pt" color="rgb(0,0,0,255)" >
-        <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="10pt" leader-length="2.001%" >
-         <!--
+     </fo:leader>
+    </fo:block>
+    <fo:block margin-left="11pt" font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Running ready module</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" line-height="14pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="14pt" leader-length="2.001%" >
+      <!--
 Sipmle Breack line / empty Paragraph version 1.001. 
 Use margin space to make space!
 -->
-        </fo:leader>
-       </fo:block>
-      </fo:table-cell>
-     </fo:table-row>
-    </fo:table-body>
-   </fo:table>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
+     </fo:leader>
+    </fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" line-height="14pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="14pt" leader-length="2.001%" >
+      <!--
 Sipmle Breack line / empty Paragraph version 1.001. 
 Use margin space to make space!
 -->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
+     </fo:leader>
+    </fo:block>
+   </fo:block-container>
+   <fo:block-container reference-orientation="0" width="102.305mm" margin-left="0mm" z-index="23.7529" absolute-position="absolute" background-color="rgb(255,170,0,120)" height="33.5138mm" left="97.0137mm" margin-bottom="0mm" position="absolute" id="layer_14" padding="0mm" margin-top="0mm" margin-right="0mm" top="117.676mm" imgcount="0" >
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+modules/apng/</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Firefox png-lib</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Animated Portable Network Graphics</fo:block>
+   </fo:block-container>
+   <fo:block-container reference-orientation="0" width="102.305mm" margin-left="0mm" z-index="42.4526" absolute-position="absolute" background-color="rgb(184,184,184,120)" height="33.5138mm" left="98.5256mm" margin-bottom="0mm" position="absolute" id="layer_13" padding="0mm" margin-top="0mm" margin-right="0mm" top="196.043mm" imgcount="0" >
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+modules/ooo/</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Converter from OpenOffice</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+to QTextDocument QT4.4</fo:block>
+   </fo:block-container>
+   <fo:block-container reference-orientation="0" width="102.305mm" margin-left="0mm" z-index="30.6995" absolute-position="absolute" background-color="rgb(0,243,243,120)" height="33.5138mm" left="99.0296mm" margin-bottom="0mm" position="absolute" id="layer_12" padding="0mm" margin-top="0mm" margin-right="0mm" top="235.101mm" imgcount="0" >
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+modules/zip/</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Open GZIP svg vector image</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+an zip read &amp;amp; Write normal compression</fo:block>
+   </fo:block-container>
+   <fo:block-container reference-orientation="0" width="102.305mm" margin-left="0mm" z-index="34.1728" absolute-position="absolute" background-color="rgb(167,255,202,120)" height="33.5138mm" left="98.0217mm" margin-bottom="0mm" position="absolute" id="layer_11" padding="0mm" margin-top="0mm" margin-right="0mm" top="156.734mm" imgcount="0" >
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+modules/tidy/</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+correction from some XML or HTML</fo:block>
+   </fo:block-container>
+   <fo:block-container id="layer_10" margin-bottom="0mm" z-index="37.9794" margin-right="0mm" border-width="1pt" margin-top="0mm" reference-orientation="350" absolute-position="absolute" position="absolute" padding="0mm" background-color="rgb(240,255,187,110)" width="64.2054mm" top="69.734mm" imgcount="0" height="104.069mm" border-start-color="#ff0000" margin-left="0mm" left="17.3674mm" >
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Battleplan:</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+Other module to append</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+aspell</fo:block>
+    <fo:block font-family="Arial" margin-bottom="1pt" line-height="14pt" margin-top="1pt" color="rgb(0,0,0,255)" font-size="12pt" >
+     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="14pt" leader-length="2.001%" >
+      <!--
 Sipmle Breack line / empty Paragraph version 1.001. 
 Use margin space to make space!
 -->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-You can try it and report any error / bug on page:</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-    <fo:basic-link external-destination="http://code.google.com/p/fop-miniscribus/issues/list" text-decoration="underline" color="rgb(220,0,0,255)" font-size="8pt" >http://code.google.com/p/fop-miniscribus/issues/list </fo:basic-link>
-    <fo:inline font-size="8pt" >
-.</fo:inline>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-At this time pdf is possibel to create on</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Apache FOP (Formatting Objects Processor)</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
-    <fo:inline font-size="8pt" >
-Icon:</fo:inline>
-    <fo:external-graphic width="48px" scaling="non-uniform" height="48px" content-width="48px" content-height="48px" src="./Pictures/arts-environment-48x48.png" />
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Supported XSL-FO tage are:</fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-PAGE_SETUP, /* fo:simple-page-master */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-BLOCK_TAG, /* fo:block */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_TAG, /* fo:table */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_FOOTER, /* table-footer */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_HEADER, /* table-header */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_BODY, /* fo:table-body */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_COL, /* fo:table-column */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_ROW, /* fo:table-row */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-TABLE_CELL, /* fo:table-cell */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-BLOCK_CONTAINER, /* fo:block-container floating layer */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-INLINE_STYLE, /* fo:inline */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-INLINE_CONTAINER, /* fo:inline-container */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-LINK_DOC, /* fo:basic-link */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-IMAGE_SRC, /* fo:external-graphic all supported qt4.4 image + tif */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-IMAGE_INLINE, /* fo:instream-foreign-object svg inline */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-LIST_BLOCK, /* fo:list-block ul/ol */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-LIST_ITEM, /* fo:list-item li */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-LIST_BODY, /* fo:list-item-body */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-LIST_LABEL, /* fo:list-item-label */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FIRST_LAST_TAG, /* fo:root */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-INLINE_BR, /* fo:br provisional line breack*/</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FOCHAR, /* fo:character */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FOLEADER, /* fo:leader inline space */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FOOTNOTEBOTTOM, /* fo:footnote - fo:footnote-body */</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FOPAGENRCITATION, /* fo:page-number-citation*/</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FOPAGENRPRINT, /* fo:page-number*/</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FLOATBLOCK /* fo:float */</fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-PDF BookMark:</fo:block>
-   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-fo:bookmark only running if the file is render on Apache FOP (Formatting Objects Processor) version after 0.95
-</fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:inline/>
-    <fo:external-graphic width="200px" scaling="non-uniform" height="201px" content-width="200px" content-height="201px" src="./Pictures/fopformat.png" />
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="11pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="11pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
+     </fo:leader>
+    </fo:block>
+   </fo:block-container>
+   <fo:block font-family="Palatino Linotype" font-weight="bold" text-decoration="underline" color="rgb(0,0,0,255)" font-size="20pt" >
+MiniScribus Scribe Version 2.0.0</fo:block>
+   <fo:block line-height="8pt" color="rgb(0,0,0,255)" font-size="8pt" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="8pt" leader-length="2.001%" >
      <!--
 Sipmle Breack line / empty Paragraph version 1.001. 
 Use margin space to make space!
