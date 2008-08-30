@@ -11,7 +11,7 @@ int main( int argc, char ** argv )
     app.setOrganizationDomain("crosskern.com");
     app.setApplicationName(_APPLICATIONS_NAME_);
     
-    qDebug() << "### main start--------------- ";
+    //////////////qDebug() << "### main start--------------- ";
     
     ApiSession *sx = ApiSession::instance();
     MainWindow *gmain = new MainWindow();

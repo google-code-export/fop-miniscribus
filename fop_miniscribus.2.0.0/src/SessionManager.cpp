@@ -25,7 +25,7 @@ ApiSession::ApiSession()
   
   FF_db = QFontDatabase();
   SessionID = qrand () % 1000;
-  qDebug() << "### session init...."  << SessionID;
+  ///////qDebug() << "### session init...."  << SessionID;
   
   history_page_norms.clear();
   

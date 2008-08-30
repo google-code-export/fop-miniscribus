@@ -159,8 +159,8 @@ void Fo_Reader::read()
     Tcursor.setPosition(0);
     /* header & footer here ! */
     QDomElement page = master.firstChildElement("fo:flow");
-    qDebug() << "### Docwidth  " << Docwidth;
-    qDebug() << "### START READ DOCUMENT ################################################################";
+    /////////qDebug() << "### Docwidth  " << Docwidth;
+    ///////////qDebug() << "### START READ DOCUMENT ################################################################";
     RootFramePaint(page);
     /*
     QString debugtext = session->DebugAttributes();
@@ -213,9 +213,9 @@ void Fo_Reader::read()
     }
     
     doc_cur = Tcursor.position();
-    qDebug() << "### layerYCurrentRead  " << layerYCurrentRead << "--------------------------------------------------------";
-    qDebug() << "### blockcount  " << Qdoc->blockCount() << "--------------------------------------------------------";
-    qDebug() << "### blockcount  " << allrect.toRect() << "--------------------------------------------------------";
+    ////////qDebug() << "### layerYCurrentRead  " << layerYCurrentRead << "--------------------------------------------------------";
+    /////////qDebug() << "### blockcount  " << Qdoc->blockCount() << "--------------------------------------------------------";
+    ///////////qDebug() << "### blockcount  " << allrect.toRect() << "--------------------------------------------------------";
      
 }
 
@@ -230,7 +230,7 @@ void Fo_Reader::appendPageParaBreak( QTextCursor Cinline , bool fullsize )
                 Cinline.setBlockFormat(PageBreackBlock());
                 }
                 Cinline.endEditBlock();
-    qDebug() << "### appendPageParaBreak  action -------------------------------------------------------";
+   //////////// qDebug() << "### appendPageParaBreak  action -------------------------------------------------------";
 }
 
 
@@ -348,7 +348,7 @@ void Fo_Reader::RootFramePaint( const QDomElement e )
             {
                 FoBlockTagPaint(el,Tcursor);  /* root blocks */
                 MoveEndDocNow();
-                qDebug() << "### paragraph  " << tagposition << " ------------------------------------------------------------------------------";
+                ////////////qDebug() << "### paragraph  " << tagposition << " ------------------------------------------------------------------------------";
             }
             else if ( FoTag(el) == FOOTNOTEBOTTOM  )
             {
@@ -401,7 +401,7 @@ void Fo_Reader::RootFramePaint( const QDomElement e )
     doc_cur = Tcursor.position();
     MoveEndDocNow();
 
-    qDebug() << "### END READ DOCUMENT ################################################################";
+    ///////////qDebug() << "### END READ DOCUMENT ################################################################";
 }
 /* only root block */
 
@@ -633,7 +633,7 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
         HandleSpace = false;
     }
     int BlockNummer = Cinline.block().position();
-    qDebug() << "### InlineBlockLoop top margin  " << bbformat.topMargin() << "BB nr.->" << BlockNummer << "BB tree level->" << Current_Block_Tree_Level;
+    ///////////qDebug() << "### InlineBlockLoop top margin  " << bbformat.topMargin() << "BB nr.->" << BlockNummer << "BB tree level->" << Current_Block_Tree_Level;
     Cinline.setBlockFormat(blf);
     Cinline.setCharFormat(Charformat);
 
@@ -649,7 +649,7 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
             const QDomElement childElement = child.toElement();
             const QTextCharFormat InlineStyle = GlobalCharFormat(childElement,Charformat);
             
-            qDebug() << "### BLock loop Iterator  " << childElement.tagName() << " pos." << tagposition;
+           //////////// qDebug() << "### BLock loop Iterator  " << childElement.tagName() << " pos." << tagposition;
 
             if ( !childElement.hasAttributes()  && !childElement.hasChildNodes() )
             {
@@ -724,11 +724,11 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
             else if ( FoTag(childElement) == IMAGE_INLINE  )
             {
                 FoDrawSvgInline( childElement );
-                qDebug() << "##   svg image paint    ";
+                /////////qDebug() << "##   svg image paint    ";
             }
             else if ( FoTag(childElement) == IMAGE_SRC  )
             {
-                qDebug() << "##   normal image paint1   ";
+               //////////// qDebug() << "##   normal image paint1   ";
                 
                 FoDrawImage( childElement );
             }
@@ -1517,7 +1517,7 @@ bool Fo_Reader::FoTableTagPaint( const QDomElement e  , QTextCursor Cursor )
     QTextTable *qtable = Cursor.insertTable(qMax (rowCounter,MultipleBodyTableRowLine),columnCounter);
     
     QTextTableFormat tableFormat = qtable->format();
-    tableFormat.setBorder(PaintFrameFormat(e,QTextFrameFormat()).border() > 0 ? 0.3 : 0);
+    tableFormat.setBorder(0);
     tableFormat.setCellSpacing(2.2);
     tableFormat.setCellPadding(2.2);
     if (constraints.count()  ==  columnCounter)
@@ -1559,7 +1559,7 @@ bool Fo_Reader::FoTableTagPaint( const QDomElement e  , QTextCursor Cursor )
                                     cell = qtable->cellAt(gorow,gocool);
                                 }
                                 
-                                if (!FoTableCellLoop(domcell,cell)) {
+                                if (!FoTableCellLoop(domcell,cell,Cursor)) {
                                    ///////////qWarning() << "Error on parse table cell  row:" << gorow << " column:" << gocool; 
                                 }
                                 
@@ -1589,7 +1589,7 @@ bool Fo_Reader::FoTableTagPaint( const QDomElement e  , QTextCursor Cursor )
 }
 
 
-bool Fo_Reader::FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  , qreal maxhight )
+bool Fo_Reader::FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  ,  QTextCursor Cursor  , qreal maxhight )
 {
     const QString fotag = e.tagName().toLower();
     if ( fotag != "fo:table-cell")
@@ -1712,11 +1712,11 @@ bool Fo_Reader::FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  , 
     }
 
     BlockfindBorder.setTopMargin ( FutureFrametopPadding );
-    QTextCursor Cellcursor = cell.firstCursorPosition();
-    int LastCellCurorrisPos = Cellcursor.position();
+    QTextCursor tmpcur  = cell.firstCursorPosition();
+    Cursor.setPosition(tmpcur.position());
     /* reset only if not miniscribus signature */
 
-
+/*
     if (makeframe)
     {
         QTextFrame *Divframe = Cellcursor.insertFrame(BlockfindBorder);
@@ -1724,11 +1724,11 @@ bool Fo_Reader::FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  , 
         Cellcursor.setPosition(poscuuuri);
         td_format.setVerticalAlignment ( QTextCharFormat::AlignTop );
     }
-
-    FrameDomIterator(e.firstChild(),Cellcursor);
+*/
+    FrameDomIterator(e.firstChild(),Cursor);
     td_format.setBackground(bgcolor);
     cell.setFormat(td_format);
-    LastCellCurorrisPos = Cellcursor.position();
+    int ramnottoclassPos = Cursor.position();
     return true;
 }
 
@@ -1777,7 +1777,7 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
             }
             else if ( FoTag(el) == IMAGE_SRC  )
             {
-                qDebug() << "##   normal image paint2    ";
+               //////////// qDebug() << "##   normal image paint2    ";
                 FoDrawImage(el,Cinline);
             }
             else
@@ -1794,7 +1794,7 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
         node = node.nextSibling();
     }
 
-    LastCellCurorrisPos = Cinline.position();
+    ////////////////LastCellCurorrisPos = Cinline.position();
 }
 
 

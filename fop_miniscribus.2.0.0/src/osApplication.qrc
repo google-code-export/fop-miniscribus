@@ -179,5 +179,8 @@
   <qresource prefix="/file" >
     <file>recfile/sxw2xhtml.xsl</file>
     <file>recfile/odt2html.xsl</file>
+    <file>recfile/doc2.fo</file>
+    <file>recfile/main_doc.page</file>
+    <file>recfile/developer_doc.page</file>
   </qresource>
 </RCC>

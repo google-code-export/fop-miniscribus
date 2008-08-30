@@ -16,6 +16,24 @@ message( "../config.pri not found" )
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/ooo
 
 
+
+CONFIG -= app_bundle
+
+#Require at least Qt 4.4.1
+QT_VERSION = $$[QT_VERSION]
+QT_VERSION = $$split(QT_VERSION, ".")
+QT_VER_MAJ = $$member(QT_VERSION, 0) 
+QT_VER_MIN = $$member(QT_VERSION, 1) 
+QT_VER_PAT = $$member(QT_VERSION, 2) 
+
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) | lessThan(QT_VER_PAT, 1) {
+   error(QTextPanel requires Qt 4.4.1 or newer. Version $$[QT_VERSION] was detected.)
+}
+
+
+
+
+
 MOC_DIR = build/.moc
 RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj

@@ -49,7 +49,7 @@ protected:
     bool FoBlockContainerPaint( const QDomElement e , QTextCursor Cinline ); /*  fo:block-container  */
 
     bool FoTableTagPaint( const QDomElement e  , QTextCursor Cursor ); /* fo:table  */
-    bool FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  , qreal maxhight = 0. );  /* cell inside loop */
+    bool FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  ,  QTextCursor Cursor , qreal maxhight = 0. );  /* cell inside loop */
 
     bool FoListUlTagPaint( const QDomElement e  );   /* fo:list-item */
     bool InlineSpanning( const QDomElement e , const QDomElement parentup  , QTextCursor Cinline , bool HandleSpace = true );
