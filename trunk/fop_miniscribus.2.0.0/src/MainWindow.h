@@ -38,7 +38,7 @@ protected:
     PaperEditor *edit;  /* edit = new  PaperEditor(this) */
     QAction  *actioBooks;
     QSettings setter;
-
+QToolButton *tbooks;
 QDockWidget *pdfBookMarkManager;
 BookTree *treeBooks;
 
@@ -57,6 +57,7 @@ public slots:
 private slots:
     /* remake action to cursor */
 void menuUpdate( bool modus );
+void showBooks(bool e );
 
 };
 
@@ -82,7 +83,7 @@ protected:
     QString currentopenfilealternate;
     bool gzippedfile;
     QTextCodec *currentfilecodec;
-
+    
 
 private:
     
@@ -92,6 +93,7 @@ signals:
   void inBookmark(QStringList);
   void inBookmark(QStringList,QStandardItemModel*);
   void fileBaseOpen(QString);
+  void bookMarkActive(bool);
 public slots:
     void viewDisplay( const QRectF area );
      void DisplayTop();
