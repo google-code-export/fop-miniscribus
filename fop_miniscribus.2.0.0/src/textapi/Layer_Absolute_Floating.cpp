@@ -856,7 +856,7 @@ void AbsoluteLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         inlineFrameUnderCursor = true;
     }
 
-   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE
+   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_ITALIC 
 , FTXT_STRIKOUT , FTXT_OVERLINE , FLINK_TEXT , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG , 
 FTXT_COLOR , 
 ZINDEX_MIN , ZINDEX_MAX , F_REMLAYER , PLAY_SOURCE_LAYER , F_SEPARATOR  , F_NONE };
@@ -955,6 +955,7 @@ void AbsoluteLayer::MakeAllCommand()
     QTextCharFormat fo = c.charFormat();
     QFont f = fo.font();
     bool isbold = textCursor().charFormat().font().bold() == true ? true : false;
+    bool isitalic = textCursor().charFormat().fontItalic() == true ? true : false;
     bool isunderline = c.charFormat().underlineStyle() == QTextCharFormat::NoUnderline ? false : true;
     bool inlineFrameUnderCursor = false;
     if (c.currentFrame() && c.currentFrame() != RootFrame) {
@@ -984,6 +985,11 @@ void AbsoluteLayer::MakeAllCommand()
     dync->registerCommand_F(AbsoluteCmd(FTXT_STRIKOUT,true,f.strikeOut(),tr("Text Strikeout "),QIcon(":/img/texstrickout.png"),QKeySequence(),dev->txtControl(),SLOT(StrickText()),true));
     dync->registerCommand_F(AbsoluteCmd(FTXT_OVERLINE,true,f.overline(),tr("Text Overline"),QIcon(":/img/texoverline.png"),QKeySequence(),dev->txtControl(),SLOT(OverlineText()),true));
     dync->registerCommand_F(AbsoluteCmd(FTXT_FONTS,false,false,tr("Text Fonts"),QIcon(":/img/textpointer.png"),QKeySequence(),dev->txtControl(),SLOT(FontText()),true));
+    
+    dync->registerCommand_F(AbsoluteCmd(FTXT_ITALIC,true,isitalic,tr("Text Italic"),QIcon(":/img/textitalic.png"),QKeySequence("Ctrl+I"),dev->txtControl(),SLOT(ItalicText()),true));
+    
+    
+    
     
     
     dync->registerCommand_F(AbsoluteCmd(FTXT_BG_COLOR,false,false,tr("Text Fragment Background color"),TXTBGcolorico,QKeySequence(),dev->txtControl(),SLOT(BGcolor()),true));

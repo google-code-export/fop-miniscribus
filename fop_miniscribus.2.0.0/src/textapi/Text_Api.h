@@ -210,7 +210,7 @@ public slots:
   void redo();
   void selectAll();
   void InsertImageonCursor();
-
+  void ItalicText();
   void UnderlineText();
   void StrickText();
   void OverlineText();
@@ -272,7 +272,7 @@ public:
   QRectF boundingRect();
   void paintStyle( QPainter * painter , const QRectF rect , bool print = false );
   void paintMarginCover( QPainter * painter , const QRectF rect , bool print = false );
-  void paintPage( const int index  , QPainter * painter );
+  void paintPage( const int index  , QPainter * painter, bool currentprintrender = false );
   QPointF PageIndexTopLeft( const int index  );
   M_PageSize PAGE_MODEL;
 private:
