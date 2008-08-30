@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = xx
+TARGET = scribe
 DEPENDPATH += . bookmark foformat paperformat textapi ui
 INCLUDEPATH += . bookmark foformat paperformat textapi ui
 
@@ -22,7 +22,7 @@ OBJECTS_DIR = build/.obj
 
 CONFIG +=  qt debug warn_off console
 LIBS += $$BUILD_TREE_PATH/lib/libtxtscribe.$$LIB_EXTENSION
-DESTDIR	+= ./
+DESTDIR	+= ../
 QT += xml
 QT += network
 QT += svg 
