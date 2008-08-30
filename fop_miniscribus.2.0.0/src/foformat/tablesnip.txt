@@ -1,0 +1,311 @@
+    if (FoTag(e) != TABLE_TAG)
+    {
+        return false;
+    }
+    QTextTableCell cell;
+    int RowLineNummer = -1;   /* cell and row count from 0 */
+    int MultipleBodyTableRowLine = -1;   /* cell and row count from 0 */
+    qreal MaxHeightCellContenent = 0;
+
+    /* check for multiple body */
+    QDomNode bchild = e.firstChild();
+    while ( !bchild.isNull() )
+    {
+        if ( bchild.isElement() )
+        {
+            const QDomElement tde = bchild.toElement();
+            if (FoTag(tde) == TABLE_BODY || FoTag(tde) == TABLE_FOOTER || FoTag(tde) == TABLE_HEADER )
+            {
+                QDomElement multirows = tde.firstChildElement("fo:table-row");
+                while (!multirows.isNull())
+                {
+                    MultipleBodyTableRowLine++;
+                    multirows = multirows.nextSiblingElement("fo:table-row");
+                }
+
+            }
+        }
+        bchild = bchild.nextSibling();
+    }
+    /* check for multiple body */
+
+
+
+
+    QTextLength table_wi = BlockMesure(e);
+    qreal width_double =  table_wi.rawValue();
+
+    const int ORIGINALCURSOR_POSITION = doc_cur;
+    int LastCellCurorrisPos = -1;
+
+    ////////////////////qDebug() << "### TTTTTTTTTTTTTTable..................init" << width_double << " type->" << table_wi.type();
+    Tcursor.setPosition(doc_cur);
+    doc_cur = Tcursor.position();
+
+    QDomElement bodytable = e.firstChildElement("fo:table-body");
+    int rowCounter = 0;
+    int columnCounter = 0;
+    QVector<QTextLength> constraints;
+    LastTableCON.clear();
+
+
+    bool colum_WI_command = false;
+
+    QDomElement column = e.firstChildElement("fo:table-column");
+
+    /* column count and sett wi distance */
+    if (!column.isNull())
+    {
+        while (!column.isNull())
+        {
+            QTextLength cool_wi = BlockMesure(column);
+            const int MiTx = cool_wi.type();
+            if (cool_wi.rawValue() !=100 &&  MiTx != 2 )
+            {
+                colum_WI_command = true;  /* width from table-column not table */
+                constraints.insert(columnCounter,cool_wi);
+            }
+            columnCounter++;
+            column = column.nextSiblingElement("fo:table-column");
+        }
+    }
+    LastTableCON = constraints;
+    QDomElement rows = bodytable.firstChildElement("fo:table-row");
+    if (rows.isNull())
+    {
+        return false;
+    }
+    if (columnCounter == 0)    /* unable to count fo:table-column */
+    {
+        QDomElement CCceller = rows.firstChildElement("fo:table-cell");
+        while (!CCceller.isNull())
+        {
+            columnCounter++;
+            CCceller = CCceller.nextSiblingElement("fo:table-cell");
+        }
+    }
+
+
+    while (!rows.isNull())
+    {
+        rowCounter++;
+        rows = rows.nextSiblingElement("fo:table-row");
+    }
+
+
+
+
+    if (rowCounter !=0 && columnCounter!=0)
+    {
+        /* ok table having ...*/
+    }
+    else
+    {
+        return false;
+    }
+
+    QDomElement headetable = e.firstChildElement("fo:table-header");
+    if (!headetable.isNull())
+    {
+        /* hey found header row cool !!!!!!!!!!!!!!*/
+        rowCounter++;  /* more one line */
+    }
+    QDomElement footertable = e.firstChildElement("fo:table-footer");
+    if (!footertable.isNull())
+    {
+        /* hey found header row cool !!!!!!!!!!!!!!*/
+        rowCounter++;  /* more one line */
+    }
+    if (MultipleBodyTableRowLine == 0)
+    {
+        return false;
+    }
+    if (MultipleBodyTableRowLine != rowCounter)
+    {
+        /* bastard table insert multiple body !!!! */
+        rowCounter = MultipleBodyTableRowLine;
+    }
+
+    /////////////////qDebug() << "### Row........." << rowCounter  << MultipleBodyTableRowLine;
+
+
+    QTextTable *qtable = Tcursor.insertTable( rowCounter, columnCounter );
+
+    if (!headetable.isNull())
+    {
+        QDomElement  trlastelemnt = headetable.firstChildElement("fo:table-row");
+        if (trlastelemnt.isNull())
+        {
+            return false;
+        }
+        RowLineNummer++;
+        int cool = -1;
+        QDomElement columnElement = trlastelemnt.firstChildElement();   /* sub element from row */
+        while ( !columnElement.isNull() )
+        {
+
+            if ( columnElement.tagName().toLower() == "fo:table-cell" )
+            {
+                cool++;
+                const int is_spancol = columnElement.attribute( "number-columns-spanned","0").simplified().toInt();
+                if (is_spancol > 1)
+                {
+                    for (int i = 0; i < is_spancol; ++i)
+                    {
+                        //////QTextTableCell cellstart = qtable->cellAt(RowLineNummer,columnCounter + i);
+
+                        /* format cell */
+
+                    }
+                    qtable->mergeCells ( RowLineNummer ,cool,1,is_spancol);  /* last zero no merge */
+                    cell = qtable->cellAt( RowLineNummer , cool );
+                }
+                else
+                {
+                    cell = qtable->cellAt( RowLineNummer , cool );
+                }
+
+                bool success = FoTableCellLoop(columnElement,cell);
+                ////////////////qDebug() << "### RowLineNummer " << RowLineNummer << " cool |" << cool <<  " cursor " << success;
+            }
+
+
+
+            columnElement = columnElement.nextSiblingElement();
+        }
+
+    }
+
+
+
+    trlastelemnt = bodytable.firstChildElement("fo:table-row");
+    if (trlastelemnt.isNull())
+    {
+        return false;
+    }
+
+    while (!trlastelemnt.isNull())
+    {
+        RowLineNummer++;
+        int cool = -1;
+
+        MaxHeightCellContenent = 0; /* restore reset by line height */
+        MaxHeightCellContenent = TrLineMaxHight(trlastelemnt,constraints);
+        QDomElement columnElement = trlastelemnt.firstChildElement();   /* sub element from row */
+
+
+        while ( !columnElement.isNull() )
+        {
+            if ( columnElement.tagName().toLower() == "fo:table-cell" )
+            {
+                cool++;
+
+                const int is_spancol = columnElement.attribute( "number-columns-spanned","0").simplified().toInt();
+
+
+
+                /* number-columns-spanned  td */
+                if (is_spancol > 1)
+                {
+                    for (int i = 0; i < is_spancol; ++i)
+                    {
+                        //////QTextTableCell cellstart = qtable->cellAt(RowLineNummer,columnCounter + i);
+
+                        /* format cell */
+
+                    }
+                    qtable->mergeCells ( RowLineNummer ,cool,1,is_spancol);  /* last zero no merge */
+                    cell = qtable->cellAt( RowLineNummer , cool );
+                }
+                else
+                {
+                    cell = qtable->cellAt( RowLineNummer , cool );
+                }
+                bool success = FoTableCellLoop(columnElement,cell,MaxHeightCellContenent);
+                ///////////qDebug() << "### RowLineNummer " << RowLineNummer << " cool |" << cool <<  " cursor " << success;
+            }
+            columnElement = columnElement.nextSiblingElement();
+        }
+
+
+
+
+
+        trlastelemnt = trlastelemnt.nextSiblingElement("fo:table-row");
+    }
+
+
+    if (!footertable.isNull())
+    {
+        QDomElement  trlastelemnt = footertable.firstChildElement("fo:table-row");
+        if (trlastelemnt.isNull())
+        {
+            return false;
+        }
+        RowLineNummer++;
+        int cool = -1;
+        QDomElement columnElement = trlastelemnt.firstChildElement();   /* sub element from row */
+
+        //////////QRect  Fo_Format::Fo_Format::BlockRect( const QDomElement e , qreal largespace )
+
+
+
+        while ( !columnElement.isNull() )
+        {
+
+            if ( columnElement.tagName().toLower() == "fo:table-cell" )
+            {
+                cool++;
+                const int is_spancol = columnElement.attribute( "number-columns-spanned","0").simplified().toInt();
+                if (is_spancol > 1)
+                {
+                    for (int i = 0; i < is_spancol; ++i)
+                    {
+                        //////QTextTableCell cellstart = qtable->cellAt(RowLineNummer,columnCounter + i);
+
+                        /* format cell */
+
+                    }
+                    qtable->mergeCells ( RowLineNummer ,cool,1,is_spancol);  /* last zero no merge */
+                    cell = qtable->cellAt( RowLineNummer , cool );
+                }
+                else
+                {
+                    cell = qtable->cellAt( RowLineNummer , cool );
+                }
+
+                bool success = FoTableCellLoop(columnElement,cell);
+                //////////////qDebug() << "### RowLineNummer " << RowLineNummer << " cool |" << cool <<  " cursor " << success;
+            }
+
+
+
+            columnElement = columnElement.nextSiblingElement();
+        }
+
+    }
+
+    qDebug() << "### columnCounter" << columnCounter;
+    qDebug() << "### rowCounter" << rowCounter;
+    
+    
+    QTextTableFormat tableFormat = qtable->format();
+    tableFormat.setBorder(PaintFrameFormat(e,QTextFrameFormat()).border() > 0 ? 0.6 : 0);
+    tableFormat.setCellSpacing(0);
+    tableFormat.setCellPadding(0);
+    if (colum_WI_command)
+    {
+        tableFormat.setColumnWidthConstraints(constraints);
+    }
+    if (!e.attribute("background-color").isEmpty())
+    {
+        tableFormat.setBackground(ColorFromFoString(e.attribute("background-color")));
+    }
+
+    QTextLength table_large = BlockMesure(e);
+    tableFormat.setWidth ( table_large );
+
+    /* last */
+    qtable->setFormat( tableFormat );
+    MoveEndDocNow();
+    doc_cur = Tcursor.position();
