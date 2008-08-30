@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
+     <fo:layout-master-set master-name="A4_210_x_297_mm" writing-mode="lr-tb" >
+          <fo:simple-page-master page-height="297mm" master-name="A4_210_x_297_mm" page-width="210mm" >
+               <fo:region-body margin-left="25mm" background-color="white" region-name="xsl-region-body" margin-bottom="25mm" margin-top="25mm" margin-right="15mm" />
+               <fo:region-after reference-orientation="0" background-color="steelblue" region-name="xsl-region-after" extent="25mm" />
+               <fo:region-end reference-orientation="270" background-color="tomato" region-name="xsl-region-end" extent="15mm" />
+          </fo:simple-page-master>
+     </fo:layout-master-set>
+     <fo:bookmark-tree>
+          <fo:bookmark internal-destination="sec0" >
+               <fo:bookmark-title>Internal dest.0</fo:bookmark-title>
+               <fo:bookmark internal-destination="sec1" >
+                    <fo:bookmark-title>Internal dest.1</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec2" >
+                    <fo:bookmark-title>Internal dest.2</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec3" >
+                    <fo:bookmark-title>Internal dest.3</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec4" >
+                    <fo:bookmark-title>Internal dest.4</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec5" >
+                    <fo:bookmark-title>Internal dest.5</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec6" >
+                    <fo:bookmark-title>Internal dest.6</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec7" >
+                    <fo:bookmark-title>Internal dest.7</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec8" >
+                    <fo:bookmark-title>Internal dest.8</fo:bookmark-title>
+               </fo:bookmark>
+               <fo:bookmark internal-destination="sec9" >
+                    <fo:bookmark-title>Internal dest.9</fo:bookmark-title>
+               </fo:bookmark>
+          </fo:bookmark>
+     </fo:bookmark-tree>
+     <fo:page-sequence master-reference="A4_210_x_297_mm" >
+          <fo:title>MiniScribus ver. 2.0.0 - Untitled Document</fo:title>
+          <fo:static-content flow-name="xsl-region-after" >
+               <fo:block-container margin-left="1mm" overflow="hidden" background-color="steelblue" height="22mm" margin-bottom="1mm" padding="1mm" margin-top="1mm" margin-right="1mm" >
+                    <fo:block>.<!--Footer region / xsl-region-after -->
+                    </fo:block>
+               </fo:block-container>
+          </fo:static-content>
+          <fo:static-content flow-name="xsl-region-end" >
+               <fo:block-container margin-left="1mm" overflow="hidden" background-color="tomato" height="2mm" margin-bottom="25mm" padding="1mm" margin-top="1mm" margin-right="1mm" >
+                    <fo:block>.<!--Right  region / xsl-region-end -->
+                    </fo:block>
+               </fo:block-container>
+          </fo:static-content>
+          <fo:flow flow-name="xsl-region-body" >
+               <!--body blocks-->
+               <fo:block break-after="page" id="sec0" margin-top="2cm" >Hello World! ..........</fo:block>
+               <fo:block break-after="page" id="sec1" margin-top="2cm" >Hello World nr.1</fo:block>
+               <fo:block break-after="page" id="sec2" margin-top="2cm" >Hello World nr.2</fo:block>
+               <fo:block break-after="page" id="sec3" margin-top="2cm" >Hello World nr.3</fo:block>
+               <fo:block break-after="page" id="sec4" margin-top="2cm" >Hello World nr.4</fo:block>
+               <fo:block break-after="page" id="sec5" margin-top="2cm" >Hello World nr.5</fo:block>
+               <fo:block break-after="page" id="sec6" margin-top="2cm" >Hello World nr.6</fo:block>
+               <fo:block break-after="page" id="sec7" margin-top="2cm" >Hello World nr.7</fo:block>
+               <fo:block break-after="page" id="sec8" margin-top="2cm" >Hello World nr.8</fo:block>
+               <fo:block break-after="page" id="sec9" margin-top="2cm" >Hello World nr.9</fo:block>
+          </fo:flow>
+     </fo:page-sequence>
+</fo:root>
