@@ -73,10 +73,17 @@ pdfBookMarkManager->setAllowedAreas( Qt::LeftDockWidgetArea |  Qt::RightDockWidg
 addDockWidget(Qt::LeftDockWidgetArea,pdfBookMarkManager); 
 pdfBookMarkManager->setWindowTitle(tr("PDF BookMark"));
 pdfBookMarkManager->hide();
+    
+    
 actioBooks = pdfBookMarkManager->toggleViewAction();
 actioBooks->setIcon ( QIcon(":/img/document.png") );
 actioBooks->setText(tr("BookMark on document"));
-toolBar->addAction(actioBooks);
+
+tbooks = new QToolButton;
+tbooks->setDefaultAction (actioBooks);
+tbooks->setCheckable(true);
+    
+toolBar->addWidget(tbooks);
 /* bookmark manager */
     toolBar->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));   /* ui action */
     
@@ -128,12 +135,25 @@ toolBar->addAction(actioBooks);
     connect(openScribe, SIGNAL(triggered()),edit->view(), SLOT(openFile()));
     connect(edit->view(), SIGNAL(fileBaseOpen(QString)),this, SLOT(setWindowTitle(QString)));
     connect(actionNewDoc, SIGNAL(triggered()),edit->view(), SLOT(pageclear()));
+    connect(edit->view(), SIGNAL(bookMarkActive(bool)),this, SLOT(showBooks(bool)));
     
     
     
     
-    
-    
+}
+
+void MainWindow::showBooks( bool e )
+{
+    tbooks-> setChecked ( e );
+    if (e) {
+     if (!pdfBookMarkManager->isFloating ()) {
+         pdfBookMarkManager->setFloating (true);
+         pdfBookMarkManager->show();
+         pdfBookMarkManager->setFocus ( Qt::PopupFocusReason );
+     }
+    } else {
+        pdfBookMarkManager->hide();
+    }
 }
 
 void MainWindow::setFile( const QString file , const QString option )
@@ -184,6 +204,7 @@ TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FO
     
     
     
+    tb_0->addWidget ( new QLabel(tr("Free-floating txt:")) );
     
     tb_2->addAction(CommandStorage::instance()->actS(INSERT_TABLE));
     
@@ -229,6 +250,7 @@ void MainWindow::menuAbsoluteLayer()
 {
     
     tb_5->clear();
+    tb_5->addWidget ( new QLabel(tr("Absolute txt Layer:")) );
    
    AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_ITALIC , FTXT_STRIKOUT , FTXT_OVERLINE , FLINK_TEXT , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG , FTXT_COLOR , ZINDEX_MIN , ZINDEX_MAX , F_REMLAYER , PLAY_SOURCE_LAYER , F_SEPARATOR  , F_NONE };
 
@@ -470,8 +492,9 @@ void GraphicsView::openFile( const QString file )
         booki->openStream( chunkfop );
         QStandardItemModel *dat = booki->bookModel();
         QStringList  inlinks =  booki->linkList();
+      
         
-        /////////////qDebug() << "### session init...."  << inlinks;
+        qDebug() << "### dat->rowCount()..."  << dat->rowCount();
         
         fops->deleteLater(); 
         QTimer::singleShot(1, this, SLOT(zoomChain())); 
@@ -482,6 +505,11 @@ void GraphicsView::openFile( const QString file )
             saveAsFile();
         }
         
+        if (dat->rowCount() > 0) {
+        emit bookMarkActive(true);
+        } else {
+        emit bookMarkActive(false);  
+        }
         
         return;
     } else if ( ext ==  "sxw" || ext ==  "stw"   ) {
