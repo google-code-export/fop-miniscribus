@@ -579,7 +579,7 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     
     CommandStorage *dync = CommandStorage::instance();
     StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY , S_NONE };
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE ,
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_ITALIC , D_SEPARATOR  , TXT_UNDERLINE ,
 TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
   
@@ -763,7 +763,7 @@ void TextLayer::MakeDinamicCommand()
   
   const QIcon BlockBGcolorico = createColorToolButtonIcon(":/img/textpointer.png",textCursor().blockFormat().background().color());
   
-    
+    bool isitalic = textCursor().charFormat().fontItalic() == true ? true : false;
     
     CommandStorage *dync = CommandStorage::instance();
     dync->clearD();
@@ -788,6 +788,9 @@ dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img
      dync->registerCommand_D(DinamicCmd(BLOCK_BGCOLOR,false,false,tr("Paragraph Background color"),BlockBGcolorico,QKeySequence(),dev->txtControl(),SLOT(ParaBGcolor()),true));
     
     
+    dync->registerCommand_D(DinamicCmd(TXT_ITALIC,true,isitalic,tr("Text Italic"),QIcon(":/img/textitalic.png"),QKeySequence("Ctrl+I"),dev->txtControl(),SLOT(ItalicText()),true));
+    
+    //////dync->registerCommand_F(AbsoluteCmd(FTXT_ITALIC,true,isitalic,tr("Text Italic"),QIcon(":/img/textitalic.png"),QKeySequence("Ctrl+I"),dev->txtControl(),SLOT(ItalicText()),true));
     
     
     

@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/" >
     <file>img/_writteln.png</file>
+    <file>img/zzz.png</file>
     <file>img/texoverline.png</file>
     <file>img/texstrickout.png</file>
     <file>img/1day.png</file>

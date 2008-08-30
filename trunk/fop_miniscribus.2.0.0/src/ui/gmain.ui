@@ -12,6 +12,10 @@
   <property name="windowTitle" >
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="../osApplication.qrc" >
+    <normaloff>:/img/zzz.png</normaloff>:/img/zzz.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >

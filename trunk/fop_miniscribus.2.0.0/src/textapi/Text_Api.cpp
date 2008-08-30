@@ -2061,7 +2061,7 @@ void ScribePage::paintMarginCover( QPainter * painter , const QRectF rect , bool
 
 
 
-void ScribePage::paintPage( const int index  , QPainter * painter  )
+void ScribePage::paintPage( const int index  , QPainter * painter  , bool currentprintrender )
 {
 		const QPointF topleft = PageIndexTopLeft(index);
 	  QAbstractTextDocumentLayout::PaintContext CTX; 
@@ -2085,36 +2085,41 @@ void ScribePage::paintPage( const int index  , QPainter * painter  )
 		painter->setClipRect(view);
     CTX.clip = view;
 		
-		QColor BackHightlight("#0072ab");
-		BackHightlight.setAlpha(180);   /* original 150 */
+		QColor BackHightlighto("#a6ffc7");
+        BackHightlighto.setAlpha(140);
+
 
 	  
-		CTX.palette.setColor(QPalette::Text, Qt::black);
-		CTX.palette.setColor(QPalette::Highlight,BackHightlight);
-		CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
+		///////CTX.palette.setColor(QPalette::Text, Qt::black);
+		CTX.palette.setColor(QPalette::Highlight,BackHightlighto);
+		CTX.palette.setColor(QPalette::HighlightedText,QColor("navy"));
 		CTX.selections;
 		CTX.clip = view;
-	  CTX.cursorPosition = -1;
+	    CTX.cursorPosition = -1;
+        
+        
 		/* play cursor */
 		
-		if (!PlayCursorMode) {
+		if (!PlayCursorMode && Edit_On()) {
 		
 					if (cursortime) {
 						CTX.cursorPosition = C_cursor.position();
-					 }
-			 
-			 
-					if ( C_cursor.hasSelection()) {
-						QAbstractTextDocumentLayout::Selection Internal_selection;
-						Internal_selection.cursor = C_cursor;
-						cursorIsFocusIndicator = true;
-						QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
-						Internal_selection.format.setBackground(CTX.palette.brush(cg, QPalette::Highlight));
-						Internal_selection.format.setForeground(CTX.palette.brush(cg, QPalette::HighlightedText));
-						Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-						CTX.selections.append(Internal_selection);
-						
-					}
+					 } else {
+                        CTX.cursorPosition = -1;
+                     }
+                    
+                    
+                if (C_cursor.hasSelection() && !currentprintrender ) {
+                    cursorIsFocusIndicator  = true;
+					QAbstractTextDocumentLayout::Selection Internal_selection;
+					Internal_selection.cursor = C_cursor;
+                    QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
+                    Internal_selection.format.setBackground(CTX.palette.brush(cg, QPalette::Highlight));
+                    Internal_selection.format.setForeground(CTX.palette.brush(cg, QPalette::HighlightedText));
+                    Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+				   CTX.selections.append(Internal_selection);
+				}         
+                    
 		}
 			
 			
@@ -2313,6 +2318,16 @@ void TextProcessor::ChangeFormatDoc( bool e )
 	
 }
 
+
+void TextProcessor::ItalicText()
+ {
+	  QTextCursor c = textCursor();
+    QTextCharFormat format = c.charFormat();
+    format.setFontItalic(c.charFormat().fontItalic() == true ? false : true );
+	  c.setCharFormat(format);
+ }
+ 
+
 void TextProcessor::UnderlineText()
  {
 	  QTextCursor c = textCursor();
@@ -2502,18 +2517,18 @@ void TextProcessor::ParaBGcolor()
 
 void TextProcessor::FontsLetterSpacing()
  {
-   const qreal spacingnow = textCursor().charFormat().font().letterSpacing();  /////// QFont userfont = bf.font();
-   bool ok;
-   qreal space = QInputDialog::getDouble(0, tr("Font Letter Spacing"),
-                                        tr("Space:"),spacingnow,1,1000, 2, &ok);
-    if (space > 0 && ok) {
-    QTextCursor c = textCursor();
-    QTextCharFormat format = c.charFormat();
-        QFont ss = format.font();
-        ss.setLetterSpacing(QFont::AbsoluteSpacing,space);
-        format.setFont(ss);
-	    c.setCharFormat(format);
-    }
+   	const qreal spacingnow = textCursor().charFormat().fontLetterSpacing();
+	bool ok;
+	qreal space = QInputDialog::getDouble(0, tr("Font Letter Spacing"),
+	                                      tr("Space:"),spacingnow,90,2000, 2, &ok);
+	if (space > 0 && ok)
+	{
+		QTextCursor c = textCursor();
+		QTextCharFormat format = c.charFormat();
+		format.setFontLetterSpacing(space);
+		c.setCharFormat(format);
+	}
+
  }
 
 void TextProcessor::BGcolor()

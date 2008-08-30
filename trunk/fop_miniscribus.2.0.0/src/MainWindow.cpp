@@ -177,7 +177,7 @@ void MainWindow::menuUpdate( bool modus )
     
     
     
-    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE ,
+    DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_ITALIC ,
 TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
     DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
@@ -230,10 +230,8 @@ void MainWindow::menuAbsoluteLayer()
     
     tb_5->clear();
    
-AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE ,  F_SEPARATOR , FTXT_BOLD , FTXT_UNDERLINE
-, FTXT_STRIKOUT , FTXT_OVERLINE , FLINK_TEXT , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG , 
-FTXT_COLOR , 
-ZINDEX_MIN , ZINDEX_MAX ,  F_SEPARATOR  , F_REMLAYER ,  F_SEPARATOR  , FBLOCK_MARGINS , FBLOCK_BGCOLOR , F_SEPARATOR , FBLOCK_ALIGN_LEFT , FBLOCK_ALIGN_CENTER ,  FBLOCK_ALIGN_RIGHT , FBLOCK_ALIGN_JUSTIFY , F_NONE };
+   AbsCommandID BasicActions[] = { FTXTM_UNDO , FTXTM_REDO , FTXTM_SELECTALL , F_SEPARATOR, FTXTM_COPY , FTXTM_CUT , FTXTM_PASTE , F_SUBMENUS , FTXT_BOLD , FTXT_UNDERLINE , FTXT_ITALIC , FTXT_STRIKOUT , FTXT_OVERLINE , FLINK_TEXT , FTXT_NOBREAKLINE , FFONT_LETTER_SPACING , F_SEPARATOR ,  FTXT_FONTS , FTXT_BG_COLOR , FBLOCK_BGCOLOR , FLAYER_BG , FTXT_COLOR , ZINDEX_MIN , ZINDEX_MAX , F_REMLAYER , PLAY_SOURCE_LAYER , F_SEPARATOR  , F_NONE };
+
 
  for (int j = 0; BasicActions[j] != F_NONE; j++) {
         AbsCommandID id = BasicActions[j];
@@ -344,6 +342,13 @@ bool GraphicsView::eventFilter(QObject *obj, QEvent *e)
                                       //////////qDebug() << "### event dd yes";
                                       filefound = true;
                                   } else {
+                                      
+                                        if (extension == "fo" || extension == "fop" ) {
+                                        openFile( fi.absoluteFilePath() );
+                                        filefound = true;
+                                        }
+                                      
+                                      
                                      ////////////// qDebug() << "### event dd no";
                                   }
                                   
