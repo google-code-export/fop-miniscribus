@@ -7,6 +7,11 @@ TARGET = scribe
 DEPENDPATH += . bookmark foformat paperformat textapi ui
 INCLUDEPATH += . bookmark foformat paperformat textapi ui
 
+message("--------------------------------------------")
+message("Build on debug mode + console")
+message("Swap src.pro ,  debug.pro  to leave console debug")
+message("--------------------------------------------")
+
 
 
 !include( ../config.pri ) {
@@ -23,11 +28,14 @@ QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
 CONFIG+=x86 ppc
 }
 
-
+##########   debug work xx 
 win32:RC_FILE = win.rc
+win32:TARGET = xx
+macx:TARGET = Scribe
+win32:DESTDIR	+= ./
 
 unix {
-TARGET = fopedit
+TARGET = scribe
 BINDIR = /usr/bin
 target.path = $$BINDIR
 INSTALLS += target
@@ -54,10 +62,10 @@ lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) | lessThan(QT_VER_PAT, 1) {
 MOC_DIR = build/.moc
 RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
-####  console
-CONFIG +=  qt release warn_off 
+####  
+CONFIG +=  qt debug warn_off console
 LIBS += $$BUILD_TREE_PATH/lib/libtxtscribe.$$LIB_EXTENSION
-DESTDIR	+= ../
+
 QT += xml
 QT += network
 QT += svg 
