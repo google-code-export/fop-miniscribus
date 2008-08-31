@@ -5,7 +5,7 @@ CONFIG += libxslt libxml2 libiconv
 win32 {
 
 ############### Mingw Compiler ###########################################
-##################Define Path from external libs #########################
+################## Define Path from external libs xslt xml2 from gnome  #########################
 LIB_EXTERN_PATH = C:/Programming/libs
 
 
