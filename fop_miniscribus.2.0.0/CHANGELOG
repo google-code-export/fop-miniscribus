@@ -1,15 +1,17 @@
-20.08.08
-restore to svn version 239 - 245 whitout theard
-prepare /svn/trunk/PaginationFormat/  page format dialog
-
-
-backslant
-line-through underline overline
-fop -> backslant =qt  line-through underline overline
-
-text-decoration="line-through underline overline" 
-
-none | [ [ underline | no-underline] || [ overline | no-overline ] || [ line-through | no-line-through ] || [ blink | no-blink ] ] | inherit
-
-
-letter-spacing="2cm"  fop is lengh qt %  100%
+Changelog:
+31.08.2008 release the first MiniScribus Scribe forks source
+beta version 2.0.0
+11.10.07 version 0.5.8 / Set table cell / paragraph to default 0 / not 12pt top and 12 bottom space
+from default QTextDocument Set only selectable active item at top zindex/zvalue on the active QGraphicsScene
+( append subclass GraphicsScene) on this case not having intersection problem from Floating Layer.
+14.10.07 version 0.6.1 enable to open xsl-fo file without block-container (on prepend page as on
+floating container helpfull to copy text and create new pages), draw page margin inside the work-area,
+append the fo:character tag
+09.11.07 version 0.8.1 Fix Render PDF on QTextDocument Fontmetric, append US-Letter format
+29.11.07 version 1.0.0 append main argument to print direct pdf file from fop example: ./MiniScribus -pdf destination.pdf sourcefile.fop
+other programm can access to pdf result and use miniscribus as template to invoice or other, other beta DB label programm
+Export fop file to XHTML ready , only rotate layer not possibel on html css. HTML export background-color from layer write
+opacity:%1; filter: alpha(opacity=%1); -moz-opacity:%1; if alpha color chanel is more as 44.
+Prepare setup to import PostScript image on GhostScript. ref. http://qtforum.de/forum/viewtopic.php?t=5517 and generate Barcode.
+29.12.07 version 1.0.3 Handle font point size more as 99 , optimize GhostScript controll and better start of friend programm
+direct pdf render (rotate elements on 500 milli.sek) + make source compatible on MS Visual Studio 2008 beta2
