@@ -93,6 +93,7 @@ public:
     QLineF Diagonal();
     RichDoc mimeDocumentLayer();   /* html format */
     QDomDocument fopDomdoc();   /* fop format */
+    void editPermission( bool e );
     QPicture LayerImage( const int pagenr = 0 );  /* draw header or footer */
     void setStyle( QString stylelist );
     QTextDocument *document();

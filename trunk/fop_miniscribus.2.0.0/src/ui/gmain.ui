@@ -147,22 +147,5 @@
  <resources>
   <include location="../osApplication.qrc" />
  </resources>
- <connections>
-  <connection>
-   <sender>actionExit</sender>
-   <signal>activated()</signal>
-   <receiver>Gmain</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>301</x>
-     <y>219</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
