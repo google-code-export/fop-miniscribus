@@ -2327,6 +2327,36 @@ void TextProcessor::ItalicText()
 	  c.setCharFormat(format);
  }
  
+ 
+void TextProcessor::bookMarkIdonBlock()
+ {
+      QStringList allexist = HubBlockids(); /* reindex and take list */
+	  QTextCursor c = textCursor();
+      QTextBlockFormat bf = c.blockFormat();
+      ApiSession *sx = ApiSession::instance();
+      const QString idmemo = bf.property(BookMarkInternalID).toString();
+      int index = -1;
+      if (idmemo.isEmpty()) {
+          
+      } else {
+        /* check valid */
+      index = allexist.indexOf(idmemo);
+      }
+      bool ok;
+      QString newnameref = QInputDialog::getItem(0,tr("Block Nr.%1 Internal bookmark Anchor ref").arg(c.block().blockNumber()),tr("Unique Anchor Name:"),allexist,index,true,&ok,Qt::Drawer);
+      if (newnameref.isEmpty()) {
+       return;
+      }
+      if (!ok) {
+       return;
+      }
+      
+      const QString referenz = Imagename(newnameref);  /* replace space and bad char!! */
+      bf.setProperty (BookMarkInternalID,referenz);
+      c.setBlockFormat(bf);
+      emit q_updatelink();  /* tel model to read al anchor ref !!!! */
+ }
+ 
 
 void TextProcessor::UnderlineText()
  {
@@ -2384,7 +2414,9 @@ void TextProcessor::FontText()
 QStringList TextProcessor::HubBlockids()
 {
   ScribeParser *parsen = new ScribeParser(document(),ScribeParser::Plinker);
-  return parsen->internals();
+  QStringList  listintern = parsen->internals();
+  delete parsen;
+  return listintern;
 }
 
 
@@ -2423,7 +2455,7 @@ void  TextProcessor::LinkText()
       ScribeParser *parsen = new ScribeParser(document(),ScribeParser::Plinker);
       QStringList internalinks = parsen->internals();
       QStringList cclinks = parsen->destinations();
-    
+      delete parsen;
     
     
       const QString nowurl = format.anchorHref();

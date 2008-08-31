@@ -20,6 +20,7 @@ typedef enum
 {  
   Psave,
   PFopModus,
+  PremBookMark,
   Plinker
 } ScribeParseModus;
 

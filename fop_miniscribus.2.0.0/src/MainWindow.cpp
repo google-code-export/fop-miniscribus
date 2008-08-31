@@ -182,6 +182,8 @@ void MainWindow::menuUpdate( bool modus )
     CommandStorage *dync = CommandStorage::instance();
     
      StaticCommandID DocumentActions[] = {  NEW_LAYER_ABS , INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT  , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY , S_NONE };
+     ///////StaticCommandID DocumentActions[] = {  NEW_LAYER_ABS , INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY ,  S_NONE };
+     
          for (int x = 0; DocumentActions[x] != S_NONE; x++) {
                  StaticCommandID id = DocumentActions[x];
                  QAction* a_2 = CommandStorage::instance()->actS(id);
@@ -200,7 +202,7 @@ void MainWindow::menuUpdate( bool modus )
     DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_UNDERLINE , TXT_ITALIC ,
 TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
-    DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
+    DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY , INTERNAL_BOOKMARK ,  D_NONE };
     
     
     

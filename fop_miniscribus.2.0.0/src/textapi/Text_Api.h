@@ -219,6 +219,8 @@ public slots:
   void LinkText();
   void ParaBGcolor();  /* paragraph bg color */
   
+  void bookMarkIdonBlock();
+  
   void MaketextAlign();
   
   void BGcolor();  /* fragment span */

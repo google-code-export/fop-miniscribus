@@ -163,6 +163,7 @@ void TextLayer::bookmarkRecord()
       ScribeParser *parsen = new ScribeParser(document(),ScribeParser::Plinker);
       QStringList internalinks = parsen->internals();
       QStringList cclinks = parsen->destinations();
+      delete parsen;
       emit inBookmark(internalinks);
     
 }
@@ -578,12 +579,12 @@ void TextLayer::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  
     
     CommandStorage *dync = CommandStorage::instance();
-    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY , S_NONE };
+    StaticCommandID DocumentActions[] = {  INSERT_IMAGE , LINK_TEXT , MARGIN_CURRENT_ELEMENT , NEW_LAYER_ABS , SHOW_SOURCE_HTML , SHOW_SOURCE_SCRIBE , SHOW_SOURCE_FOP , PARA_BREACK_PAGE_POLICY ,   S_NONE };
     DynamicCommandID BasicActions[] = { TXTM_UNDO , TXTM_REDO , TXTM_SELECTALL , D_SEPARATOR, TXTM_COPY , TXTM_CUT , TXTM_PASTE , D_SUBMENUS , TXT_BOLD , TXT_ITALIC , D_SEPARATOR  , TXT_UNDERLINE ,
 TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FONTS , TXT_BG_COLOR , BLOCK_BGCOLOR , TXT_COLOR  ,  D_NONE };
     DynamicCommandID TablesAction[] = { TABLE_FORMATS ,  TABLE_BGCOLOR ,  TABLE_CELLBGCOLOR , TABLE_APPENDCOOL , TABLE_APPENDROW , D_SEPARATOR , TABLE_REMCOOL , TABLE_REMROW ,  D_SEPARATOR , TABLE_MERGECELL , TABLE_COOLWIDHT  ,  D_NONE };
   
-  DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY ,  D_NONE };
+  DynamicCommandID BlockActionPara[] = { BLOCK_MARGINS , BLOCK_BGCOLOR , D_SEPARATOR , BLOCK_ALIGN_LEFT , BLOCK_ALIGN_CENTER ,  BLOCK_ALIGN_RIGHT , BLOCK_ALIGN_JUSTIFY , INTERNAL_BOOKMARK ,  D_NONE };
   
   
     
@@ -838,6 +839,9 @@ bool unbreak = c.blockFormat().nonBreakableLines();
 
 
 dync->registerCommand_D(DinamicCmd(TXT_NOBREAKLINE,true,unbreak,tr("Set Unbrekable Block"),QIcon(":/img/document.png"),QKeySequence(),dev->txtControl(),SLOT(SwapUnbrekableBlock()),true));
+    
+    
+dync->registerCommand_D(DinamicCmd(INTERNAL_BOOKMARK,true,true,tr("Insert iternal PDF BookMark FOP only"),QIcon(":/img/acrobat.png"),QKeySequence(),dev->txtControl(),SLOT(bookMarkIdonBlock()),true));
     
     
 

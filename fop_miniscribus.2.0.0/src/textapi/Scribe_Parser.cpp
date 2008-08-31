@@ -14,6 +14,7 @@ ScribeParser::ScribeParser( QTextDocument *  doc  , ScribeParseModus e )
     textDocument = doc;
     resource.clear();
     ApiSession *sx = ApiSession::instance();
+    sx->clearKey();
     M_PageSize pageformat = sx->CurrentPageFormat();
     modus = e;
     bool ContinueParser = true;
@@ -76,73 +77,69 @@ void ScribeParser::processFrame(QDomElement appender ,  QTextFrame *frame)
 
 void ScribeParser::MemoonBlock( QTextCursor c ,  QVariant data , const int id )
 {
-      QTextBlockFormat bf = c.blockFormat();
-      QString idmemo = bf.property(BookMarkInternalID).toString();
+    const QString anchorerfbooks = data.toString();
     
-      if (idmemo.isEmpty()) {
-           bf.setProperty (id,data);
-           c.setBlockFormat(bf); 
-      }
+      if (!Internal_Destination_Links.contains(anchorerfbooks) && anchorerfbooks.size() > 3) {
+          Internal_Destination_Links.append(anchorerfbooks);
+       }
+      QTextBlockFormat bf = c.blockFormat();
+      bf.setProperty (id,data);
+      c.setBlockFormat(bf);
 }
 
 
 void ScribeParser::processBlock( QDomElement appender ,  QTextBlock   block )
 {
     bool HavingIdBlock = false;
+    ApiSession *sx = ApiSession::instance();
     const int idnumerate = block.blockNumber();
     QTextBlockFormat bf = block.blockFormat();
     QString idMemobockMarks = bf.property(BookMarkInternalID).toString();
+    ////////////bool sx->validateUnique( const QString idkei );
     const QString blokstxt = Qt::escape(block.text());
-    QString humantxt = Imagename(blokstxt.toUpper()); 
-    humantxt.truncate(4);
-    ApiSession *sx = ApiSession::instance();
-    QString InternDestName = sx->validateUnique(QString("%1_").arg(idnumerate) + humantxt.leftJustified(15, '0'));
-    
+    /* create a unique key block tmp */
+    QString InternDestName = Unique_Stamp();
+    /* having books id */
     if (!idMemobockMarks.isEmpty()) {
-        InternDestName = idMemobockMarks;
+        InternDestName = sx->validateUnique(idMemobockMarks);  /* register its to make unique !!! */
         HavingIdBlock = true;
+           if (InternDestName != idMemobockMarks) {
+             /* remake bookmark if different */
+             MemoonBlock(helper_cursor,InternDestName,BookMarkInternalID);
+           }
+        if (!Internal_Destination_Links.contains(idMemobockMarks)) {
         Internal_Destination_Links.append(idMemobockMarks);
+        }
     }
+    /* having books id */
+    
+    helper_cursor.setPosition(block.position());
+    helper_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
     
     
     if (modus == Plinker && blokstxt.size() > 1 && InternDestName.size() > 4 ) {
+         /* only if having text item */
         
           QTextCharFormat chformat = block.charFormat();
           if ( chformat.isAnchor() )  {
               
-                helper_cursor.setPosition(block.position());
-                helper_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+              
               
                 QStringList dests = chformat.anchorNames();
-                if (dests.size() > 0) {
-                    QString aslink = dests.first();
+                if (dests.size() > 0 && !HavingIdBlock) {
+                    QString aslink = sx->validateUnique(dests.first());
                     if (!aslink.isEmpty()) {
-                     MemoonBlock(helper_cursor,aslink,BookMarkInternalID);
-                     HavingIdBlock = true;
+                        MemoonBlock(helper_cursor,aslink,BookMarkInternalID);
+                        HavingIdBlock = true;
+                        chformat.setAnchorNames ( QStringList() );
+                        chformat.setAnchor ( false );
+                        helper_cursor.setCharFormat(chformat);
                     }
                 }
-              
-               for (int i = 0; i < dests.size(); ++i) {
-                 Internal_Destination_Links.append(dests.at(i));
-               }
           
-          
-       
-          
-          } else {
-              
-                 if (!HavingIdBlock) {
-                    QStringList linker;
-                    linker << InternDestName;
-                    chformat.setAnchor(true);
-                    chformat.setAnchorNames(linker);
-                    chformat.setToolTip ( InternDestName );
-                    helper_cursor.setCharFormat(chformat);
-                    Internal_Destination_Links.append(InternDestName);
-                    MemoonBlock(helper_cursor,InternDestName,BookMarkInternalID);
-                 }
-              
           }
+    } else if ( modus == PremBookMark ) {
+        MemoonBlock(helper_cursor,QString(),BookMarkInternalID);
     }
 
 
