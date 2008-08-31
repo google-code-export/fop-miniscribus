@@ -9,6 +9,10 @@
 #define _PARSE_DEBUG_FOP_  1
 #define _DRAWMODUS_WEB_ 0
 
+////////////////#define _LOGGERON_APPS_  1    /* disble log comment here */
+
+
+
 #define FOPIMAGEDIR\
              QString("Pictures/")
 
@@ -50,7 +54,7 @@ static const qreal MINIMUMJAVAVERSION= 1.6;
 
 
 #define _APPLICATIONS_NAME_ \
-               QString( "MiniScribus Scribe (markup language) version %1 ").arg(SCRIBEVERSION) 
+               QString( "MiniScribus Scribe (beta) version %1 ").arg(SCRIBEVERSION) 
 
 #define _NOTITLEONDOC_ \
              QString("MiniScribus ver. %1 - Untitled Document").arg(SCRIBEVERSION)

@@ -37,9 +37,6 @@ void MainWindow::CheckFileApps()
 {
     Cache(_APPSCACHE_);
     QFileInfo fi(_OOOV1FILE_);
-    
-    
-    
     if (!fi.exists()) {
         /* user can edit style and save on apps cache */
         StreamFop *buf = new StreamFop();
@@ -47,7 +44,6 @@ void MainWindow::CheckFileApps()
         buf->PutOnFile(_OOOV1FILE_);
         delete buf;
     }
-    
     QFileInfo fi2(_OOOV2FILE_);
     if (!fi2.exists()) {
         /* user can edit style and save on apps cache */
