@@ -19,7 +19,7 @@ using namespace OOO;
 
 
 MainWindow::MainWindow( QWidget* parent )
-	: QMainWindow( parent )
+	: QMainWindow( parent ),barevents(0)
 {
 	setupUi( this );
     setWindowTitle(_APPLICATIONS_NAME_);
@@ -132,30 +132,13 @@ toolBar->addWidget(tbooks);
     connect(edit->view(), SIGNAL(fileBaseOpen(QString)),this, SLOT(setWindowTitle(QString)));
     connect(actionNewDoc, SIGNAL(triggered()),edit->view(), SLOT(pageclear()));
     connect(edit->view(), SIGNAL(bookMarkActive(bool)),this, SLOT(showBooks(bool)));
-    
-    
-    
-    
+    connect(menuBar(), SIGNAL(hovered(QAction*)),this, SLOT(menuBarsTraffic()));
 }
 
-void MainWindow::showBooks( bool e )
+void MainWindow::menuBarsTraffic()
 {
-    tbooks-> setChecked ( e );
-    if (e) {
-     if (!pdfBookMarkManager->isFloating ()) {
-         pdfBookMarkManager->setFloating (true);
-         pdfBookMarkManager->show();
-         pdfBookMarkManager->setFocus ( Qt::PopupFocusReason );
-     }
-    } else {
-        pdfBookMarkManager->hide();
-    }
-}
-
-void MainWindow::setFile( const QString file , const QString option )
-{
-    edit->view()->openFile(file);
-    /* option print or other here timer */
+    barevents++;
+    qDebug() << "### menuUpdate -> " << barevents;
     
 }
 
@@ -264,6 +247,28 @@ void MainWindow::menuAbsoluteLayer()
       tb_5->addAction(a_1);
       }
     }
+    
+}
+
+
+void MainWindow::showBooks( bool e )
+{
+    tbooks-> setChecked ( e );
+    if (e) {
+     if (!pdfBookMarkManager->isFloating ()) {
+         pdfBookMarkManager->setFloating (true);
+         pdfBookMarkManager->show();
+         pdfBookMarkManager->setFocus ( Qt::PopupFocusReason );
+     }
+    } else {
+        pdfBookMarkManager->hide();
+    }
+}
+
+void MainWindow::setFile( const QString file , const QString option )
+{
+    edit->view()->openFile(file);
+    /* option print or other here timer */
     
 }
 
