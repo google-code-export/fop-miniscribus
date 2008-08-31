@@ -1,5 +1,7 @@
 
 #include "Layer_CommandStorage.h"
+#include "Config.h"
+#include "Tools_Basic.h"
 
 //	Qt
 #include <QtGui/QAction>
@@ -11,6 +13,10 @@ CommandStorage* CommandStorage::instance() {
 	return st_;
 }
 
+
+
+
+
 void CommandStorage::recordmainaction(const StaticCmd& cmd) {
 	StaticCommandID id = cmd.id;
 
@@ -21,6 +27,12 @@ void CommandStorage::recordmainaction(const StaticCmd& cmd) {
 	if (!cmd.shortcut.isEmpty()) {
 		keya = QString(" ") + cmd.shortcut.toString(QKeySequence::NativeText);
 	}
+    
+    #if defined _LOGGERON_APPS_
+    QString logger = QString(cmd.name + keya + " / " + cmd.reciever->objectName() + " / " +cmd.slot);
+    fwriteAppend(_APPSCACHE_ + "command.dat",logger+" StaticCommandID\n");
+    #endif
+    
 	QAction* action = new QAction(cmd.icon, cmd.name + keya, 0);
 	action->setShortcut(cmd.shortcut);
 	action->setData(id);
@@ -40,6 +52,12 @@ void CommandStorage::registerCommand_S(const StaticCmd& cmd) {
 	if (!cmd.shortcut.isEmpty()) {
 		keya = QString(" ") + cmd.shortcut.toString(QKeySequence::NativeText);
 	}
+    
+    #if defined _LOGGERON_APPS_
+    QString logger = QString(cmd.name + keya + " / " + cmd.reciever->objectName() + " / " +cmd.slot);
+    fwriteAppend(_APPSCACHE_ + "command.dat",logger+" StaticCommandID\n");
+    #endif
+    
 	QAction* action = new QAction(cmd.icon, cmd.name + keya, 0);
 	action->setShortcut(cmd.shortcut);
 	action->setData(id);
@@ -47,9 +65,6 @@ void CommandStorage::registerCommand_S(const StaticCmd& cmd) {
 	QObject::connect(action, SIGNAL(triggered()), cmd.reciever, qPrintable(cmd.slot));
 	Scmd_[id] = action;
 }
-
-
-
 
 void CommandStorage::registerCommand_D(const DinamicCmd& cmd) {
 	DynamicCommandID id = cmd.id;
@@ -61,6 +76,13 @@ void CommandStorage::registerCommand_D(const DinamicCmd& cmd) {
 	if (!cmd.shortcut.isEmpty()) {
 		keya = QString(" ") + cmd.shortcut.toString(QKeySequence::NativeText);
 	}
+    
+    #if defined _LOGGERON_APPS_
+    QString logger = QString(cmd.name + keya + " / " + cmd.reciever->objectName() + " / " +cmd.slot);
+    fwriteAppend(_APPSCACHE_ + "command.dat",logger+" DynamicCommandID\n");
+    #endif
+    
+    
 	QAction* action = new QAction(cmd.icon, cmd.name + keya, 0);
 	action->setShortcut(cmd.shortcut);
 	action->setData(id);
@@ -79,11 +101,20 @@ void CommandStorage::registerCommand_F(const AbsoluteCmd& cmd) {
 
 	if (Fcmd_.contains(id))
 		delete Fcmd_[id];
+    
+    
 	
 	QString keya = QString(); /* not Shortcut */
 	if (!cmd.shortcut.isEmpty()) {
 		keya = QString(" ") + cmd.shortcut.toString(QKeySequence::NativeText);
 	}
+    
+    
+    #if defined _LOGGERON_APPS_
+    QString logger = QString(cmd.name + keya + " / " + cmd.reciever->objectName() + " / " +cmd.slot);
+    fwriteAppend(_APPSCACHE_ + "command.dat",logger+"  AbsCommandID\n");
+    #endif
+    
 	QAction* action = new QAction(cmd.icon, cmd.name + keya, 0);
 	action->setShortcut(cmd.shortcut);
 	action->setData(id);
@@ -118,6 +149,49 @@ QAction* CommandStorage::actF(AbsCommandID id) {
 
 
 CommandStorage* CommandStorage::st_ = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

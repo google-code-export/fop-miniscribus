@@ -38,7 +38,7 @@ FoRegion Fo_Format::regionFormat(const QDomElement e)
         
         if (e.tagName() == "fo:region-body"  ||
             e.tagName() == "fo:simple-page-master"  ||
-            e.tagName() == "fo:region-after"  ||
+            e.tagName() == "fo:region-before"  ||
             e.tagName() == "fo:region-after"  ||
             e.tagName() == "fo:region-start"  ||
             e.tagName() == "fo:region-end"
