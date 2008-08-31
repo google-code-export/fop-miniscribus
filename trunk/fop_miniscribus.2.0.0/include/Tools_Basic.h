@@ -170,6 +170,19 @@ static inline uint QTime_Null()
     return timer1.toTime_t();
 }
 
+static inline QString Unique_Stamp()
+{
+    QDateTime timer1( QDateTime::currentDateTime() ); 
+    QChar letter('A' + (qrand() % 26));
+    QChar letter1('A' + (qrand() % 26));
+    QString initstr = timer1.toString("zzzssmm");
+    initstr.prepend("00000");
+    initstr.prepend(letter);
+    initstr.prepend(letter1);
+    
+    return initstr;
+}
+
 
 
 /* return int value from a unixtime date MMM YYY ... */
