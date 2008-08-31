@@ -710,6 +710,22 @@ void GraphicsView::saveOnPageBinFile()
 
 void GraphicsView::apacheFopConvert()
 {
+    
+    /* if not fop save its */
+    QFileInfo fi(currentopenfilerunning);
+    
+    if (!fi.exists()) {
+    saveAsFile();
+    return;
+    }
+    
+    const QString ext = fi.completeSuffix().toLower();
+    if (ext == "fo" || ext == "fop" || ext == "xml") {
+        /* ok */
+    } else {
+    saveAsFile();
+    }
+    
     QString exefop,foptipe,javadir,impdf,bakfops;
     #if defined Q_WS_WIN
     foptipe = "Bat file";
@@ -777,11 +793,8 @@ void GraphicsView::apacheFopConvert()
     
     qDebug() << "# file fop " << exefop;
     /* dont try to save if extern chunk is from hand make destroy!!!!! */
-    QFileInfo fi(currentopenfilerunning);
-    if (!fi.exists()) {
-    saveAsFile();
-    return;
-    }
+    
+    
     
     /* save location */
     impdf = QFileDialog::getSaveFileName(this, "Save as",QString(setter.value("LastDirPDFSave").toString())+fi.baseName()+".pdf", "Pdf  (*.pdf)");
