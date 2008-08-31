@@ -57,6 +57,7 @@ protected:
 private:
     QStringList currentLinker;
 signals:
+    /////void NewBookMark(QStandardItemModel*);
 public slots:
     void InsertOnRoot();  /* general insert at root index top tree */
     void insertSubOnCurrent();  /* on cursor cell */

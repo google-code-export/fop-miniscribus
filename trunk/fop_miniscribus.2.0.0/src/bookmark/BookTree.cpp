@@ -98,8 +98,9 @@ void BookTree::insertModel( QStandardItemModel *m , QStringList avaiablelist )
    
    
    /* save on session book marks  */
+   QStandardItemModel *lastmodel = qobject_cast<QStandardItemModel *>(model());
    ApiSession *sx = ApiSession::instance();
-   ModelDomRead *ponte = new ModelDomRead(m);
+   ModelDomRead *ponte = new ModelDomRead(lastmodel);
    sx->bokMarkDom = ponte->Domdocument()->toByteArray(1);
     
 }

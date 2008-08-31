@@ -119,9 +119,16 @@ bool ApiSession::validKey( const QString idkei ) const
 
 QString ApiSession::validateUnique( const QString idkei )
 {
+          QString tmpkey = idkei;
          if (validKey(idkei)) {
-            uniqueid.insert(idkei,uniqueid.size() + 1 ); 
-            return QString(idkei);
+             
+             if (idkei.size() > 15) {
+                 tmpkey = Unique_Stamp().left(10) + idkei.left(3);
+                 uniqueid.insert(tmpkey,uniqueid.size() + 1 ); 
+             } else {
+                 uniqueid.insert(tmpkey,uniqueid.size() + 1 ); 
+             }
+            return QString(tmpkey);
          } else {
               for (int i = 0; i < 100; ++i) {
                     int increase = qrand() % 99;
@@ -129,9 +136,9 @@ QString ApiSession::validateUnique( const QString idkei )
                     QChar letter('A' + (qrand() % 26));
                     QChar letter1('A' + (qrand() % 26));
                     QString place = idkei;
-                    place.prepend(letter1);
-                    place.append(QString("%1").arg(increase));
+                    place.append(letter1);
                     place.append(letter);
+                    place.append(QString("%1").arg(increase));
                     if (validKey(place)) {
                      uniqueid.insert(place,uniqueid.size() + 1 ); 
                      return place;                        
