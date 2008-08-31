@@ -24,13 +24,20 @@ MainWindow::MainWindow( QWidget* parent )
 	setupUi( this );
     setWindowTitle(_APPLICATIONS_NAME_);
     CheckFileApps();
-    
-    
-    
-    setMinimumSize(750,508);
+    setMinimumSize(900,480);
     edit = new  PaperEditor(this);
     setCentralWidget(edit);
     prepareDocks();
+    
+    resize( setter.value( "Main/size", QSize( 900,480 )).toSize() );
+    move( setter.value( "Main/pos", QPoint( 10, 10 )).toPoint( ) );   
+}
+
+void MainWindow::resizeEvent ( QResizeEvent * e )
+{
+   setter.setValue( "Main/size", size() );
+   setter.setValue( "Main/pos", pos() );
+   QMainWindow::resizeEvent(e);
 }
 
 void MainWindow::CheckFileApps()
@@ -98,7 +105,8 @@ toolBar->addWidget(tbooks);
     tb_4->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
     tb_5 = new QToolBar(this);
     tb_5->setIconSize(QSize(_MAINICONSIZE_,_MAINICONSIZE_));
-    
+    /* wake up on toolbar hover !!!!! */
+    toolse << tb_0 << tb_1 << tb_2 << tb_3 << tb_4 << tb_5 << docbar;
     
     addToolBar(Qt::TopToolBarArea,docbar);
     ///////docbar->addAction(dync->actM(OPEN_PAGE_CHUNK));
@@ -129,17 +137,36 @@ toolBar->addWidget(tbooks);
     connect(convertFop, SIGNAL(triggered()),edit->view(), SLOT(apacheFopConvert()));
     connect(savescribePage, SIGNAL(triggered()),edit->view(), SLOT(saveOnPageBinFile()));
     connect(openScribe, SIGNAL(triggered()),edit->view(), SLOT(openFile()));
+    connect(actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(edit->view(), SIGNAL(fileBaseOpen(QString)),this, SLOT(setWindowTitle(QString)));
     connect(actionNewDoc, SIGNAL(triggered()),edit->view(), SLOT(pageclear()));
     connect(edit->view(), SIGNAL(bookMarkActive(bool)),this, SLOT(showBooks(bool)));
-    connect(menuBar(), SIGNAL(hovered(QAction*)),this, SLOT(menuBarsTraffic()));
+    
+     for (int i = 0; i < toolse.size(); ++i) {
+         toolse[i]->installEventFilter(this);  
+     }
 }
 
-void MainWindow::menuBarsTraffic()
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     barevents++;
-    qDebug() << "### menuUpdate -> " << barevents;
     
+      if (event->type() == QEvent::ContextMenu) {
+        return true;
+      } 
+      if (event->type() == QEvent::HoverMove) {
+             QToolBar *nowlive = qobject_cast<QToolBar*>(obj);
+             if (nowlive) {
+                  /* create unixtime hash */
+                 if (nowlive->isEnabled()) {
+                     /////////qDebug() << "### menuUpdate  enable -> " << barevents;
+                 } else {
+                     ///////qDebug() << "### menuUpdate  disable -> " << barevents;
+                 }
+             }
+      }
+    return false;
 }
 
 /* true on auto - false on absolute */
@@ -602,7 +629,7 @@ void GraphicsView::openFile( const QString file )
         QStandardItemModel *dat = booki->bookModel();
         emit inBookmark(QStringList(),dat);
         QDir::setCurrent(dir_);
-        QTimer::singleShot(1, this, SLOT(zoomChain())); 
+        QTimer::singleShot(1, this, SLOT(zoomChainStop())); 
         return;
     }
     
@@ -613,6 +640,8 @@ void GraphicsView::openFile( const QString file )
 void GraphicsView::zoomChain()
 {
     /////////qDebug() << "### zoomChain ";
+    zoomChainStop();
+    return;
     QMatrix matrix;
     matrix.scale(0.00009,0.00009);
     setMatrix(matrix);
@@ -626,7 +655,7 @@ void GraphicsView::zoomChainStop()
     matrix.scale(1.4,1.4);
     setMatrix(matrix);
     show();
-    QTimer::singleShot(50, this, SLOT(DisplayTop())); 
+    QTimer::singleShot(5, this, SLOT(DisplayTop())); 
 }
 
 
@@ -968,8 +997,6 @@ void GraphicsView::DisplayTop()
 
 void GraphicsView::cursorChange( bool e )
 {
-   
-    //////////qDebug() << "### layer modus   -------- " << e;
     emit sceneSwap(e);
 }
 
@@ -1041,7 +1068,7 @@ PaperEditor::PaperEditor( QWidget *parent)
     
     
    resetView();
-   QTimer::singleShot(800, this, SLOT(DisplayTop()));  
+   QTimer::singleShot(1, this, SLOT(DisplayTop()));  
 
    openGlButton->setChecked ( true );
    toggleOpenGL();
@@ -1058,6 +1085,7 @@ void PaperEditor::toggleOpenGL()
 #ifndef QT_NO_OPENGL
     graphicsView->setViewport(openGlButton->isChecked() ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
 #endif
+    QTimer::singleShot(1, this, SLOT(DisplayTop()));
 }
 
 
@@ -1083,6 +1111,7 @@ void PaperEditor::resetView()
     matrix.scale(1.4,1.4);
     graphicsView->setMatrix(matrix);
     resetButton->setEnabled(false);
+    QTimer::singleShot(1, this, SLOT(DisplayTop()));
 }
 
 

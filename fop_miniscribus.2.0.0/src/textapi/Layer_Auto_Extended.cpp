@@ -1,4 +1,5 @@
 #include "Layer_Auto_Extended.h"
+#include "Config.h"
 #include "Text_Api.h"
 #include "Fo_Format.h"
 #include "XML_Editor.h"
@@ -39,7 +40,7 @@ TextLayer::~TextLayer()
 
 
 TextLayer::TextLayer( QGraphicsItem *parent  )
-    : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount),ContextOpen(false),PageRecords(1)
+    : QGraphicsRectItem(QRectF(0,0,100,100),parent),dev(new TextMount),ContextOpen(false),PageRecords(1),lastEventCursorSend(0)
 {
     //////qDebug() << "### init....";
     dev->q = this;
@@ -291,8 +292,9 @@ void TextLayer::updatearea( const QRect areas )
 void TextLayer::cursor_stop_it()
 {
    dev->txtControl()->setBlinkingCursorEnabled(false);
-   SceneReload();
-   MakeDinamicCommand();  /* redraw action depending cursor reset .... */
+   qDebug() << "### stop big area cursor ........ ";
+   ///////SceneReload();
+   ////////MakeDinamicCommand();  /* redraw action depending cursor reset .... */
    emit autocursorchange(false);  /* absolute works  */
     
 }
@@ -309,14 +311,20 @@ void TextLayer::cursor_wake_up()
     const int PageSumm = qBound (1,document()->pageCount(),MaximumPages);
     if (PageRecords != PageSumm) {
     PageRecords = PageSumm;
-    SceneReload();
+    ///////SceneReload();
     childAreaCheck();
     emit pageCountChange();
     }
+    const uint unixtime = QTime_Null();
+    if (lastEventCursorSend == unixtime) {
+     return;
+    }
+    qDebug() << "### send action   -------- " << unixtime;
+    /* only each 1000 ms intervall dont stress it from keyboard ! */
     MakeDinamicCommand();  /* redraw action depending cursor */
     childAreaCheck();
     emit autocursorchange(true);
-    
+    lastEventCursorSend = unixtime;
 }
 
 /* check if absolute layer need a new page document  */
@@ -331,6 +339,8 @@ void TextLayer::childAreaCheck()
                itemabsolute = layer_cast<AbsoluteLayer *>(subLevelItems[i]);
               if (itemabsolute ) {
               itemabsolute->UpdatePageFormat();
+              /* stop cursor */
+              itemabsolute->editPermission(false);
               lastdown = qMax (lastdown,itemabsolute->pos().y());
               }
           }
@@ -363,10 +373,13 @@ void TextLayer::SceneReload()
 
 void TextLayer::ensureVisible( const QRectF areas )
 {
-     LastVisibleRequest = areas;
+     M_PageSize pax = dev->txtControl()->Model();
+     QRectF needarea(areas);
+     needarea.setWidth ( areas.width() - pax.body.margin_right - 40 );
+     LastVisibleRequest = needarea;
      GraphicsScene *sc;
      if (sc = qobject_cast<GraphicsScene *>(scene())) {
-     sc->SetVisibleArea(areas);
+     sc->SetVisibleArea(LastVisibleRequest);
      }
 }
 
@@ -415,6 +428,20 @@ void TextLayer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
        dev->txtControl()->paintMarginCover(painter,pagen,false);
        
     }
+    
+    #if defined _LOGGERON_APPS_
+    painter->save();
+    painter->setPen(Qt::NoPen);
+	QColor Visiblerecord(Qt::red);
+	Visiblerecord.setAlpha(22);
+	painter->setBrush(Visiblerecord);
+	painter->drawRect(LastVisibleRequest);  ///////////  LastVisibleRequest  LastUpdateRequest
+    painter->restore();
+    #endif
+
+    
+    
+    
     
 }
 

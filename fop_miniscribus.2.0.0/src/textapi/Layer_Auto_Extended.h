@@ -62,7 +62,7 @@ protected:
     outside area append a null page breack policy */
 
 private:
-    
+  uint lastEventCursorSend;
   AbsoluteLayer *Aheader;
   AbsoluteLayer *Afooter;
   AbsoluteLayer *Astartreg;

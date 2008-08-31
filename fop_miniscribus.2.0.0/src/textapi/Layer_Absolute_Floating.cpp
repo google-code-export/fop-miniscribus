@@ -799,6 +799,12 @@ void AbsoluteLayer::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     return QGraphicsItem::hoverLeaveEvent(event);
 }
 
+
+void AbsoluteLayer::editPermission( bool e )
+{
+    dev->txtControl()->setBlinkingCursorEnabled(e);
+}
+
 void AbsoluteLayer::keyPressEvent( QKeyEvent * event ) 
 {
 

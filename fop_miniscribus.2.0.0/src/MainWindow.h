@@ -35,13 +35,15 @@ protected:
     QToolBar *tb_3;
     QToolBar *tb_4;
     QToolBar *tb_5;
+    QList<QToolBar*> toolse;
     PaperEditor *edit;  /* edit = new  PaperEditor(this) */
     QAction  *actioBooks;
     QSettings setter;
 QToolButton *tbooks;
 QDockWidget *pdfBookMarkManager;
 BookTree *treeBooks;
-
+bool eventFilter(QObject *obj, QEvent *event);
+void resizeEvent ( QResizeEvent * e );
 void prepareDocks();
 private:
     void CheckFileApps();
@@ -58,7 +60,6 @@ private slots:
     /* remake action to cursor */
 void menuUpdate( bool modus );
 void showBooks(bool e );
-void menuBarsTraffic();
 
 };
 
