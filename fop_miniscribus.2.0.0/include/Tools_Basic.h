@@ -252,6 +252,63 @@ static inline bool qt_unlink(const QString fullFileName)
 return false;
 }
 
+/* random nummer */
+static inline int FooNumer( int lowest, int highest )
+{
+    using namespace std;
+    srand((unsigned)time(0)); 
+    int random_integer; 
+    int range=(highest-lowest)+1; 
+    for(int index=0; index<10; index++){ 
+        random_integer = lowest+int(range*rand()/(RAND_MAX + 1.0)); 
+    } 
+return random_integer;
+}
+
+
+/* random QStringList */
+static inline QStringList ShuffleRandomList( QStringList belist )
+{
+    QStringList eleborator;
+    eleborator.clear();
+    eleborator = belist;
+    eleborator.sort();
+    int base = 0;
+    int destruct;
+    for (int i = 0; i < eleborator.size(); ++i)  { 
+        destruct = FooNumer(base,eleborator.size());
+        if (destruct != i) {
+        eleborator.swap(destruct,i);
+        }
+        eleborator.move(0,eleborator.size() - 1 );
+    }
+return   eleborator;  
+}
+
+/*  append write as internal debug log  ....   */
+static inline bool fwriteAppend( const QString fullFileName , const QString xml)
+{
+    if (fullFileName.contains("/", Qt::CaseInsensitive)) {
+    QString ultimacartellaaperta = fullFileName.left(fullFileName.lastIndexOf("/"))+"/";
+    QDir dira(ultimacartellaaperta);
+    if ( dira.mkpath(ultimacartellaaperta) ) { } else {
+    return false;
+    }
+    }
+        QTextCodec *codecx;
+        codecx = QTextCodec::codecForMib(106);
+        QFile f( fullFileName );
+        if ( f.open( QFile::WriteOnly | QFile::Text |  QIODevice::Append ) )
+        {
+        QTextStream sw( &f );
+        sw.setCodec(codecx);
+        sw << xml;
+        f.close();
+        return true;
+        }
+        return false;
+}
+
 
 
 
