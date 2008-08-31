@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow, public Ui::Gmain
 public:
     MainWindow( QWidget *parent  = 0 );
 protected:
-    
+    uint barevents;
     QToolBar *docbar;
     QToolBar *tb_0;
     QToolBar *tb_1;
@@ -58,6 +58,7 @@ private slots:
     /* remake action to cursor */
 void menuUpdate( bool modus );
 void showBooks(bool e );
+void menuBarsTraffic();
 
 };
 
