@@ -1180,7 +1180,7 @@ void AbsoluteLayer::cursor_wake_up()
 { 
    //////qDebug() << "### cursor_wake_up ";
    ///////update();
-    emit close_main_cursor();
+    ///////emit close_main_cursor();
 }
 
 FoRegion AbsoluteLayer::foRegion() const
