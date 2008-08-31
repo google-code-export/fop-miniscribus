@@ -27,6 +27,7 @@ CONFIG+=x86 ppc
 win32:RC_FILE = win.rc
 win32:TARGET = xx
 macx:TARGET = Scribe
+win32:DESTDIR	+= ./
 
 unix {
 TARGET = scribe
@@ -59,7 +60,7 @@ OBJECTS_DIR = build/.obj
 ####  
 CONFIG +=  qt debug warn_off console
 LIBS += $$BUILD_TREE_PATH/lib/libtxtscribe.$$LIB_EXTENSION
-DESTDIR	+= ../
+
 QT += xml
 QT += network
 QT += svg 
