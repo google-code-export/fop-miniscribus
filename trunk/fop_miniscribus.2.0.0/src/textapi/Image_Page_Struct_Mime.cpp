@@ -20,7 +20,7 @@ bool SPics::FopSaveImage( QDomElement e )
         return true;				
 }
 
-QTextDocument *SPics::todoc()
+QTextDocument *RichDoc::todoc()
 {
         /* record image on session if a page format */
         ApiSession *sx = ApiSession::instance();
