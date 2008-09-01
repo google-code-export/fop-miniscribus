@@ -1,0 +1,1552 @@
+<?xml version='1.0' encoding='utf-8'?>
+<fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
+ <fo:layout-master-set>
+  <fo:simple-page-master page-height="297.052mm" master-name="A4_210_x_297_mm" page-width="209.888mm" >
+   <fo:region-body margin-left="25mm" background-color="white" region-name="xsl-region-body" margin-bottom="20mm" margin-top="30mm" margin-right="25mm" />
+   <fo:region-before reference-orientation="0" background-color="white" region-name="xsl-region-before" extent="30mm" />
+   <fo:region-after reference-orientation="0" background-color="white" region-name="xsl-region-after" extent="20mm" />
+  </fo:simple-page-master>
+ </fo:layout-master-set>
+ <fo:bookmark-tree>
+  <fo:bookmark internal-destination="sec1" >
+   <fo:bookmark-title>What is FOP?</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec2" >
+   <fo:bookmark-title>Downloading FOP</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec3" >
+   <fo:bookmark-title>Running FOP</fo:bookmark-title>
+   <fo:bookmark internal-destination="sec3-1" >
+    <fo:bookmark-title>Prerequisites</fo:bookmark-title>
+    <fo:bookmark internal-destination="sec3-1-1" >
+     <fo:bookmark-title>Java 1.1</fo:bookmark-title>
+    </fo:bookmark>
+    <fo:bookmark internal-destination="sec3-1-2" >
+     <fo:bookmark-title>XML Parser</fo:bookmark-title>
+    </fo:bookmark>
+    <fo:bookmark internal-destination="sec3-1-3" >
+     <fo:bookmark-title>XSLT Processor</fo:bookmark-title>
+    </fo:bookmark>
+   </fo:bookmark>
+   <fo:bookmark internal-destination="sec3-2" >
+    <fo:bookmark-title>Starting FOP</fo:bookmark-title>
+   </fo:bookmark>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec4" >
+   <fo:bookmark-title>Embedding FOP</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec5" >
+   <fo:bookmark-title>What's Implemented?</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec6" >
+   <fo:bookmark-title>Limitations</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec7" >
+   <fo:bookmark-title>Bugs</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec8" >
+   <fo:bookmark-title>Compiling FOP</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec9" >
+   <fo:bookmark-title>Getting Involved</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec10" >
+   <fo:bookmark-title>FOP Relevant Specifications</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="sec11" >
+   <fo:bookmark-title>License</fo:bookmark-title>
+  </fo:bookmark>
+  <fo:bookmark internal-destination="secA1editor" >
+   <fo:bookmark-title>MiniScribus Editor</fo:bookmark-title>
+  </fo:bookmark>
+ </fo:bookmark-tree>
+ <fo:page-sequence master-reference="A4_210_x_297_mm" >
+  <fo:title>MiniScribus Test BookMark Write</fo:title>
+  <fo:static-content flow-name="xsl-region-before" >
+   <fo:block-container margin-left="0mm" overflow="hidden" background-color="white" height="30mm" margin-bottom="0mm" padding="0mm" margin-top="0mm" margin-right="0mm" >
+    <fo:block>.<!--Header region / xsl-region-before -->
+    </fo:block>
+   </fo:block-container>
+  </fo:static-content>
+  <fo:static-content flow-name="xsl-region-after" >
+   <fo:block-container margin-left="0mm" overflow="hidden" background-color="white" height="20mm" margin-bottom="0mm" padding="0mm" margin-top="0mm" margin-right="0mm" >
+    <fo:block>.<!--Footer region / xsl-region-after -->
+    </fo:block>
+   </fo:block-container>
+  </fo:static-content>
+  <fo:flow flow-name="xsl-region-body" >
+   <fo:block background-color="rgb(0,0,255,255)" text-align="center" margin-bottom="1pt" id="secA" margin-top="1pt" color="rgb(255,255,255,255)" font-size="18pt" >
+FOP: An Open-Source XSL Formatter and Renderer</fo:block>
+   <fo:block margin-bottom="1pt" id="sec1" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
+A) What is FOP?</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+FOP is the world's first print formatter driven by XSL formatting objects. It is a Java 1.1 
+application that reads a formatting object tree and then turns it into a PDF document. The formatting 
+object tree, can be in the form of an XML document (output by an XSLT engine like 
+XT or Xalan) or can be passed in memory as a DOM Document or (in the case 
+of XT) SAX events.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+FOP is part of Apache's XML project. The homepage of FOP is</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+http://xmlgraphics.apache.org/fop</fo:inline>
+    <fo:basic-link external-destination="http://xmlgraphics.apache.org/fop" color="rgb(0,0,255,255)" font-size="8pt" >http://xmlgraphics.apache.org/fop</fo:basic-link>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="secA1editor" margin-top="20pt" color="rgb(0,0,0,255)" >
+    <fo:inline>
+A1) MiniScribus XSL-Fo editor try its visit page</fo:inline>
+    <fo:basic-link external-destination="http://code.google.com/p/fop-miniscribus/" text-decoration="underline" color="rgb(220,0,0,255)" >http://code.google.com/p/fop-miniscribus/</fo:basic-link>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="sec2" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
+B) Downloading FOP</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+The latest release version is</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+FOP0.14</fo:inline>
+    <fo:inline font-size="8pt" >
+() .</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+NOTE: you do not have to unjar or unzip this jar file.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+Documentation can be downloaded here as</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+HMTL file</fo:inline>
+    <fo:inline font-size="8pt" >
+() or as</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+PDF file</fo:inline>
+    <fo:inline font-size="8pt" >
+() .</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+To run FOP from the command line, see Running FOP. If you are interested in embedding FOP 
+in a Java application of your own, see Embedding FOP.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+You can also download the</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+source code v. 0.14</fo:inline>
+    <fo:inline font-size="8pt" >
+() as jar file</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="sec3" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
+C) Running FOP</fo:block>
+   <fo:block margin-bottom="1pt" id="sec3-1" margin-top="8pt" color="rgb(0,0,0,255)" font-size="16pt" >
+1) Prerequisites</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Following software must be installed:</fo:block>
+   <fo:block margin-bottom="1pt" id="sec3-1-1" color="rgb(0,0,0,255)" font-size="8pt" >
+a) Java 1.1.x or later</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+For the fo-file viewer mode of FOP (see below) you must have the swing classes installed. From 
+Java 1.2 on (aka Java 2) they are part of the standard java distribution. If you use 
+Java 1.1.x you must seperately include the swing classes, which can be found at the</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+Sun website</fo:inline>
+    <fo:inline font-size="8pt" >
+(http://java.sun.com/products/jfc/#download-swing) .</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="sec3-1-2" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+b) An XML parser which supports SAX and DOM like</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+Xerces-J</fo:inline>
+    <fo:inline font-size="8pt" >
+(http://xerces.apache.org/xerces-j/index.html) .</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="sec3-1-3" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+c) If you have to produce the flow objects files, which are the input for FOP, you 
+need a transformation utility to create this files from your xml files. Normally this is an XSLT 
+stylesheet processor like</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+XT</fo:inline>
+    <fo:inline font-size="8pt" >
+(http://www.jclark.com/xml/xt.html) or</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+XALAN</fo:inline>
+    <fo:inline font-size="8pt" >
+(http://xalan.apache.org/index.html) .</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="sec3-2" margin-top="8pt" color="rgb(0,0,0,255)" font-size="16pt" >
+2) Starting FOP as an standalone application</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+There are three ways to run FOP from the command line.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+a) Batch processing formatting objects (fo) files:</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java org.apache.fop.apps.CommandLine fo-file pdf-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+b) Batch processing xml files (includes production of the fo-files):</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java org.apache.fop.apps.CommandLine xml-file xsl-file pdf-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+c) Previewing the fo-file:</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java org.apache.fop.apps.AWTCommandLine fo-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Each method uses next to the fop classes other packages. The following describes each method in detail.
+</fo:block>
+   <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="14pt" >
+a) Method One</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+One is to first use an XSLT engine to produce the formatting object tree as an XML 
+document and then running the class org.apache.fop.apps.CommandLine with the formatting object file name and PDF filename as 
+arguments. You will need to include FOP and your XML Parser in your classpath and so you 
+might invoke</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java -cp fop_x_xx_x.jar;xerces.jar</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+org.apache.fop.apps.CommandLine fo-file pdf-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+If your SAX Parser is other than Xerces, you will need to set the property org.xml.sax.parser to 
+the SAX Parser class to use. The following example shows the command line, if you use XP, 
+the XML parser from James Clark:</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java -Dorg.xml.sax.parser=com.jclark.xml.sax.Driver</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+-cp fop_x_xx_x.jar;sax.jar;xt.jar;xp.jar;xerces.jar</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+org.apache.fop.apps.AWTCommandLine formatting-tree-file pdf-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+(You have to include xerces.jar or another xml parser which supports DOM in your classpath.)</fo:block>
+   <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="14pt" >
+b) Method Two</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Rather than performing transformation with an XSLT before invoking FOP, it is possible, if you use XT 
+as your XSLT engine, to just call FOP and have it call XT for you. To do 
+this, run the class org.apache.fop.apps.CommandLine with the source XML file name, XSL file name and PDF file 
+name as arguments. You will need to include FOP, SAX, your SAX Parser and XT in your 
+classpath and so you might invoke</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java -Dorg.xml.sax.parser=com.jclark.xml.sax.Driver</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+-cp fop_x_xx_x.jar;xt.jar;xerces.jar</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+org.apache.fop.apps.CommandLine xml-file xsl-file pdf-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Again, if your SAX Parser is other than Xerces, you will need to set the property org.xml.sax.parser 
+to the SAX Parser class to use.</fo:block>
+   <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="14pt" >
+c) Method Three</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+If you already produced the FO file, you can preview the results of your transformation without using 
+any pdf viewer by invoking FOP with the viewer application. You will need to include FOP and 
+your XML Parser in your classpath</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java -cp fop_x_xx_x.jar;xerces.jar</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+org.apache.fop.apps.AWTCommandLine fo-file</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+The viewer uses the swing classes.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Note: If you are using java 2 or later (i.e. jdk 1.2. or later) you can 
+put all needed jar files into the subdirectory jdk1.2.x\jre\lib\ext (windows example). Then FOP can be started without classpath:
+</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+java org.apache.fop.apps.CommandLine fo-file pdf-file</fo:block>
+   <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="16pt" >
+3) Running FOP on MacOS</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Ensure that you have a recent MRJ, and that you have downloaded and unpacked the XP and 
+SAX distributions. The xp.jar and sax.jar files work as is on MacOS.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Drag the FOP jarfile onto the JBindery icon. When the first dialog appears, type "org.apache.fop.apps.CommandLine" in the 
+"Class name" field. Using UNIX syntax, type the names of the input formatting-object file and the output 
+PDF in the "Optional parameters" field.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Click on the Classpath icon. To add the xp.jar and sax.jar files, click the "Add .zip file" 
+button, navigate to the file in question, and click Open.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Once both are added (the FOP jarfile will already be in the list), click Run. A "stdout" 
+window will appear and display FOP runtime messages.</fo:block>
+   <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="16pt" >
+4) Problems</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+    <fo:inline font-size="8pt" >
+If you have problems running FOP, please have a look at the</fo:inline>
+    <fo:inline font-style="italic" font-size="8pt" >
+FOP FAQ</fo:inline>
+    <fo:inline font-size="8pt" >
+(faq.html) . If you don't find a solution there, you can ask for help on the list 
+fop-dev@xmlgraphics.apache.org. Maybe it's bug and maybe somebody is already working on it.</fo:inline>
+   </fo:block>
+   <fo:block margin-bottom="1pt" id="sec4" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
+D) Embedding FOP</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Instantiate org.apache.fop.apps.Driver. Once this class is instantiated, methods are called to set the Renderer to use, the 
+(possibly multiple) ElementMapping(s) to use and the PrintWriter to use to output the results of the rendering 
+(where applicable). In the case of the Renderer and ElementMapping(s), the Driver may be supplied either with 
+the object itself, or the name of the class, in which case Driver will instantiate the class 
+itself. The advantage of the latter is it enables runtime determination of Renderer and ElementMapping(s).</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Once the Driver is set up, the buildFOTree method is called. Depending on whether DOM or SAX 
+is being used, the invocation of the method is either buildFOTree(Document) or buildFOTree(Parser, InputSource) respectively.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+A third possibility may be used to build the FO Tree, namely calling getDocumentHandler() and firing the 
+SAX events yourself.</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Once the FO Tree is built, the format() and render() methods may be called in that order.
+</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Here is an example use of Driver from CommandLine.java:</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+Driver driver = new Driver();</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.setRenderer("org.apache.fop.render.pdf.PDFRenderer", version);</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.addElementMapping("org.apache.fop.fo.StandardElementMapping");</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.addElementMapping("org.apache.fop.svg.SVGElementMapping");</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.setWriter(new PrintWriter(new FileWriter(args[1])));</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.buildFOTree(parser, fileInputSource(args[0]));</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.format();</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+driver.render();</fo:block>
+   <fo:block margin-bottom="1pt" id="sec5" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
+E) What's Implemented?</fo:block>
+   <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
+Also see STATUS for what is being worked on.</fo:block>
+   <fo:block margin-left="28.3465pt" margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+1) Formatting Objects</fo:block>
+   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
+     <!--
+Sipmle Breack line / empty Paragraph version 1.001. 
+Use margin space to make space!
+-->
+    </fo:leader>
+   </fo:block>
+   <fo:block margin-bottom="1pt" line-height="11pt" color="rgb(0,0,0,255)" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="11pt" leader-length="2.001%" >
+     <!--
+Sipmle Breack line / empty Paragraph version 1.001. 
+Use margin space to make space!
+-->
+    </fo:leader>
+   </fo:block>
+   <fo:block margin-bottom="1pt" line-height="11pt" color="rgb(0,0,0,255)" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="11pt" leader-length="2.001%" >
+     <!--
+Sipmle Breack line / empty Paragraph version 1.001. 
+Use margin space to make space!
+-->
+    </fo:leader>
+   </fo:block>
+   <!--Start list block nr 0 from 28 .-->
+   <fo:list-block>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline font-size="16pt" >
+root</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+       <fo:inline font-size="16pt" >
+layout-master-set</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+       <fo:inline>
+simple-page-master</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+region-body</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+region-before</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+region-after</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-sequence</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+sequence-specification</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+sequence-specifier-single</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+sequence-specifier-repeating</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+sequence-specifier-alternating</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+flow</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+static-content</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+block</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+list-block</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+list-item</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+list-item-label</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+list-item-body</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-number</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+display-sequence</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+inline</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+display-rule</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+display-graphic</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+table (minimal support)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+table-column (minimal support)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+table-body (minimal support)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+table-row (minimal support)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+table-cell (minimal support)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <!--End list block nr 27 from 28 .-->
+   </fo:list-block>
+   <fo:block margin-left="28.3465pt" margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+2) Properties</fo:block>
+   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
+     <!--
+Sipmle Breack line / empty Paragraph version 1.001. 
+Use margin space to make space!
+-->
+    </fo:leader>
+   </fo:block>
+   <fo:block margin-bottom="1pt" line-height="11pt" color="rgb(0,0,0,255)" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="11pt" leader-length="2.001%" >
+     <!--
+Sipmle Breack line / empty Paragraph version 1.001. 
+Use margin space to make space!
+-->
+    </fo:leader>
+   </fo:block>
+   <fo:block margin-bottom="1pt" line-height="11pt" color="rgb(0,0,0,255)" >
+    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="11pt" leader-length="2.001%" >
+     <!--
+Sipmle Breack line / empty Paragraph version 1.001. 
+Use margin space to make space!
+-->
+    </fo:leader>
+   </fo:block>
+   <!--Start list block nr 0 from 41 .-->
+   <fo:list-block>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline font-size="16pt" >
+end-indent</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+       <fo:inline font-size="16pt" >
+page-master-name</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+       <fo:inline>
+page-master-first</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-master-repeating</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-master-odd</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-master-even</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+margin-top (only on pages and regions)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+margin-bottom (only on pages and regions)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+margin-left (only on pages and regions)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+margin-right (only on pages and regions)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+extent</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-width</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+page-height</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+flow-name</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+font-family</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+font-style</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+font-weight</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+font-size</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+line-height</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+text-align</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+text-align-last</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+space-before.optimum</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+space-after.optimum</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+start-indent</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+end-indent</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+provisional-distance-between-starts</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+provisional-label-separation</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+rule-thickness</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+color</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+wrap-option</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+white-space-treatment</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+break-before</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+break-after</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+text-indent</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+href</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+column-width</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+background-color</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+padding-top (only in conjunction with background color)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+padding-left (only in conjunction with background color)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+padding-bottom (only in conjunction with background color)</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <fo:list-item>
+     <fo:list-item-label end-indent="label-end()" >
+      <fo:block>
+       <fo:instream-foreign-object content-width="11pt" >
+        <svg:svg width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" height="20" >
+         <svg:circle fill="black" cx="10" cy="10" stroke="red" r="5" stroke-width="0.3" />
+        </svg:svg>
+       </fo:instream-foreign-object>
+      </fo:block>
+     </fo:list-item-label>
+     <fo:list-item-body start-indent="body-start()" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
+       <fo:inline>
+padding-right (only in conjunction with background color</fo:inline>
+      </fo:block>
+     </fo:list-item-body>
+    </fo:list-item>
+    <!--End list block nr 40 from 41 .-->
+   </fo:list-block>
+  </fo:flow>
+ </fo:page-sequence>
+</fo:root>
