@@ -95,3 +95,18 @@ Only on MiniScribus version 2.0 >
   * Font Letter Spacing /  / FontsLetterSpacing()  AbsCommandID
   * Background color /  / BackGroundColor()  AbsCommandID
   * Fop source  /  / showSource()  AbsCommandID
+
+
+*Hidden KeyBoard shortcut*
+
+  * CTRL+Home go start document
+  * CTRL+End go end document
+  * Insert overwrite modus
+  * ScrLk modus red debug cursor to activate debug paint internal if is debug build
+  * CTRL+H to insert Horizontal line <hr> or <fo:leader>  space 
+
+
+
+
+
+
