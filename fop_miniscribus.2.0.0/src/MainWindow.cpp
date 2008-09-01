@@ -87,10 +87,13 @@ void MainWindow::linkExternal()
     OpenDeskBrowser(QUrl("http://www.java.com/"));  
     }  else if ( a == 9008) {
     OpenDeskBrowser(QUrl("http://pages.cs.wisc.edu/~ghost/"));  
+    }  else if ( a == 9009) {
+    OpenDeskBrowser(QUrl("http://code.google.com/p/fop-miniscribus/wiki/KeyBoard"));  
     }
 }
 
 /*
+
 LINK_GOOGLEBASE = 9000,
 LINK_AUTHOR = 9001,
 LINK_XSLDOC = 9002,
@@ -100,6 +103,7 @@ LINK_QTFORUMDE = 9005,
 LINK_APACHEFOP = 9006,
 LINK_JAVA = 9007,
 LINK_GHOSTPS = 9008,  
+LINK_KEYBOARDOC= 9008,
   */
 
 void MainWindow::prepareDocks()
@@ -168,9 +172,12 @@ toolBar->addWidget(tbooks);
     snc->registerCommand_S(StaticCmd(LINK_JAVA,tr("Java Home Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
     snc->registerCommand_S(StaticCmd(LINK_APACHEFOP,tr("Apache fop Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
     snc->registerCommand_S(StaticCmd(LINK_GHOSTPS,tr("Ghostscript Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_KEYBOARDOC,tr("Application KeyBoard shortcut"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
 
 
-    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
+
+
+    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_KEYBOARDOC , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
          
     for (int x = 0; LinkActionHelp[x] != S_NONE; x++) {
                  StaticCommandID id = LinkActionHelp[x];

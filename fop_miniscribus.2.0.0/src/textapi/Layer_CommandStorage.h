@@ -130,6 +130,7 @@ typedef enum {
     LINK_APACHEFOP = 9006,
     LINK_JAVA = 9007,
     LINK_GHOSTPS = 9008,
+    LINK_KEYBOARDOC = 9009,
 	
 	ID_ABOUT_QT			= 1403
 } StaticCommandID;
