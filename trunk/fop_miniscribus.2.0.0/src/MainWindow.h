@@ -60,6 +60,7 @@ private slots:
     /* remake action to cursor */
 void menuUpdate( bool modus );
 void showBooks(bool e );
+void linkExternal();
 
 };
 

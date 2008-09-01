@@ -41,7 +41,13 @@
     <addaction name="separator" />
     <addaction name="actionNewDoc" />
    </widget>
+   <widget class="QMenu" name="menuExternal_doc_link" >
+    <property name="title" >
+     <string>External doc link</string>
+    </property>
+   </widget>
    <addaction name="menuFile" />
+   <addaction name="menuExternal_doc_link" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
