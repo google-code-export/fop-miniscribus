@@ -723,7 +723,6 @@ TXT_STRIKOUT , TXT_OVERLINE , FONT_LETTER_SPACING ,TXT_NOBREAKLINE , TXT_SPAN_FO
 void TextLayer::MakeActionHere()
 {
     CommandStorage *snc = CommandStorage::instance();
-    snc->clearS();
     snc->registerCommand_S(StaticCmd(SHOW_SOURCE_HTML,tr("Show source as XHTML"),QIcon(":/img/view-source.png"),QKeySequence("Alt+S"),dev->txtControl(),SLOT(showhtml())));
 
 snc->registerCommand_S(StaticCmd(SHOW_SOURCE_SCRIBE,tr("Show source as Debug"),QIcon(":/img/view-source.png"),QKeySequence(),dev->txtControl(),SLOT(showhtml())));
@@ -794,7 +793,6 @@ void TextLayer::MakeDinamicCommand()
     bool isitalic = textCursor().charFormat().fontItalic() == true ? true : false;
     
     CommandStorage *dync = CommandStorage::instance();
-    dync->clearD();
 
 dync->registerCommand_D(DinamicCmd(TXTM_COPY,false,false,tr("Copy"),QIcon(":/img/copy.png"),QKeySequence("Ctrl+C"),dev->txtControl(),SLOT(copy()),textCursor().hasSelection()));
     dync->registerCommand_D(DinamicCmd(TXTM_PASTE,false,false,tr("Paste"),QIcon(":/img/paste.png"),QKeySequence("Ctrl+V"),dev->txtControl(),SLOT(paste()),canpaste));

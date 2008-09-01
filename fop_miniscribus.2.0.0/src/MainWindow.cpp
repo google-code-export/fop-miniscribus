@@ -62,7 +62,45 @@ void MainWindow::CheckFileApps()
     
 }
 
-  
+void MainWindow::linkExternal()
+{
+    QAction *ali = qobject_cast<QAction *>(sender());
+    if (!ali) {
+    return;
+    }
+    const int a = ali->data().toInt();
+    if (a == 9000) {
+    OpenDeskBrowser(QUrl("http://code.google.com/p/fop-miniscribus/"));  
+    } else if ( a == 9001) {
+    OpenDeskBrowser(QUrl("http://ciz.ch/"));  
+    } else if ( a == 9002) {
+    OpenDeskBrowser(QUrl("http://www.zvon.org/xxl/xslfoReference/Output/index.html"));  
+    } else if ( a == 9003) {
+    OpenDeskBrowser(QUrl("http://trolltech.com/"));  
+    } else if ( a == 9004) {
+    OpenDeskBrowser(QUrl("http://www.qtcentre.org/"));  
+    } else if ( a == 9005) {
+    OpenDeskBrowser(QUrl("http://qtforum.de/forum/"));  
+    } else if ( a == 9006) {
+    OpenDeskBrowser(QUrl("http://xmlgraphics.apache.org/fop/"));  
+    }  else if ( a == 9007) {
+    OpenDeskBrowser(QUrl("http://www.java.com/"));  
+    }  else if ( a == 9008) {
+    OpenDeskBrowser(QUrl("http://pages.cs.wisc.edu/~ghost/"));  
+    }
+}
+
+/*
+LINK_GOOGLEBASE = 9000,
+LINK_AUTHOR = 9001,
+LINK_XSLDOC = 9002,
+LINK_TROLLTECH = 9003,
+LINK_QTFORUMEN = 9004,
+LINK_QTFORUMDE = 9005,
+LINK_APACHEFOP = 9006,
+LINK_JAVA = 9007,
+LINK_GHOSTPS = 9008,  
+  */
 
 void MainWindow::prepareDocks()
 {
@@ -120,9 +158,54 @@ toolBar->addWidget(tbooks);
     addToolBar(Qt::LeftToolBarArea,tb_4);
     
     
-    CommandStorage *dync = CommandStorage::instance();
-    docbar->addAction(dync->actM(OPEN_PAGE_CHUNK));
-    tb_5->addAction(dync->actM(OPEN_PAGE_CHUNK));
+    CommandStorage *snc = CommandStorage::instance();
+    snc->registerCommand_S(StaticCmd(LINK_GOOGLEBASE,tr("Check update"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_AUTHOR,tr("Author Home Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_XSLDOC,tr("XSL-FO Reference"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_TROLLTECH,tr("QT Trolltech web"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_QTFORUMEN,tr("QT Forum en qtcentre.org"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_QTFORUMDE,tr("QT Forum de"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_JAVA,tr("Java Home Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_APACHEFOP,tr("Apache fop Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_GHOSTPS,tr("Ghostscript Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+
+
+    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
+         
+    for (int x = 0; LinkActionHelp[x] != S_NONE; x++) {
+                 StaticCommandID id = LinkActionHelp[x];
+                 QAction* a_2 = CommandStorage::instance()->actS(id);
+                 if ( id == S_SEPARATOR) {
+                 menuExternal_doc_link->addSeparator();
+                 }
+                 if (a_2) {
+                 menuExternal_doc_link->addAction(a_2);
+                }
+           }
+
+    
+    
+    
+/*
+LINK_GOOGLEBASE = 9000,
+LINK_AUTHOR = 9001,
+LINK_XSLDOC = 9002,
+LINK_TROLLTECH = 9003,
+LINK_QTFORUMEN = 9004,
+LINK_QTFORUMDE = 9005,
+LINK_APACHEFOP = 9006,
+LINK_JAVA = 9007,
+LINK_GHOSTPS = 9008,
+  */
+
+
+
+
+
+
+
+    docbar->addAction(snc->actM(OPEN_PAGE_CHUNK));
+    tb_5->addAction(snc->actM(OPEN_PAGE_CHUNK));
     
       
     
