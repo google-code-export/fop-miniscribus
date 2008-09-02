@@ -1037,14 +1037,19 @@ void GraphicsView::fopExcec( QStringList commandlist , const QString file )
     if (!isFopInstall()) {
     return;
     }  
+    if (file.size() > 3) {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    }
+    
     QProcess process;
     process.setReadChannelMode(QProcess::MergedChannels);
     process.start( setter.value("FopApplicationfi").toString()  , commandlist );
                          if (!process.waitForFinished()) {
                           QApplication::restoreOverrideCursor();
-                          QMessageBox::critical(this, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
-                          return;
+                             if (file.size() > 3) {
+                             QMessageBox::critical(this, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
+                             }
+                             return;
                          } else {
                              QApplication::restoreOverrideCursor();
                                      if (file.size() > 3) {
