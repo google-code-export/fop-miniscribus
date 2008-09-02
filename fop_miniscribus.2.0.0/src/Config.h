@@ -46,7 +46,7 @@ static const qreal NEWLAYERWI= 350;
 static const qreal NEWLAYERHI= 40;
 
 
-static const qreal MINIMUMJAVAVERSION= 1.6;
+static const qreal MINIMUMJAVAVERSION= 1.4;
 
 
 
