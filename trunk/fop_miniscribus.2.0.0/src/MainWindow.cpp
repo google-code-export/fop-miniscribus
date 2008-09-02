@@ -868,7 +868,7 @@ bool GraphicsView::isFopInstall()
     exefop = QString(setter.value("FopApplicationfi").toString());
     QFileInfo executefop(exefop);
     
-    if (jk_version >= MINIMUMJAVAVERSION && executefop.exists() && javadir.size() > 2 ) {
+    if (jk_version >= MINIMUMJAVAVERSION && executefop.exists() ) {
         /* java looks fine */
         return true;
     } else {
