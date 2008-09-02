@@ -131,6 +131,7 @@ typedef enum {
     LINK_JAVA = 9007,
     LINK_GHOSTPS = 9008,
     LINK_KEYBOARDOC = 9009,
+    LINK_SUPPORT = 9010,
 	
 	ID_ABOUT_QT			= 1403
 } StaticCommandID;

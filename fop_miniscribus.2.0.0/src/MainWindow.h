@@ -81,12 +81,16 @@ protected:
     void resizeEvent(QResizeEvent *event);
     TextLayer *pageFull;
     QSettings setter;
+    QString foptipe;
     /* current file setting */
     QString currentopenfilerunning;
     QString currentopenfilealternate;
     bool gzippedfile;
     QTextCodec *currentfilecodec;
-    
+    bool isFopInstall();
+    bool fopInstaller();
+    void fopExcec( QStringList commandlist , const QString file );
+  
 
 private:
     
@@ -111,6 +115,9 @@ public slots:
     void apacheFopConvert();
     void saveOnPageBinFile();
     void pageclear();
+    void printPreview();
+    void saveRtfDoc();
+    void saveTiffDoc();
 
 
 private slots:

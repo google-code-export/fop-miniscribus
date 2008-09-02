@@ -40,6 +40,11 @@
     <addaction name="openScribe" />
     <addaction name="separator" />
     <addaction name="actionNewDoc" />
+    <addaction name="separator" />
+    <addaction name="printfile" />
+    <addaction name="separator" />
+    <addaction name="savertf" />
+    <addaction name="savetiff" />
    </widget>
    <widget class="QMenu" name="menuExternal_doc_link" >
     <property name="title" >
@@ -61,6 +66,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNewDoc" />
+   <addaction name="printfile" />
+   <addaction name="savertf" />
    <addaction name="actionGenralSave" />
    <addaction name="convertFop" />
    <addaction name="actionSaveAs" />
@@ -147,6 +154,33 @@
    </property>
    <property name="text" >
     <string>New Document</string>
+   </property>
+  </action>
+  <action name="printfile" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/img/fileprint.png</normaloff>:/img/fileprint.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Print Preview Document</string>
+   </property>
+  </action>
+  <action name="savertf" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/img/3floppy-unmount-48x48.png</normaloff>:/img/3floppy-unmount-48x48.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save as RTF Format</string>
+   </property>
+  </action>
+  <action name="savetiff" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/img/3floppy-unmount-48x48.png</normaloff>:/img/3floppy-unmount-48x48.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Save as Tif Fax Format</string>
    </property>
   </action>
  </widget>
