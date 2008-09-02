@@ -1042,12 +1042,12 @@ void GraphicsView::fopExcec( QStringList commandlist , const QString file )
     }
     
     QProcess process;
-    process.setReadChannelMode(QProcess::MergedChannels);
-    process.start( setter.value("FopApplicationfi").toString()  , commandlist );
+    /////////process.setReadChannelMode(QProcess::MergedChannels);
+    process.startDetached( setter.value("FopApplicationfi").toString()  , commandlist );
                          if (!process.waitForFinished()) {
                           QApplication::restoreOverrideCursor();
                              if (file.size() > 3) {
-                             QMessageBox::critical(this, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
+                             QMessageBox::critical(0, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
                              }
                              return;
                          } else {
