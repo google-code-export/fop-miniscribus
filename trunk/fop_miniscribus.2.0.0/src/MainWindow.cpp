@@ -439,7 +439,7 @@ GraphicsView::GraphicsView( QWidget* parent )
     foptipe = "Bat file";
     #endif
     #if defined Q_WS_X11
-    javadir = getenv("JAVA_HOME");
+     foptipe = "sh script";
     #endif
     #if defined Q_WS_MAC
     foptipe = "sh script";
