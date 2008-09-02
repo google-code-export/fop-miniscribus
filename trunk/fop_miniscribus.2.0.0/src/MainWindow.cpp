@@ -980,7 +980,13 @@ void GraphicsView::printPreview()
     if (!isFopInstall()) {
     return;
     }
-    fopExcec( QStringList()  << currentopenfilerunning << "-awt",QString());
+    QApplication::restoreOverrideCursor();
+    QProcess process;
+    process.startDetached( setter.value("FopApplicationfi").toString()  , QStringList()  << currentopenfilerunning << "-awt"  );
+     if (!process.waitForFinished()) {
+         
+         /* no fop install !!! */
+     }
 }
 
 void GraphicsView::apacheFopConvert()
@@ -1037,18 +1043,14 @@ void GraphicsView::fopExcec( QStringList commandlist , const QString file )
     if (!isFopInstall()) {
     return;
     }  
-    if (file.size() > 3) {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    }
-    
     QProcess process;
-    /////////process.setReadChannelMode(QProcess::MergedChannels);
-    process.startDetached( setter.value("FopApplicationfi").toString()  , commandlist );
-                         if (!process.waitForFinished()) {
+    process.setReadChannelMode(QProcess::MergedChannels);
+    process.start(setter.value("FopApplicationfi").toString()  , commandlist);
+                         
+                  if (!process.waitForFinished()) {
                           QApplication::restoreOverrideCursor();
-                             if (file.size() > 3) {
                              QMessageBox::critical(0, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
-                             }
                              return;
                          } else {
                              QApplication::restoreOverrideCursor();
@@ -1056,8 +1058,11 @@ void GraphicsView::fopExcec( QStringList commandlist , const QString file )
                                      OpenDeskBrowser(QUrl(file));
                                      }
                            return;  
-                         }
-    QApplication::restoreOverrideCursor();
+                         }          
+                         
+                         
+    QApplication::restoreOverrideCursor();           
+                         
 }
 
 
