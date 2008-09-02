@@ -872,6 +872,7 @@ bool GraphicsView::isFopInstall()
         /* java looks fine */
         return true;
     } else {
+         fopInstaller();
         return false;
     }
     
@@ -897,7 +898,7 @@ bool GraphicsView::fopInstaller()
           return false;
          }
          setter.setValue("FopApplicationfi",exefop);
-         if (!fopInstaller()) {
+         if (!isFopInstall()) {
           /* if file not exist !!! */
          setter.setValue("FopApplicationfi",""); 
          return false;
