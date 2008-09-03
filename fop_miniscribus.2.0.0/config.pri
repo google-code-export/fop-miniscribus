@@ -44,19 +44,20 @@ LIB_TREE_PATH = $$BUILD_TREE_PATH/lib
 message(Libs install dir  $$LIB_TREE_PATH)
 
 INCLUDEPATH += $$BUILD_TREE_PATH/include
-INCLUDEPATH += $$BUILD_TREE_PATH/modules/apng
+######INCLUDEPATH += $$BUILD_TREE_PATH/modules/apng
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/tidy
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/zip
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/ooo
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/xslt
+INCLUDEPATH += $$BUILD_TREE_PATH/modules/scribe
 
 DEPENDPATH += $$BUILD_TREE_PATH/include
-DEPENDPATH += $$BUILD_TREE_PATH/modules/apng
+########DEPENDPATH += $$BUILD_TREE_PATH/modules/apng
 DEPENDPATH += $$BUILD_TREE_PATH/modules/tidy
 DEPENDPATH += $$BUILD_TREE_PATH/modules/zip
 DEPENDPATH += $$BUILD_TREE_PATH/modules/ooo
 DEPENDPATH += $$BUILD_TREE_PATH/modules/xslt
-
+DEPENDPATH += $$BUILD_TREE_PATH/modules/scribe
 
 !include( ./config_xslt.pri ) {
 message( "../config_xslt.pri not found" )

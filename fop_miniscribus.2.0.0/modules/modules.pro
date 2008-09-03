@@ -24,16 +24,29 @@ contains(QT_CONFIG, opengl):QT += opengl
 !include( ../config.pri ) {
 message( "../config.pri not found" )
 }
+
+# Input
+HEADERS += scribe/Basic_Mime.h \
+           scribe/getmargin.h \
+           scribe/href_gui.h \
+           scribe/Image_Page_Struct_Mime.h \
+           scribe/table_setting.h \
+           scribe/XML_Editor.h
+SOURCES += scribe/Basic_Mime.cpp \
+           scribe/getmargin.cpp \
+           scribe/href_gui.cpp \
+           scribe/Image_Page_Struct_Mime.cpp \
+           scribe/table_setting.cpp \
+           scribe/XML_Editor.cpp
+           
+           
+           
+
            
            
 
 # Input
-HEADERS += apng/apngreader.h \
-           apng/png.h \
-           apng/pngasmrd.h \
-           apng/pngconf.h \
-           ooo/formatproperty.h \
-           ooo/oo_document.h \
+HEADERS += ooo/oo_document.h \
            ooo/oo_handler.h \
            ooo/styleinformation.h \
            ooo/styleparser.h \
@@ -83,25 +96,7 @@ HEADERS += apng/apngreader.h \
            zip/ziphandle.h \
            zip/zlib.h \
            zip/zutil.h
-SOURCES += apng/apngreader.cpp \
-           apng/png.c \
-           apng/pngerror.c \
-           apng/pnggccrd.c \
-           apng/pngget.c \
-           apng/pngmem.c \
-           apng/pngpread.c \
-           apng/pngread.c \
-           apng/pngrio.c \
-           apng/pngrtran.c \
-           apng/pngrutil.c \
-           apng/pngset.c \
-           apng/pngtrans.c \
-           apng/pngvcrd.c \
-           apng/pngwio.c \
-           apng/pngwrite.c \
-           apng/pngwtran.c \
-           apng/pngwutil.c \
-           ooo/formatproperty.cpp \
+SOURCES += ooo/formatproperty.cpp \
            ooo/oo_handler.cpp \
            ooo/styleinformation.cpp \
            ooo/styleparser.cpp \
