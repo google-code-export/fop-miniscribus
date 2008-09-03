@@ -4,8 +4,8 @@
 
 TEMPLATE = lib
 TARGET = txtscribe
-DEPENDPATH += . apng ooo tidy zip
-INCLUDEPATH += . apng ooo tidy zip
+DEPENDPATH += .  ooo tidy zip
+INCLUDEPATH += . ooo tidy zip
 
 
 
@@ -24,29 +24,12 @@ contains(QT_CONFIG, opengl):QT += opengl
 !include( ../config.pri ) {
 message( "../config.pri not found" )
 }
-
-# Input
-HEADERS += scribe/Basic_Mime.h \
-           scribe/getmargin.h \
-           scribe/href_gui.h \
-           scribe/Image_Page_Struct_Mime.h \
-           scribe/table_setting.h \
-           scribe/XML_Editor.h
-SOURCES += scribe/Basic_Mime.cpp \
-           scribe/getmargin.cpp \
-           scribe/href_gui.cpp \
-           scribe/Image_Page_Struct_Mime.cpp \
-           scribe/table_setting.cpp \
-           scribe/XML_Editor.cpp
-           
-           
-           
-
            
            
 
 # Input
-HEADERS += ooo/oo_document.h \
+HEADERS += ooo/formatproperty.h \
+           ooo/oo_document.h \
            ooo/oo_handler.h \
            ooo/styleinformation.h \
            ooo/styleparser.h \
