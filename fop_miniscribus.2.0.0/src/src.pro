@@ -27,7 +27,7 @@ CONFIG+=x86 ppc
 win32:RC_FILE = win.rc
 
 unix {
-TARGET = scribe
+TARGET = foedit
 BINDIR = /usr/bin
 target.path = $$BINDIR
 INSTALLS += target
