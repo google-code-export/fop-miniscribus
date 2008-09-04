@@ -137,7 +137,7 @@ while [ $# -gt 0 ]; do
 			shift
 			;;
 		--help) show_usage; exit ;;
-		*) show_usage; exit ;;
+		*) shift ;;
 	esac
 done
 
