@@ -91,7 +91,9 @@ void MainWindow::linkExternal()
     OpenDeskBrowser(QUrl("http://code.google.com/p/fop-miniscribus/wiki/KeyBoard"));  
     }  else if ( a == 9010) {
     OpenDeskBrowser(QUrl("http://sourceforge.net/project/project_donations.php?group_id=202496")); 
-    }
+    }  else if ( a == 9011) {
+    OpenDeskBrowser(QUrl("http://code.google.com/p/fop-miniscribus/issues/list")); 
+    } 
 }
 
 /*
@@ -175,7 +177,8 @@ toolBar->addWidget(tbooks);
     snc->registerCommand_S(StaticCmd(LINK_APACHEFOP,tr("Apache fop Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
     snc->registerCommand_S(StaticCmd(LINK_GHOSTPS,tr("Ghostscript Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
     snc->registerCommand_S(StaticCmd(LINK_KEYBOARDOC,tr("Application KeyBoard shortcut"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
-     snc->registerCommand_S(StaticCmd(LINK_SUPPORT,tr("Support and Help to MiniScribus"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_SUPPORT,tr("Support and Help to MiniScribus"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+    snc->registerCommand_S(StaticCmd(LINK_BUG_ISSEUE,tr("Report a bug (require Gmail user)"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
 
 
 
