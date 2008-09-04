@@ -183,7 +183,7 @@ toolBar->addWidget(tbooks);
 
 
 
-    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_SUPPORT , LINK_KEYBOARDOC , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
+    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_BUG_ISSEUE , LINK_SUPPORT , LINK_KEYBOARDOC , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
          
     for (int x = 0; LinkActionHelp[x] != S_NONE; x++) {
                  StaticCommandID id = LinkActionHelp[x];
