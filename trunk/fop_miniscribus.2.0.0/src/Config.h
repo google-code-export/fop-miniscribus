@@ -50,7 +50,7 @@ static const qreal MINIMUMJAVAVERSION= 1.4;
 
 
 
-#define SCRIBEVERSION  "2.0.0"
+#define SCRIBEVERSION  "2.0.1"
 
 
 #define _APPLICATIONS_NAME_ \
