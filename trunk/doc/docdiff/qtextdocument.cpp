@@ -147,7 +147,7 @@ bool Qt::mightBeRichText(const QString& text)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextdocument.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qtextdocument.cpp 0
 
     This function is defined in the \c <QTextDocument> header file.
 
@@ -563,6 +563,13 @@ void QTextDocument::markContentsDirty(int from, int length)
 /*!
     \property QTextDocument::useDesignMetrics
     \since 4.1
+    \brief whether the document uses design metrics of fonts to improve the accuracy of text layout
+
+    If this property is set to true, the layout will use design metrics.
+    Otherwise, the metrics of the paint device as set on
+    QAbstractTextDocumentLayout::setPaintDevice() will be used.
+
+    By default, this property is false.
 */
 
 void QTextDocument::setUseDesignMetrics(bool b)
@@ -651,6 +658,35 @@ qreal QTextDocument::idealWidth() const
 }
 
 /*!
+    \property QTextDocument::documentMargin
+    \since 4.5
+
+     The margin around the document. The default is 4.
+*/
+qreal QTextDocument::documentMargin() const
+{
+    Q_D(const QTextDocument);
+    return d->documentMargin;
+}
+
+void QTextDocument::setDocumentMargin(qreal margin)
+{
+    Q_D(QTextDocument);
+    if (d->documentMargin != margin) {
+        d->documentMargin = margin;
+
+        QTextFrame* root = rootFrame();
+        QTextFrameFormat format = root->frameFormat();
+        format.setMargin(margin);
+        root->setFrameFormat(format);
+
+        if (d->lout)
+            d->lout->documentChanged(0, 0, d->length());
+    }
+}
+
+
+/*!
     \property QTextDocument::indentWidth
     \since 4.4
 
@@ -679,8 +715,14 @@ qreal QTextDocument::indentWidth() const
 void QTextDocument::setIndentWidth(qreal width)
 {
     Q_D(QTextDocument);
-    d->indentWidth = width;
+    if (d->indentWidth != width) {
+        d->indentWidth = width;
+        if (d->lout)
+            d->lout->documentChanged(0, 0, d->length());
+    }
 }
+
+
 
 
 /*!
@@ -724,6 +766,9 @@ void QTextDocument::adjustSize()
 
     Note that the width is always >= pageSize().width().
 
+    By default, for a newly-created, empty document, this property contains
+    a configuration-dependent size.
+
     \sa setTextWidth(), setPageSize(), idealWidth()
 */
 QSizeF QTextDocument::size() const
@@ -738,12 +783,63 @@ QSizeF QTextDocument::size() const
     Returns the number of text blocks in the document.
 
     The value of this property is undefined in documents with tables or frames.
+
+    By default, if defined, this property contains a value of 1.
+    \sa lineCount(), characterCount()
 */
 int QTextDocument::blockCount() const
 {
     Q_D(const QTextDocument);
     return d->blockMap().numNodes();
 }
+
+
+/*!
+  \since 4.5
+
+  Returns the number of lines of this document (if the layout supports
+  this). Otherwise, this is identical to the number of blocks.
+
+  \sa blockCount(), characterCount()
+ */
+int QTextDocument::lineCount() const
+{
+    Q_D(const QTextDocument);
+    return d->blockMap().length(2);
+}
+
+/*!
+  \since 4.5
+
+  Returns the number of characters of this document.
+
+  \sa blockCount(), characterAt()
+ */
+int QTextDocument::characterCount() const
+{
+    Q_D(const QTextDocument);
+    return d->length();
+}
+
+/*!
+  \since 4.5
+
+  Returns the character at position \a pos, or a null character if the
+  position is out of range.
+
+  \sa characterCount()
+ */
+QChar QTextDocument::characterAt(int pos) const
+{
+    Q_D(const QTextDocument);
+    if (pos < 0 || pos >= d->length())
+        return QChar();
+    QTextDocumentPrivate::FragmentIterator fragIt = d->find(pos);
+    const QTextFragmentData * const frag = fragIt.value();
+    const int offsetInFragment = qMax(0, pos - fragIt.position());
+    return d->text.at(frag->stringPosition + offsetInFragment);
+}
+
 
 /*!
     \property QTextDocument::defaultStyleSheet
@@ -1301,7 +1397,19 @@ QTextBlock QTextDocument::findBlock(int pos) const
 QTextBlock QTextDocument::findBlockByNumber(int blockNumber) const
 {
     Q_D(const QTextDocument);
-    return QTextBlock(docHandle(), d->blockMap().findNodeByIndex(blockNumber));
+    return QTextBlock(docHandle(), d->blockMap().findNode(blockNumber, 1));
+}
+
+/*!
+    \since 4.5
+    Returns the text block that contains the specified \a lineNumber.
+
+    \sa QTextBlock::firstLineNumber()
+*/
+QTextBlock QTextDocument::findBlockByLineNumber(int lineNumber) const
+{
+    Q_D(const QTextDocument);
+    return QTextBlock(docHandle(), d->blockMap().findNode(lineNumber, 2));
 }
 
 /*!
@@ -1355,6 +1463,9 @@ QTextBlock QTextDocument::lastBlock() const
 /*!
     \property QTextDocument::pageSize
     \brief the page size that should be used for laying out the document
+
+    By default, for a newly-created, empty document, this property contains
+    an undefined size.
 
     \sa modificationChanged()
 */
@@ -1418,6 +1529,8 @@ QFont QTextDocument::defaultFont() const
 /*!
     \property QTextDocument::modified
     \brief whether the document has been modified by the user
+
+    By default, this property is false.
 
     \sa modificationChanged()
 */
@@ -1669,6 +1782,8 @@ UserCanceled:
     not be found in the cache, loadResource is called to try to load
     the resource. loadResource should then use addResource to add the
     resource to the cache.
+
+    \sa QTextDocument::ResourceType
 */
 QVariant QTextDocument::resource(int type, const QUrl &name) const
 {
@@ -1881,7 +1996,7 @@ QString QTextHtmlExporter::toHtml(const QByteArray &encoding, ExportMode mode)
     rootFmt.clearProperty(QTextFormat::BackgroundBrush);
 
     QTextFrameFormat defaultFmt;
-    defaultFmt.setMargin(DefaultRootFrameMargin);
+    defaultFmt.setMargin(doc->documentMargin());
 
     if (rootFmt == defaultFmt)
         emitFrame(doc->rootFrame()->begin());
@@ -2298,7 +2413,8 @@ void QTextHtmlExporter::emitBlockAttributes(const QTextBlock &block)
     QLatin1String style(" style=\"");
     html += style;
 
-    if (block.begin().atEnd()) {
+    const bool emptyBlock = block.begin().atEnd();
+    if (emptyBlock) {
         html += QLatin1String("-qt-paragraph-type:empty;");
     }
 
@@ -2323,8 +2439,11 @@ void QTextHtmlExporter::emitBlockAttributes(const QTextBlock &block)
 
     emitPageBreakPolicy(format.pageBreakPolicy());
 
-    const QTextCharFormat blockCharFmt = block.charFormat();
-    QTextCharFormat diff = formatDifference(defaultCharFormat, blockCharFmt).toCharFormat();
+    QTextCharFormat diff;
+    if (emptyBlock) { // only print character properties when we don't expect them to be repeated by actual text in the parag
+        const QTextCharFormat blockCharFmt = block.charFormat();
+        diff = formatDifference(defaultCharFormat, blockCharFmt).toCharFormat();
+    }
 
     diff.clearProperty(QTextFormat::BackgroundBrush);
     if (format.hasProperty(QTextFormat::BackgroundBrush)) {
@@ -2335,15 +2454,6 @@ void QTextHtmlExporter::emitBlockAttributes(const QTextBlock &block)
 
     if (!diff.properties().isEmpty())
         emitCharFormatStyle(diff);
-
-#if 0
-    QBrush blockCharFmtBg = blockCharFmt.background();
-    if (blockCharFmtBg.style() != Qt::NoBrush) {
-        html += QLatin1String(" -qt-blockcharfmt-background-color:");
-        html += blockCharFmtBg.color().name();
-        html += QLatin1Char(';');
-    }
-#endif
 
     html += QLatin1Char('"');
 
@@ -2432,18 +2542,6 @@ void QTextHtmlExporter::emitBlock(const QTextBlock &block)
 
     html += QLatin1Char('>');
 
-    QTextCharFormat blockCharFmt = block.charFormat();
-    const QTextBlockFormat blockFmt = block.blockFormat();
-
-    blockCharFmt.clearProperty(QTextFormat::BackgroundBrush);
-    if (blockFmt.hasProperty(QTextFormat::BackgroundBrush)) {
-        QBrush bg = blockFmt.background();
-        if (bg.style() != Qt::NoBrush)
-            blockCharFmt.setProperty(QTextFormat::BackgroundBrush, blockFmt.property(QTextFormat::BackgroundBrush));
-    }
-
-    defaultCharFormat.merge(blockCharFmt);
-
     QTextBlock::Iterator it = block.begin();
     if (fragmentMarkers && !it.atEnd() && block == doc->begin())
         html += QLatin1String("<!--StartFragment-->");
@@ -2486,8 +2584,8 @@ QString QTextHtmlExporter::findUrlForImage(const QTextDocument *doc, qint64 cach
 
     if (doc && doc->docHandle()) {
         QTextDocumentPrivate *priv = doc->docHandle();
-        QMap<QUrl, QVariant>::const_iterator it = priv->cachedResources.begin();
-        for (; it != priv->cachedResources.end(); ++it) {
+        QMap<QUrl, QVariant>::const_iterator it = priv->cachedResources.constBegin();
+        for (; it != priv->cachedResources.constEnd(); ++it) {
 
             const QVariant &v = it.value();
             if (v.type() == QVariant::Image && !isPixmap) {
@@ -2501,7 +2599,7 @@ QString QTextHtmlExporter::findUrlForImage(const QTextDocument *doc, qint64 cach
             }
         }
 
-        if (it != priv->cachedResources.end())
+        if (it != priv->cachedResources.constEnd())
             url = it.key().toString();
     }
 
@@ -2761,7 +2859,7 @@ void QTextHtmlExporter::emitFrameStyle(const QTextFrameFormat &format, FrameType
     The \a encoding parameter specifies the value for the charset attribute
     in the html header. For example if 'utf-8' is specified then the
     beginning of the generated html will look like this:
-    \snippet doc/src/snippets/code/src.gui.text.qtextdocument.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qtextdocument.cpp 1
 
     If no encoding is specified then no such meta information is generated.
 

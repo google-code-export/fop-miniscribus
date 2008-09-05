@@ -110,6 +110,9 @@ public:
     inline WrapMode wrapMode() const { return static_cast<WrapMode>(wordWrap); }
 
     enum Flag {
+        ShowTabsAndSpaces = 0x1,
+        ShowLineAndParagraphSeparators = 0x2,
+        AddSpaceForLineAndParagraphSeparators = 0x4,
         IncludeTrailingSpaces = 0x80000000
     };
     Q_DECLARE_FLAGS(Flags, Flag)

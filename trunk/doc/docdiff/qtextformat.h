@@ -170,6 +170,9 @@ public:
         FontCapitalization = FirstFontProperty,
         FontLetterSpacing = 0x1FE1,
         FontWordSpacing = 0x1FE2,
+        FontStyleHint = 0x1FE3,
+        FontStyleStrategy = 0x1FE4,
+        FontKerning = 0x1FE5,
         FontFamily = 0x2000,
         FontPointSize = 0x2001,
         FontSizeAdjustment = 0x2002,
@@ -192,7 +195,6 @@ public:
         IsAnchor = 0x2030,
         AnchorHref = 0x2031,
         AnchorName = 0x2032,
-
         ObjectType = 0x2f00,
 
         // list properties
@@ -437,6 +439,20 @@ public:
     inline bool fontFixedPitch() const
     { return boolProperty(FontFixedPitch); }
 
+    inline void setFontStyleHint(QFont::StyleHint hint, QFont::StyleStrategy strategy = QFont::PreferDefault)
+    { setProperty(FontStyleHint, hint); setProperty(FontStyleStrategy, strategy); }
+    inline void setFontStyleStrategy(QFont::StyleStrategy strategy)
+    { setProperty(FontStyleStrategy, strategy); }
+    QFont::StyleHint fontStyleHint() const
+    { return static_cast<QFont::StyleHint>(intProperty(FontStyleHint)); }
+    QFont::StyleStrategy fontStyleStrategy() const
+    { return static_cast<QFont::StyleStrategy>(intProperty(FontStyleStrategy)); }
+
+    inline void setFontKerning(bool enable)
+    { setProperty(FontKerning, enable); }
+    inline bool fontKerning() const
+    { return boolProperty(FontKerning); }
+
     void setUnderlineStyle(UnderlineStyle style);
     inline UnderlineStyle underlineStyle() const
     { return static_cast<UnderlineStyle>(intProperty(TextUnderlineStyle)); }
@@ -486,18 +502,20 @@ protected:
     friend class QTextFormat;
 };
 
-inline void QTextCharFormat::setTableCellRowSpan(int atableCellRowSpan)
+inline void QTextCharFormat::setTableCellRowSpan(int tableCellRowSpan)
 {
-    if (atableCellRowSpan == 1)
-	atableCellRowSpan = 0;
-    setProperty(TableCellRowSpan, atableCellRowSpan);
+    if (tableCellRowSpan <= 1)
+        clearProperty(TableCellRowSpan); // the getter will return 1 here.
+    else
+        setProperty(TableCellRowSpan, tableCellRowSpan);
 }
 
-inline void QTextCharFormat::setTableCellColumnSpan(int atableCellColumnSpan)
+inline void QTextCharFormat::setTableCellColumnSpan(int tableCellColumnSpan)
 {
-    if (atableCellColumnSpan == 1)
-	atableCellColumnSpan = 0;
-    setProperty(TableCellColumnSpan, atableCellColumnSpan);
+    if (tableCellColumnSpan <= 1)
+        clearProperty(TableCellColumnSpan); // the getter will return 1 here.
+    else
+        setProperty(TableCellColumnSpan, tableCellColumnSpan);
 }
 
 class Q_GUI_EXPORT QTextBlockFormat : public QTextFormat
@@ -531,8 +549,8 @@ public:
     inline qreal rightMargin() const
     { return doubleProperty(BlockRightMargin); }
 
-    inline void setTextIndent(qreal margin)
-    { setProperty(TextIndent, margin); }
+    inline void setTextIndent(qreal indent)
+    { setProperty(TextIndent, indent); }
     inline qreal textIndent() const
     { return doubleProperty(TextIndent); }
 

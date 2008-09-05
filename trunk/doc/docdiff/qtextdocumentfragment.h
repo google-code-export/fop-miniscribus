@@ -84,6 +84,7 @@ public:
 private:
     QTextDocumentFragmentPrivate *d;
     friend class QTextCursor;
+    friend class QTextDocumentWriter;
 };
 
 QT_END_NAMESPACE

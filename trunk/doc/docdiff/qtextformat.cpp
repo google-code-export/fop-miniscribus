@@ -359,6 +359,15 @@ void QTextFormatPrivate::recalcFont() const
                 if (f.fixedPitch() != value)
                     f.setFixedPitch(value);
                 break; }
+            case QTextFormat::FontStyleHint:
+                f.setStyleHint(static_cast<QFont::StyleHint>(props.at(i).value.toInt()), f.styleStrategy());
+                break;
+            case QTextFormat::FontStyleStrategy:
+                f.setStyleStrategy(static_cast<QFont::StyleStrategy>(props.at(i).value.toInt()));
+                break;
+            case QTextFormat::FontKerning:
+                f.setKerning(props.at(i).value.toBool());
+                break;
             default:
                 break;
             }
@@ -495,6 +504,9 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
                                                 specified in percentage, with 100 as the default value.
     \value FontWordSpacing  Changes the default spacing between individual words. A positive value increases the word spacing
                                                  by the corresponding pixels; a negative value decreases the spacing.
+    \value FontStyleHint        Corresponds to the QFont::StyleHint property
+    \value FontStyleStrategy    Corresponds to the QFont::StyleStrategy property
+    \value FontKerning          Specifies whether the font has kerning turned on.
 
     \omitvalue FirstFontProperty
     \omitvalue LastFontProperty
@@ -508,7 +520,6 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value IsAnchor
     \value AnchorHref
     \value AnchorName
-
     \value ObjectType
 
     List properties
@@ -1380,6 +1391,63 @@ void QTextCharFormat::setUnderlineStyle(UnderlineStyle style)
 
 
 /*!
+    \fn void QTextCharFormat::setFontStyleHint(QFont::StyleHint hint, QFont::StyleStrategy strategy)
+
+    Sets the font style \a hint and \a strategy.
+
+    Qt does not support style hints on X11 since this information is not provided by the window system.
+
+    \sa setFont()
+    \sa QFont::setStyleHint()
+*/
+
+/*!
+    \fn void QTextCharFormat::setFontStyleStrategy(QFont::StyleStrategy strategy)
+
+    Sets the font style \a strategy.
+
+    \sa setFont()
+    \sa QFont::setStyleStrategy()
+*/
+
+/*!
+    \fn void QTextCharFormat::setFontKerning(bool enable)
+    Enables kerning for this font if \a enable is true; otherwise disables it.
+
+    When kerning is enabled, glyph metrics do not add up anymore, even for
+    Latin text. In other words, the assumption that width('a') + width('b')
+    is equal to width("ab") is not neccesairly true.
+
+    \sa setFont()
+*/
+
+/*!
+    \fn QTextCharFormat::StyleHint QTextCharFormat::fontStyleHint() const
+
+    Returns the font style hint.
+
+    \sa setFontStyleHint()
+    \sa font()
+*/
+
+/*!
+    \fn QTextCharFormat::StyleStrategy QTextCharFormat::fontStyleStrategy() const
+
+    Returns the current font style strategy.
+
+    \sa setFontStyleStrategy()
+    \sa font()
+*/
+
+/*!
+    \fn  bool QTextCharFormat::fontKerning() const
+    Returns true if the the font kerning is enabled.
+
+    \sa setFontKerning()
+    \sa font()
+*/
+
+/*!
     \fn void QTextCharFormat::setFontFixedPitch(bool fixedPitch)
 
     If \a fixedPitch is true, sets the text format's font to be fixed pitch;
@@ -1657,6 +1725,9 @@ void QTextCharFormat::setFont(const QFont &font)
     setFontWordSpacing(font.wordSpacing());
     if (font.letterSpacingType() == QFont::PercentageSpacing)
         setFontLetterSpacing(font.letterSpacing());
+    setFontStyleHint(font.styleHint());
+    setFontStyleStrategy(font.styleStrategy());
+    setFontKerning(font.kerning());
 }
 
 /*!

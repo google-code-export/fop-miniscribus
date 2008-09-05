@@ -233,7 +233,7 @@ struct QTextHtmlParserNode {
     }
 
     inline bool mayNotHaveChildren() const
-    { return id == Html_img || id == Html_hr || id == Html_br; }
+    { return id == Html_img || id == Html_hr || id == Html_br || id == Html_meta; }
 
     void initializeProperties(const QTextHtmlParserNode *parent, const QTextHtmlParser *parser);
 

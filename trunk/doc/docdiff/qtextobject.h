@@ -242,6 +242,10 @@ public:
     void setVisible(bool visible);
 
     int blockNumber() const;
+    int firstLineNumber() const;
+
+    void setLineCount(int count);
+    int lineCount() const;
 
     class Q_GUI_EXPORT iterator {
         const QTextDocumentPrivate *p;
@@ -276,6 +280,7 @@ public:
     QTextBlock previous() const;
 
     inline QTextDocumentPrivate *docHandle() const { return p; }
+    inline int fragmentIndex() const { return n; }
 
 private:
     QTextDocumentPrivate *p;

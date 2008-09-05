@@ -125,6 +125,7 @@ class Q_GUI_EXPORT QTextDocument : public QObject
     Q_PROPERTY(QString defaultStyleSheet READ defaultStyleSheet WRITE setDefaultStyleSheet)
 #endif
     Q_PROPERTY(int maximumBlockCount READ maximumBlockCount WRITE setMaximumBlockCount)
+    Q_PROPERTY(qreal documentMargin READ documentMargin WRITE setDocumentMargin)
     QDOC_PROPERTY(QTextOption defaultTextOption READ defaultTextOption WRITE setDefaultTextOption)
 
 public:
@@ -163,6 +164,8 @@ public:
     QString toPlainText() const;
     void setPlainText(const QString &text);
 
+    QChar characterAt(int pos) const;
+
     enum FindFlag
     {
         FindBackward        = 0x00001,
@@ -185,6 +188,7 @@ public:
 
     QTextBlock findBlock(int pos) const;
     QTextBlock findBlockByNumber(int blockNumber) const;
+    QTextBlock findBlockByLineNumber(int blockNumber) const;
     QTextBlock begin() const;
     QTextBlock end() const;
 
@@ -233,10 +237,15 @@ public:
     qreal indentWidth() const;
     void setIndentWidth(qreal width);
 
+    qreal documentMargin() const;
+    void setDocumentMargin(qreal margin);
+
     void adjustSize();
     QSizeF size() const;
 
     int blockCount() const;
+    int lineCount() const;
+    int characterCount() const;
 
 #ifndef QT_NO_CSSPARSER
     void setDefaultStyleSheet(const QString &sheet);

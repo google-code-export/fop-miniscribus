@@ -142,6 +142,14 @@ struct QLayoutStruct {
     QFixed pageTopMargin;
     QFixed pageBottomMargin;
     QRectF updateRect;
+    QRectF updateRectForFloats;
+
+    inline void addUpdateRectForFloat(const QRectF &rect) {
+        if (updateRectForFloats.isValid())
+            updateRectForFloats |= rect;
+        else
+            updateRectForFloats = rect;
+    }
 
     inline QFixed absoluteY() const
     { return frameY + y; }
@@ -486,7 +494,7 @@ public:
     void pageBreakInsideTable(QTextTable *table, QLayoutStruct *layoutStruct);
 
 
-    void floatMargins(QFixed y, const QLayoutStruct *layoutStruct, QFixed *left, QFixed *right) const;
+    void floatMargins(const QFixed &y, const QLayoutStruct *layoutStruct, QFixed *left, QFixed *right) const;
     QFixed findY(QFixed yFrom, const QLayoutStruct *layoutStruct, QFixed requiredWidth) const;
 
     QVector<QCheckPoint> checkPoints;
@@ -1347,7 +1355,9 @@ void QTextDocumentLayoutPrivate::drawListItem(const QPointF &offset, QPainter *p
     QTextLine firstLine = layout->lineAt(0);
     Q_ASSERT(firstLine.isValid());
     QPointF pos = (offset + layout->position()).toPoint();
-    Qt::LayoutDirection dir = blockFormat.layoutDirection();
+    Qt::LayoutDirection dir = docPrivate->defaultTextOption.textDirection();
+    if (blockFormat.hasProperty(QTextFormat::LayoutDirection))
+        dir = blockFormat.layoutDirection();
     {
         QRectF textRect = firstLine.naturalTextRect();
         pos += textRect.topLeft().toPoint();
@@ -1953,12 +1963,12 @@ void QTextDocumentLayoutPrivate::positionFloat(QTextFrame *frame, QTextLine *cur
     fd->layoutDirty = true;
     Q_ASSERT(!fd->sizeDirty);
 
-//     qDebug() << "positionFloat:" << frame << "width=" << fd->size.width();
+//     qDebug() << "positionFloat:" << frame << "width=" << fd->size.width;
     QFixed y = layoutStruct->y;
     if (currentLine) {
         QFixed left, right;
         floatMargins(y, layoutStruct, &left, &right);
-//         qDebug() << "have line: right=" << right << "left=" << left << "textWidth=" << currentLine->textWidth();
+//         qDebug() << "have line: right=" << right << "left=" << left << "textWidth=" << currentLine->width();
         if (right - left < QFixed::fromReal(currentLine->naturalTextWidth()) + fd->size.width) {
             layoutStruct->pendingFloats.append(frame);
 //             qDebug() << "    adding to pending list";
@@ -1987,7 +1997,7 @@ void QTextDocumentLayoutPrivate::positionFloat(QTextFrame *frame, QTextLine *cur
     layoutStruct->minimumWidth = qMax(layoutStruct->minimumWidth, fd->minimumWidth);
     layoutStruct->maximumWidth = qMin(layoutStruct->maximumWidth, fd->maximumWidth);
 
-//     qDebug()<< "float positioned at " << fd->position;
+//     qDebug()<< "float positioned at " << fd->position.x << fd->position.y;
     fd->layoutDirty = false;
 }
 
@@ -2136,6 +2146,8 @@ QRectF QTextDocumentLayoutPrivate::layoutFrame(QTextFrame *f, int layoutFrom, in
                  : fd->contentsHeight + 2*(fd->border + fd->padding) + fd->topMargin + fd->bottomMargin;
     fd->size.width = actualWidth + marginWidth;
     fd->sizeDirty = false;
+    if (layoutStruct.updateRectForFloats.isValid())
+        layoutStruct.updateRect |= layoutStruct.updateRectForFloats;
     return layoutStruct.updateRect;
 }
 
@@ -2311,10 +2323,24 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
                 if (c->frameFormat().pageBreakPolicy() & QTextFormat::PageBreak_AlwaysAfter)
                     layoutStruct->newPage();
             } else {
+                QRectF oldFrameRect(cd->position.toPointF(), cd->size.toSizeF());
+                QRectF updateRect;
+
                 if (cd->sizeDirty)
-                    layoutFrame(c, layoutFrom, layoutTo);
+                    updateRect = layoutFrame(c, layoutFrom, layoutTo);
 
                 positionFloat(c);
+
+                QRectF frameRect(cd->position.toPointF(), cd->size.toSizeF());
+
+                if (frameRect == oldFrameRect && updateRect.isValid())
+                    updateRect.translate(cd->position.toPointF());
+                else
+                    updateRect = frameRect;
+
+                layoutStruct->addUpdateRectForFloat(updateRect);
+                if (oldFrameRect.isValid())
+                    layoutStruct->addUpdateRectForFloat(oldFrameRect);
             }
 
             layoutStruct->minimumWidth = qMax(layoutStruct->minimumWidth, cd->minimumWidth);
@@ -2476,9 +2502,15 @@ void QTextDocumentLayoutPrivate::layoutBlock(const QTextBlock &bl, int blockPosi
     if (blockFormat.hasProperty(QTextFormat::LayoutDirection))
         dir = blockFormat.layoutDirection();
 
+    QFixed extraMargin;
+    if (docPrivate->defaultTextOption.flags() & QTextOption::AddSpaceForLineAndParagraphSeparators) {
+        QFontMetricsF fm(bl.charFormat().font());
+        extraMargin = QFixed::fromReal(fm.width(QChar(QChar(0x21B5))));
+    }
+
     const QFixed indent = this->blockIndent(blockFormat);
-    const QFixed totalLeftMargin = QFixed::fromReal(blockFormat.leftMargin()) + (dir == Qt::RightToLeft ? 0 : indent);
-    const QFixed totalRightMargin = QFixed::fromReal(blockFormat.rightMargin()) + (dir == Qt::RightToLeft ? indent : 0);
+    const QFixed totalLeftMargin = QFixed::fromReal(blockFormat.leftMargin()) + (dir == Qt::RightToLeft ? extraMargin : indent);
+    const QFixed totalRightMargin = QFixed::fromReal(blockFormat.rightMargin()) + (dir == Qt::RightToLeft ? indent : extraMargin);
 
     const QPointF oldPosition = tl->position();
     tl->setPosition(QPointF(layoutStruct->x_left.toReal(), layoutStruct->y.toReal()));
@@ -2625,13 +2657,15 @@ void QTextDocumentLayoutPrivate::layoutBlock(const QTextBlock &bl, int blockPosi
                 // in one of the later paragraphs, then we don't need to repaint
                 // this one
                 layoutStruct->updateRect.setTop(qMax(layoutStruct->updateRect.top(), layoutStruct->y.toReal()));
-            } else if (layoutTo < blockPosition
-                       && oldPosition == tl->position()) {
-                // if the change in the document happened earlier in the document
-                // and our position did /not/ change because none of the earlier paragraphs
-                // or frames changed their height, then we don't need to repaint
-                // this one
-                layoutStruct->updateRect.setBottom(qMin(layoutStruct->updateRect.bottom(), tl->position().y()));
+            } else if (layoutTo < blockPosition) {
+                if (oldPosition == tl->position())
+                    // if the change in the document happened earlier in the document
+                    // and our position did /not/ change because none of the earlier paragraphs
+                    // or frames changed their height, then we don't need to repaint
+                    // this one
+                    layoutStruct->updateRect.setBottom(qMin(layoutStruct->updateRect.bottom(), tl->position().y()));
+                else
+                    layoutStruct->updateRect.setBottom(qreal(INT_MAX)); // reset
             }
         }
     }
@@ -2650,7 +2684,7 @@ void QTextDocumentLayoutPrivate::layoutBlock(const QTextBlock &bl, int blockPosi
     }
 }
 
-void QTextDocumentLayoutPrivate::floatMargins(QFixed y, const QLayoutStruct *layoutStruct,
+void QTextDocumentLayoutPrivate::floatMargins(const QFixed &y, const QLayoutStruct *layoutStruct,
                                               QFixed *left, QFixed *right) const
 {
 //     qDebug() << "floatMargins y=" << y;
@@ -2671,7 +2705,6 @@ void QTextDocumentLayoutPrivate::floatMargins(QFixed y, const QLayoutStruct *lay
     }
 //     qDebug() << "floatMargins: left="<<*left<<"right="<<*right<<"y="<<y;
 }
-
 
 QFixed QTextDocumentLayoutPrivate::findY(QFixed yFrom, const QLayoutStruct *layoutStruct, QFixed requiredWidth) const
 {

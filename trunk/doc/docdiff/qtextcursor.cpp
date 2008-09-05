@@ -389,10 +389,9 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         newPosition = 0;
         break;
     case QTextCursor::StartOfLine: {
-
-        if (!line.isValid())
-            break;
-        newPosition = blockIt.position() + line.textStart();
+        newPosition = blockIt.position();
+        if (line.isValid())
+            newPosition += line.textStart();
 
         break;
     }
@@ -410,19 +409,16 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
     }
     case QTextCursor::PreviousCharacter:
     case QTextCursor::Left:
-        newPosition = priv->previousCursorPosition(position, QTextLayout::SkipCharacters);
+        if (mode == QTextCursor::MoveAnchor && position != anchor)
+            newPosition = qMin(anchor, position);
+        else
+            newPosition = priv->previousCursorPosition(position, QTextLayout::SkipCharacters);
         break;
     case QTextCursor::StartOfWord: {
-        QTextEngine *engine = layout->engine();
-        const HB_CharAttributes *attributes = engine->attributes();
-
         if (relativePos == 0)
-            return false;
-
-        // skip if already at word start
-        if (attributes[relativePos - 1].whiteSpace
-            && !attributes[relativePos].whiteSpace)
-            return false;
+            break;
+        if (relativePos < blockIt.length()-1)
+            ++position;
 
         // FALL THROUGH!
     }
@@ -471,8 +467,12 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         newPosition = priv->length() - 1;
         break;
     case QTextCursor::EndOfLine: {
-        if (!line.isValid() || line.textLength() == 0)
+        if (!line.isValid() || line.textLength() == 0) {
+            if (blockIt.length() >= 1)
+                // position right before the block separator
+                newPosition = blockIt.position() + blockIt.length() - 1;
             break;
+        }
         newPosition = blockIt.position() + line.textStart() + line.textLength();
         if (line.lineNumber() < layout->lineCount() - 1) {
             const QString text = blockIt.text();
@@ -485,18 +485,17 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
     }
     case QTextCursor::EndOfWord: {
         QTextEngine *engine = layout->engine();
-        const HB_CharAttributes *attributes = engine->attributes();
-        const QString string = engine->layoutData->string;
-
-        const int len = layout->engine()->layoutData->string.length();
+        const int len = blockIt.length() - 1;
         if (relativePos >= len)
             return false;
-        relativePos++;
-        while (relativePos < len
-               && !attributes[relativePos].whiteSpace
-               && !engine->atWordSeparator(relativePos))
-            relativePos++;
-
+        if (engine->atWordSeparator(relativePos)) {
+            ++relativePos;
+            while (relativePos < len && engine->atWordSeparator(relativePos))
+                ++relativePos;
+        } else {
+            while (relativePos < len && !engine->atSpace(relativePos) && !engine->atWordSeparator(relativePos))
+                ++relativePos;
+        }
         newPosition = blockIt.position() + relativePos;
         break;
     }
@@ -515,7 +514,10 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
     }
     case QTextCursor::NextCharacter:
     case QTextCursor::Right:
-        newPosition = priv->nextCursorPosition(position, QTextLayout::SkipCharacters);
+        if (mode == QTextCursor::MoveAnchor && position != anchor)
+            newPosition = qMax(anchor, position);
+        else
+            newPosition = priv->nextCursorPosition(position, QTextLayout::SkipCharacters);
         break;
     case QTextCursor::NextWord:
     case QTextCursor::WordRight:
@@ -1150,6 +1152,8 @@ bool QTextCursor::movePosition(MoveOperation op, MoveMode mode, int n)
                 b = b.previous();
             d->setPosition(b.position());
         }
+        if (mode == QTextCursor::MoveAnchor)
+            d->anchor = d->position;
         while (d->movePosition(op, mode)
                && !d->block().isVisible())
             ;
@@ -1196,7 +1200,7 @@ void QTextCursor::setVisualNavigation(bool b)
 
     If there is a selection, the selection is deleted and replaced by
     \a text, for example:
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 0
     This clears any existing selection, selects the word at the cursor
     (i.e. from position() forward), and replaces the selection with
     the phrase "Hello World".
@@ -1474,7 +1478,7 @@ static void getText(QString &text, QTextDocumentPrivate *priv, const QString &do
         const QTextFragmentData * const frag = fragIt.value();
 
         const int offsetInFragment = qMax(0, pos - fragIt.position());
-        const int len = qMin(int(frag->size - offsetInFragment), end - pos);
+        const int len = qMin(int(frag->size_array[0] - offsetInFragment), end - pos);
 
         text += QString(docText.constData() + frag->stringPosition + offsetInFragment, len);
         pos += len;
@@ -2089,7 +2093,7 @@ void QTextCursor::insertImage(const QTextImageFormat &format)
     Convenience method for inserting the image with the given \a name at the
     current position().
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 1
 */
 void QTextCursor::insertImage(const QString &name)
 {
@@ -2211,7 +2215,7 @@ bool QTextCursor::operator>(const QTextCursor &rhs) const
 
     For example:
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 2
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 2
 
     The call to undo() will cause both insertions to be undone,
     causing both "World" and "Hello" to be removed.
@@ -2237,7 +2241,7 @@ void QTextCursor::beginEditBlock()
 
     For example:
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 3
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 3
 
     The call to undo() will cause all three insertions to be undone.
 

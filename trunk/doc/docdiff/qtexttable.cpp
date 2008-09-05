@@ -121,6 +121,7 @@ void QTextTableCell::setFormat(const QTextCharFormat &format)
 {
     QTextCharFormat fmt = format;
     fmt.clearProperty(QTextFormat::ObjectIndex);
+    fmt.setObjectType(QTextFormat::TableCellObject);
     QTextDocumentPrivate *p = table->docHandle();
     QTextDocumentPrivate::FragmentIterator frag(&p->fragmentMap(), fragment);
 
@@ -140,9 +141,22 @@ QTextCharFormat QTextTableCell::format() const
     QTextDocumentPrivate *p = table->docHandle();
     QTextFormatCollection *c = p->formatCollection();
 
-    QTextCharFormat fmt = c->charFormat(QTextDocumentPrivate::FragmentIterator(&p->fragmentMap(), fragment)->format);
+    QTextCharFormat fmt = c->charFormat(tableCellFormatIndex());
     fmt.setObjectType(QTextFormat::TableCellObject);
     return fmt;
+}
+
+/*!
+    \since 4.5
+
+    Returns the index of the tableCell's format in the document's internal list of formats.
+
+    \sa QTextDocument::allFormats()
+*/
+int QTextTableCell::tableCellFormatIndex() const
+{
+    QTextDocumentPrivate *p = table->docHandle();
+    return QTextDocumentPrivate::FragmentIterator(&p->fragmentMap(), fragment)->format;
 }
 
 /*!
@@ -325,6 +339,9 @@ QTextTable *QTextTablePrivate::createTable(QTextDocumentPrivate *pieceTable, int
     // add block after table
     QTextCharFormat charFmt;
     charFmt.setObjectIndex(table->objectIndex());
+    charFmt.setObjectType(QTextFormat::TableCellObject);
+
+
     int charIdx = pieceTable->formatCollection()->indexForFormat(charFmt);
     int cellIdx = pieceTable->formatCollection()->indexForFormat(QTextBlockFormat());
 

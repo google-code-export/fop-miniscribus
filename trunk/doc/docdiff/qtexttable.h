@@ -91,6 +91,8 @@ public:
     QTextFrame::iterator begin() const;
     QTextFrame::iterator end() const;
 
+    int tableCellFormatIndex() const;
+
 private:
     friend class QTextTable;
     QTextTableCell(const QTextTable *t, int f)
