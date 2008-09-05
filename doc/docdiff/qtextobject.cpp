@@ -129,7 +129,7 @@ QTextFormat QTextObject::format() const
     Returns the index of the object's format in the document's internal
     list of formats.
 
-    \sa QTextDocument::object()
+    \sa QTextDocument::allFormats()
 */
 int QTextObject::formatIndex() const
 {
@@ -1011,6 +1011,12 @@ QTextBlockUserData::~QTextBlockUserData()
 */
 
 /*!
+    \fn int QTextBlock::fragmentIndex() const
+
+    \internal
+*/
+
+/*!
     Returns the index of the block's first character within the document.
  */
 int QTextBlock::position() const
@@ -1106,7 +1112,7 @@ QTextBlockFormat QTextBlock::blockFormat() const
     Returns an index into the document's internal list of block formats
     for the text block's format.
 
-    \sa QTextDocument::object()
+    \sa QTextDocument::allFormats()
 */
 int QTextBlock::blockFormatIndex() const
 {
@@ -1135,7 +1141,7 @@ QTextCharFormat QTextBlock::charFormat() const
     Returns an index into the document's internal list of character formats
     for the text block's character format.
 
-    \sa QTextDocument::object()
+    \sa QTextDocument::allFormats()
 */
 int QTextBlock::charFormatIndex() const
 {
@@ -1164,7 +1170,7 @@ QString QTextBlock::text() const
     QTextDocumentPrivate::FragmentIterator end = p->find(pos + length() - 1); // -1 to omit the block separator char
     for (; it != end; ++it) {
         const QTextFragmentData * const frag = it.value();
-        text += QString::fromRawData(buffer.constData() + frag->stringPosition, frag->size);
+        text += QString::fromRawData(buffer.constData() + frag->stringPosition, frag->size_array[0]);
     }
 
     return text;
@@ -1351,8 +1357,53 @@ int QTextBlock::blockNumber() const
 {
     if (!p || !n)
         return -1;
-    return p->blockMap().index(n);
+    return p->blockMap().position(n, 1);
 }
+
+/*!
+\since 4.5
+
+    Returns the first line number of this block, or -1 if the block is invalid.
+    Unless the layout supports it, the line number is identical to the block number.
+
+    \sa QTextBlock::blockNumber()
+
+*/
+int QTextBlock::firstLineNumber() const
+{
+    if (!p || !n)
+        return -1;
+    return p->blockMap().position(n, 2);
+}
+
+
+/*!
+\since 4.5
+
+Sets the line count to \a count.
+
+/sa lineCount()
+*/
+void QTextBlock::setLineCount(int count)
+{
+    if (!p || !n)
+        return;
+    p->blockMap().setSize(n, count, 2);
+}
+/*!
+\since 4.5
+
+Returns the line count. Not all document layouts support this feature.
+
+\sa setLineCount()
+ */
+int QTextBlock::lineCount() const
+{
+    if (!p || !n)
+        return -1;
+    return p->blockMap().size(n, 2);
+}
+
 
 /*!
     Returns a text block iterator pointing to the beginning of the
@@ -1628,7 +1679,7 @@ QTextCharFormat QTextFragment::charFormat() const
     Returns an index into the document's internal list of character formats
     for the text fragment's character format.
 
-    \sa QTextDocument::object()
+    \sa QTextDocument::allFormats()
 */
 int QTextFragment::charFormatIndex() const
 {
@@ -1653,7 +1704,7 @@ QString QTextFragment::text() const
     int f = n;
     while (f != ne) {
         const QTextFragmentData * const frag = p->fragmentMap().fragment(f);
-        result += QString(buffer.constData() + frag->stringPosition, frag->size);
+        result += QString(buffer.constData() + frag->stringPosition, frag->size_array[0]);
         f = p->fragmentMap().next(f);
     }
     return result;

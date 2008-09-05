@@ -251,7 +251,6 @@ public:
     bool setFocusToNextOrPreviousAnchor(bool next);
     bool findNextPrevAnchor(const QTextCursor& from, bool next, QTextCursor& newAnchor);
 
-
 protected:
     virtual void timerEvent(QTimerEvent *e);
 

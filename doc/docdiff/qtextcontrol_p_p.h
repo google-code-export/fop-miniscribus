@@ -69,6 +69,7 @@ QT_BEGIN_NAMESPACE
 
 class QMimeData;
 class QAbstractScrollArea;
+class QInputContext;
 
 class QTextControlPrivate : public QObjectPrivate
 {
@@ -123,6 +124,7 @@ public:
 
     void _q_setCursorAfterUndoRedo(int undoPosition, int charsAdded, int charsRemoved);
 
+    QRectF cursorRectPlusUnicodeDirectionMarkers(const QTextCursor &cursor) const;
     QRectF rectForPosition(int position) const;
     QRectF selectionRect(const QTextCursor &cursor) const;
     inline QRectF selectionRect() const
@@ -157,6 +159,8 @@ public:
 #endif
 
     void append(const QString &text, Qt::TextFormat format = Qt::AutoText);
+
+    QInputContext *inputContext();
 
     QTextDocument *doc;
     bool cursorOn;

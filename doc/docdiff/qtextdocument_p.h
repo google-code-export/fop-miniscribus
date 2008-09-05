@@ -90,9 +90,7 @@ class QTextFrame;
 #define QTextBeginningOfFrame QChar(0xfdd0)
 #define QTextEndOfFrame QChar(0xfdd1)
 
-enum { DefaultRootFrameMargin = 2 };
-
-class QTextFragmentData : public QFragment
+class QTextFragmentData : public QFragment<>
 {
 public:
     inline void initialize() {}
@@ -102,12 +100,12 @@ public:
     int format;
 };
 
-class QTextBlockData : public QFragment
+class QTextBlockData : public QFragment<3>
 {
 public:
     inline void initialize()
         { layout = 0; userData = 0; userState = -1; revision = 0; hidden = 0; }
-    inline void invalidate() const;
+    void invalidate() const;
     inline void free()
     { delete layout; layout = 0; delete userData; userData = 0; }
 
@@ -234,6 +232,8 @@ public:
 
     const BlockMap &blockMap() const { return blocks; }
     const FragmentMap &fragmentMap() const { return fragments; }
+    BlockMap &blockMap() { return blocks; }
+    FragmentMap &fragmentMap() { return fragments; }
 
     static const QTextBlockData *block(const QTextBlock &it) { return it.p->blocks.fragment(it.n); }
 
@@ -342,6 +342,7 @@ public:
     QString title;
     QString url;
     qreal indentWidth;
+    qreal documentMargin;
 
     void mergeCachedResources(const QTextDocumentPrivate *priv);
 

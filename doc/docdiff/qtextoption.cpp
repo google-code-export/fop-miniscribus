@@ -295,6 +295,10 @@ QList<QTextOption::Tab> QTextOption::tabs() const
   \enum QTextOption::Flag
 
   \value IncludeTrailingSpaces
+  \value ShowTabsAndSpaces Visualize spaces with little dots, and tabs with little arrows.
+  \value ShowLineAndParagraphSeparators Visualize line and paragraph separators with appropriate symbol characters.
+  \value AddSpaceForLineAndParagraphSeparators While determining the line-break positions take into account the
+            space added for drawing a separator character.
 */
 
 /*!

@@ -554,7 +554,6 @@ QTextHtmlParserNode *QTextHtmlParser::newNode(int parent)
         newNode->id = Html_unknown;
     } else {
         nodes.resize(nodes.size() + 1);
-        nodes[0].blockFormat.setLayoutDirection(Qt::LeftToRight); // HTML default
         newNode = &nodes.last();
     }
 
@@ -658,7 +657,7 @@ void QTextHtmlParser::parseTag()
 #ifndef QT_NO_CSSPARSER
             QCss::Parser parser(nodes.last().text);
             QCss::StyleSheet sheet;
-            parser.parse(&sheet);
+            parser.parse(&sheet, Qt::CaseInsensitive);
             inlineStyleSheets.append(sheet);
             resolveStyleSheetImports(sheet);
 #endif
@@ -1008,7 +1007,11 @@ void QTextHtmlParserNode::initializeProperties(const QTextHtmlParserNode *parent
 {
     // inherit properties from parent element
     charFormat = parent->charFormat;
-    blockFormat.setLayoutDirection(parent->blockFormat.layoutDirection());
+
+    if (id == Html_html)
+        blockFormat.setLayoutDirection(Qt::LeftToRight); // HTML default
+    else if (parent->blockFormat.hasProperty(QTextFormat::LayoutDirection))
+        blockFormat.setLayoutDirection(parent->blockFormat.layoutDirection());
 
     if (parent->displayMode == QTextHtmlElement::DisplayNone)
         displayMode = QTextHtmlElement::DisplayNone;
@@ -1053,7 +1056,7 @@ void QTextHtmlParserNode::initializeProperties(const QTextHtmlParserNode *parent
                     && !attributes.at(i + 1).isEmpty()) {
                     hasHref = true;
                     charFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-                    charFormat.setForeground(Qt::blue);
+                    charFormat.setForeground(QApplication::palette().link());
                 }
             }
 
@@ -1219,13 +1222,13 @@ void QTextHtmlParserNode::applyCssDeclarations(const QVector<QCss::Declaration> 
 
     for (int i = 0; i < declarations.count(); ++i) {
         const QCss::Declaration &decl = declarations.at(i);
-        if (decl.values.isEmpty()) continue;
+        if (decl.d->values.isEmpty()) continue;
 
         QCss::KnownValue identifier = QCss::UnknownValue;
-        if (decl.values.first().type == QCss::Value::KnownIdentifier)
-            identifier = static_cast<QCss::KnownValue>(decl.values.first().variant.toInt());
+        if (decl.d->values.first().type == QCss::Value::KnownIdentifier)
+            identifier = static_cast<QCss::KnownValue>(decl.d->values.first().variant.toInt());
 
-        switch (decl.propertyId) {
+        switch (decl.d->propertyId) {
         case QCss::BorderColor: borderBrush = QBrush(decl.colorValue()); break;
         case QCss::BorderStyles:
             if (decl.styleValue() != QCss::BorderStyle_Unknown && decl.styleValue() != QCss::BorderStyle_Native)
@@ -1244,7 +1247,7 @@ void QTextHtmlParserNode::applyCssDeclarations(const QVector<QCss::Declaration> 
             }
             break;
         case QCss::QtBlockIndent:
-            blockFormat.setIndent(decl.values.first().variant.toInt());
+            blockFormat.setIndent(decl.d->values.first().variant.toInt());
             break;
         case QCss::TextIndent: {
             qreal indent = 0;
@@ -1256,19 +1259,19 @@ void QTextHtmlParserNode::applyCssDeclarations(const QVector<QCss::Declaration> 
                 hasCssListIndent = true;
             break;
         case QCss::QtParagraphType:
-            if (decl.values.first().variant.toString().compare(QLatin1String("empty"), Qt::CaseInsensitive) == 0)
+            if (decl.d->values.first().variant.toString().compare(QLatin1String("empty"), Qt::CaseInsensitive) == 0)
                 isEmptyParagraph = true;
             break;
         case QCss::QtTableType:
-            if (decl.values.first().variant.toString().compare(QLatin1String("frame"), Qt::CaseInsensitive) == 0)
+            if (decl.d->values.first().variant.toString().compare(QLatin1String("frame"), Qt::CaseInsensitive) == 0)
                 isTextFrame = true;
-            else if (decl.values.first().variant.toString().compare(QLatin1String("root"), Qt::CaseInsensitive) == 0) {
+            else if (decl.d->values.first().variant.toString().compare(QLatin1String("root"), Qt::CaseInsensitive) == 0) {
                 isTextFrame = true;
                 isRootFrame = true;
             }
             break;
         case QCss::QtUserState:
-            userState = decl.values.first().variant.toInt();
+            userState = decl.d->values.first().variant.toInt();
             break;
         case QCss::Whitespace:
             switch (identifier) {
@@ -1317,7 +1320,7 @@ void QTextHtmlParserNode::applyCssDeclarations(const QVector<QCss::Declaration> 
             break;
         case QCss::ListStyleType:
         case QCss::ListStyle:
-            setListStyle(decl.values);
+            setListStyle(decl.d->values);
             break;
         default: break;
         }
@@ -1458,11 +1461,11 @@ static void setWidthAttribute(QTextLength *width, QString value)
 void QTextHtmlParserNode::parseStyleAttribute(const QString &value, const QTextDocument *resourceProvider)
 {
     QString css = value;
-    css.prepend(QLatin1String("dummy {"));
+    css.prepend(QLatin1String("* {"));
     css.append(QLatin1Char('}'));
     QCss::Parser parser(css);
     QCss::StyleSheet sheet;
-    parser.parse(&sheet);
+    parser.parse(&sheet, Qt::CaseInsensitive);
     if (sheet.styleRules.count() != 1) return;
     applyCssDeclarations(sheet.styleRules.at(0).declarations, resourceProvider);
 }
@@ -1697,11 +1700,10 @@ class QTextHtmlStyleSelector : public QCss::StyleSelector
 {
 public:
     inline QTextHtmlStyleSelector(const QTextHtmlParser *parser)
-        : parser(parser) {}
+        : parser(parser) { nameCaseSensitivity = Qt::CaseInsensitive; }
 
-    virtual bool nodeNameEquals(NodePtr node, const QString& name) const;
+    virtual QStringList nodeNames(NodePtr node) const;
     virtual QString attribute(NodePtr node, const QString &name) const;
-    virtual bool hasAttribute(NodePtr node, const QString &name) const;
     virtual bool hasAttributes(NodePtr node) const;
     virtual bool isNullNode(NodePtr node) const;
     virtual NodePtr parentNode(NodePtr node) const;
@@ -1713,9 +1715,9 @@ private:
     const QTextHtmlParser *parser;
 };
 
-bool QTextHtmlStyleSelector::nodeNameEquals(NodePtr node, const QString& name) const
+QStringList QTextHtmlStyleSelector::nodeNames(NodePtr node) const
 {
-    return QString::compare(parser->at(node.id).tag, name, Qt::CaseInsensitive) == 0;
+    return QStringList(parser->at(node.id).tag.toLower());
 }
 
 #endif // QT_NO_CSSPARSER
@@ -1738,12 +1740,6 @@ QString QTextHtmlStyleSelector::attribute(NodePtr node, const QString &name) con
     if (idx == -1)
         return QString();
     return attributes.at(idx + 1);
-}
-
-bool QTextHtmlStyleSelector::hasAttribute(NodePtr node, const QString &name) const
-{
-   const QStringList &attributes = parser->at(node.id).attributes;
-   return findAttribute(attributes, name) != -1;
 }
 
 bool QTextHtmlStyleSelector::hasAttributes(NodePtr node) const
@@ -1821,7 +1817,7 @@ void QTextHtmlParser::importStyleSheet(const QString &href)
     if (!css.isEmpty()) {
         QCss::Parser parser(css);
         QCss::StyleSheet sheet;
-        parser.parse(&sheet);
+        parser.parse(&sheet, Qt::CaseInsensitive);
         externalStyleSheets.append(ExternalStyleSheet(href, sheet));
         resolveStyleSheetImports(sheet);
     }

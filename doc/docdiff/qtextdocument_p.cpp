@@ -97,7 +97,7 @@ QT_BEGIN_NAMESPACE
 
   START_OF_FRAME: one char format, and a blockFormat (for the next
   block). The format associated with the objectIndex() of the
-  charFormat decides whether this is a frame or table and it's
+  charFormat decides whether this is a frame or table and its
   properties
 
   END_OF_FRAME: one charFormat and a blockFormat (for the next
@@ -195,6 +195,7 @@ QTextDocumentPrivate::QTextDocumentPrivate()
     defaultTextOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 
     indentWidth = 40;
+    documentMargin = 4;
 
     maximumBlockCount = 0;
     needsEnsureMaximumBlockCount = false;
@@ -593,24 +594,24 @@ void QTextDocumentPrivate::move(int pos, int to, int length, QTextUndoCommand::O
 
         QTextFragmentData *X = fragments.fragment(x);
         QTextUndoCommand c = { QTextUndoCommand::Removed, true,
-                               op, X->format, X->stringPosition, key, { X->size },
+                               op, X->format, X->stringPosition, key, { X->size_array[0] },
                                blockRevision };
         QTextUndoCommand cInsert = { QTextUndoCommand::Inserted, true,
-                                     op, X->format, X->stringPosition, dstKey, { X->size },
+                                     op, X->format, X->stringPosition, dstKey, { X->size_array[0] },
                                      blockRevision };
 
         if (key+1 != blocks.position(b)) {
-//	    qDebug("remove_string from %d length %d", key, X->size);
-            Q_ASSERT(noBlockInString(text.mid(X->stringPosition, X->size)));
-            w = remove_string(key, X->size, op);
+//	    qDebug("remove_string from %d length %d", key, X->size_array[0]);
+            Q_ASSERT(noBlockInString(text.mid(X->stringPosition, X->size_array[0])));
+            w = remove_string(key, X->size_array[0], op);
 
             if (needsInsert) {
-                insert_string(dstKey, X->stringPosition, X->size, X->format, op);
-                dstKey += X->size;
+                insert_string(dstKey, X->stringPosition, X->size_array[0], X->format, op);
+                dstKey += X->size_array[0];
             }
         } else {
 //	    qDebug("remove_block at %d", key);
-            Q_ASSERT(X->size == 1 && isValidBlockSeparator(text.at(X->stringPosition)));
+            Q_ASSERT(X->size_array[0] == 1 && isValidBlockSeparator(text.at(X->stringPosition)));
             b = blocks.previous(b);
             B = 0;
             c.command = blocks.size(b) == 1 ? QTextUndoCommand::BlockDeleted : QTextUndoCommand::BlockRemoved;
@@ -693,7 +694,7 @@ void QTextDocumentPrivate::setCharFormat(int pos, int length, const QTextCharFor
         Q_ASSERT(formats.format(fragment->format).type() == QTextFormat::CharFormat);
 
         int offset = pos - it.position();
-        int length = qMin(endPos - pos, int(fragment->size - offset));
+        int length = qMin(endPos - pos, int(fragment->size_array[0] - offset));
         int oldFormat = fragment->format;
 
         if (mode == MergeFormat) {
@@ -714,7 +715,7 @@ void QTextDocumentPrivate::setCharFormat(int pos, int length, const QTextCharFor
         appendUndoItem(c);
 
         pos += length;
-        Q_ASSERT(pos == (int)(it.position() + fragment->size) || pos >= endPos);
+        Q_ASSERT(pos == (int)(it.position() + fragment->size_array[0]) || pos >= endPos);
     }
 
     int n = fragments.findNode(startPos - 1);
@@ -795,12 +796,12 @@ bool QTextDocumentPrivate::split(int pos)
     if (x) {
         int k = fragments.position(x);
 //          qDebug("found fragment with key %d, size_left=%d, size=%d to split at %d",
-//                k, (*it)->size_left, (*it)->size, pos);
+//                k, (*it)->size_left[0], (*it)->size_array[0], pos);
         if (k != pos) {
             Q_ASSERT(k <= pos);
             // need to resize the first fragment and add a new one
             QTextFragmentData *X = fragments.fragment(x);
-            int oldsize = X->size;
+            int oldsize = X->size_array[0];
             fragments.setSize(x, pos-k);
             uint n = fragments.insert_single(pos, oldsize-(pos-k));
             X = fragments.fragment(x);
@@ -822,12 +823,12 @@ bool QTextDocumentPrivate::unite(uint f)
     QTextFragmentData *ff = fragments.fragment(f);
     QTextFragmentData *nf = fragments.fragment(n);
 
-    if (nf->format == ff->format && (ff->stringPosition + (int)ff->size == nf->stringPosition)) {
+    if (nf->format == ff->format && (ff->stringPosition + (int)ff->size_array[0] == nf->stringPosition)) {
         if (isValidBlockSeparator(text.at(ff->stringPosition))
             || isValidBlockSeparator(text.at(nf->stringPosition)))
             return false;
 
-        fragments.setSize(f, ff->size + nf->size);
+        fragments.setSize(f, ff->size_array[0] + nf->size_array[0]);
         fragments.erase_single(n);
         return true;
     }
@@ -1201,7 +1202,7 @@ QString QTextDocumentPrivate::plainText() const
     result.reserve(length());
     for (QTextDocumentPrivate::FragmentIterator it = begin(); it != end(); ++it) {
         const QTextFragmentData *f = *it;
-        result += QString::fromRawData(text.unicode() + f->stringPosition, f->size);
+        result += QString::fromRawData(text.unicode() + f->stringPosition, f->size_array[0]);
     }
     // remove trailing block separator
     result.chop(1);
@@ -1282,7 +1283,7 @@ QTextFrame *QTextDocumentPrivate::rootFrame() const
 {
     if (!rtFrame) {
         QTextFrameFormat defaultRootFrameFormat;
-        defaultRootFrameFormat.setMargin(DefaultRootFrameMargin);
+        defaultRootFrameFormat.setMargin(documentMargin);
         rtFrame = qobject_cast<QTextFrame *>(const_cast<QTextDocumentPrivate *>(this)->createObject(defaultRootFrameFormat));
     }
     return rtFrame;
@@ -1514,10 +1515,10 @@ void QTextDocumentPrivate::compressPieceTable()
     int newLen = 0;
 
     for (FragmentMap::Iterator it = fragments.begin(); !it.atEnd(); ++it) {
-        qMemCopy(newTextPtr, text.constData() + it->stringPosition, it->size * sizeof(QChar));
+        qMemCopy(newTextPtr, text.constData() + it->stringPosition, it->size_array[0] * sizeof(QChar));
         it->stringPosition = newLen;
-        newTextPtr += it->size;
-        newLen += it->size;
+        newTextPtr += it->size_array[0];
+        newLen += it->size_array[0];
     }
 
     newText.resize(newLen);

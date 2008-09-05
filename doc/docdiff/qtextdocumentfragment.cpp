@@ -92,7 +92,7 @@ int QTextCopyHelper::appendFragment(int pos, int endPos, int objectIndex)
     const QTextFragmentData * const frag = fragIt.value();
 
     Q_ASSERT(objectIndex == -1
-             || (frag->size == 1 && src->formatCollection()->format(frag->format).objectIndex() != -1));
+             || (frag->size_array[0] == 1 && src->formatCollection()->format(frag->format).objectIndex() != -1));
 
     int charFormatIndex;
     if (forceCharFormat)
@@ -101,7 +101,7 @@ int QTextCopyHelper::appendFragment(int pos, int endPos, int objectIndex)
        charFormatIndex = convertFormatIndex(frag->format, objectIndex);
 
     const int inFragmentOffset = qMax(0, pos - fragIt.position());
-    int charsToCopy = qMin(int(frag->size - inFragmentOffset), endPos - pos);
+    int charsToCopy = qMin(int(frag->size_array[0] - inFragmentOffset), endPos - pos);
 
     QTextBlock nextBlock = src->blocksFind(pos + 1);
 
@@ -489,10 +489,22 @@ void QTextHtmlImporter::import()
                 hasBlock = false;
             } else if (hasBlock) {
                 // when collapsing subsequent block tags we need to clear the block format
-                QTextBlockFormat block = currentNode->blockFormat;
-                block.setIndent(indent);
+                QTextBlockFormat blockFormat = currentNode->blockFormat;
+                blockFormat.setIndent(indent);
 
-                cursor.setBlockFormat(block);
+                QTextBlockFormat oldFormat = cursor.blockFormat();
+                if (oldFormat.hasProperty(QTextFormat::PageBreakPolicy)) {
+                    QTextFormat::PageBreakFlags pageBreak = oldFormat.pageBreakPolicy();
+                    if (pageBreak == QTextFormat::PageBreak_AlwaysAfter)
+                        /* We remove an empty paragrah that requested a page break after.
+                           moving that request to the next paragraph means we also need to make
+                            that a pagebreak before to keep the same visual appearance.
+                        */
+                        pageBreak = QTextFormat::PageBreak_AlwaysBefore;
+                    blockFormat.setPageBreakPolicy(pageBreak);
+                }
+
+                cursor.setBlockFormat(blockFormat);
             }
         }
 
