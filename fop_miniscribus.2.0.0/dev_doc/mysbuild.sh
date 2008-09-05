@@ -5,6 +5,18 @@ mkdir -p /C/Programming/libs/src
 mkdir -p /C/Programming/libs/include
 mkdir -p /C/Programming/libs/lib
 
+
+cd /C/Programming/libs/src
+wget http://www.zlib.net/zlib-1.2.3.tar.gz
+tar xzf zlib-1.2.3.tar.gz
+rm zlib-1.2.3.tar.gz
+cd zlib-1.2.3
+./configure --prefix=$PWD/../../
+make
+make install
+
+
+
 cd /C/Programming/libs/src
 
 
