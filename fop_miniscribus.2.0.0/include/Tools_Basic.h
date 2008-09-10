@@ -252,6 +252,32 @@ static inline bool qt_unlink(const QString fullFileName)
 return false;
 }
 
+/* remove dir recursive */
+static inline void DownDir_RM(const QString d)
+{
+   QDir dir(d);
+   if (dir.exists())
+   {
+      const QFileInfoList list = dir.entryInfoList();
+      QFileInfo fi;
+      for (int l = 0; l < list.size(); l++)
+      {
+         fi = list.at(l);
+         if (fi.isDir() && fi.fileName() != "." && fi.fileName() != "..")
+            DownDir_RM(fi.absoluteFilePath());
+         else if (fi.isFile())
+         {
+            qt_unlink(fi.absoluteFilePath());
+         } 
+        
+      }
+      dir.rmdir(d);
+      
+   }
+} 
+
+
+
 /* random nummer */
 static inline int FooNumer( int lowest, int highest )
 {
