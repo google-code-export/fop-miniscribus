@@ -206,40 +206,29 @@ void FopDom::SetDoc( QTextDocument * docin , M_PageSize page , LEVEL e /*FOP_APA
 
 QDomElement FopDom::bookMarkTree( const QByteArray xmlt )
 {
-    
-    qDebug() << "### books    " << xmlt.size();
-    
-        StreamFop *buf = new StreamFop();
+        StreamFop *buf = new StreamFop();  /* Ram QIODevice */
         buf->device()->write( xmlt );
         if (buf->isValid()) {
-            
-            qDebug() << "### validate ok     " << xmlt.size();
-            
-            QDomDocument bbdoc = buf->Dom();
+            QDomDocument bbdoc = buf->Dom();  /* new doc from external chunk */
             QDomElement bbroot = bbdoc.documentElement();
             QDomElement e = bbroot.firstChildElement("fo:bookmark-tree");
             QDomElement Pbb = dom.createElement("fo:bookmark-tree");
             QDomNamedNodeMap alist = e.attributes();  
-            
 	        for (int i=0; i<alist.count(); i++){
 			QDomNode nod = alist.item(i);
 			Pbb.setAttribute(nod.nodeName().toLower(),nod.nodeValue());
 			}  
-
             QDomNode child = e.firstChild();
 					while ( !child.isNull() ) {
 						if ( child.isElement() ) {
 					    Pbb.appendChild(dom.importNode(child,true).toElement());
 					    }
 				     child = child.nextSibling();            
-				   }
-                   
+				   }  
             return Pbb;
-	
         } else {   
          return dom.createElement("dummy");
         }
-    
 }
 
 
