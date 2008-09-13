@@ -364,6 +364,7 @@ typedef QVector<QScriptItem> QScriptItemArray;
 
 struct Q_AUTOTEST_EXPORT QScriptLine
 {
+    // created and filled in QTextLine::layout_helper
     QScriptLine()
         : from(0), length(0),
         justified(0), gridfitted(0),

@@ -569,6 +569,10 @@ void QTextDocument::markContentsDirty(int from, int length)
     Otherwise, the metrics of the paint device as set on
     QAbstractTextDocumentLayout::setPaintDevice() will be used.
 
+    Using design metrics makes a layout have a width that is no longer dependent on hinting
+    and pixel-rounding. This means that WYSIWYG text layout becomes possible because the width
+    scales much more linearly based on paintdevice metrics than it would otherwise.
+
     By default, this property is false.
 */
 
