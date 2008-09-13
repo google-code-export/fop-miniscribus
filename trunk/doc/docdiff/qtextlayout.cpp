@@ -1603,6 +1603,7 @@ static inline void addNextCluster(int &pos, int end, QScriptLine &line, int &gly
 }
 
 
+// fill QScriptLine
 void QTextLine::layout_helper(int maxGlyphs)
 {
     QScriptLine &line = eng->lines[i];
