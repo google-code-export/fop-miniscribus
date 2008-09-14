@@ -47,6 +47,34 @@ static QByteArray CatDomElement( const QDomElement e )
     return doc.toByteArray(1);
 }
 
+#ifndef _OOREADRELEASE_
+/* debug all item incomming in tree 2 level */
+static QString cssGroup( const QDomElement e )
+{
+    QStringList cssitem;
+    QDomNamedNodeMap alist = e.attributes();  
+       for (int i=0; i<alist.count(); i++){
+            QDomNode nod = alist.item(i);
+            cssitem.append(QString("%1:%2").arg(nod.nodeName().toLower()).arg(nod.nodeValue()));
+       }  
+                    QDomNode child = e.firstChild();
+					while ( !child.isNull() ) {
+						if ( child.isElement() ) {
+					        QDomNamedNodeMap list = child.attributes(); 
+                             for (int x=0; x<list.count(); x++){
+                               QDomNode nod = list.item(x);  
+                               cssitem.append(QString("%1:%2").arg(nod.nodeName().toLower()).arg(nod.nodeValue())); 
+                             }
+					    }
+				     child = child.nextSibling();            
+				   }
+       
+    return cssitem.join(";");
+}
+#endif
+
+
+
 static  QTextCharFormat DefaultCharFormats( bool qtwritteln = false , QTextCharFormat format = QTextCharFormat()  )
 {
     QFont userfont( QApplication::font() );
@@ -145,6 +173,60 @@ static QString  ootrimmed( QString txt , const QString txttransform = QString("n
     }
 }
 
+/* image get remote */
+
+
+LoadGetImage::LoadGetImage( const QString nr , QUrl url_send  )
+	: QHttp(url_send.host(),QHttp::ConnectionModeHttp ,80)
+{
+     url = url_send;
+     cid = nr;
+     setHost(url_send.host() , 80);
+}
+
+void LoadGetImage::Start()
+{
+	     const QString METHOD =  "GET";
+       const QString agent = QString("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+			 header.setRequest(METHOD,url.path(),1,1);
+			 header.setValue("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+			 header.setValue("Host",url.host());
+			 header.setValue("User-Agent",agent);
+			 connect(this, SIGNAL(done(bool)), this , SLOT(ImageReady(bool)));
+       Http_id = request(header,0,0);
+}
+
+void LoadGetImage::ImageReady( bool error )
+{
+    if (!error) {
+        resultimage.loadFromData(readAll());
+                if (!resultimage.isNull()) {
+                    emit take(cid);
+                }
+        
+     
+    }
+}
+
+
+void Gloader::Setting( QObject *parent , const QString  id , QUrl url_send )
+{
+	receiver = parent;
+	cid = id;
+	url = url_send;
+	setTerminationEnabled(true);
+}
+
+void Gloader::run()
+{
+	 Rhttp = new LoadGetImage(cid,url);
+	 connect(Rhttp, SIGNAL(take(QString)), receiver , SLOT(in_image(QString)));
+	 Rhttp->Start();
+	 exec();
+}
+
+
+
 
 
 
@@ -165,6 +247,17 @@ OOReader::OOReader( const QString file , OOReader::WIDGEDEST e , QObject* parent
     }
     
    
+}
+
+void OOReader::in_image( const QString imagename )
+{
+    LoadGetImage *ht = qobject_cast<LoadGetImage *>(sender());
+    if (ht) {
+    QPixmap  imagen = ht->pics();
+    qDebug() << "### remote image incomming " << imagename;
+    Qdoc->addResource(QTextDocument::ImageResource,QUrl(imagename),imagen); 
+    emit ready();
+    }
 }
 
 void OOReader::openFile( const QString file )
@@ -262,6 +355,15 @@ void OOReader::ReadBody()
     emit statusRead(sumOfBlocks,sumOfBlocks);
     emit setError(tr("Unable to convert document body!"));        
     }
+    #ifndef _OOREADRELEASE_   ///// QMap<QString,StyleInfo> css2;
+    debugline = "";
+    QMapIterator<QString,StyleInfo> i(css2);
+         while (i.hasNext()) {
+             i.next();
+             StyleInfo style = i.value();
+             debugline.append(QString("Name: %1, %2\n").arg(i.key()).arg(style.css));
+         }
+    #endif
     emit ready();
 }
 
@@ -429,7 +531,7 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
          QDomNode child = e.firstChild();
          while ( !child.isNull() ) {
             ////// QString QDomNode::nodeName()
-             qDebug() << "### block item->" << child.nodeName();
+            /////////// qDebug() << "### block item->" << child.nodeName();
              
              if ( child.isElement() )  {
                     const QDomElement e = child.toElement();
@@ -491,16 +593,13 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
             if (css2[sname].valid && parent.isValid()) {
             format = css2[sname];
             styleformat = format.ofchar; 
-            Q_ASSERT(styleformat.isValid());
-            Q_ASSERT(paracharformat.isValid());
+            Q_ASSERT(styleformat.isValid());  /* from tag span */
+            Q_ASSERT(paracharformat.isValid());  
             /* qt dont save style.xml on root zip */
-            if (QTWRITTELN) {
-                styleunion = parent;
-                styleunion.merge(styleformat);
-            }   else {
-                styleunion = styleformat;
-                styleunion.merge(parent);
-            }   
+            styleunion = parent;
+            ///////Merges the other format with this format; where there are conflicts the other format takes precedence.
+            styleunion.merge(styleformat);  
+                
             } else {   
             styleunion.setFontPointSize ( fontSizePP );
             styleunion.setForeground(QBrush(QColor("tomato")));
@@ -521,13 +620,13 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
             } else {
             insertTextLine(cur,textline,styleunion,HandleSpace);  
             }
-            if (QTWRITTELN) {
+            
             /* image inside span !!! */
             QDomElement qtimage = e.firstChildElement("draw:frame");
-                if (!qtimage.isNull()) {
-                    return convertFragment(cur,qtimage,parent,false);
-                }
+            if (!qtimage.isNull()) {
+            return convertFragment(cur,qtimage,parent,false);
             }
+            
             /* child from span real allow */
             QDomElement oospace = e.firstChildElement("text:s");
             if (!oospace.isNull()) {
@@ -545,7 +644,7 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
                             arg(timer1.toTime_t()).arg(timer1.toString("zzz")).
                             arg(imageCurrentCount);
         
-        qDebug() << "### Init Frame ID  " << TimestampsMs;
+       ///////////// qDebug() << "### Init Frame ID  " << TimestampsMs;
         
         
         QDomElement img = e.firstChildElement("draw:image");
@@ -567,6 +666,11 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
                if (fi.exists () ) {
                  drawimage = QImage(fi.absoluteFilePath());  
                }
+            } else if (turi.scheme() != "file") {
+                /* remote url take to draw ? and TimestampsMs is url */
+                Gloader *grephttp = new Gloader();
+                grephttp->Setting(this,TimestampsMs,turi); 
+                grephttp->start(QThread::LowPriority);
             }
             
             if (!drawimage.isNull()) {
@@ -690,12 +794,12 @@ void OOReader::styleNameSetup(  const QByteArray chunk   , const QString label  
 Qt::Alignment OOReader::TagAlignElement(const QDomElement e ) 
 {
     QString value;
-    QString FAli0 = e.attribute( "fo:text-align","-");
-    QString FAli1 = e.attribute( "fo:align","-");
-    if (FAli0 !=QString("-")) {
+    QString FAli0 = e.attribute( "fo:text-align");
+    QString FAli1 = qMax(e.attribute( "fo:align") , e.attribute( "table:align"));
+    if (!FAli0.isEmpty()) {
         value = FAli0.simplified().toLower();
     }
-    if (FAli1 !=QString("-")) {
+    if (!FAli1.isEmpty()) {
         value = FAli1.simplified().toLower();
     }
     if ( e.attribute( "fo:vertical-align") == "middle" || e.attribute( "fo:display-align") == "center" ) {
@@ -735,6 +839,7 @@ OOReader::StyleInfo& OOReader::StyleInfo::operator=(const StyleInfo &d)
     ofchar = d.ofchar;
     type = d.type;
     valid = d.valid;
+    css = d.css;
     chunk = d.chunk;
     return *this;
 }
@@ -809,7 +914,7 @@ void ChildImport::copyDeep( QIODevice* device , QXmlStreamWriter &out  )
 
 
 
-/*                    file name and path , is data */
+/*                    file name and path , his data */
 QMap<QString,QByteArray> unzipstream( const QString file )
 {
 /*
@@ -1088,9 +1193,8 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
               }
               
               
-               if (nod.nodeName().toLower() == "fo:baseline-shift") {
-                ///////f.setUnderlineStyle( QTextCharFormat::SingleUnderline );
-                ///////f.setUnderlineColor(QColor(Qt::red));
+               if (nod.nodeName().toLower() == "fo:baseline-shift" ||
+                      nod.nodeName().toLower() == "style:text-position" ) {
                 if (nod.nodeValue().toLower().startsWith("super") || 
                     nod.nodeValue().toLower().startsWith("+") ||
                     nod.nodeValue().toLower().startsWith("1")) {
@@ -1153,7 +1257,7 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
         
     }
     /* after font is set and all other */
-    const qreal pointfont =  Unit(e.attribute ("fo:font-size"));
+    const qreal pointfont =  qMax( Unit(e.attribute ("fo:font-size")) , Unit(e.attribute ("font-size-complex"))  );
     if (pointfont > 2) {
     pf.setFontPointSize(pointfont);
     FontMaxPoint = qMax (FontMaxPoint,pointfont);
@@ -1169,8 +1273,7 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
         QString value = qMax(e.attribute("style:text-scale"),e.attribute("fo:letter-spacing"));
         value = value.replace("%",""); /* leave % if exist */
         qreal xx = value.toDouble();
-        if (xx != 0.) {
-       ////////////// qDebug() << "### style:text-scale  " << xx  << " pos." << charsRead; 
+        if (xx != 0.) { 
         pf.setFontLetterSpacing(xx);
         }
     }
@@ -1178,10 +1281,7 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
     
     const int debugspace = pf.fontLetterSpacing();
     if (debugspace == (int)DEBUgletterspacing )  { 
-    pf.setFontLetterSpacing(100.0);  
-    //////////qDebug() << "### Restore a Debug Default chars"; 
-    } else {  
-    /////////qDebug() << "### fontLetterSpacing buggs "  << debugspace << " pos." << charsRead; 
+    pf.setFontLetterSpacing(100.0); 
     }
     
     
@@ -1205,6 +1305,10 @@ void OOReader::TextBlockFormatPaint( const QString name , const QDomElement e )
         css2[name].ofchar = TextCharFormFromDom(es,DefaultCharFormats(QTWRITTELN));  
         }
     css2[name].filled = true;
+    #ifndef _OOREADRELEASE_
+    css2[name].css = cssGroup(e);
+    css2[name].ofchar.setToolTip ( name );
+    #endif
     }
     ///////////qDebug() << "### TextBlockFormatPaint  " << e.tagName() << name;
 }
@@ -1218,9 +1322,12 @@ void OOReader::TextCharFormatPaint( const QString name , const QDomElement e )
     }
     QTextCharFormat  Charformat = TextCharFormFromDom(e,DefaultCharFormats(QTWRITTELN));
     if (css2[name].valid) {
-    //////qDebug() << "### spin b ";
-    css2[name].ofchar = Charformat;
     css2[name].filled = true;
+    #ifndef _OOREADRELEASE_
+    Charformat.setToolTip ( name );
+    css2[name].css = cssGroup(e);
+    #endif
+    css2[name].ofchar = Charformat;
     }
      //////qDebug() << "### TextCharFormatPaint  " << e.tagName() << name;
     
@@ -1234,6 +1341,9 @@ void OOReader::FrameImageFormatPaint( const QString name , const QDomElement e )
         if (css2[name].valid) {
         css2[name].chunk = CatDomElement(im);
         css2[name].filled = true;
+        #ifndef _OOREADRELEASE_
+        css2[name].css = cssGroup(e);
+        #endif
         }
     }
 }
@@ -1275,6 +1385,9 @@ void OOReader::TextListFormatPaint( const QString name , const QDomElement e )
     //////qDebug() << "### spin b ";
     css2[name].of = listformat;
     css2[name].filled = true;
+    #ifndef _OOREADRELEASE_
+    css2[name].css = cssGroup(e);
+    #endif
     }
     
     ///////////qDebug() << "### CharBull set   " << CharBull  << " - " << nd.attribute("text:bullet-char","z");
@@ -1283,8 +1396,78 @@ void OOReader::TextListFormatPaint( const QString name , const QDomElement e )
 
 void OOReader::UnknowFormatPaint( const QString name , const QString style_name  ,  const QDomElement e )
 {
+    #ifndef _OOREADRELEASE_
+    if (css2[name].valid) {
+    css2[name].css = cssGroup(e); 
+    }
+    #endif
+    QTextFrameFormat base;
+    QTextTableFormat table;
+    QTextTableCellFormat cell;
+    if ( style_name == QLatin1String( "table-column" ) ) {
+        /* save column */
+        const qreal width = Unit(e.firstChildElement("style:table-column-properties").attribute("style:column-width"));
+            if (css2[name].valid) {
+               if (width > 0) {
+                base.setWidth ( width );
+                css2[name].of = base;
+               }
+             #ifndef _OOREADRELEASE_
+             css2[name].chunk = CatDomElement(e);
+             css2[name].css = cssGroup(e);
+             #endif
+             css2[name].filled = true;
+             } else {
+                qWarning() << "Not register style name ->" << style_name << name;  
+             }
     
-    qDebug() << "### UnknowFormatPaint -->  " << name  << " style_name-> " << style_name;
+    } else if ( style_name == QLatin1String( "table" ) ) {
+        ////////  style:table-properties
+          const QDomElement tablecss = e.firstChildElement("style:table-properties");
+          const qreal width = Unit(tablecss.attribute("style:width"));
+          qDebug() << "### table width  ->" << width  <<  " real" << tablecss.attribute("style:width");
+        
+             if (css2[name].valid) {
+                table.setWidth ( width );  /* checks on set */
+                table.setAlignment(TagAlignElement(tablecss));
+                table.setCellPadding(0);  /* oo padding on cell grep on loop max padding */
+                table.setCellSpacing(0);
+                table.setBorder ( 0.2 );
+                table.setBackground ( QBrush( FoCol->foColor(tablecss.attribute("fo:background-color"),FopColor::Transparent) ) );
+                css2[name].of = table;
+                #ifndef _OOREADRELEASE_
+                css2[name].chunk = CatDomElement(e);
+                css2[name].css = cssGroup(e);
+                #endif
+                css2[name].filled = true;
+             } else {
+                qWarning() << "Not register style name ->" << style_name << name;  
+             }
+    }  else if ( style_name == QLatin1String( "table-cell" ) ) {
+         QDomElement celcss = e.firstChildElement("style:table-cell-properties");
+        
+         cell.setBottomPadding ( qMax(Unit(celcss.attribute("fo:padding")) , Unit(celcss.attribute("fo:padding-bottom")))  );        
+         cell.setRightPadding ( qMax(Unit(celcss.attribute("fo:padding")) , Unit(celcss.attribute("fo:padding-right")))  );
+         cell.setTopPadding( qMax(Unit(celcss.attribute("fo:padding")) , Unit(celcss.attribute("fo:padding-top")))  );
+         cell.setLeftPadding ( qMax(Unit(celcss.attribute("fo:padding")) , Unit(celcss.attribute("fo:padding-left")))  );
+        
+         cell.setBackground ( QBrush( FoCol->foColor(celcss.attribute("fo:background-color"),FopColor::Transparent) ) );
+         cell.setProperty(CellBorderStyleID,celcss.attribute("fo:border"));
+        
+        //////qDebug() << "### table-cell color st size ->" << celcss.attribute("fo:background-color").size();
+        
+             if (css2[name].valid) {
+              css2[name].of = cell;
+             #ifndef _OOREADRELEASE_
+             css2[name].chunk = CatDomElement(e);
+             css2[name].css = cssGroup(e);
+             #endif
+             css2[name].filled = true;
+             } else {
+                qWarning() << "Not register style name ->" << style_name << name;  
+             }
+    }
+    
     
 }
 
@@ -1331,12 +1514,14 @@ QTextFrameFormat OOReader::FrameFormat( const QString name )
 
 bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int processing )
 {
-   ////// return true;
+     if (QTWRITTELN) {
+       return true;
+     }
     
     /* 1441 from fop convert */
-    qDebug() << "### convertTable.---" << styleCurrentCount << sumOfBlocks << " t-" << e.tagName();
+    //////////qDebug() << "### convertTable.---" << styleCurrentCount << sumOfBlocks << " t-" << e.tagName();
     QTextTableCell cell;
-    const QString tname = e.attribute ("style:name","null");
+    const QString tname = e.attribute ("table:style-name");
     /* column count and sett wi distance */
     QVector<QTextLength> constraints;
     int colls = 0;
@@ -1348,7 +1533,7 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
             bool appendC = false;
             const QString sname = column.attribute ("style:name");
             const int makecolls = qMax(column.attribute("table:number-columns-repeated").toInt(),1);
-            //////////qDebug() << "### makecolls  ->" << makecolls << " c." << constraints.size();
+            qDebug() << "### makecolls  ->" << makecolls << " c." << constraints.size();
             if (!sname.isEmpty()) {
                 /* QTextFrameFormat */
                 cool_wi = FrameFormat(sname).width();
@@ -1378,20 +1563,21 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
     while (!trow.isNull())
     {
         rowCounter++;
-        qDebug() << "### rowCounter  ->" << rowCounter;
+        ////////qDebug() << "### rowCounter  ->" << rowCounter;
         trow = trow.nextSiblingElement("table:table-row");
     }
 
-    /* dummy format retry from style */
-QTextTableFormat tf; 
-tf.setBorder ( 0.2 );
-tf.setAlignment ( Qt::AlignTop | Qt::AlignHCenter );
-tf.setCellPadding ( 2 );
-tf.setCellSpacing ( 2 );
-tf.setWidth ( QTextLength(QTextLength::PercentageLength,100) );
+    QTextTableFormat tf; 
+    if (css2[tname].valid) {
+    tf = css2[tname].of.toTableFormat();  
+    } else {
+    tf.setWidth(QTextLength(QTextLength::PercentageLength,100));
+    qWarning() << "Table format not find name null!"; 
+    }
+
+    
     
     QTextTable *qtable = cur.insertTable(rowCounter,constraints.size(),tf);
-    
     int gorow = -1;
     int gocool = -1;
     
@@ -1407,25 +1593,20 @@ tf.setWidth ( QTextLength(QTextLength::PercentageLength,100) );
                                 const QTextTableCell ctd = qtable->cellAt(gorow,gocool);
                                 const int cr = qMax(oocell.attribute("table:number-rows-spanned").toInt(),0);
                                 const int cs = qMax(oocell.attribute("table:number-columns-spanned").toInt(),0);
-                                 qWarning() << "----- spanning /" << cr <<  "/" << cs << " gocool->" << gocool << " gorow->" << gorow; 
                                 if (qMax(cs,cr) !=0) {
-                                /* can not spanning all column  */
-                                qtable->mergeCells(gorow,gocool,qAbs(cr - 1),qAbs(cs - 1));
+                                /* value must having min 1  or row or cell */
+                                qtable->mergeCells(gorow,gocool,qMax(cr,1),qMax(cs,1));
                                 }
                                 cell = qtable->cellAt(gorow,gocool);
-                                //////void QTextTable::mergeCells ( int row, int column, int numRows, int numCols )
-                                /////////////////qWarning() << " cursor on cella  /" << gorow << "/" << gocool; 
                                 if (!convertCellTable(oocell,cell,cur,tname,processing)) {
                                    qWarning() << "Error on parse table cell  row:" << gorow << " column:" << gocool; 
                                 }
-                             
-                             oocell = oocell.nextSiblingElement("table:table-cell");
+                                oocell = oocell.nextSiblingElement("table:table-cell");
                          }
             }
         } 
         line = line.nextSibling();
     }
-    
     cur.endEditBlock();
     cur.movePosition(QTextCursor::End);
     return true;
@@ -1434,42 +1615,40 @@ tf.setWidth ( QTextLength(QTextLength::PercentageLength,100) );
 bool OOReader::convertCellTable( const QDomElement e  , QTextTableCell  &cell  ,
                                 QTextCursor &cur  , const QString tablenamecss , const int processing )
 {
+    const QString name = e.attribute ("table:style-name");
+    if (css2[name].valid) {
+    QTextTableCellFormat cefo = css2[name].of.toTableCellFormat();
+    cell.setFormat ( cefo );
+    qDebug() << "### build cell name  ->" << name;
+    }
     
-    /* format cell */
-    QTextCursor tmpcur  = cell.firstCursorPosition();
-    ///////return convertBlock(tmpcur,e,processing);
-    //////tmpcur.insertBlock();
-    /////tmpcur.beginEditBlock();
-    /////tmpcur.insertText(QString("r%1c%2").arg(cell.row()).arg(cell.column ())); 
-    //////tmpcur.endEditBlock();
-    
+  QTextCursor tmpcur  = cell.firstCursorPosition();
   QDomElement child = e.firstChildElement();
-    
+  int posi = -1;
   while ( !child.isNull() ) {
     if ( child.tagName() == QLatin1String( "text:p" ) ) {
-         convertBlock(tmpcur,child,styleCurrentCount);
+         posi++;
+         if (posi == 0) {
+             tmpcur.beginEditBlock();
+         } else {
+             tmpcur.insertBlock();
+             tmpcur.beginEditBlock();
+         }
+         convertBlock(tmpcur,child,0);
          styleCurrentCount++;
          emit statusRead(styleCurrentCount,sumOfBlocks);
-         //////qDebug() << "### block root Nr.---" << styleCurrentCount << sumOfBlocks;
-         ///////QCoreApplication::processEvents();
     } else if ( child.tagName() == QLatin1String( "text:list" ) ) {
-                     /* span element */
         convertList(tmpcur,child,styleCurrentCount);
-        ///////////qDebug() << "### list root Nr.---" << styleCurrentCount << sumOfBlocks;
         styleCurrentCount++;
         emit statusRead(styleCurrentCount,sumOfBlocks);
-        //////////QCoreApplication::processEvents();
       } else if ( child.tagName() == QLatin1String( "table:table" ) ) {
           convertTable(tmpcur,child,styleCurrentCount);
       }  else if (child.isText()) {
-        tmpcur.insertText(child.nodeValue()+"|TEXT_NODE_ROOT|");
+        tmpcur.insertText(child.nodeValue()+"|TEXT_NODE_ROOT_ON_CELL|");
     }
     child = child.nextSiblingElement();
-    /////////convertTable( QTextCursor &cur , QDomElement e  , const int processing )
   }
-
     return true;
-    
 }
 
 
