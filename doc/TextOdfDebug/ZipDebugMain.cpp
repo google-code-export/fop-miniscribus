@@ -82,6 +82,11 @@ void ZipDebugMain::drawDoc()
 
 void ZipDebugMain::drawDoc( QTextDocument *doc )
 {
+    
+        XMLTextEdit *de = new XMLTextEdit;
+        de->setPlainText(Ooo->debugStyle());
+        tabWidget->addTab(de,tr("Style"));
+    
         QWidget *tabi = new QWidget();
         tabi->setObjectName("result");
         QGridLayout *grid = new QGridLayout(tabi);
@@ -96,7 +101,7 @@ void ZipDebugMain::drawDoc( QTextDocument *doc )
         const int last = tabWidget->count() - 1;
         tabWidget->setCurrentIndex(last);
     
-    
+        t->setLineWrapColumnOrWidth(t->lineWrapColumnOrWidth());
 }
 
 

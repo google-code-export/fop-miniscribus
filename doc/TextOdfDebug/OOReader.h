@@ -5,7 +5,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QDebug>
-
+#include <QHttpRequestHeader>
 #include "qzipreader_p.h"
 #include "qzipwriter_p.h"
 #include <QDomDocument>
@@ -134,9 +134,13 @@ static const int BorderShadow = 5;
 static const int PageSizeID = 824;
 static const int PageMarginID = 825;
 static const int LayerCss2ID = 826;  /* layer css on documents propritety as QString */
+static const int CellBorderStyleID = 827;
 
 static const qreal DEBUgletterspacing = 333;
 static const int DEBUgdefaultFontPointSize = 55;
+
+
+
 
 
 QMap<QString,QByteArray> unzipstream( const QString file );
@@ -148,6 +152,56 @@ ChildImport::ChildImport( QIODevice* device = 0 );
 /* copy all subelement from reader to writer out */
 void ChildImport::copyDeep( QIODevice* device , QXmlStreamWriter &out  );
 };
+
+
+class LoadGetImage : public QHttp
+{
+    Q_OBJECT
+//
+public: 
+     LoadGetImage( const QString nr , QUrl url_send );
+     void Start();
+     inline int Htpp_id() { return Http_id; } 
+     inline QPixmap pics() { return resultimage; } 
+     QString cid;
+     int Http_id;
+    QHttpRequestHeader header;
+    QUrl url;
+    QPixmap resultimage;
+    signals:
+      void take(QString);
+    public slots:
+     void ImageReady( bool error );
+};
+
+
+class Gloader : public QThread
+{
+    Q_OBJECT
+     
+public:
+  void Setting( QObject *parent , const QString id , QUrl url_send ); 
+protected:
+  void run();
+  signals:
+private:
+    QString cid;
+    QUrl url;
+    LoadGetImage *Rhttp;
+    QObject* receiver;
+};
+
+
+
+
+
+
+
+
+
+
+
+
 
 class ReadWriteBuf;
 class OOReader : public QObject
@@ -168,6 +222,9 @@ public:
  void openFile( const QString file );
  void openStreams( QMap<QString,QByteArray> list ); /* unzipped file */
  QTextDocument *document() { return Qdoc->clone(); }  /* only body */
+ #ifndef _OOREADRELEASE_
+ QString debugStyle() { return debugline; }
+ #endif
  QMap<QString,QTextDocument*> option() { return lateral; } /* header footer fo region */
  
 
@@ -200,6 +257,7 @@ struct StyleInfo
         QTextCharFormat ofchar;
         OOReader::STYLETYPE type;
         QByteArray chunk;
+        QString css;
         bool valid;
         bool filled;
     };
@@ -250,7 +308,7 @@ private:
    QTextBlockFormat TextBlockFormFromDom( const QDomElement e , QTextBlockFormat pf =  QTextBlockFormat() );
    QTextCharFormat TextCharFormFromDom( const QDomElement e , QTextCharFormat pf = QTextCharFormat()  );
    Qt::Alignment TagAlignElement(const QDomElement e );
-
+   QString debugline;
 signals:
     void statusRead(int,int);
     void setError(QString);
@@ -260,6 +318,7 @@ public slots:
     void reset(); /* abort or new file next */
 private slots:
     void ReadBody();
+    void in_image( const QString imagename );
 
 };
 //

@@ -97,12 +97,6 @@ qreal ToPoint( qreal unit , const QString unita );
 
 
 
-
-
-
-
-
-
 class FopColor
 {
 
