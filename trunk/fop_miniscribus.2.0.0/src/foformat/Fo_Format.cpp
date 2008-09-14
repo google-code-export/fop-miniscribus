@@ -316,10 +316,13 @@ QTextCharFormat Fo_Format::GlobalCharFormat( const QDomElement e , QTextCharForm
                   
                   
                   if (nod.nodeName().toLower() == "letter-spacing" ) {
-                      const qreal needspace = Unit(nod.nodeValue(),FONT);
-                      QFont ss = f.font();
-                      ss.setLetterSpacing(QFont::AbsoluteSpacing,needspace);
-                      f.setFont(ss);
+                      QString value = nod.nodeValue();
+                      value = value.replace("%",""); /* leave % if exist */
+                      qreal xx = value.toDouble();
+                      if (xx != 0.) {
+                      qDebug() << "### style:text-scale  " << xx;
+                      pf.setFontLetterSpacing(xx);
+                      }
                   }
                   
                  

@@ -1,0 +1,40 @@
+
+
+Window XP / Vista VS :
+
+never try
+
+
+
+
+Window XP / Vista + MingW compiler:
+
+read dev_doc/win_build_xslt.txt
+install MSYS-1.0.10.exe
+install wget  run dev_doc/wgetinstallMG.sh
+
+Build static libs
+install wget  run dev_doc/mingwdep.sh
+
+
+Gentoo Linux:
+run ebuild from 
+http://bugs.gentoo.org/show_bug.cgi?id=237043
+
+Other linux:
+/*  only libxslt libxml2 libiconv are need as external lib */
+ svn co http://fop-miniscribus.googlecode.com/svn/trunk/fop_miniscribus.2.0.0/ scribe
+ cd scribe
+ ./configure
+ make && make install
+ 
+ 
+ Mac OSX Tiger Leopard:
+ need XCode 3.** latest
+ install http://www.macports.org/ + 
+ su port install libxslt libxml2 qt4-mac
+ qmake && make
+
+
+
+
