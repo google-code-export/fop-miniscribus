@@ -12,83 +12,13 @@
 #include <QTextTableFormat>
 
 #include "FoColorName.h"
-
-#include <QCryptographicHash>
-
-#define _LINK_COLOR_ \
-             QColor("#dc0000")
+#include "OOFormat.h"
 
 
-class ReadWriteBuf
-{
-  public:
-  ReadWriteBuf( const QString xml = QString() ) 
-  :d(new QBuffer())
-  {
-  d->open(QIODevice::ReadWrite);
-  start();
-    if (xml.size() > 0 )
-      write(xml);
-  }
-  bool clear()
-  {
-   d->write(QByteArray()); 
-   start();
-   return d->bytesAvailable() == 0 ? true : false;
-  }
-  qint64 write( const QString dat )
-  {
-    QByteArray chunk;
-               chunk.append(dat); 
-    d->write(chunk);
-    start();
-    return d->bytesAvailable();
-  }
-  qint64 write( const QByteArray dat )
-  {
-    d->write(dat); 
-    start();
-    return d->bytesAvailable();
-  }
-  void start() { 
-    d->seek(0);
-  }
-  bool LoadFile( const QString file ) { 
-    if (clear()) {
-     QFile f(file); 
-        if (f.exists()) {
-          if (f.open(QFile::ReadOnly)) {
-           d->write(f.readAll());
-           f.close();
-           start();
-           return true;
-          }
-        }
-    }
-    return false;
-  }
-  bool PutOnFile( const QString file ) { 
-      QFile f(file);
-      start();
-      if (f.open(QFile::WriteOnly)) {
-        uint bi = f.write(d->readAll());
-        f.close();
-        start();
-        return bi > 0 ? true : false;
-      }
-   return false; 
-  }
-  bool isValid() { return doc.setContent(stream(),false,0,0,0);  }
-  QDomDocument Dom() { return doc; }
 
- 
 
-  QIODevice *device() { return d; }
-  QByteArray stream() { return d->data(); }
-  QString toString() { return QString(d->data()); }
-  QDomDocument doc;
-  QBuffer *d;
-};
+
+
 
 
 class FoRegion
@@ -125,19 +55,7 @@ public:
 Q_DECLARE_METATYPE(FoRegion);
 
 
-static const int InterSpace = 15;  /* distance from page 1 to 2 */
-static const int SliderTopHeight = 28;
-static const int SliderLeftHeight = 28;
-static const int MaximumPages = 99;
-static const int BorderShadow = 5;
 
-static const int PageSizeID = 824;
-static const int PageMarginID = 825;
-static const int LayerCss2ID = 826;  /* layer css on documents propritety as QString */
-static const int CellBorderStyleID = 827;
-
-static const qreal DEBUgletterspacing = 333;
-static const int DEBUgdefaultFontPointSize = 55;
 
 
 
@@ -204,7 +122,7 @@ private:
 
 
 class ReadWriteBuf;
-class OOReader : public QObject
+class OOReader : public OOFormat
 {
      Q_OBJECT
 //
@@ -275,8 +193,8 @@ protected:
     QMap<QString,QTextDocument*> lateral; /* header footer fo region */
     QMap<QString,StyleInfo> css2; /* all oo style name */
     QMap<QString,QByteArray> filist;  /* all file from zip oo */
-    QTextDocument *Qdoc;
-    FopColor *FoCol;
+    
+    QString fileHash;
     QDomDocument bodyStarter;
     bool DocInitContruct;
     bool QTWRITTELN;
@@ -287,15 +205,22 @@ private:
     void styleNameSetup(  const QByteArray chunk   , const QString label   );
     void convertStyleNameRoot( const QDomElement &element );
     bool convertBody( const QDomElement &element );
-    bool convertTable( QTextCursor &cur , const QDomElement e  , const int processing );
-    bool convertCellTable( const QDomElement e  , QTextTableCell  &cell  ,
-                                QTextCursor &cur  , const QString tablenamecss , const int processing );
+    bool convertTable( QTextCursor &cur , const QDomElement e  , const int processing , bool roottable = false );
+    bool convertCellTable( const QDomElement e  , QTextCursor &cur  , const int processing );
     bool convertBlock( QTextCursor &cur , QDomElement e  , const int processing );
     bool convertList( QTextCursor &cur , QDomElement e  , const int processing , int level = 1);
     bool convertFragment( QTextCursor &cur , const QDomElement e , QTextCharFormat parent = QTextCharFormat() ,  bool HandleSpace = false );
+    bool convertSpaceTag( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace = false ); 
     void insertTextLine( QTextCursor &cur , QStringList line , QTextCharFormat parent =  QTextCharFormat() ,  bool HandleSpace = false  );
-
+    bool convertImage( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace = false );
     QTextFrameFormat FrameFormat( const QString name );  /* format from css name class */
+    /* read css2 format */
+    QTextCharFormat charFormatCss2( const QString name , QTextCharFormat parent = QTextCharFormat() , 
+                                            bool HandleSpace = false  );
+    QPair<QTextBlockFormat,QTextCharFormat> paraFormatCss2( const QString name , 
+                                            QTextBlockFormat parent = QTextBlockFormat() , 
+                                            bool HandleSpace = false  );
+
 
    /* formats fill */
    void TextBlockFormatPaint( const QString name , const QDomElement e );

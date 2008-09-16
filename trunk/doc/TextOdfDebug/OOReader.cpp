@@ -4,174 +4,7 @@
 /*  incomming class name OOReader */
 //
 
-/*  created */
-/*
-static QString bulletChar(const QTextBlock &block)
-{
-    Q_ASSERT(block.textList());
-    QTextListFormat::Style style = block.textList()->format().style();
-    if (style == QTextListFormat::ListDecimal)
-        return QString::number(block.textList()->itemNumber(block));
-    if (style == QTextListFormat::ListLowerAlpha)
-        return QChar('a' + block.textList()->itemNumber(block));
-    if (style == QTextListFormat::ListUpperAlpha)
-        return QChar('A' + block.textList()->itemNumber(block));
 
-    return bulletChar(style);
-}
-*/
-
-
-static QByteArray CatDomElement( const QDomElement e )
-{
-    if (e.isNull()) {
-     return QByteArray(); 
-    }
-    QDomDocument doc;
-    QDomElement Pbb = doc.createElement(e.tagName());
-    QDomNamedNodeMap alist = e.attributes();  
-    for (int i=0; i<alist.count(); i++){
-    QDomNode nod = alist.item(i);
-    Pbb.setAttribute(nod.nodeName().toLower(),nod.nodeValue());
-    }  
-    doc.appendChild(Pbb);
-            
-               QDomNode child = e.firstChild();
-					while ( !child.isNull() ) {
-						if ( child.isElement() ) {
-					    Pbb.appendChild(doc.importNode(child,true).toElement());
-					    }
-				     child = child.nextSibling();            
-				   }
-            
-    return doc.toByteArray(1);
-}
-
-#ifndef _OOREADRELEASE_
-/* debug all item incomming in tree 2 level */
-static QString cssGroup( const QDomElement e )
-{
-    QStringList cssitem;
-    QDomNamedNodeMap alist = e.attributes();  
-       for (int i=0; i<alist.count(); i++){
-            QDomNode nod = alist.item(i);
-            cssitem.append(QString("%1:%2").arg(nod.nodeName().toLower()).arg(nod.nodeValue()));
-       }  
-                    QDomNode child = e.firstChild();
-					while ( !child.isNull() ) {
-						if ( child.isElement() ) {
-					        QDomNamedNodeMap list = child.attributes(); 
-                             for (int x=0; x<list.count(); x++){
-                               QDomNode nod = list.item(x);  
-                               cssitem.append(QString("%1:%2").arg(nod.nodeName().toLower()).arg(nod.nodeValue())); 
-                             }
-					    }
-				     child = child.nextSibling();            
-				   }
-       
-    return cssitem.join(";");
-}
-#endif
-
-
-
-static  QTextCharFormat DefaultCharFormats( bool qtwritteln = false , QTextCharFormat format = QTextCharFormat()  )
-{
-    QFont userfont( QApplication::font() );
-    if (!qtwritteln) {
-    userfont.setPointSize(DEBUgdefaultFontPointSize);   /* to find error*/
-    format.setFont(userfont);
-    format.setFontStyleStrategy ( QFont::PreferAntialias );
-    format.setForeground(QBrush(QColor("lime")));
-    format.setFontLetterSpacing(DEBUgletterspacing);
-    } else {
-    userfont.setPointSize(10);   /* to find error*/
-    format.setFont(userfont); 
-    format.setFontLetterSpacing(99.); 
-    }
-    return format;
-}
-
-/* set all margin to zero qt4 send 12 top 12 bottom by default */
-static QTextBlockFormat DefaultMargin( QTextBlockFormat rootformats = QTextBlockFormat() )
-{
-    rootformats.setBottomMargin(1);
-    rootformats.setTopMargin(1);
-    rootformats.setRightMargin(0);
-    rootformats.setLeftMargin(0);
-    rootformats.setAlignment( Qt::AlignLeft );
-    return rootformats;
-}
-
-static QTextCharFormat PreFormatChar( QTextCharFormat format = QTextCharFormat() )
-{
-    format.setFont(QFont( "courier",11,-1,true) );
-    format.setForeground(QBrush(Qt::darkBlue));
-    format.setFontLetterSpacing(90);
-    ///////format.setBackground(QBrush(Qt::lightGray));
-    return format;
-}
-
-static QString capitalize( QString & s)
-{
-    return (s.isEmpty()) ? s : s.left(1).toUpper() + s.mid(1).toLower();
-}
-
-static QString  ootrimmed( QString txt , const QString txttransform = QString("none") )
-{
-
-
-    txt.replace("&amp;", "&");   /*  qt4 toUtf8 dont replace && */
-    txt.replace("&lt;", "<");
-    txt.replace("&gt;", ">");
-
-    if (txttransform == QString("uppercase"))
-    {
-        txt = txt.toUpper();
-    }
-    else if (txttransform == QString("capitalize"))
-    {
-        txt = capitalize(txt);
-    }
-    else if (txttransform == QString("lowercase"))
-    {
-        txt = txt.toLower();
-    }
-
-    const int cosize = txt.size() - 1;
-
-    bool lastspace = false;
-    bool firstspace = false;
-    if (txt.size() >= 1 )
-    {
-        if (txt.at(0) == QChar::Null || txt.at(0) == QChar(' ') | txt.at(0) ==  QChar::Nbsp )
-        {
-            firstspace = true;
-        }
-        if (txt.at(cosize) == QChar::Null || txt.at(cosize) == QChar(' ') | txt.at(cosize) ==  QChar::Nbsp )
-        {
-            lastspace  = true;
-        }
-
-
-
-        QString nwex = txt.simplified();
-        if (firstspace)
-        {
-            nwex.prepend(QChar::Nbsp);  /////// QChar::Nbsp
-        }
-        if (lastspace)
-        {
-            nwex.append(QChar::Nbsp);  /////// QChar::Nbsp
-        }
-
-        return nwex;
-    }
-    else
-    {
-        return txt;
-    }
-}
 
 /* image get remote */
 
@@ -233,8 +66,8 @@ void Gloader::run()
 #include <QDomDocument>
 
 OOReader::OOReader( const QString file , OOReader::WIDGEDEST e , QObject* parent )
-	: QObject( parent ),maxStyleCount(0),styleCurrentCount(0),charsRead(),QTWRITTELN(false),
-                       construct_modus(e),sumOfBlocks(0),Qdoc(new QTextDocument()),FoCol(new FopColor()) 
+	: OOFormat(),maxStyleCount(0),styleCurrentCount(0),charsRead(),QTWRITTELN(false),
+                       construct_modus(e),sumOfBlocks(0),fileHash("250186") 
 {
     
     if (qApp->thread() != QThread::currentThread()) {
@@ -249,6 +82,24 @@ OOReader::OOReader( const QString file , OOReader::WIDGEDEST e , QObject* parent
    
 }
 
+
+void OOReader::openFile( const QString file )
+{
+    QFileInfo fi(file);
+    if (!fi.exists()) {
+     return;
+    }
+    reset();
+    /* destrox delete class befor init other file */
+    if (fileHash == hashGenerator( file  )) {
+    return;
+    }
+    fileHash = hashGenerator( file  );
+    filist = unzipstream(file);
+    qDebug() << "### open file id  " << fileHash;
+    openStreams( filist );
+}
+
 void OOReader::in_image( const QString imagename )
 {
     LoadGetImage *ht = qobject_cast<LoadGetImage *>(sender());
@@ -260,16 +111,7 @@ void OOReader::in_image( const QString imagename )
     }
 }
 
-void OOReader::openFile( const QString file )
-{
-    QFileInfo fi(file);
-    if (!fi.exists()) {
-     return;
-    }
-    reset();
-    filist = unzipstream(file);
-    openStreams( filist );
-}
+
 
 void OOReader::openStreams( QMap<QString,QByteArray> list )
 {
@@ -304,9 +146,9 @@ void OOReader::openStreams( QMap<QString,QByteArray> list )
     if (css2.size() != maxStyleCount) {
     return;
     }
-    
-    /////qDebug() << "### css2.size() ---------- " << css2.size();
-    ////////////qDebug() << "### sumOfBlocks ---------- " << sumOfBlocks;
+    qDebug() << "### style read from id " << fileHash;
+    qDebug() << "### css2.size() -> " << maxStyleCount << "--------------------------------------------------------<";
+    qDebug() << "### total block count to progress -----> " << sumOfBlocks;
     
     /* init progress read loading */
     emit statusRead(0,sumOfBlocks);
@@ -376,6 +218,9 @@ bool OOReader::convertBody( const QDomElement &element )
   QDomElement bodydoc = element.firstChildElement("office:text");
   QDomElement child = bodydoc.firstChildElement("text:p");
   while ( !child.isNull() ) {
+      
+      ///////////////////////qDebug() << "### body root loop on -> " << child.tagName();
+      
     if ( child.tagName() == QLatin1String( "text:p" ) ) {
          convertBlock(cursor,child,styleCurrentCount);
          styleCurrentCount++;
@@ -384,13 +229,13 @@ bool OOReader::convertBody( const QDomElement &element )
          ///////QCoreApplication::processEvents();
     } else if ( child.tagName() == QLatin1String( "text:list" ) ) {
                      /* span element */
-        convertList(cursor,child,styleCurrentCount);
+        ///////////convertList(cursor,child,styleCurrentCount);
         ///////////qDebug() << "### list root Nr.---" << styleCurrentCount << sumOfBlocks;
         styleCurrentCount++;
         emit statusRead(styleCurrentCount,sumOfBlocks);
         //////////QCoreApplication::processEvents();
       } else if ( child.tagName() == QLatin1String( "table:table" ) ) {
-          convertTable(cursor,child,styleCurrentCount);
+          convertTable(cursor,child,styleCurrentCount,true);
       }  else if (child.isText()) {
         cursor.insertText(child.nodeValue()+"|TEXT_NODE_ROOT|");
     }
@@ -490,32 +335,42 @@ bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int proces
     return true;
 }
 
+QPair<QTextBlockFormat,QTextCharFormat> OOReader::paraFormatCss2( const QString name , QTextBlockFormat parent , bool HandleSpace  )
+{
+         QTextBlockFormat paraFormat = DefaultMargin();
+                          paraFormat.merge(parent);
+         QTextCharFormat charFormat = DefaultCharFormats(QTWRITTELN);
+         if (css2[name].valid) {
+         StyleInfo format = css2[name];
+         charFormat.merge(format.ofchar);
+         paraFormat.merge(format.of.toBlockFormat());
+         } 
+         Q_ASSERT(paraFormat.isValid()); 
+         Q_ASSERT(charFormat.isValid()); 
+    
+    return qMakePair(paraFormat,charFormat);
+}
+
+QTextCharFormat OOReader::charFormatCss2( const QString name , QTextCharFormat parent , bool HandleSpace  )
+{
+    QTextCharFormat base = DefaultCharFormats(QTWRITTELN);
+                    base.merge(parent);
+    if (css2[name].valid && parent.isValid()) {
+        StyleInfo format = css2[name];
+        base.merge(format.ofchar); 
+    }
+    Q_ASSERT(base.isValid()); 
+    return base;
+}
 
 
 bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int processing )
 {
-         const QString sname = e.attribute ("text:style-name");
-         if (sname.size() < 1) {
-          qWarning() << "### No valid if on QTextBlockFormat name " << sname;
-          return false;
-         }
+         const QString sname = e.attribute ("text:style-name","default");
          StyleInfo blockformat;
-         QTextBlockFormat paraFormat = DefaultMargin();
-         QTextCharFormat spanFor;
-         if (css2[sname].valid) {
-         blockformat = css2[sname];
-         spanFor = blockformat.ofchar;
-         paraFormat = blockformat.of.toBlockFormat();  
-         } else {
-          qWarning() << "### Not register QTextBlockFormat name " << sname;
-          return false;
-         }
-         Q_ASSERT(spanFor.isValid());
-         
+         QTextBlockFormat paraFormat = paraFormatCss2(sname).first;
+         QTextCharFormat spanFor = paraFormatCss2(sname).second;
          if (processing == 0) {
-             
-             ////////////////////qDebug() << "### block processing 000000000000   " << sname;
-             
              cur.beginEditBlock();
          } else {
              cur.insertBlock();
@@ -526,24 +381,24 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
          }
          cur.setBlockFormat(paraFormat);
          cur.setCharFormat(spanFor);
-         //////convertFragment(cursor,child.firstChild()); 
-         /* loop elements */
          QDomNode child = e.firstChild();
          while ( !child.isNull() ) {
-            ////// QString QDomNode::nodeName()
-            /////////// qDebug() << "### block item->" << child.nodeName();
-             
              if ( child.isElement() )  {
-                    const QDomElement e = child.toElement();
-                     if ( e.tagName() == QLatin1String( "text:span" )) {
-                      convertFragment(cur,e,spanFor);
-                     } else if (e.tagName() == QLatin1String( "text:s" )) {
-                         convertFragment(cur,e,spanFor);
-                     } else if (e.tagName() == QLatin1String( "draw:frame" )) {
-                         convertFragment(cur,e,spanFor);
-                     }
-                     
-                     
+                    const QDomElement es = child.toElement();
+                    qDebug() << "### para loop ->" << es.tagName();
+                     if ( es.tagName() == QLatin1String( "text:span" )) {
+                      convertFragment(cur,es,spanFor);
+                     } else if (es.tagName() == QLatin1String( "text:line-break" )) {
+                         cur.insertText(QString(QChar::LineSeparator));
+                     } else if (es.tagName() == QLatin1String( "text:s" )) {
+                         convertSpaceTag(cur,es,spanFor);
+                     } else if (es.tagName() == QLatin1String( "draw:frame" )) {
+                         convertImage(cur,es,spanFor);
+                     }  else if (es.tagName() == QLatin1String( "text:soft-page-break" )) {
+                         /* page breack before or after !!!! */
+                         paraFormat.setPageBreakPolicy(QTextFormat::PageBreak_AlwaysBefore);
+                         cur.setBlockFormat(paraFormat);
+                     } 
              } else if (child.isText()) {
                 insertTextLine(cur,child.nodeValue().split("\n"),spanFor);
              } else if (child.isCDATASection()) {
@@ -565,91 +420,27 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
          return true;
 }
 
-
-
-/* image - span - ?? */
-bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace )
+bool OOReader::convertImage( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace )
 {
-        if (HandleSpace || e.tagName() == QLatin1String( "text:s" ) ) { 
-        ////blockformat.setProperty(QTextFormat::BlockNonBreakableLines,1);
-        //////blockformat.setNonBreakableLines(true);
-            /*  take format from cursor block and append its */
-        }
-        
-    qreal FontPointSizeMidi = (FontMaxPoint - FontMinPoint) / 2;
-    qreal fontSizePP = qBound (FontMinPoint,FontPointSizeMidi,FontMaxPoint);
-    if (QTWRITTELN) {
-        fontSizePP = 10;
+    if (e.isNull()) {
+    return false;
     }
+    if (e.tagName() != QLatin1String( "draw:frame" ) ) {
+    return false;
+    }
+    QDomElement img = e.firstChildElement("draw:image");
+    if (img.isNull()) {
+    return false;  
+    }
+imageCurrentCount++;
+QDateTime timer1( QDateTime::currentDateTime() );
+/* on oo format user dont see image name randomise it */
+const QString  TimestampsMs = QString("%1-%2%3-graphic-frame").
+                              arg(timer1.toTime_t()).arg(timer1.toString("zzz")).
+                              arg(imageCurrentCount);
     
-     if ( e.tagName() == QLatin1String( "text:span" ) ) {
-         
-             const QString sname = e.attribute ("text:style-name");
-             StyleInfo format;
-             QTextCharFormat styleformat;
-             QTextCharFormat paracharformat = parent;
-             QTextCharFormat styleunion;
-             
-            if (css2[sname].valid && parent.isValid()) {
-            format = css2[sname];
-            styleformat = format.ofchar; 
-            Q_ASSERT(styleformat.isValid());  /* from tag span */
-            Q_ASSERT(paracharformat.isValid());  
-            /* qt dont save style.xml on root zip */
-            styleunion = parent;
-            ///////Merges the other format with this format; where there are conflicts the other format takes precedence.
-            styleunion.merge(styleformat);  
-                
-            } else {   
-            styleunion.setFontPointSize ( fontSizePP );
-            styleunion.setForeground(QBrush(QColor("tomato")));
-            qWarning() << "### No valid QTextCharFormat " << sname ;
-              if (!QTWRITTELN) {
-              cur.insertText(QString("|Style name dont exist or Empty............|"),styleunion);
-              } else {
-                 styleunion.setFontPointSize ( 9 );
-                 styleunion.setForeground(QBrush(QColor("black"))); 
-              }
-            }
-                  
-            QStringList textline = e.text().split("\n");
-            if (e.text().isEmpty()) {
-             cur.insertText(QString(QChar::Nbsp),styleunion);  
-            } else if (textline.size() == 0) {
-             cur.insertText(QString(QChar::Nbsp),styleunion); 
-            } else {
-            insertTextLine(cur,textline,styleunion,HandleSpace);  
-            }
-            
-            /* image inside span !!! */
-            QDomElement qtimage = e.firstChildElement("draw:frame");
-            if (!qtimage.isNull()) {
-            return convertFragment(cur,qtimage,parent,false);
-            }
-            
-            /* child from span real allow */
-            QDomElement oospace = e.firstChildElement("text:s");
-            if (!oospace.isNull()) {
-            convertFragment(cur,oospace,parent,false);
-            }
-            
-            
-            
-            
-    } else if ( e.tagName() == QLatin1String( "draw:frame" ) ) {
-         imageCurrentCount++;
-         QDateTime timer1( QDateTime::currentDateTime() );
-         /* on oo format user dont see image name randomise it */
-         const QString  TimestampsMs = QString("%1-%2%3-graphic-frame").
-                            arg(timer1.toTime_t()).arg(timer1.toString("zzz")).
-                            arg(imageCurrentCount);
-        
-       ///////////// qDebug() << "### Init Frame ID  " << TimestampsMs;
-        
-        
-        QDomElement img = e.firstChildElement("draw:image");
-        /////QDomElement ei = e.nextSiblingElement ("style:background-image");
-        if (!img.isNull()) {
+//////////////qDebug() << "### Init Frame image ID  " << TimestampsMs;
+    
             QImage drawimage;
             const QString sname = e.attribute ("draw:style-name");
             const QString uri = img.attribute ("xlink:href");
@@ -675,12 +466,8 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
             
             if (!drawimage.isNull()) {
              Qdoc->addResource(QTextDocument::ImageResource,QUrl(TimestampsMs),drawimage); 
-            } else {
-              qWarning() << "### Image invalid -- > " << uri << " name->" << sname << " style->" << domdd;
-            }
-            if (!QTWRITTELN) {
-                qWarning() << "### Image format y x to draw as Floating apsolute layer =->" << domdd;
-            }
+            } 
+            
             QTextImageFormat format;
             format.setName( TimestampsMs );
             if (Unit(e.attribute( "svg:height")) > 0) {
@@ -691,29 +478,92 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
             }
             format.setToolTip(TimestampsMs);
             cur.insertImage( format );
-            
+                 return true;
             } else {
                 qWarning() << "### Image name style not load ";
+                return false;
             }
-        
-        
-        } else {
-            qWarning() << "### Image dom  not load ";
-        }
-   } else if ( e.tagName() == QLatin1String( "text:s" ) ) {
-       const int space = e.attribute( "text:c").toInt();
-       //////qWarning() << "### Text Spacing force ->" <<  space << "Text Spacing forcg forceText Spacing force";
-       cur.insertText(QString(QChar::Nbsp),parent);
-       QString spacestring;
-       for (int i = 0; i < space; ++i) {
-           if (!QTWRITTELN) {
-           spacestring.append(QString("-"));
-           } else {
-           spacestring.append(QString(QChar::Nbsp));   
-           }
-       }
-       cur.insertText(spacestring,parent);
-   }
+    
+    
+}
+
+
+
+
+
+bool OOReader::convertSpaceTag( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace )
+{
+    if (e.isNull()) {
+    return false;
+    }
+    if (e.tagName() != QLatin1String( "text:s" ) ) {
+    return false;
+    }
+    const int space = e.attribute( "text:c").toInt();
+    QString spacestring = "";
+                       for (int i = 0; i < space; ++i) {
+                           if (!QTWRITTELN) {
+                           spacestring.append(QString("-"));
+                           } else {
+                           spacestring.append(QString(QChar::Nbsp));   
+                           }
+                       }
+    if (spacestring.isEmpty()) {
+    cur.insertText(QString(QChar::Nbsp),parent);
+    } else {
+    cur.insertText(spacestring,parent);
+    }
+    return true;
+    
+}
+
+bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace )
+{
+    if (e.isNull()) {
+    return false;
+    }
+    QTextCharFormat styleroot = DefaultCharFormats(QTWRITTELN);
+    styleroot.merge(parent);
+    cur.setCharFormat(styleroot);
+    if ( e.tagName() == QLatin1String( "text:span" ) ) {
+    styleroot.merge(charFormatCss2(e.attribute ("text:style-name","default"),parent,HandleSpace));
+    cur.setCharFormat(styleroot);
+     if (e.text().isEmpty()) {
+     cur.insertText(QString(QChar::Nbsp),parent);
+     }
+    }
+    //////////////qDebug() << "### convertFragment  fragment tag in  ->" << e.tagName();
+    
+     QDomNode child = e.firstChild();
+         while ( !child.isNull() ) {
+             
+                       QDomNode subchild = child.firstChild();
+                       if (!subchild.isNull() && subchild.isElement() ) {
+                          convertFragment(cur,subchild.toElement(),styleroot,HandleSpace); 
+                       }
+                       
+                 if ( child.isElement() )  {
+                  const QDomElement es = child.toElement();
+                 qDebug() << "### loop fragment  tag ->" << es.tagName();
+                 
+                  if (es.tagName() == QLatin1String( "text:line-break" )) {
+                      cur.insertText(QString(QChar::LineSeparator));
+                  } else if ( es.tagName() == QLatin1String( "text:span" ) ) {
+                      convertFragment(cur,es,styleroot,HandleSpace);
+                  } else if ( es.tagName() == QLatin1String( "draw:frame" ) ) {
+                      convertImage(cur,es,parent,HandleSpace);
+                  } else if ( es.tagName() == QLatin1String( "text:s" ) ) {
+                      convertSpaceTag(cur,es,parent,HandleSpace);
+                  }
+             
+             
+             }  else if (child.isText()) {
+                insertTextLine(cur,child.nodeValue().split("\n"),styleroot);
+             }
+            child = child.nextSibling(); 
+         }
+         
+       
    return true; 
 }
 
@@ -1407,6 +1257,10 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
     if ( style_name == QLatin1String( "table-column" ) ) {
         /* save column */
         const qreal width = Unit(e.firstChildElement("style:table-column-properties").attribute("style:column-width"));
+        qDebug() << "### style:table-column-properties  widthwidthwidthwidthwidthwidth  " << width;
+        
+        
+        
             if (css2[name].valid) {
                if (width > 0) {
                 base.setWidth ( width );
@@ -1418,14 +1272,14 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
              #endif
              css2[name].filled = true;
              } else {
-                qWarning() << "Not register style name ->" << style_name << name;  
+                ///////////qWarning() << "Not register style name ->" << style_name << name;  
              }
     
     } else if ( style_name == QLatin1String( "table" ) ) {
         ////////  style:table-properties
           const QDomElement tablecss = e.firstChildElement("style:table-properties");
           const qreal width = Unit(tablecss.attribute("style:width"));
-          qDebug() << "### table width  ->" << width  <<  " real" << tablecss.attribute("style:width");
+          ///////////////qDebug() << "### table width  ->" << width  <<  " real" << tablecss.attribute("style:width");
         
              if (css2[name].valid) {
                 table.setWidth ( width );  /* checks on set */
@@ -1441,7 +1295,7 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
                 #endif
                 css2[name].filled = true;
              } else {
-                qWarning() << "Not register style name ->" << style_name << name;  
+                ////////////qWarning() << "Not register style name ->" << style_name << name;  
              }
     }  else if ( style_name == QLatin1String( "table-cell" ) ) {
          QDomElement celcss = e.firstChildElement("style:table-cell-properties");
@@ -1464,7 +1318,7 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
              #endif
              css2[name].filled = true;
              } else {
-                qWarning() << "Not register style name ->" << style_name << name;  
+                ////////////qWarning() << "Not register style name ->" << style_name << name;  
              }
     }
     
@@ -1505,57 +1359,112 @@ void OOReader::convertStyleNameRoot( const QDomElement &element )
     }
 }
 
+
+/* table column  format + frame */
 QTextFrameFormat OOReader::FrameFormat( const QString name )
 {
     QTextFrameFormat init;
-    init.setWidth ( 248.5 );
-    return init;
+    init.setWidth ( -1 );
+    QTextFrameFormat base;
+    if (css2[name].valid) {
+    return css2[name].of.toFrameFormat();
+    } else {
+    return init;  
+    } 
 }
 
-bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int processing )
+
+
+bool OOReader::convertCellTable( const QDomElement e  , QTextCursor &cur  , const int processing )
 {
-     if (QTWRITTELN) {
-       return true;
-     }
+   
+  cur.beginEditBlock();
+  ///////cur.insertText(QString("%1-%2").arg(cell.row()).arg(cell.column()));
+  /////cur.insertText(QString("cc"));
+  /////cur.endEditBlock(); 
+  /////////return true;
     
+    
+  QDomElement child = e.firstChildElement();
+  int posi = -1;
+  while ( !child.isNull() ) {
+    if ( child.tagName() == QLatin1String( "text:p" ) ) {
+         posi++;
+         if (posi == 0) {
+             cur.beginEditBlock();
+         } else {
+             cur.insertBlock();
+             cur.beginEditBlock();
+         }
+         convertBlock(cur,child,0);
+         styleCurrentCount++;
+         emit statusRead(styleCurrentCount,sumOfBlocks);
+    } else if ( child.tagName() == QLatin1String( "text:list" ) ) {
+        convertList(cur,child,styleCurrentCount);
+        styleCurrentCount++;
+        emit statusRead(styleCurrentCount,sumOfBlocks);
+      } else if ( child.tagName() == QLatin1String( "table:table" ) ) {
+          convertTable(cur,child,styleCurrentCount);
+      }  else if (child.isText()) {
+        cur.insertText(child.nodeValue()+"|TEXT_NODE_ROOT_ON_CELL|");
+    }
+    child = child.nextSiblingElement();
+  }
+  
+  cur.endEditBlock(); 
+  return true;
+}
+
+
+
+
+bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int processing , bool roottable )
+{
     /* 1441 from fop convert */
-    //////////qDebug() << "### convertTable.---" << styleCurrentCount << sumOfBlocks << " t-" << e.tagName();
-    QTextTableCell cell;
-    const QString tname = e.attribute ("table:style-name");
+    ///////qDebug() << "### convertTable.---" << styleCurrentCount << sumOfBlocks << " tag " << e.tagName();
+    //////return true;
+    
+    QMap<int,QDomElement> allcell;
+    
+    const QString tname = e.attribute ("table:style-name","default");
     /* column count and sett wi distance */
     QVector<QTextLength> constraints;
     int colls = 0;
     QDomElement column = e.firstChildElement("table:table-column");
-    
+    const qreal defaultPercents = 99.9999;
         while (!column.isNull())
         {
-            QTextLength cool_wi = QTextLength(QTextLength::PercentageLength,100);
+            QTextLength cool_wi = QTextLength(QTextLength::PercentageLength,defaultPercents);
             bool appendC = false;
-            const QString sname = column.attribute ("style:name");
+            const QString sname = column.attribute ("table:style-name");
             const int makecolls = qMax(column.attribute("table:number-columns-repeated").toInt(),1);
-            qDebug() << "### makecolls  ->" << makecolls << " c." << constraints.size();
             if (!sname.isEmpty()) {
                 /* QTextFrameFormat */
                 cool_wi = FrameFormat(sname).width();
                 if (cool_wi.rawValue() < 1) {
-                cool_wi = QTextLength(QTextLength::PercentageLength,100);   
+                cool_wi = QTextLength(QTextLength::PercentageLength,defaultPercents);   
                 }
             }
             for (int i = 0; i < makecolls; ++i) {
             colls++;
             constraints.insert(constraints.size(),cool_wi);  
             }
-            ////////qDebug() << "### cclcount  ->" << colls;
             column = column.nextSiblingElement("table:table-column");
         }
+    const qreal coolsPercents = 100 / colls;
+        for (int i = 0; i < constraints.size(); ++i) {
+            QTextLength modcool = constraints.at ( i );
+            if (modcool.rawValue() == defaultPercents) {
+                constraints.replace(i,QTextLength(QTextLength::PercentageLength,coolsPercents)); 
+            }
+        }
         
-    if (colls < 1) {
-    return false;
-    }
-    /* table on a block inside root frame conflict! */
+     if (colls < 1) {
+     return false;
+     }
+        
     cur.insertBlock();
     cur.beginEditBlock();
-    
     int rowCounter = 0;
     Q_ASSERT(colls ==  constraints.size());
     QDomElement trow = e.firstChildElement("table:table-row");
@@ -1563,93 +1472,115 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
     while (!trow.isNull())
     {
         rowCounter++;
-        ////////qDebug() << "### rowCounter  ->" << rowCounter;
         trow = trow.nextSiblingElement("table:table-row");
     }
-
     QTextTableFormat tf; 
     if (css2[tname].valid) {
     tf = css2[tname].of.toTableFormat();  
     } else {
     tf.setWidth(QTextLength(QTextLength::PercentageLength,100));
-    qWarning() << "Table format not find name null!"; 
-    }
-
+    } 
+    tf.setColumnWidthConstraints(constraints);
     
+    const int Columns = constraints.size();
+    const int Rows = rowCounter;
     
-    QTextTable *qtable = cur.insertTable(rowCounter,constraints.size(),tf);
+    QTextTable *qtable = cur.insertTable(Rows,Columns,tf);
     int gorow = -1;
     int gocool = -1;
-    
+    allcell.clear();
      while ( !line.isNull() ) {
         if (line.isElement() ) {
             const QDomElement oorow = line.toElement();
             if (oorow.tagName() == "table:table-row") {
                 gorow++;
+                qDebug() << "### row ------------------------------------------- " << gorow;
                 gocool = -1;
-                         QDomElement oocell = oorow.firstChildElement("table:table-cell");
+                QTextTableCell cell;
+                         QDomElement oocell = oorow.firstChildElement();
                          while (!oocell.isNull())  {
-                                gocool++;
-                                const QTextTableCell ctd = qtable->cellAt(gorow,gocool);
-                                const int cr = qMax(oocell.attribute("table:number-rows-spanned").toInt(),0);
-                                const int cs = qMax(oocell.attribute("table:number-columns-spanned").toInt(),0);
-                                if (qMax(cs,cr) !=0) {
-                                /* value must having min 1  or row or cell */
-                                qtable->mergeCells(gorow,gocool,qMax(cr,1),qMax(cs,1));
+                                bool increment = false;
+                                /*
+                                if (gocool >= 0) {
+                                     check row before if spanrows? 
+                                    const QTextTableCell checkCell = qtable->cellAt(gorow - 1,gocool);
+                                    if (checkCell.isValid()) {
+                                     if (checkCell.rowSpan() > 1) {
+                                     increment = true;
+                                     }
+                                    }
                                 }
-                                cell = qtable->cellAt(gorow,gocool);
-                                if (!convertCellTable(oocell,cell,cur,tname,processing)) {
-                                   qWarning() << "Error on parse table cell  row:" << gorow << " column:" << gocool; 
+                                 */
+                                if ( oocell.tagName() == QLatin1String( "table:covered-table-cell" ) || increment ) {
+                                    gocool++;
+                                    /* is filled on before row -> row span table:number-rows-spanned !!! */
+                                } else if ( oocell.tagName() == QLatin1String( "table:table-cell" ) ) {
+                                    gocool++;
+                                    /* normal td cell */
+                                    const int cr = qMax(oocell.attribute("table:number-rows-spanned").trimmed().toInt(),0);
+                                    const int cs = qMax(oocell.attribute("table:number-columns-spanned").trimmed().toInt(),0);
+                                    if (cs > 0) {
+                                        qtable->mergeCells (gorow,gocool,1,cs);
+                                        cell = qtable->cellAt(gorow,gocool);
+                                    } else  if (cr > 0) {
+                                        qtable->mergeCells (gorow,gocool,cr,1);
+                                        cell = qtable->cellAt(gorow,gocool);
+                                    } else {
+                                    cell = qtable->cellAt(gorow,gocool);
+                                    }
+                                    if (cell.isValid()) {
+                                        QTextCharFormat tdformat = cell.format();
+                                        tdformat.setProperty(CellDomelementID,QVariant(CatDomElement(oocell)));
+                                        cell.setFormat(tdformat);
+                                        allcell.insert(allcell.size(),oocell);
+                                    } else {
+                                        qWarning() << "!!!! not valid cell at->  row:" << gorow << " column:" << gocool; 
+                                    }
                                 }
-                                oocell = oocell.nextSiblingElement("table:table-cell");
+                                oocell = oocell.nextSiblingElement();
                          }
             }
         } 
         line = line.nextSibling();
     }
-    cur.endEditBlock();
+    int celliter = -1;
+    QTextFrame::Iterator frameIt = qtable->begin();
+    for (QTextFrame::Iterator it = frameIt;  !it.atEnd(); ++it) {
+           celliter++;
+             if (it.currentBlock().isValid()) { 
+                const QDomElement tdcell = allcell[celliter]; 
+                if (!tdcell.isNull()) {
+                      QTextCursor cursub(Qdoc);
+                                  cursub.setPosition(it.currentBlock().position());
+                      qDebug() << "### celliter -------------- " << celliter  << it.currentBlock().isValid();
+                      convertCellTable(tdcell,cursub,processing);
+                } else {
+                    qWarning() << "!!!! dom cell not valid " << celliter; 
+                }
+			 }
+           
+    }
+
+    
+    cur.endEditBlock(); 
+    
+    if (roottable) {
     cur.movePosition(QTextCursor::End);
+    }
     return true;
 }
 
-bool OOReader::convertCellTable( const QDomElement e  , QTextTableCell  &cell  ,
-                                QTextCursor &cur  , const QString tablenamecss , const int processing )
-{
-    const QString name = e.attribute ("table:style-name");
-    if (css2[name].valid) {
-    QTextTableCellFormat cefo = css2[name].of.toTableCellFormat();
-    cell.setFormat ( cefo );
-    qDebug() << "### build cell name  ->" << name;
-    }
-    
-  QTextCursor tmpcur  = cell.firstCursorPosition();
-  QDomElement child = e.firstChildElement();
-  int posi = -1;
-  while ( !child.isNull() ) {
-    if ( child.tagName() == QLatin1String( "text:p" ) ) {
-         posi++;
-         if (posi == 0) {
-             tmpcur.beginEditBlock();
-         } else {
-             tmpcur.insertBlock();
-             tmpcur.beginEditBlock();
-         }
-         convertBlock(tmpcur,child,0);
-         styleCurrentCount++;
-         emit statusRead(styleCurrentCount,sumOfBlocks);
-    } else if ( child.tagName() == QLatin1String( "text:list" ) ) {
-        convertList(tmpcur,child,styleCurrentCount);
-        styleCurrentCount++;
-        emit statusRead(styleCurrentCount,sumOfBlocks);
-      } else if ( child.tagName() == QLatin1String( "table:table" ) ) {
-          convertTable(tmpcur,child,styleCurrentCount);
-      }  else if (child.isText()) {
-        tmpcur.insertText(child.nodeValue()+"|TEXT_NODE_ROOT_ON_CELL|");
-    }
-    child = child.nextSiblingElement();
-  }
-    return true;
-}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
