@@ -20,12 +20,13 @@ INCLUDEPATH += $$LIB_EXTERN_PATH/src/gui/text
 
 
 
-QT += xml
+
+QT += xml network svg
 
 CONFIG +=  qt debug warn_off console
 
 FORMS += main.ui
 
-HEADERS += OOReader.h ZipDebugMain.h XML_Editor.h FoColorName.h
+HEADERS += OOReader.h ZipDebugMain.h XML_Editor.h FoColorName.h OOFormat.h
            
-SOURCES += main.cpp OOReader.cpp ZipDebugMain.cpp XML_Editor.cpp qzip.cpp FoColorName.cpp
+SOURCES += main.cpp OOReader.cpp ZipDebugMain.cpp XML_Editor.cpp qzip.cpp FoColorName.cpp OOFormat.cpp
