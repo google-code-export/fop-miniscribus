@@ -385,7 +385,7 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
          while ( !child.isNull() ) {
              if ( child.isElement() )  {
                     const QDomElement es = child.toElement();
-                    qDebug() << "### para loop ->" << es.tagName();
+                    ///////////qDebug() << "### para loop ->" << es.tagName();
                      if ( es.tagName() == QLatin1String( "text:span" )) {
                       convertFragment(cur,es,spanFor);
                      } else if (es.tagName() == QLatin1String( "text:line-break" )) {
@@ -503,7 +503,8 @@ bool OOReader::convertSpaceTag( QTextCursor &cur , const QDomElement e , QTextCh
     QString spacestring = "";
                        for (int i = 0; i < space; ++i) {
                            if (!QTWRITTELN) {
-                           spacestring.append(QString("-"));
+                            /////spacestring.append(QString("-"));
+                            spacestring.append(QString(QChar::Nbsp)); 
                            } else {
                            spacestring.append(QString(QChar::Nbsp));   
                            }
@@ -1423,7 +1424,7 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
     /* 1441 from fop convert */
     ///////qDebug() << "### convertTable.---" << styleCurrentCount << sumOfBlocks << " tag " << e.tagName();
     //////return true;
-    
+    bool  UseTdIter  = false;
     QMap<int,QDomElement> allcell;
     
     const QString tname = e.attribute ("table:style-name","default");
@@ -1494,7 +1495,7 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
             const QDomElement oorow = line.toElement();
             if (oorow.tagName() == "table:table-row") {
                 gorow++;
-                qDebug() << "### row ------------------------------------------- " << gorow;
+                ////////////////qDebug() << "### row ------------------------------------------- " << gorow;
                 gocool = -1;
                 QTextTableCell cell;
                          QDomElement oocell = oorow.firstChildElement();
@@ -1529,10 +1530,24 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
                                     cell = qtable->cellAt(gorow,gocool);
                                     }
                                     if (cell.isValid()) {
+                                        
                                         QTextCharFormat tdformat = cell.format();
-                                        tdformat.setProperty(CellDomelementID,QVariant(CatDomElement(oocell)));
-                                        cell.setFormat(tdformat);
+                                        QTextCursor tmpcur  = cell.firstCursorPosition();
+                                        const QString name = oocell.attribute ("table:style-name","default");
+                                        if (css2[name].valid) {
+                                        QTextTableCellFormat cefo = css2[name].of.toTableCellFormat();
+                                        tdformat.merge(cefo);
+                                        cell.setFormat ( tdformat );
+                                        }
+                                        
+                                        if (UseTdIter) {
                                         allcell.insert(allcell.size(),oocell);
+                                        } else {
+                                            QTextCursor tmpcur  = cell.firstCursorPosition();
+                                            convertCellTable(oocell,tmpcur,processing);
+                                        }
+                                        
+                                        
                                     } else {
                                         qWarning() << "!!!! not valid cell at->  row:" << gorow << " column:" << gocool; 
                                     }
@@ -1543,6 +1558,7 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
         } 
         line = line.nextSibling();
     }
+    if (UseTdIter) {
     int celliter = -1;
     QTextFrame::Iterator frameIt = qtable->begin();
     for (QTextFrame::Iterator it = frameIt;  !it.atEnd(); ++it) {
@@ -1552,7 +1568,6 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
                 if (!tdcell.isNull()) {
                       QTextCursor cursub(Qdoc);
                                   cursub.setPosition(it.currentBlock().position());
-                      qDebug() << "### celliter -------------- " << celliter  << it.currentBlock().isValid();
                       convertCellTable(tdcell,cursub,processing);
                 } else {
                     qWarning() << "!!!! dom cell not valid " << celliter; 
@@ -1561,7 +1576,11 @@ bool OOReader::convertTable( QTextCursor &cur , const QDomElement e  , const int
            
     }
 
-    
+   }
+   
+    //////QTextFrameFormat fox = DefaultFrameFormat();
+    ///////QTextFrame *foxtable = cur.currentFrame();
+    //////qtable->setFrameFormat ( fox );
     cur.endEditBlock(); 
     
     if (roottable) {
