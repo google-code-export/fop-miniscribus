@@ -1,5 +1,0 @@
-QMAKE_PRL_BUILD_DIR = c:\AA\google_mini_scribus_full\OO_Widged\qzip
-QMAKE_PRO_INPUT = qzip.pro
-QMAKE_PRL_TARGET = libqzip
-QMAKE_PRL_CONFIG = lex yacc debug uic resources incremental_off windows debug DebugBuild Debug build_pass qt link_prl copy_dir_files debug_and_release debug_and_release_target precompile_header debug stl exceptions rtti debug DebugBuild Debug build_pass qt warn_off staticlib create_prl debug DebugBuild Debug build_pass no_autoqmake static staticlib moc thread
-QMAKE_PRL_LIBS = -L../lib/ -lqtidy -lQtXmld4 -lQtGuid4 -lQtCored4 
