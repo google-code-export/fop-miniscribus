@@ -388,6 +388,14 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
                     ///////////qDebug() << "### para loop ->" << es.tagName();
                      if ( es.tagName() == QLatin1String( "text:span" )) {
                       convertFragment(cur,es,spanFor);
+                     } if ( es.tagName() == QLatin1String( "text:a" )) {
+                          spanFor.setAnchor(true);
+                          spanFor.setAnchorHref(es.attribute ("xlink:href",_NOTLINKGREB_)); 
+                          spanFor.setForeground(QBrush(_LINK_COLOR_));
+                          spanFor.setToolTip ( es.attribute ("xlink:href",_NOTLINKGREB_) );
+                          cur.setCharFormat(spanFor);
+                          convertFragment(cur,es.firstChildElement(),spanFor);
+                         
                      } else if (es.tagName() == QLatin1String( "text:line-break" )) {
                          cur.insertText(QString(QChar::LineSeparator));
                      } else if (es.tagName() == QLatin1String( "text:s" )) {
@@ -545,7 +553,7 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
                        
                  if ( child.isElement() )  {
                   const QDomElement es = child.toElement();
-                 qDebug() << "### loop fragment  tag ->" << es.tagName();
+                 ////////qDebug() << "### loop fragment  tag ->" << es.tagName();
                  
                   if (es.tagName() == QLatin1String( "text:line-break" )) {
                       cur.insertText(QString(QChar::LineSeparator));
@@ -555,7 +563,14 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
                       convertImage(cur,es,parent,HandleSpace);
                   } else if ( es.tagName() == QLatin1String( "text:s" ) ) {
                       convertSpaceTag(cur,es,parent,HandleSpace);
-                  }
+                  } else if ( es.tagName() == QLatin1String( "text:a" )) {
+                          styleroot.setAnchor(true);
+                          styleroot.setAnchorHref(es.attribute ("xlink:href",_NOTLINKGREB_)); 
+                          styleroot.setForeground(QBrush(_LINK_COLOR_));
+                          styleroot.setToolTip ( es.attribute ("xlink:href",_NOTLINKGREB_) );
+                          cur.setCharFormat(styleroot);
+                          convertFragment(cur,es.firstChildElement(),styleroot);
+                     }
              
              
              }  else if (child.isText()) {
