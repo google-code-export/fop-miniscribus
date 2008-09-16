@@ -321,7 +321,7 @@ QTextCharFormat Fo_Format::GlobalCharFormat( const QDomElement e , QTextCharForm
                       qreal xx = value.toDouble();
                       if (xx != 0.) {
                       qDebug() << "### style:text-scale  " << xx;
-                      pf.setFontLetterSpacing(xx);
+                      f.setFontLetterSpacing(xx);
                       }
                   }
                   
