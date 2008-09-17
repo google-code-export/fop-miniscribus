@@ -1,7 +1,6 @@
 #include <QtCore>
 #include <QString>
 #include <QtDebug>
-#include <QDebug> 
 #include <QApplication>
 #include <QXmlQuery>
 #include <QtGui>
