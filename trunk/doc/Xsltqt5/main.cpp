@@ -31,19 +31,19 @@ int main(int argc, char *argv[]) {
     
     
     QXmlQuery xquery(QXmlQuery::XSLT20);
-    xquery.setFocus(QUrl("a.xml"));
+    xquery.setFocus(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/data.xml"));
     xquery.bindVariable("unixtime", QVariant(timer1.toTime_t()));
-    xquery.setQuery(QUrl("a.xsl"));
+    xquery.setQuery(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/style.xsl"));
     QFile out(localoutfile);
     out.open(QIODevice::WriteOnly);
     xquery.evaluateTo(&out);
     out.close();
-    
     qDebug() << "### close file transform ";
-    
+    QTextDocument *d = new QTextDocument();
+    d->setHtml ( ReadFileUtf8Xml(localoutfile) );
     QTextEdit t;
     t.show();
-    t.setPlainText(ReadFileUtf8Xml(localoutfile));
+    t.setDocument ( d );
     a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
     return a.exec();
 };
