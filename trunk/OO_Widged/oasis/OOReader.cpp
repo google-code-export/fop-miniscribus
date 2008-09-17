@@ -283,8 +283,8 @@ bool OOReader::convertBody( const QDomElement &element )
          ///////QCoreApplication::processEvents();
     } else if ( child.tagName() == QLatin1String( "text:list" ) ) {
                      /* span element */
-        convertList(cursor,child,styleCurrentCount);
-        ///////////qDebug() << "### list root Nr.---" << styleCurrentCount << sumOfBlocks;
+        convertList(cursor,child,styleCurrentCount,1);
+        qDebug() << "### list root Nr.---" << styleCurrentCount << sumOfBlocks;
         styleCurrentCount++;
         emit statusRead(styleCurrentCount,sumOfBlocks);
         //////////QCoreApplication::processEvents();
@@ -301,12 +301,16 @@ bool OOReader::convertBody( const QDomElement &element )
 }
 
 
-bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int processing , int level )
+bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int processing , int level , const QString classname )
 {
-    ///////////qDebug() << "### convertList begin " << processing;
-    const QString sname = e.attribute ("text:style-name");
+    qDebug() << "### convertList begin " << processing << " name " << e.tagName() << " l." << level;
+    QString sname = classname;
+    if (level == 1) {
+    sname = e.attribute ("text:style-name");
+    }
+    
     if (sname.size() < 1) {
-    qWarning() << "### No valid if on QTextListFormat name " << sname;
+    qWarning() << "### No valid name on QTextListFormat name " << sname;
     return false;
     }
     StyleInfo blockformat;
@@ -316,16 +320,19 @@ bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int proces
          blockformat = css2[sname];
          ulinit = blockformat.of.toListFormat();  
          } else {
-          qWarning() << "### No valid if on QTextListFormat name " << sname;
+          qWarning() << "### No valid QTextListFormat name  on css2 list " << sname;
           return false;
          }
     
     ulinit.setIndent ( level );
-    ///////////text:style-name="L35"
-    
-    ////// loop text:list-item
     /* insert first block to take format and create list */
     QDomElement ul_blck = e.firstChildElement("text:list-item");  /* grab next from this */
+         
+        QDomElement nextlevel = ul_blck.firstChildElement("text:list");
+        if (!nextlevel.isNull()) {
+            return convertList(cur,nextlevel,styleCurrentCount,level + 1,sname);
+        }
+         
     QDomElement firstpara = ul_blck.firstChildElement("text:p");
     const int CCpos = cur.position();
     QTextCharFormat spanFor = DefaultCharFormats(QTWRITTELN);
@@ -338,54 +345,14 @@ bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int proces
         styleCurrentCount++;  /* count block to all doc */
         if (convertBlock(cur,firstpara,0)) {
         cur.endEditBlock(); 
-        /////////qDebug() << "### lisumm -> ------------1";
-        } else {
-        return false;
         }
-    } else {
-     return false;
     }
     
     
     int lisumm = 1;
     QTextList *Uls = cur.createList( ulinit );
     Uls->add( cur.block() );
-    bool success = false;
-    /* theary block and one first li */
-    QDomElement parali = ul_blck.nextSiblingElement("text:list-item");
-        while ( !parali.isNull() )
-    {
-        QDomElement para = parali.firstChildElement("text:p");
-        if (!para.isNull()) {
-        lisumm++;
-        cur.insertBlock();
-        cur.beginEditBlock(); 
-        success = convertBlock(cur,para,0);
-        if (success) {
-        styleCurrentCount++;  /* count block to all doc */
-        if (Uls) {
-        Uls->add( cur.block() );
-        }
-        ////////qDebug() << "### lisumm -> ------------" << lisumm;
-        }
-            
-            
-        }
-        
-        /* after li insert check tree ul / li */
-        
-        QDomElement ultree = parali.firstChildElement("text:list");
-        if (!ultree.isNull()) {
-            convertList(cur,ultree,styleCurrentCount,level + 1);
-        }
-        
-        
-        parali = parali.nextSiblingElement("text:list-item");
-    }
-    
-    
     cur.endEditBlock();
-    /////////////qDebug() << "### convertList end " << processing;
     return true;
 }
 

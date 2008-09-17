@@ -179,7 +179,7 @@ private:
     bool convertTable( QTextCursor &cur , const QDomElement e  , const int processing , bool roottable = false );
     bool convertCellTable( const QDomElement e  , QTextCursor &cur  , const int processing );
     bool convertBlock( QTextCursor &cur , QDomElement e  , const int processing );
-    bool convertList( QTextCursor &cur , QDomElement e  , const int processing , int level = 1);
+    bool convertList( QTextCursor &cur , QDomElement e  , const int processing , int level = 1 , const QString classname = QString("deafult"));
     bool convertFragment( QTextCursor &cur , const QDomElement e , QTextCharFormat parent = QTextCharFormat() ,  bool HandleSpace = false );
     bool convertSpaceTag( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace = false ); 
     void insertTextLine( QTextCursor &cur , QStringList line , QTextCharFormat parent =  QTextCharFormat() ,  bool HandleSpace = false  );
