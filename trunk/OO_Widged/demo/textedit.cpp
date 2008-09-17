@@ -396,7 +396,7 @@ void TextEdit::drawDoc()
 
 void TextEdit::onRead( int now ,int tot )
 {
-    qDebug() << "### reading line -> " << now <<  " t." << tot;
+    //////qDebug() << "### reading line -> " << now <<  " t." << tot;
     
 }
 
