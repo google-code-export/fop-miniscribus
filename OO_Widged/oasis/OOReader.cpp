@@ -897,6 +897,7 @@ QTextBlockFormat OOReader::TextBlockFormFromDom( const QDomElement e , QTextBloc
 QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFormat pf )
 {
     charsRead++;
+    bool boldText = false;
     pf.setForeground(QBrush(Qt::black));
     /* fo and style mixed value on OO format */
     QDomNamedNodeMap attlist = e.attributes();
@@ -951,7 +952,7 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
               
                   
                   if (value.contains("bold")) {
-                  pf.setFontWeight(QFont::Bold); 
+                  boldText = true;
                   }
                   if (value.contains("italic")) {
                   pf.setFontItalic(true);
@@ -994,6 +995,11 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
         }
     }
     
+    if (boldText) {
+    pf.setFontWeight(QFont::Bold); 
+    } else {
+    pf.setFontWeight(QFont::Normal); 
+    }
     
     const int debugspace = pf.fontLetterSpacing();
     if (debugspace == (int)DEBUgletterspacing )  { 
