@@ -1140,7 +1140,6 @@ void QTextLayout::draw(QPainter *p, const QPointF &pos, const QVector<FormatRang
     }
 
     QPainterPath excludedRegion;
-    QPainterPath needTextRegion;
     for (int i = 0; i < selections.size(); ++i) {
         FormatRange selection = selections.at(i);
         const QBrush bg = selection.format.background();
@@ -1199,14 +1198,6 @@ void QTextLayout::draw(QPainter *p, const QPointF &pos, const QVector<FormatRang
             p->setBrush(oldBrush);
         }
 
-        excludedRegion += region;
-
-        if (selection.format.brushProperty(QTextFormat::BackgroundBrush).style() == Qt::NoBrush
-            || selection.format.foreground().style() == Qt::NoBrush) {
-            needTextRegion += region;
-        } else {
-            needTextRegion -= region;
-        }
 
         p->save();
         p->setClipPath(region, Qt::IntersectClip);
@@ -1221,26 +1212,13 @@ void QTextLayout::draw(QPainter *p, const QPointF &pos, const QVector<FormatRang
             QTextLine l(line, d);
             l.draw(p, position, &selection);
         }
-
         p->restore();
+
+        if (selection.format.foreground().style() != Qt::NoBrush) // i.e. we have drawn text
+            excludedRegion += region;
+
+
     }
-
-    if (!needTextRegion.isEmpty()) {
-        p->save();
-        p->setClipPath(needTextRegion);
-        FormatRange fakeSelection;
-        fakeSelection.format.setProperty(ObjectSelectionBrush, QBrush(Qt::red));
-        fakeSelection.format.setProperty(QTextFormat::BackgroundBrush, QBrush());
-        fakeSelection.start = -1; // signal no noText in QTextLine::draw()
-        fakeSelection.length = 0;
-        for (int line = firstLine; line < lastLine; ++line) {
-            QTextLine l(line, d);
-            l.draw(p, position, &fakeSelection);
-        }
-
-        p->restore();
-    }
-
 
     if (!excludedRegion.isEmpty()) {
         p->save();
@@ -1944,9 +1922,7 @@ void QTextLine::draw(QPainter *p, const QPointF &pos, const QTextLayout::FormatR
     const QScriptLine &line = eng->lines[i];
     QPen pen = p->pen();
 
-    bool noText = (selection && selection->start >= 0
-                   && (selection->format.brushProperty(ObjectSelectionBrush).style() == Qt::NoBrush
-                       || selection->format.foreground().style() == Qt::NoBrush));
+    bool noText = (selection && selection->format.foreground().style() == Qt::NoBrush);
 
     if (!line.length) {
         if (selection
