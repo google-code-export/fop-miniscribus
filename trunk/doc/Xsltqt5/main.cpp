@@ -26,6 +26,15 @@ class StreamBuf
 }; 
 
 
+/*
+
+1. Subclass QAbstractMessageHandler
+2. Call QXmlQuery::setMessageHandler(&yourMessageHandler);
+
+
+*/
+
+
 int main(int argc, char *argv[]) {
     QApplication a( argc, argv );
    
@@ -34,19 +43,21 @@ int main(int argc, char *argv[]) {
     const QString localoutfile =  "outresult.html";
     StreamBuf *buf = new StreamBuf();
     QXmlQuery xquery(QXmlQuery::XSLT20);
-    xquery.setFocus(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/data.xml"));
+    xquery.setFocus(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/doc/odtdoc.xml"));
     /* variable  <xsl:param name="unixtime" select="'0000000'" />  on style */
-    xquery.bindVariable("unixtime", QVariant(timer1.toTime_t()));
+    /////xquery.bindVariable("unixtime", QVariant(timer1.toTime_t()));
     /* other variable */
-    xquery.setQuery(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/style.xsl"));
+    xquery.setQuery(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/odt-fo/ooo2xslfo-writer.xsl"));
     xquery.evaluateTo(buf->device());
     qDebug() << "### close file Extract, Transform end ";
-    QTextDocument *d = new QTextDocument();
-    d->setHtml ( buf->data() );
+    /////QTextDocument *d = new QTextDocument();
+    //////d->setHtml ( buf->data() );
+    
     delete buf;
     QTextEdit t;
     t.show();
-    t.setDocument ( d );
+    /////t.setDocument ( d );
+    t.setPlainText ( const QString & text );
     a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
     return a.exec();
 };
