@@ -20,7 +20,8 @@ class StreamBuf
   }
   QIODevice *device() { return d; }
   QByteArray stream() { return d->data(); }
-  QString data() { return QString(d->data()); }
+  /* <?xml version="1.0" encoding="utf-8"?> */
+  QString data() { return QString::fromUtf8(stream()); }
   QBuffer *d;
 }; 
 
