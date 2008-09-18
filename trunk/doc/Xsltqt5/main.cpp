@@ -34,7 +34,9 @@ int main(int argc, char *argv[]) {
     StreamBuf *buf = new StreamBuf();
     QXmlQuery xquery(QXmlQuery::XSLT20);
     xquery.setFocus(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/data.xml"));
+    /* variable  <xsl:param name="unixtime" select="'0000000'" />  on style */
     xquery.bindVariable("unixtime", QVariant(timer1.toTime_t()));
+    /* other variable */
     xquery.setQuery(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/style.xsl"));
     xquery.evaluateTo(buf->device());
     qDebug() << "### close file Extract, Transform end ";
