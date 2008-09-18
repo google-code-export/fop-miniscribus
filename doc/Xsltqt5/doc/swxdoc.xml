@@ -1,0 +1,571 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<office:document-content xmlns:draw="http://openoffice.org/2000/drawing" xmlns:meta="http://openoffice.org/2000/meta" xmlns:dom="http://www.w3.org/2001/xml-events" office:class="text" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:style="http://openoffice.org/2000/style" xmlns:script="http://openoffice.org/2000/script" xmlns:table="http://openoffice.org/2000/table" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:dr3d="http://openoffice.org/2000/dr3d" xmlns:office="http://openoffice.org/2000/office" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:svg="http://www.w3.org/2000/svg" xmlns:chart="http://openoffice.org/2000/chart" xmlns:text="http://openoffice.org/2000/text" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:math="http://www.w3.org/1998/Math/MathML" office:version="1.1" xmlns:form="http://openoffice.org/2000/form" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:number="http://openoffice.org/2000/datastyle" xmlns:ooo="http://openoffice.org/2004/office" xmlns:fo="http://www.w3.org/1999/XSL/Format" >
+     <office:script/>
+     <office:font-decls>
+          <style:font-decl style:name="F" fo:font-family="" />
+          <style:font-decl style:name="Courier" fo:font-family="Courier" />
+          <style:font-decl style:name="Sans" fo:font-family="Sans" />
+          <style:font-decl style:name="Times" fo:font-family="Times" />
+          <style:font-decl style:name="Times New Roman" fo:font-family="'Times New Roman'" style:font-family-generic="roman" style:font-pitch="variable" />
+          <style:font-decl style:name="Lucida Sans Unicode" fo:font-family="'Lucida Sans Unicode'" style:font-family-generic="system" style:font-pitch="variable" />
+          <style:font-decl style:name="Tahoma" fo:font-family="Tahoma" style:font-family-generic="system" style:font-pitch="variable" />
+     </office:font-decls>
+     <office:automatic-styles>
+          <style:style style:family="table" style:name="Tabella1" >
+               <style:properties style:width="16.999cm" table:align="margins" />
+          </style:style>
+          <style:style style:family="table-column" style:name="Tabella1.A" >
+               <style:properties style:rel-column-width="16383*" style:column-width="4.249cm" />
+          </style:style>
+          <style:style style:family="table-column" style:name="Tabella1.D" >
+               <style:properties style:rel-column-width="16386*" style:column-width="4.251cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P1" style:parent-style-name="Standard" >
+               <style:properties style:auto-text-indent="false" fo:margin-bottom="0.318cm" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P2" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="center" style:justify-single-word="false" style:auto-text-indent="false" fo:margin-bottom="0.318cm" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P3" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="justify" style:justify-single-word="false" style:auto-text-indent="false" fo:margin-bottom="0.318cm" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P4" style:parent-style-name="Standard" >
+               <style:properties fo:font-weight="bold" fo:text-align="center" style:justify-single-word="false" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="20pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P5" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P6" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="justify" style:justify-single-word="false" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P7" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:font-style="italic" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P8" style:parent-style-name="Standard" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="16pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P9" style:parent-style-name="Standard" >
+               <style:properties fo:font-weight="bold" fo:text-align="justify" style:justify-single-word="false" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="16pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P10" style:parent-style-name="Standard" >
+               <style:properties style:auto-text-indent="false" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P11" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="start" style:justify-single-word="false" style:auto-text-indent="false" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P12" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="center" style:justify-single-word="false" style:auto-text-indent="false" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P13" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="start" style:justify-single-word="false" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="9pt" style:font-name="Sans" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P14" style:parent-style-name="Standard" >
+               <style:properties fo:font-weight="bold" fo:text-align="start" style:justify-single-word="false" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="9pt" style:font-name="Sans" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P15" style:parent-style-name="Standard" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="16pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.423cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P16" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P17" style:parent-style-name="Standard" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="16pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="paragraph" style:name="P18" style:parent-style-name="Standard" >
+               <style:properties fo:text-align="start" style:justify-single-word="false" />
+          </style:style>
+          <style:style style:list-style-name="L1" style:family="paragraph" style:name="P19" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L2" style:family="paragraph" style:name="P20" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L3" style:family="paragraph" style:name="P21" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L4" style:family="paragraph" style:name="P22" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L5" style:family="paragraph" style:name="P23" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0.318cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L4" style:family="paragraph" style:name="P24" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L5" style:family="paragraph" style:name="P25" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" fo:margin-bottom="0.318cm" style:font-name="Sans" fo:text-indent="0cm" fo:margin-top="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L5" style:family="paragraph" style:name="P26" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" style:font-name="Sans" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:list-style-name="L6" style:family="paragraph" style:name="P27" style:parent-style-name="Standard" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" style:auto-text-indent="false" fo:font-size="11pt" style:font-name="Sans" fo:text-indent="0cm" fo:margin-left="0cm" fo:margin-right="0cm" />
+          </style:style>
+          <style:style style:family="text" style:name="T1" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" fo:font-size="9pt" style:font-name="Sans" />
+          </style:style>
+          <style:style style:family="text" style:name="T2" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" fo:font-size="9pt" style:font-name="Sans" fo:font-style="italic" />
+          </style:style>
+          <style:style style:family="text" style:name="T3" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" style:font-name="Sans" />
+          </style:style>
+          <style:style style:family="text" style:name="T4" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" style:font-name="Sans" />
+          </style:style>
+          <style:style style:family="text" style:name="T5" >
+               <style:properties style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" style:font-name="Sans" fo:font-style="italic" />
+          </style:style>
+          <style:style style:family="text" style:name="T6" >
+               <style:properties style:text-underline="single" style:text-crossing-out="none" fo:font-size="11pt" style:text-underline-color="font-color" style:font-name="Sans" />
+          </style:style>
+          <style:style style:family="text" style:name="T7" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" style:font-name="Times" />
+          </style:style>
+          <style:style style:family="text" style:name="T8" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" style:font-name="Courier" />
+          </style:style>
+          <style:style style:family="text" style:name="T9" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" fo:color="#00007f" style:font-name="Sans" />
+          </style:style>
+          <style:style style:family="text" style:name="T10" >
+               <style:properties fo:font-weight="bold" style:text-underline="none" style:text-crossing-out="none" fo:font-size="11pt" fo:color="#aa0000" style:font-name="Sans" />
+          </style:style>
+          <style:style style:family="text" style:name="T11" >
+               <style:properties style:text-scale="300%" />
+          </style:style>
+          <style:style style:family="text" style:name="T12" >
+               <style:properties style:text-background-color="#2323dc" fo:color="#ffffff" />
+          </style:style>
+          <style:style style:family="graphics" style:name="fr1" style:parent-style-name="Graphics" >
+               <style:properties draw:color-mode="standard" draw:luminance="0%" draw:contrast="0%" draw:color-inversion="false" draw:red="0%" fo:clip="rect(0cm 0cm 0cm 0cm)" draw:blue="0%" draw:mirror="false" draw:gamma="1" style:vertical-pos="top" draw:green="0%" style:vertical-rel="baseline" style:mirror="none" draw:transparency="0%" />
+          </style:style>
+          <text:list-style style:name="L1" >
+               <text:list-level-style-bullet text:bullet-char="?" text:level="1" >
+                    <style:properties text:space-before="0.801cm" />
+               </text:list-level-style-bullet>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="2" >
+                    <style:properties text:space-before="1.27cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="3" >
+                    <style:properties text:space-before="1.905cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="4" >
+                    <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="5" >
+                    <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="6" >
+                    <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="7" >
+                    <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="8" >
+                    <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="9" >
+                    <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="10" >
+                    <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+          </text:list-style>
+          <text:list-style style:name="L2" >
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="1" >
+                    <style:properties text:space-before="0.635cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-bullet text:bullet-char="?" text:level="2" >
+                    <style:properties text:space-before="1.6cm" />
+               </text:list-level-style-bullet>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="3" >
+                    <style:properties text:space-before="1.905cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="4" >
+                    <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="5" >
+                    <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="6" >
+                    <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="7" >
+                    <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="8" >
+                    <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="9" >
+                    <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="10" >
+                    <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+          </text:list-style>
+          <text:list-style style:name="L3" >
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="1" >
+                    <style:properties text:space-before="0.635cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="2" >
+                    <style:properties text:space-before="1.27cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-bullet text:bullet-char="?" text:level="3" >
+                    <style:properties text:space-before="2.401cm" />
+               </text:list-level-style-bullet>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="4" >
+                    <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="5" >
+                    <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="6" >
+                    <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="7" >
+                    <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="8" >
+                    <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="9" >
+                    <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="10" >
+                    <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+          </text:list-style>
+          <text:list-style style:name="L4" >
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="1" >
+                    <style:properties text:space-before="0.801cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="2" >
+                    <style:properties text:space-before="1.27cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="3" >
+                    <style:properties text:space-before="1.905cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="4" >
+                    <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="5" >
+                    <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="6" >
+                    <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="7" >
+                    <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="8" >
+                    <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="9" >
+                    <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="10" >
+                    <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+          </text:list-style>
+          <text:list-style style:name="L5" >
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="1" >
+                    <style:properties text:space-before="0.635cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="a" text:level="2" >
+                    <style:properties text:space-before="1.6cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="3" >
+                    <style:properties text:space-before="1.905cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="4" >
+                    <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="5" >
+                    <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="6" >
+                    <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="7" >
+                    <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="8" >
+                    <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="9" >
+                    <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="10" >
+                    <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+          </text:list-style>
+          <text:list-style style:name="L6" >
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="1" >
+                    <style:properties text:space-before="0.635cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="2" >
+                    <style:properties text:space-before="1.27cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="A" text:level="3" >
+                    <style:properties text:space-before="2.401cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="4" >
+                    <style:properties text:space-before="2.54cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="5" >
+                    <style:properties text:space-before="3.175cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="6" >
+                    <style:properties text:space-before="3.81cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="7" >
+                    <style:properties text:space-before="4.445cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="8" >
+                    <style:properties text:space-before="5.08cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="9" >
+                    <style:properties text:space-before="5.715cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+               <text:list-level-style-number style:num-suffix="." style:num-format="1" text:level="10" >
+                    <style:properties text:space-before="6.35cm" text:min-label-width="0.635cm" />
+               </text:list-level-style-number>
+          </text:list-style>
+     </office:automatic-styles>
+     <office:body text:use-soft-page-breaks="true" >
+          <text:sequence-decls>
+               <text:sequence-decl text:name="Illustration" text:display-outline-level="0" />
+               <text:sequence-decl text:name="Table" text:display-outline-level="0" />
+               <text:sequence-decl text:name="Text" text:display-outline-level="0" />
+               <text:sequence-decl text:name="Drawing" text:display-outline-level="0" />
+          </text:sequence-decls>
+          <text:p text:style-name="P4" >
+               <text:s text:c="2" />QTextEdit</text:p>
+          <text:p text:style-name="P6" >The QTextEdit widget is an advanced editor that supports formatted rich text. It can be used to display HTML and other rich <text:span text:style-name="T11" >document formats</text:span>. Internally, QTextEdit uses the QTextDocument class to describe both the high-level structure of each document and the low-level formatting of paragraphs.</text:p>
+          <text:p text:style-name="P3" >
+               <text:span text:style-name="T3" >If you are viewing this document in the </text:span>
+               <text:span text:style-name="T5" >textedit</text:span>
+               <text:span text:style-name="T3" > demo, you can edit this document to explore Qt's rich text editing features. We have included some comments in each of the following sections to encourage you to experiment. <text:s/>
+               </text:span>
+          </text:p>
+          <text:p text:style-name="P15" >Font and Paragraph Styles</text:p>
+          <text:p text:style-name="P3" >
+               <text:span text:style-name="T3" >QTextEdit supports </text:span>
+               <text:span text:style-name="T4" >bold</text:span>
+               <text:span text:style-name="T3" >, </text:span>
+               <text:span text:style-name="T5" >italic</text:span>
+               <text:span text:style-name="T3" >, and </text:span>
+               <text:span text:style-name="T6" >underlined</text:span>
+               <text:span text:style-name="T3" > font styles, and can display </text:span>
+               <text:span text:style-name="T9" >multicolored</text:span>
+               <text:span text:style-name="T3" />
+               <text:span text:style-name="T10" >text</text:span>
+               <text:span text:style-name="T3" >. Font families such as </text:span>
+               <text:span text:style-name="T7" >Times New Roman</text:span>
+               <text:span text:style-name="T3" > and </text:span>
+               <text:span text:style-name="T8" >Courier</text:span>
+               <text:span text:style-name="T3" > can also be used directly. </text:span>
+               <text:span text:style-name="T5" >If you place the cursor in a region of styled text, the controls in the tool bars will change to reflect the current style.</text:span>
+          </text:p>
+          <text:p text:style-name="P6" >Paragraphs can be formatted so that the text is left-aligned, right-aligned, centered, or fully justified.</text:p>
+          <text:p text:style-name="P2" >
+               <text:span text:style-name="T5" >Try changing the alignment of some text and resize the editor to see how the text layout changes.</text:span>
+               <text:span text:style-name="T3" />
+          </text:p>
+          <text:p text:style-name="P9" >Lists</text:p>
+          <text:p text:style-name="P6" >Different kinds of lists can be included in rich text documents. Standard bullet lists can be nested, using different symbols for each level of the list: </text:p>
+          <text:ordered-list text:style-name="L1" >
+               <text:list-item>
+                    <text:p text:style-name="P19" >Disc symbols are typically used for top-level list items. </text:p>
+               </text:list-item>
+          </text:ordered-list>
+          <text:ordered-list text:style-name="L2" >
+               <text:list-item>
+                    <text:ordered-list>
+                         <text:list-item>
+                              <text:p text:style-name="P20" >Circle symbols can be used to distinguish between items in lower-level lists.</text:p>
+                         </text:list-item>
+                    </text:ordered-list>
+               </text:list-item>
+          </text:ordered-list>
+          <text:ordered-list text:style-name="L3" >
+               <text:list-item>
+                    <text:ordered-list>
+                         <text:list-item>
+                              <text:ordered-list>
+                                   <text:list-item>
+                                        <text:p text:style-name="P21" >Square symbols provide a reasonable alternative to discs and circles. </text:p>
+                                   </text:list-item>
+                              </text:ordered-list>
+                         </text:list-item>
+                    </text:ordered-list>
+               </text:list-item>
+          </text:ordered-list>
+          <text:p text:style-name="P5" >Ordered lists can be created that can be used for tables of contents. Different characters can be used to enumerate items, and we can use both Roman and Arabic numerals in the same list structure: </text:p>
+          <text:ordered-list text:style-name="L4" >
+               <text:list-item>
+                    <text:p text:style-name="P22" >Introduction</text:p>
+               </text:list-item>
+               <text:list-item>
+                    <text:p text:style-name="P24" >Qt Tools </text:p>
+               </text:list-item>
+          </text:ordered-list>
+          <text:ordered-list text:style-name="L5" >
+               <text:list-item>
+                    <text:ordered-list>
+                         <text:list-item>
+                              <text:p text:style-name="P23" >Qt Assistant</text:p>
+                         </text:list-item>
+                         <text:list-item>
+                              <text:p text:style-name="P26" >Qt Designer</text:p>
+                         </text:list-item>
+                    </text:ordered-list>
+               </text:list-item>
+          </text:ordered-list>
+          <text:ordered-list text:style-name="L6" >
+               <text:list-item>
+                    <text:ordered-list>
+                         <text:list-item>
+                              <text:ordered-list>
+                                   <text:list-item>
+                                        <text:p text:style-name="P27" >Form Editor</text:p>
+                                   </text:list-item>
+                                   <text:list-item>
+                                        <text:p text:style-name="P27" >Component Architecture</text:p>
+                                   </text:list-item>
+                              </text:ordered-list>
+                         </text:list-item>
+                    </text:ordered-list>
+               </text:list-item>
+          </text:ordered-list>
+          <text:ordered-list text:continue-numbering="true" text:style-name="L5" >
+               <text:list-item>
+                    <text:ordered-list text:continue-numbering="true" >
+                         <text:list-item>
+                              <text:p text:style-name="P25" >Qt Linguist</text:p>
+                         </text:list-item>
+                    </text:ordered-list>
+               </text:list-item>
+          </text:ordered-list>
+          <text:p text:style-name="P10" />
+          <text:p text:style-name="P10" >
+               <text:span text:style-name="T3" >The list will automatically be renumbered if you add or remove items. </text:span>
+               <text:span text:style-name="T5" >Try adding new sections to the above list or removing existing item to see the numbers change.</text:span>
+               <text:span text:style-name="T3" />
+          </text:p>
+          <text:p text:style-name="P10" >
+               <text:soft-page-break/>
+          </text:p>
+          <text:p text:style-name="P17" >Images</text:p>
+          <text:p text:style-name="P16" >Inline images are treated like ordinary ranges of characters in the text editor, so they flow with the surrounding text. Images can also be selected in the same way as text, making it easy to cut, copy, and paste them. </text:p>
+          <text:p text:style-name="P3" >
+               <draw:image xlink:type="simple" xlink:show="embed" svg:width="1.694cm" draw:style-name="fr1" text:anchor-type="as-char" draw:name=":/images/logo32.png" xlink:href="#Pictures/10000000000000400000002097B2237A.png" svg:height="0.848cm" draw:z-index="0" xlink:actuate="onLoad" />
+               <text:span text:style-name="T5" >Try to select this image by clicking and dragging over it with the mouse, or use the text cursor to select it by holding down Shift and using the arrow keys. You can then cut or copy it, and pasting it into different parts of this document.</text:span>
+          </text:p>
+          <text:p text:style-name="P9" >Tables</text:p>
+          <text:p text:style-name="P6" >QTextEdit can arrange and format tables, supporting features such as row and column spans, text formatting within cells, and size constraints for columns. </text:p>
+          <text:p text:style-name="P10" />
+          <text:p text:style-name="P10" />
+          <table:table table:name="Tabella1" table:style-name="Tabella1" >
+               <table:table-column table:style-name="Tabella1.A" table:number-columns-repeated="3" />
+               <table:table-column table:style-name="Tabella1.D" />
+               <table:table-row>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P13" />
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >Development Tools </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >Programming Techniques </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >Graphical User Interfaces </text:p>
+                    </table:table-cell>
+               </table:table-row>
+               <table:table-row>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >9:00 - 11:00 </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:number-columns-spanned="3" table:value-type="string" >
+                         <text:p text:style-name="P12" >
+                              <text:span text:style-name="T1" >Introduction to </text:span>
+                              <text:span text:style-name="T2" >Qt </text:span>
+                         </text:p>
+                    </table:table-cell>
+                    <table:covered-table-cell/>
+                    <table:covered-table-cell/>
+               </table:table-row>
+               <table:table-row>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >11:00 - 13:00 </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P11" >
+                              <text:span text:style-name="T1" >Using </text:span>
+                              <text:span text:style-name="T2" >qmake</text:span>
+                              <text:span text:style-name="T1" />
+                         </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P13" >Object-oriented Programming </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P11" >
+                              <text:span text:style-name="T1" >Layouts in </text:span>
+                              <text:span text:style-name="T2" >Qt</text:span>
+                              <text:span text:style-name="T1" />
+                         </text:p>
+                    </table:table-cell>
+               </table:table-row>
+               <table:table-row>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >13:00 - 15:00 </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P11" >
+                              <text:span text:style-name="T2" >Qt Designer</text:span>
+                              <text:span text:style-name="T1" > Tutorial </text:span>
+                         </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:number-rows-spanned="2" table:value-type="string" >
+                         <text:p text:style-name="P13" >Extreme Programming </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P13" >Writing <text:span text:style-name="T12" >Custom</text:span> Styles </text:p>
+                    </table:table-cell>
+               </table:table-row>
+               <table:table-row>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P14" >15:00 - 17:00 </text:p>
+                    </table:table-cell>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P11" >
+                              <text:span text:style-name="T2" >Qt Linguist</text:span>
+                              <text:span text:style-name="T1" > and Internationalization </text:span>
+                         </text:p>
+                    </table:table-cell>
+                    <table:covered-table-cell/>
+                    <table:table-cell table:value-type="string" >
+                         <text:p text:style-name="P18" />
+                    </table:table-cell>
+               </table:table-row>
+          </table:table>
+          <text:p text:style-name="P10" />
+          <text:p text:style-name="P10" />
+          <text:p text:style-name="P7" >Try adding text to the cells in the table and experiment with the alignment of the paragraphs.</text:p>
+          <text:p text:style-name="P8" >Hyperlinks</text:p>
+          <text:p text:style-name="P1" >
+               <text:span text:style-name="T3" >QTextEdit is designed to support hyperlinks between documents, and this feature is used extensively in </text:span>
+               <text:span text:style-name="T5" >Qt Assistant</text:span>
+               <text:span text:style-name="T3" >. Hyperlinks are automatically created when an HTML file is imported into an editor. Since the rich text framework supports hyperlinks natively, they can also be created programatically.</text:span>
+          </text:p>
+          <text:p text:style-name="P8" >Undo and Redo</text:p>
+          <text:p text:style-name="P5" >Full support for undo and redo operations is built into QTextEdit and the underlying rich text framework. Operations on a document can be packaged together to make editing a more comfortable experience for the user.</text:p>
+          <text:p text:style-name="P1" >
+               <text:span text:style-name="T5" >Try making changes to this document and press Ctrl+Z to undo them. You can always recover <text:s/>the original contents of the document.</text:span>
+               <text:span text:style-name="T3" />
+          </text:p>
+     </office:body>
+</office:document-content>
