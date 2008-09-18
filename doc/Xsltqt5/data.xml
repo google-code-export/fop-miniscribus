@@ -1,6 +1,8 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <test>
 <konfig typ="user" name="docroot" wert="/usr/local/web" />
 <konfig typ="user" name="cgibin" wert="/usr/local/bin/cgi" />
 <konfig typ="expert" name="timeout" wert="60" />
+<konfig typ="chars" name="timeout" wert="&#00252;&#00246;&#00228;$&#00163;&#00232;&#00228;&#00246;*^'&#00232;&#00224;&#00249;&#00242;&#00236;&#00236;&#00236;&#00224;&#00242;
+" />
 </test>
