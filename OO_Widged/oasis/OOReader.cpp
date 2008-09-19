@@ -312,10 +312,10 @@ bool OOReader::iterateElements( const QDomElement e ,   QTextCursor &cursor  , c
 	QDomElement child = e.firstChildElement();
 	while ( !child.isNull() ) {
 		if ( child.tagName() == QLatin1String( "text:p" ) ) {
-                      loppiter++;
-                      styleCurrentCount++;
+			loppiter++;
+			styleCurrentCount++;
 			convertBlock(cursor,child,loppiter);
-			
+
 			emit statusRead(styleCurrentCount,sumOfBlocks);
 		}
 		else if ( child.tagName() == QLatin1String( "text:list" ) ) {
@@ -499,23 +499,29 @@ bool OOReader::convertFrame( QTextCursor &cur , const QDomElement e , QTextCharF
 	if (e.isNull()) {
 		return false;
 	}
-	QTextFrameFormat fox;
+    
+    const QString name = e.attribute ("draw:style-name");
+
 	const qreal width = Unit(e.attribute("svg:width"));
 	const qreal height = Unit(e.attribute("svg:height"));
-        /* hack frame !!! */
 	const qreal poX = Unit(e.attribute("svg:x"));
 	const qreal poY = Unit(e.attribute("svg:y"));
 	const int zindex = e.attribute("draw:z-index").toInt();
-       /* hack frame !!! */
-	fox.setWidth ( width );
-	fox.setHeight( height );
+    /*
 	fox.setPadding ( 4 );
 	fox.setBorder ( 0.5 );
 	fox.setBorderBrush ( Qt::black );
 	fox.setBorderStyle ( QTextFrameFormat::BorderStyle_Solid );
 	fox.setBackground ( QColor("#f0f0f0") );
-	
-
+    */
+    QTextFrameFormat fox;
+    if (css2[name].valid) {
+		fox = css2[name].of.toFrameFormat();
+    }
+    fox.setWidth ( width );
+	fox.setHeight( height );
+    Q_ASSERT(fox.isValid());
+    
 	const int lastposition = cur.position();
 	QTextCursor cur2(Qdoc);
 	cur2.setPosition(lastposition);
@@ -526,13 +532,13 @@ bool OOReader::convertFrame( QTextCursor &cur , const QDomElement e , QTextCharF
 		return convertImage(cur,e,parent ,HandleSpace);
 	}
 	if (!txtframe.isNull()) {
-            QTextFrame  *floatframe = cur2.insertFrame(fox);
-            QTextCursor  cur3 = floatframe->firstCursorPosition();
-            cur.movePosition(QTextCursor::End);
-            return iterateElements(txtframe,cur3,0);
+		QTextFrame  *floatframe = cur2.insertFrame(fox);
+		QTextCursor  cur3 = floatframe->firstCursorPosition();
+		cur.movePosition(QTextCursor::End);
+		return iterateElements(txtframe,cur3,0);
 	}
 
-      return false;
+	return false;
 }
 
 bool OOReader::convertImage( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace )
@@ -1129,9 +1135,23 @@ void OOReader::FrameImageFormatPaint( const QString name , const QDomElement e )
 {
 	const QDomElement im = e.firstChildElement("style:graphic-properties");
 	if (!im.isNull()) {
-		/* copy dom */
+    QColor bg = FoCol->foColor(im.attribute("fo:background-color"),FopColor::Transparent);
+    int goalpha = OoColorAlpha(QString(im.attribute("style:background-transparency")).replace("%","").toInt());
+    bg.setAlpha(goalpha);  
+    QTextFrameFormat fox;
+    QString sborder = im.attribute("fo:border");
+    QStringList tris = sborder.split(" ");
+	fox.setPadding ( qMax(Unit(e.attribute("fo:padding")), Unit("2mm") ) );
+    if (tris.size() == 3) {
+	fox.setBorder ( Unit(tris.at(0)) );
+	fox.setBorderBrush ( FoCol->foColor(tris.at(2),FopColor::DarkColor) );
+	fox.setBorderStyle ( QTextFrameFormat::BorderStyle_Solid );
+    }   
+	fox.setBackground ( bg );
+		/* copy dom to having copy down */
 		if (css2[name].valid) {
-			css2[name].chunk = CatDomElement(im);
+            css2[name].of = fox;
+			css2[name].chunk = CatDomElement(e);
 			css2[name].filled = true;
 #ifndef _OOREADRELEASE_
 			css2[name].css = cssGroup(e);
@@ -1282,11 +1302,18 @@ void OOReader::convertStyleNameRoot( const QDomElement &element )
 	while ( !child.isNull() ) {
 		if ( child.isElement() ) {
 			const QDomElement el = child.toElement();
-			//////qDebug() << "### loop style ......" << el.tagName();
+            
+			
+            
 			if ( el.tagName() == QLatin1String( "style:style" ) ) {
 				const QString sname = el.attribute ("style:name");
+                
 				///// paragraph or text
 				const QString forType = el.attribute ("style:family");
+                
+                qDebug() << "### forType ......" << forType;
+                
+                
 				if (forType == QLatin1String("text") ) {
 					TextCharFormatPaint(sname,el.firstChildElement("style:text-properties"));
 				}
