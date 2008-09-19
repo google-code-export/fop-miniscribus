@@ -176,6 +176,7 @@ private:
     void styleNameSetup(  const QByteArray chunk   , const QString label   );
     void convertStyleNameRoot( const QDomElement &element );
     bool convertBody( const QDomElement &element );
+    bool iterateElements( const QDomElement e ,   QTextCursor &cur  , const int processing  );
     bool convertTable( QTextCursor &cur , const QDomElement e  , const int processing , bool roottable = false );
     bool convertCellTable( const QDomElement e  , QTextCursor &cur  , const int processing );
     bool convertBlock( QTextCursor &cur , QDomElement e  , const int processing );
@@ -183,6 +184,7 @@ private:
     bool convertFragment( QTextCursor &cur , const QDomElement e , QTextCharFormat parent = QTextCharFormat() ,  bool HandleSpace = false );
     bool convertSpaceTag( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace = false ); 
     void insertTextLine( QTextCursor &cur , QStringList line , QTextCharFormat parent =  QTextCharFormat() ,  bool HandleSpace = false  );
+    bool convertFrame( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace );    
     bool convertImage( QTextCursor &cur , const QDomElement e , QTextCharFormat parent ,  bool HandleSpace = false );
     QTextFrameFormat FrameFormat( const QString name );  /* format from css name class */
     /* read css2 format */
