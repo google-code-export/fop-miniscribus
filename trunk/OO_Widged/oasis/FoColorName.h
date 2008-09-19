@@ -34,8 +34,16 @@
 
 
 
-
-
+/*  QColor  alpha color 0 - 100%  100% = full transparent */
+#define ALPHACOLPER(aa) ((aa)*2.555555)
+static inline qreal OoColorAlpha( const int i )
+{
+    if (i > 0 && i < 101) {
+    return 255 - ALPHACOLPER(i);
+    } else {
+    return 255;
+    }
+}
 
 
 #define _USELISTAPACHECOLOR_  1
