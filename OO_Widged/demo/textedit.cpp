@@ -499,7 +499,20 @@ bool TextEdit::fileSave()
 {
     if (fileName.isEmpty())
         return fileSaveAs();
-
+    
+    
+    
+    bool canodt = false;
+    #if QT_VERSION >= 0x040499
+    canodt = true;
+    #endif
+    
+    const QString ext = QFileInfo(fileName).completeSuffix().toLower();
+    
+    if (ext == "odt" && canodt) {
+    QTextDocumentWriter writer(fileName);
+    return writer.write(textEdit->document());
+    } else {
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly))
         return false;
@@ -507,13 +520,24 @@ bool TextEdit::fileSave()
     ts.setCodec(QTextCodec::codecForName("UTF-8"));
     ts << textEdit->document()->toHtml("UTF-8");
     textEdit->document()->setModified(false);
+    }
     return true;
 }
 
 bool TextEdit::fileSaveAs()
 {
+    
+    QString support;
+    #if QT_VERSION >= 0x040499
+    support = tr("ODF files (*.odt);;HTML-Files (*.htm *.html);;All Files (*)");
+    #else
+    support = tr("HTML-Files (*.htm *.html);;All Files (*)");
+    #endif
     QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
-                                              QString(), tr("HTML-Files (*.htm *.html);;All Files (*)"));
+    QString(),support);
+    
+    
+    
     if (fn.isEmpty())
         return false;
     setCurrentFileName(fn);
