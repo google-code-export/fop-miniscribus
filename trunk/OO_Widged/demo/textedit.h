@@ -50,6 +50,12 @@
 
 #include "OOReader.h"
 
+#if QT_VERSION >= 0x040499
+#include <QTextDocumentWriter>
+#endif
+
+
+
 QT_FORWARD_DECLARE_CLASS(QAction)
 QT_FORWARD_DECLARE_CLASS(QComboBox)
 QT_FORWARD_DECLARE_CLASS(QFontComboBox)

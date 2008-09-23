@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = OasisDemo
+TARGET = Oasis
 DEPENDPATH += . ../oasis
 INCLUDEPATH += . ../oasis
 
@@ -13,8 +13,8 @@ MOC_DIR = build/.moc
 RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
 DESTDIR += ../
-
-CONFIG   +=  qt release warn_off console
+##########console
+CONFIG   +=  qt release warn_off
 
 LIBS   += -lz
 win32:LIBS	+= -luser32
