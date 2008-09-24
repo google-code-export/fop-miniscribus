@@ -157,7 +157,7 @@ TextEdit::TextEdit(QWidget *parent)
     
     //// 4.41 = 263169
     
-    qDebug() << "### QT_VERSION  " << QT_VERSION;
+    ///////qDebug() << "### QT_VERSION  " << QT_VERSION;
     
     
     
@@ -500,18 +500,17 @@ bool TextEdit::fileSave()
     if (fileName.isEmpty())
         return fileSaveAs();
     
-    
-    
     bool canodt = false;
-    #if QT_VERSION >= 0x040499
+    #if QT_VERSION >= 0x040500
     canodt = true;
     #endif
-    
     const QString ext = QFileInfo(fileName).completeSuffix().toLower();
-    
     if (ext == "odt" && canodt) {
+    #if QT_VERSION >= 0x040500 
     QTextDocumentWriter writer(fileName);
     return writer.write(textEdit->document());
+    #endif
+    return false;
     } else {
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly))
@@ -528,7 +527,7 @@ bool TextEdit::fileSaveAs()
 {
     
     QString support;
-    #if QT_VERSION >= 0x040499
+    #if QT_VERSION >= 0x040500
     support = tr("ODF files (*.odt);;HTML-Files (*.htm *.html);;All Files (*)");
     #else
     support = tr("HTML-Files (*.htm *.html);;All Files (*)");

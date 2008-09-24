@@ -50,7 +50,7 @@
 
 #include "OOReader.h"
 
-#if QT_VERSION >= 0x040499
+#if QT_VERSION >= 0x040500
 #include <QTextDocumentWriter>
 #endif
 
