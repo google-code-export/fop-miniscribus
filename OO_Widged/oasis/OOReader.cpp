@@ -499,21 +499,13 @@ bool OOReader::convertFrame( QTextCursor &cur , const QDomElement e , QTextCharF
 	if (e.isNull()) {
 		return false;
 	}
-    
     const QString name = e.attribute ("draw:style-name");
-
 	const qreal width = Unit(e.attribute("svg:width"));
 	const qreal height = Unit(e.attribute("svg:height"));
 	const qreal poX = Unit(e.attribute("svg:x"));
 	const qreal poY = Unit(e.attribute("svg:y"));
 	const int zindex = e.attribute("draw:z-index").toInt();
-    /*
-	fox.setPadding ( 4 );
-	fox.setBorder ( 0.5 );
-	fox.setBorderBrush ( Qt::black );
-	fox.setBorderStyle ( QTextFrameFormat::BorderStyle_Solid );
-	fox.setBackground ( QColor("#f0f0f0") );
-    */
+    
     QTextFrameFormat fox;
     if (css2[name].valid) {
 		fox = css2[name].of.toFrameFormat();
