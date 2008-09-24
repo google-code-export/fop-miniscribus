@@ -79,26 +79,20 @@ QTextFrameFormat DefaultFrameFormat()
 QTextCharFormat DefaultCharFormats( bool qtwritteln , QTextCharFormat format )
 {
     QFont userfont( QApplication::font() );
-    if (!qtwritteln) {
-    userfont.setPointSize(DEBUgdefaultFontPointSize);   /* to find error*/
+    userfont.setPointSize(10);
     format.setFont(userfont);
     #if QT_VERSION >= 0x040500
     format.setFontStyleStrategy ( QFont::PreferAntialias );
     #endif
-    } else {
-    userfont.setPointSize(10);   /* to find error*/
     format.setFont(userfont); 
-    format.setFontLetterSpacing(99.); 
-    }
-    format.setFontLetterSpacing(DEBUgletterspacing);
     return format;
 }
 
 /* set all margin to zero qt4 send 12 top 12 bottom by default */
 QTextBlockFormat DefaultMargin( QTextBlockFormat rootformats )
 {
-    rootformats.setBottomMargin(1);
-    rootformats.setTopMargin(1);
+    rootformats.setBottomMargin(4);
+    rootformats.setTopMargin(4);
     rootformats.setRightMargin(0);
     rootformats.setLeftMargin(0);
     rootformats.setAlignment( Qt::AlignLeft );
