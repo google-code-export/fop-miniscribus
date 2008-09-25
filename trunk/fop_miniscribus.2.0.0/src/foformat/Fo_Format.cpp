@@ -869,7 +869,7 @@ qreal Fo_Format::ColumnLarge( const QVector<QTextLength> constraints , int atcoo
       return 0.;  
 }
 
-QRect  Fo_Format::Fo_Format::BlockRect( const QDomElement e , qreal largespace )
+QRect Fo_Format::BlockRect( const QDomElement e , qreal largespace )
 {
     QRect fun(0,0,0,0);
     if (e.isNull()) {

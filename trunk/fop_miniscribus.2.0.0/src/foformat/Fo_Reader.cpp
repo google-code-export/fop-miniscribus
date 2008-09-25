@@ -1671,7 +1671,7 @@ bool Fo_Reader::FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  , 
     qreal actualWiiii = ColumnLarge(LastTableCON,cell.column());
     if (actualWiiii > 0)
     {
-        mesure = QTextLength(QTextLength::QTextLength::FixedLength,actualWiiii);
+        mesure = QTextLength(QTextLength::FixedLength,actualWiiii);
     }
     else
     {
@@ -1691,7 +1691,7 @@ bool Fo_Reader::FoTableCellLoop( const QDomElement e  , QTextTableCell  cell  , 
         QRect fiBBrect = BlockRect(firstPara,actualWiiii);
         qreal ccenter = maxhight / 2;
         qreal fromtopPadding = ccenter - (fiBBrect.height() / 2);
-        BlockfindBorder.setHeight(QTextLength(QTextLength::QTextLength::FixedLength,fiBBrect.height() + BlockfindBorder.border()));
+        BlockfindBorder.setHeight(fiBBrect.height() + BlockfindBorder.border());
 
         if (fromtopPadding > 0)
         {

@@ -2498,7 +2498,7 @@ void  TextProcessor::LinkText()
                    if (hrefprimo.startsWith("#")) {
                       linkerma = hrefprimo; 
                    } else {
-                       if (!hrefprimo.contains("@") or !hrefprimo.contains("mailto:") ) {
+                       if (!hrefprimo.contains("@") || !hrefprimo.contains("mailto:") ) {
                         linkerma = hrefprimo +"#target="+ satarget;
                        } else {
                         linkerma = hrefprimo; 
