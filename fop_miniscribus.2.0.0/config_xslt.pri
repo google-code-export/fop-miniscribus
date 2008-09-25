@@ -1,14 +1,17 @@
-
+######################################################################################
 CONFIG += libxslt libxml2 libiconv
-### libexiv2
+
+
+win32-msvc* {
+    LIB_EXTERN_PATH = C:/dev/externallib
+}
+win32-g++{
+     LIB_EXTERN_PATH = C:/Programming/libs 
+}
+
+
 
 win32 {
-
-############### Mingw Compiler ###########################################
-################## Define Path from external libs xslt xml2 from gnome  #########################
-LIB_EXTERN_PATH = C:/Programming/libs
-
-
 message(MINGW LIB_EXTENSION ->  libname.$$LIB_EXTENSION)
 
 INCLUDEPATH += $$LIB_EXTERN_PATH/include

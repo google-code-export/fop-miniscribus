@@ -7,21 +7,19 @@ message(Need QT Version 4.4.1)
 DEFINES += OPENGLINITYES
 LIB_EXTENSION = a   ### compiler default
 
-
-
-win32-msvc {
+win32-msvc*{
 LIB_EXTENSION = lib  ### compiler option
-DEFINES += VISUALSTUDIOCC_
-error(Visual studio xslt lib not setting on pro file) 
+DEFINES += VISUALSTUDIOCC_  QT_NO_OPENGL
+message(win32 Visual Studio 2005 Compiler setting --------------------------------------------------) 
 }
 
 win32-g++{
 DEFINES += MINGWCC_
-###############error(xslt lib not setting to mingw compiler on pro file) 
+message(win32 MINGW Compiler setting ----------------------------------------------------------------) 
 }
 
 
-CONFIG += libxslt libxml2 libiconv
+
 
 win32 {
     ########## window no pwd  #############

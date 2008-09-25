@@ -14,7 +14,9 @@ QT += xml
 QT += network
 QT += svg 
 
-
+win32-msvc*{
+TARGET = libtxtscribe
+}
 
 CONFIG   +=  qt release warn_off staticlib
 

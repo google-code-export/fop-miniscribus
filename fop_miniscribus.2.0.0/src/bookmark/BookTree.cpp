@@ -219,7 +219,7 @@ void BookTree::showXmlBooks()
 
 int BookTree::maximumID()
 {
-    
+    return 0;
 }
 
 

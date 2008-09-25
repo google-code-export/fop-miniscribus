@@ -282,7 +282,7 @@ static inline void DownDir_RM(const QString d)
 static inline int FooNumer( int lowest, int highest )
 {
     using namespace std;
-    srand((unsigned)time(0)); 
+    srand(QTime_Null()); 
     int random_integer; 
     int range=(highest-lowest)+1; 
     for(int index=0; index<10; index++){ 

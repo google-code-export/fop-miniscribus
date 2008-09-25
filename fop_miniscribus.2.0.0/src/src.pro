@@ -45,7 +45,11 @@ RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
 ####  console
 CONFIG +=  qt release warn_off 
+
+
 LIBS += $$BUILD_TREE_PATH/lib/libtxtscribe.$$LIB_EXTENSION
+
+
 DESTDIR	+= ../
 QT += xml
 QT += network
