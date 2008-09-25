@@ -109,7 +109,7 @@ public:
   
  OOReader( const QString file = QString() , WIDGEDEST e = otextbrowser , QObject* parent = 0 );
  QTextDocument *document() { return Qdoc->clone(); }  /* only body */
- #ifndef _OOREADRELEASE_
+ #ifdef _OOREADRELEASE_
  QString debugStyle() { return debugline; }
  #endif
  QMap<QString,QTextDocument*> option() { return lateral; } /* header footer fo region */
@@ -165,6 +165,10 @@ protected:
     QMap<QString,StyleInfo> css2; /* all oo style name */
     QMap<QString,QByteArray> filist;  /* all file from zip oo */
     
+    QMap<QString,QDomElement> fontname; 
+    int fontTotal;
+    QFont standardFont;
+
     QString fileHash;
     QDomDocument bodyStarter;
     bool DocInitContruct;
@@ -173,6 +177,7 @@ protected:
     qreal FontMinPoint;
     int imageCurrentCount;
 private:
+    void  registerFontDoc( const QDomElement &element );
     void styleNameSetup(  const QByteArray chunk   , const QString label   );
     void convertStyleNameRoot( const QDomElement &element );
     bool convertBody( const QDomElement &element );

@@ -10,7 +10,7 @@
 
 
 ZipDebugMain::ZipDebugMain( QWidget* parent )
-	: QMainWindow( parent )
+	: QMainWindow( parent ),t(0)
 {
 	setupUi( this );
     setWindowTitle(tr("Zip or OpenOffice file debug"));
@@ -71,30 +71,51 @@ void ZipDebugMain::openFile( const QString file )
              if (ext == "xml" && i.key() != "content.xml") {
                drawTab(i.value(),fi.fileName());
              }
-         }   
+         } 
+         
+    PushDoc *force = new PushDoc(this);
     Ooo = new OOReader(file);
-    Ooo->read();
+    Ooo->moveToThread(force);
+    connect(force, SIGNAL(started()),Ooo,SLOT(read())); 
     connect(Ooo, SIGNAL(ready()), this, SLOT(drawDoc()));
+    connect(Ooo, SIGNAL(statusRead(int,int)), this, SLOT(onRead(int,int)));    
+    force->start();
+}
+
+void ZipDebugMain::onRead( int now ,int tot )
+{
+    if (now == tot) {
+    qDebug() << "### reading last line -> " << now <<  " t." << tot;
+    }
+    
 }
 
 void ZipDebugMain::drawDoc()
 {
+    
     if (Ooo) {
-    drawDoc(Ooo->document()); 
+     
+     if (t) {
+      t->setDocument ( Ooo->document() );
+      de->setPlainText( Ooo->document()->toHtml("utf-8") );
+     } else {
+     drawDoc(Ooo->document()); 
+     }         
     }
 }
 
 void ZipDebugMain::drawDoc( QTextDocument *doc )
 {
     
-        XMLTextEdit *de = new XMLTextEdit;
-        de->setPlainText(Ooo->debugStyle());
+        de = new XMLTextEdit;
+        de->setPlainText( doc->toHtml("utf-8") );
         tabWidget->addTab(de,tr("Style"));
     
         QWidget *tabi = new QWidget();
+        tabi->setObjectName(QString::fromUtf8("debugdocs"));
         tabi->setObjectName("result");
         QGridLayout *grid = new QGridLayout(tabi);
-        QTextEdit *t = new QTextEdit(tabi);
+        t = new QTextEdit(tabi);
         t->setDocument ( doc );
         t->setAcceptDrops (true);
         t->installEventFilter(this); 
