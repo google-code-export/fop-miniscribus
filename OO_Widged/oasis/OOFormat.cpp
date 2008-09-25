@@ -41,7 +41,7 @@ QByteArray CatDomElement( const QDomElement e )
 
 
 
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 /* debug all item incomming in tree 2 level */
 QString cssGroup( const QDomElement e )
 {
@@ -78,13 +78,9 @@ QTextFrameFormat DefaultFrameFormat()
 
 QTextCharFormat DefaultCharFormats( bool qtwritteln , QTextCharFormat format )
 {
-    QFont userfont( QApplication::font() );
-    userfont.setPointSize(10);
-    format.setFont(userfont);
     #if QT_VERSION >= 0x040500
     format.setFontStyleStrategy ( QFont::PreferAntialias );
     #endif
-    format.setFont(userfont); 
     return format;
 }
 

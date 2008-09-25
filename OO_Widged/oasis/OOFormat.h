@@ -63,7 +63,7 @@ QTextCharFormat PreFormatChar( QTextCharFormat format = QTextCharFormat() );
 QTextBlockFormat DefaultMargin( QTextBlockFormat rootformats = QTextBlockFormat() );
 QTextCharFormat DefaultCharFormats( bool qtwritteln = false , QTextCharFormat format = QTextCharFormat()  );
 QByteArray CatDomElement( const QDomElement e );
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 QString cssGroup( const QDomElement e );
 #endif
 QTextFrameFormat DefaultFrameFormat();

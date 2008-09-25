@@ -23,14 +23,18 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 private:
     OOReader *Ooo;
-    
+    QTextEdit *t;
+    XMLTextEdit *de;
 signals:
 
 public slots:
     void on_openzip_triggered();
     void openFile( const QString file );
+    void drawDoc();
+    void onRead( int now ,int tot );
+
 private slots:
-void drawDoc();
+
 
 };
 //

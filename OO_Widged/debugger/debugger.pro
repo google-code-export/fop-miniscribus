@@ -3,16 +3,18 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = debugger
+TARGET = xx
 DEPENDPATH += . ../oasis
 INCLUDEPATH += . ../oasis
 
 
-DESTDIR	+= ../
+DESTDIR	+= ./
 
 MOC_DIR = build/.moc
 RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
+ 
+DEFINES += _OOREADRELEASE_
 
 
 QT += xml network

@@ -113,14 +113,15 @@ void Gloader::run()
 
 
 
-
-
+/* -------------------------------------------------------------------------------------------------------------------------*/
+/* ----------------------------------------------- reader --------------------------------------------------------------------------*/
+/* -------------------------------------------------------------------------------------------------------------------------*/
 
 #include <QDomDocument>
 
 OOReader::OOReader( const QString file , OOReader::WIDGEDEST e , QObject* parent )
 		: OOFormat(),maxStyleCount(0),styleCurrentCount(0),charsRead(),QTWRITTELN(false),
-		construct_modus(e),sumOfBlocks(0),fileHash("250186")
+		construct_modus(e),sumOfBlocks(0),fileHash("250186"),fontTotal(0)
 {
 
 	if (qApp->thread() != QThread::currentThread()) {
@@ -133,6 +134,11 @@ OOReader::OOReader( const QString file , OOReader::WIDGEDEST e , QObject* parent
 
 void OOReader::read()
 {
+    Qdoc = new QTextDocument();  /* root document main */
+    standardFont = QApplication::font();
+    
+    
+    
 	QFileInfo fi(odtzipfile);
 	if (!fi.exists()) {
 		emit ready();
@@ -221,6 +227,10 @@ void OOReader::openStreams( QMap<QString,QByteArray> list )
 		if (Mbuf->isValid()) {
 			bodyStarter = Mbuf->Dom();
 			const QDomElement root = Mbuf->Dom().documentElement();
+            QDomElement fonti = root.firstChildElement("office:font-face-decls");
+            registerFontDoc(fonti);
+            /* font declare at first */
+            
 			QDomElement style = root.firstChildElement("office:automatic-styles");
 			convertStyleNameRoot(style);
 		}
@@ -253,7 +263,7 @@ void OOReader::ReadBody()
 		emit statusRead(sumOfBlocks,sumOfBlocks);
 		emit setError(tr("Unable to convert document body!"));
 	}
-#ifndef _OOREADRELEASE_   ///// QMap<QString,StyleInfo> css2;
+#ifdef _OOREADRELEASE_   ///// QMap<QString,StyleInfo> css2;
 	debugline = "";
 	QMapIterator<QString,StyleInfo> i(css2);
 	while (i.hasNext()) {
@@ -263,11 +273,11 @@ void OOReader::ReadBody()
 	}
 #endif
 	emit ready();
+    qDebug() << "### end reader action........................................................... ";
 }
 
 bool OOReader::convertBody( const QDomElement &element )
 {
-	Qdoc = new QTextDocument();  /* root document main */
 	QTextCursor cursor(Qdoc);
 	cursor.movePosition(QTextCursor::End);
 	styleCurrentCount = 0;
@@ -736,6 +746,8 @@ void OOReader::reset()
 	styleCurrentCount = 0;
 	bodyStarter = QDomDocument();
 	DocInitContruct = false;
+    fontname.clear();
+    fontTotal = 0;
 }
 
 
@@ -965,7 +977,27 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
 	charsRead++;
 	bool boldText = false;
 	pf.setForeground(QBrush(Qt::black));
+    const QString nameFont = e.attribute ("style:font-name");
 	/* fo and style mixed value on OO format */
+    if (!nameFont.isEmpty()) {
+    const QDomElement fontcopy = fontname[nameFont];
+    Q_ASSERT(!fontcopy.isNull());
+    const QString nameFont2 = fontcopy.attribute("svg:font-family");
+    QFont userfont(nameFont2);
+          userfont.setFamily ( nameFont2 );
+                if (fontcopy.attribute("style:font-pitch") == "fixed") {
+                pf.setFontFixedPitch ( true );
+                } else {
+                pf.setFontFixedPitch ( false );
+                }     
+    qDebug() << "### userfont.exactMatch()  " << userfont.exactMatch()  << nameFont2;
+    pf.setFont(userfont);
+    } else {
+    pf.setFont(standardFont);   /* first at top on font tree */
+    } 
+    
+   
+    
 	QDomNamedNodeMap attlist = e.attributes();
 	for (int i=0; i<attlist.count(); i++) {
 		QDomNode nod = attlist.item(i);
@@ -992,10 +1024,9 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
 			pf.setForeground(  QBrush( FoCol->foColor(nod.nodeValue(),FopColor::DarkColor) )  );
 		}
 
-		if (nod.nodeName().toLower() == "fo:font-family" || nod.nodeName().toLower() == "style:font-name") {
-			QFont userfont( nod.nodeValue() );
-			pf.setFont(userfont);
-		}
+		////if (nod.nodeName().toLower() == "fo:font-family" || nod.nodeName().toLower() == "style:font-name") {
+			
+		/////}
 
 
 
@@ -1071,7 +1102,7 @@ QTextCharFormat OOReader::TextCharFormFromDom( const QDomElement e , QTextCharFo
 
 	const int debugspace = pf.fontLetterSpacing();
 	if (debugspace == (int)DEBUgletterspacing )  {
-		pf.setFontLetterSpacing(100.0);
+		pf.setFontLetterSpacing(100);
 	}
 
 
@@ -1095,7 +1126,7 @@ void OOReader::TextBlockFormatPaint( const QString name , const QDomElement e )
 			css2[name].ofchar = TextCharFormFromDom(es,DefaultCharFormats(QTWRITTELN));
 		}
 		css2[name].filled = true;
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 		css2[name].css = cssGroup(e);
 		css2[name].ofchar.setToolTip ( name );
 #endif
@@ -1113,7 +1144,7 @@ void OOReader::TextCharFormatPaint( const QString name , const QDomElement e )
 	QTextCharFormat  Charformat = TextCharFormFromDom(e,DefaultCharFormats(QTWRITTELN));
 	if (css2[name].valid) {
 		css2[name].filled = true;
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 		Charformat.setToolTip ( name );
 		css2[name].css = cssGroup(e);
 #endif
@@ -1145,7 +1176,7 @@ void OOReader::FrameImageFormatPaint( const QString name , const QDomElement e )
             css2[name].of = fox;
 			css2[name].chunk = CatDomElement(e);
 			css2[name].filled = true;
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 			css2[name].css = cssGroup(e);
 #endif
 		}
@@ -1194,7 +1225,7 @@ void OOReader::TextListFormatPaint( const QString name , const QDomElement e )
 		//////qDebug() << "### spin b ";
 		css2[name].of = listformat;
 		css2[name].filled = true;
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 		css2[name].css = cssGroup(e);
 #endif
 	}
@@ -1205,7 +1236,7 @@ void OOReader::TextListFormatPaint( const QString name , const QDomElement e )
 
 void OOReader::UnknowFormatPaint( const QString name , const QString style_name  ,  const QDomElement e )
 {
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 	if (css2[name].valid) {
 		css2[name].css = cssGroup(e);
 	}
@@ -1225,7 +1256,7 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
 				base.setWidth ( width );
 				css2[name].of = base;
 			}
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 			css2[name].chunk = CatDomElement(e);
 			css2[name].css = cssGroup(e);
 #endif
@@ -1249,7 +1280,7 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
 			table.setBorder ( 0.2 );
 			table.setBackground ( QBrush( FoCol->foColor(tablecss.attribute("fo:background-color"),FopColor::Transparent) ) );
 			css2[name].of = table;
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 			css2[name].chunk = CatDomElement(e);
 			css2[name].css = cssGroup(e);
 #endif
@@ -1273,7 +1304,7 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
 
 		if (css2[name].valid) {
 			css2[name].of = cell;
-#ifndef _OOREADRELEASE_
+#ifdef _OOREADRELEASE_
 			css2[name].chunk = CatDomElement(e);
 			css2[name].css = cssGroup(e);
 #endif
@@ -1288,8 +1319,44 @@ void OOReader::UnknowFormatPaint( const QString name , const QString style_name 
 }
 
 
+void OOReader::registerFontDoc( const QDomElement &element )
+{
+    if (element.isNull()) {
+    return;
+    }
+    qDebug() << "### registerFontDoc  standardFont.name  -> " << standardFont.defaultFamily();
+    qDebug() << "### registerFontDoc  standardFont.name  -> " << standardFont.family();
+    qDebug() << "### registerFontDoc  standardFont.name  -> " << standardFont.toString();
+     
+    
+    
+    QDomNode child = element.firstChild();
+	while ( !child.isNull() ) {
+		if ( child.isElement() ) {
+            const QDomElement el = child.toElement();
+            if ( el.tagName() == QLatin1String( "style:font-face" ) ) {
+                const QString fonts = el.attribute ("style:name");
+                if (!fonts.isEmpty ()) {
+                    fontTotal++;
+                    if (fontTotal == 1) {
+                     standardFont = QFont(el.attribute ("svg:font-family"),10);
+                    }
+                    fontname.insert(fonts,el);
+                }
+                registerFontDoc(el.firstChildElement() );                
+            }
+        }
+        child = child.nextSibling();
+    }
+}
+
+
 void OOReader::convertStyleNameRoot( const QDomElement &element )
 {
+    if (element.isNull()) {
+    return;
+    }
+    
 	QDomNode child = element.firstChild();
 	while ( !child.isNull() ) {
 		if ( child.isElement() ) {
