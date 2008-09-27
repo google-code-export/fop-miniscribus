@@ -33,8 +33,15 @@ target.path = $$BINDIR
 INSTALLS += target
 }
 
+win32 {
+!include( ../install.pri ) {
+error( "install.pri not found" )
+}
+target.path = $$PREFIX
+INSTALLS += target
+}
 
-CONFIG -= app_bundle
+###macosx:CONFIG -= app_bundle
 
 
 
