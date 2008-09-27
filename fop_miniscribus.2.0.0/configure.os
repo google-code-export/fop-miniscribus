@@ -10,7 +10,7 @@ Usage: $0 [OPTION]...
 This script creates necessary configuration files to build/install.
 
 Main options:
-  --prefix=[path]     Base path for build/install.  Default: /usr/local
+  --prefix=[path]     Base path for build/install.  Default: /usr/bin
   --bindir=[path]     Directory for binaries.  Default: PREFIX/bin
   --datadir=[path]    Directory for data.  Default: PREFIX/share
   --qtdir=[path]      Directory where Qt is installed.
@@ -141,7 +141,7 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-PREFIX=${PREFIX:-/usr/local}
+PREFIX=${PREFIX:-/usr/bin}
 BINDIR=${BINDIR:-$PREFIX/bin}
 DATADIR=${DATADIR:-$PREFIX/share}
 
