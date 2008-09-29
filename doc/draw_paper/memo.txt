@@ -1,0 +1,14 @@
+     /*
+        textPath.addText (nowPoint,
+                          fontText,QString("Click here. DoubleClick clear."));
+        textPath.addText (nowPoint + QPointF(0,1 * 15),
+                         fontText,QString("Scale Faktor = %1 (mouse wheel).").arg(scaleFaktor));
+        textPath.addText (nowPoint + QPointF(0,2 * 15),
+                         fontText,QString("Area  yellow = %1x%1.").arg(mesure * mcurrent.m11()));
+        textPath.addText (nowPoint + QPointF(0,3 * 15),
+                         fontText,QString("Point x,y = %1,%2.").arg(nowPoint.x()).arg(nowPoint.y()));
+        p->setBrush(Qt::darkGreen);
+        p->drawPath(textPath); 
+        */
+        
+        //////QPainterPath textPath;
