@@ -440,8 +440,8 @@ void EditArea::adjustScrollbars()
      setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
      verticalScrollBar()->setPageStep(workArea.height());  /* zoom state */
      horizontalScrollBar()->setPageStep(workArea.width()); /* zoom state */
-     verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height());
-     horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width());
+     verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
+     horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width()  + SLIDERMARGIN_TICK_TOTAL * 3);
      //////verticalScrollBar()->setRange(0,  page.width() * 10);
 }
 
