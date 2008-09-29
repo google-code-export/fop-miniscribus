@@ -230,14 +230,16 @@ void EditArea::paintEvent( QPaintEvent *Event )
   paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,viewAreaRect.height()),mcurrent); 
   paintWidged(p,QRectF(0,0,viewAreaRect.width(),SLIDERMARGIN_TICK_TOTAL),mcurrent); 
   /* horrizzontal*/
-  slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);
+  p->translate(-x,0);
+  slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
   paintScale(p,slider_Horrizzontal_Top,qMakePair(10.,44.),mcurrent);
   /* horrizzontal*/
 
+  p->setWorldTransform(matrix); /* reset */
   p->translate(0,-y);
     
   /* vertical */
-  slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());
+  slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
   paintScale(p,slider_Vertical_Left,qMakePair(10.,44.),mcurrent);
   /* vertical */
     
@@ -261,14 +263,24 @@ void EditArea::paintEvent( QPaintEvent *Event )
 
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
-    dotChain <<  maps(e->pos()); 
+    QPointF page_point = maps(e->pos()); 
+    if (page.contains(page_point)) {
+        dotChain <<  page_point;
+    } else if (slider_Horrizzontal_Top.contains(e->pos())) {
+        qDebug() << "### s top  " << e->pos();
+    } else if (slider_Vertical_Left.contains(e->pos())) {
+        qDebug() << "### s left " << e->pos();
+    }
     viewport()->update();
 }
 void EditArea::mouseDoubleClickEvent ( QMouseEvent *e )   
 {
-    dotChain.clear();
-    scaleFaktor = 1;
-    adjustScrollbars();
+    QPointF page_point = maps(e->pos()); 
+    if (page.contains(page_point)) {
+        dotChain.clear();
+        scaleFaktor = 1;
+        adjustScrollbars();
+    }
     viewport()->update();
 }
 void EditArea::resizeEvent(QResizeEvent *e)
@@ -337,7 +349,7 @@ void EditArea::adjustScrollbars()
       }
       */
      if (border_wi > 0) {
-     qDebug() << "### mezza " << (double)border_wi;
+     ////////qDebug() << "### mezza " << (double)border_wi;
      }
      mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,border_wi + PAPERSPACE,SLIDERMARGIN_TICK_TOTAL + PAPERSPACE); ////// ultimo da sopra penultimo da sinistra 
      QSize viewPanelSize = viewport()->size();
