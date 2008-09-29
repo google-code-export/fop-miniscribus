@@ -7,6 +7,9 @@ static const qreal SCALING_STEEP = 0.055555555;
 static const qreal SLIDERMARGIN_TICK = 20.0;
 static const qreal SLIDERSPACER = 2.5;
 
+
+static const qreal SLIDERCURSORWI = 6.0;
+
 static const qreal PAPERSPACE = 18.0;
 
 static const qreal SLIDERMARGIN_TICK_LEFT = SLIDERMARGIN_TICK + SLIDERSPACER;
@@ -32,7 +35,40 @@ static void paintWidged( QPainter *p , const QRectF rect , const QTransform trax
     p->restore();
 }
 
-static void paintScale( QPainter *p , const QRectF rect , const bodyMargins , const QTransform trax )
+static void paintCursor( QPainter *p , const QRectF rect )
+{
+    bool horrizontal = rect.width() == SLIDERCURSORWI ? true : false;
+    qreal midiline = SLIDERCURSORWI / 2;
+    QPointF soco(QPointF(midiline,0) + rect.topLeft());
+    QPointF socoend(QPointF(midiline,0) + rect.bottomLeft());
+    
+    if (!horrizontal) {
+    soco =  rect.bottomLeft() - QPointF(0,midiline);
+    socoend = soco + QPointF(rect.width(),0);
+    }
+    
+    p->save();
+    
+    p->setOpacity(0.4);
+    p->setBrush(QColor(Qt::green));
+    p->setPen(Qt::NoPen);
+    p->drawRect(rect);
+    p->setOpacity(1.0);
+    
+    p->setBrush(Qt::red);
+    
+    p->setPen(QPen(Qt::red,1.5));
+    if (horrizontal) {
+    p->drawLine(soco,socoend);
+    } else {
+    p->drawLine(soco,socoend);
+    }
+    
+    
+    p->restore();
+}
+
+static void paintScale( QPainter *p , const QRectF rect , QPair<qreal,qreal> bodyMargins , const QTransform trax )
 {
     bool horrizontal = qMax(rect.height(),rect.width()) == rect.width() ? true : false;
     const qreal one_unit = CM_TO_POINT(1);
@@ -40,6 +76,13 @@ static void paintScale( QPainter *p , const QRectF rect , const bodyMargins , co
     const QPointF init = rect.topLeft();
     qreal linemid = qMin(rect.height(),rect.width())  / 5;
     qreal wi = qMax(rect.height(),rect.width());
+    
+    
+    const qreal marginLeftX = init.x() + ( bodyMargins.first * trax.m11() );
+    const qreal marginRightX = init.x() +  rect.width()  - ( bodyMargins.second * trax.m11() );
+    const qreal marginTopY = init.y() + ( bodyMargins.first * trax.m11() );
+    const qreal marginToptX = init.y() +  rect.height()  - ( bodyMargins.second * trax.m11() );
+    
     int fontsizetxt = 6;
     int sline = wi / one_unit;
     int slines = wi / one_unit_dec;
@@ -56,6 +99,10 @@ static void paintScale( QPainter *p , const QRectF rect , const bodyMargins , co
     if (horrizontal) {
     p->drawLine(init.x(),linemid + init.y(), init.x() + wi,linemid + init.y());
     p->setPen(QPen(Qt::black,0.25, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    
+        
+        
+        
         int PressUnit = -1;
         int numsUnit = 0;
         for (int x = 0; x<=slines; x++)  {
@@ -82,6 +129,12 @@ static void paintScale( QPainter *p , const QRectF rect , const bodyMargins , co
             numsUnit++;
             } 
         }
+        const QRectF cursor_1(marginLeftX - (SLIDERCURSORWI / 2),init.y(),SLIDERCURSORWI,rect.height());
+        const QRectF cursor_2(marginRightX - (SLIDERCURSORWI / 2),init.y(),SLIDERCURSORWI,rect.height());
+        paintCursor(p,cursor_1);
+        paintCursor(p,cursor_2);
+        
+        
     } else {
     p->setPen(QPen(Qt::black,0.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     p->drawLine(init.x() + linemid,init.y(),init.x() + linemid, init.y() + wi);
@@ -119,8 +172,11 @@ static void paintScale( QPainter *p , const QRectF rect , const bodyMargins , co
             
         }
         
-        
-        
+        //////const QRectF cursor_1(marginLeftX - (SLIDERCURSORWI / 2),init.y(),SLIDERCURSORWI,rect.height());
+        const QRectF cursor_3(init.x() ,marginTopY - (SLIDERCURSORWI / 2) ,rect.width(),SLIDERCURSORWI);
+        const QRectF cursor_4(init.x() ,marginToptX - (SLIDERCURSORWI / 2),rect.width(),SLIDERCURSORWI);
+        paintCursor(p,cursor_3);
+        paintCursor(p,cursor_4);
         
         
         
@@ -232,7 +288,7 @@ void EditArea::paintEvent( QPaintEvent *Event )
   /* horrizzontal*/
   p->translate(-x,0);
   slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
-  paintScale(p,slider_Horrizzontal_Top,qMakePair(10.,44.),mcurrent);
+  paintScale(p,slider_Horrizzontal_Top,qMakePair(MM_TO_POINT(15),MM_TO_POINT(15)),mcurrent);
   /* horrizzontal*/
 
   p->setWorldTransform(matrix); /* reset */
@@ -240,7 +296,7 @@ void EditArea::paintEvent( QPaintEvent *Event )
     
   /* vertical */
   slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
-  paintScale(p,slider_Vertical_Left,qMakePair(10.,44.),mcurrent);
+  paintScale(p,slider_Vertical_Left,qMakePair(MM_TO_POINT(15),MM_TO_POINT(15)),mcurrent);
   /* vertical */
     
     
