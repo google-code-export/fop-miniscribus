@@ -1,9 +1,10 @@
 
 #include <QtGui>
 #include <QPair>
+#include <QTextDocument>
 
 static const qreal PAGEFAKTOR = 1.4;
-static const qreal SCALING_STEEP = 0.055555555;
+static const qreal SCALING_STEEP = 0.05555555555;
 static const qreal SLIDERMARGIN_TICK = 20.0;
 static const qreal SLIDERSPACER = 2.5;
 
@@ -206,6 +207,7 @@ protected:
      void wheelEvent (QWheelEvent * event);
      void resizeEvent(QResizeEvent *e);
      void contextMenuEvent(QContextMenuEvent *event);
+     void keyPressEvent ( QKeyEvent * e );
 
 private:
     
@@ -225,6 +227,9 @@ signals:
 public slots:
     void triggerFormat();
     void fitToLarge();
+    void setZoom( const qreal value );
+    void zoomIn();
+    void zoomOut();
     
 };
  
@@ -234,7 +239,6 @@ EditArea::EditArea( QWidget *parent  , qreal dimension )
 {
   mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
   dotChain << maps(QPointF(33,33)) << maps(QPointF(444,444));
-  adjustScrollbars();
   adjustScrollbars();
 }
 
@@ -251,21 +255,12 @@ void EditArea::paintEvent( QPaintEvent *Event )
   p->setBrush(QColor("#e7e7e7"));
   p->drawRect(Event->rect());
   p->translate(-x,-y);
-  
-  /////////paintScale(p,QRectF(SLIDERMARGIN_TICK_TOTAL,SLIDERSPACER,page.width(),SLIDERMARGIN_TICK),qMakePair(10.,44.),mcurrent);
-      
-  ////////////   
-      
-  ///////paintScale(p,QRectF(0,0,SLIDERMARGIN_TICK,page.height()),qMakePair(10.,44.));
   p->setWorldTransform(mcurrent,true);
-  
   QFont fontText("Verdana",12,QFont::StyleItalic);
   fontText.setStyleStrategy(QFont::PreferBitmap);
   p->setBrush(Qt::white);
   p->drawRect(page);
-  
-  
-    
+      
     for (int i = 0; i < dotChain.size(); ++i) {
         const QPointF nowPoint = dotChain.at(i);
         if (viewAreaRect.contains(nowPoint)) {
@@ -278,8 +273,6 @@ void EditArea::paintEvent( QPaintEvent *Event )
                 p->setOpacity(1.0);
         } 
     }
-  ///////}
-    
   QTransform matrix;
   /* reset matrix */
   p->setWorldTransform(matrix);
@@ -290,23 +283,15 @@ void EditArea::paintEvent( QPaintEvent *Event )
   slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
   paintScale(p,slider_Horrizzontal_Top,qMakePair(MM_TO_POINT(15),MM_TO_POINT(15)),mcurrent);
   /* horrizzontal*/
-
   p->setWorldTransform(matrix); /* reset */
   p->translate(0,-y);
-    
   /* vertical */
   slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
   paintScale(p,slider_Vertical_Left,qMakePair(MM_TO_POINT(15),MM_TO_POINT(15)),mcurrent);
   /* vertical */
-    
-    
   p->setWorldTransform(matrix);
   paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
   p->end();
-    
-    
-    
-      //////////qDebug() << "### lineTimer " << lineTimer;
   }  else  {
      qDebug() << "### maybe first run " << lineTimer;
      adjustScrollbars();
@@ -320,13 +305,15 @@ void EditArea::paintEvent( QPaintEvent *Event )
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
     QPointF page_point = maps(e->pos()); 
-    if (page.contains(page_point)) {
-        dotChain <<  page_point;
-    } else if (slider_Horrizzontal_Top.contains(e->pos())) {
-        qDebug() << "### s top  " << e->pos();
-    } else if (slider_Vertical_Left.contains(e->pos())) {
-        qDebug() << "### s left " << e->pos();
-    }
+    if ( e->button() == Qt::LeftButton) {
+        if (page.contains(page_point)) {
+            dotChain <<  page_point;
+        } else if (slider_Horrizzontal_Top.contains(e->pos())) {
+            qDebug() << "### s top  " << e->pos();
+        } else if (slider_Vertical_Left.contains(e->pos())) {
+            qDebug() << "### s left " << e->pos();
+        }
+   }
     viewport()->update();
 }
 void EditArea::mouseDoubleClickEvent ( QMouseEvent *e )   
@@ -334,8 +321,7 @@ void EditArea::mouseDoubleClickEvent ( QMouseEvent *e )
     QPointF page_point = maps(e->pos()); 
     if (page.contains(page_point)) {
         dotChain.clear();
-        scaleFaktor = 1;
-        adjustScrollbars();
+        setZoom(1.0);
     }
     viewport()->update();
 }
@@ -344,11 +330,68 @@ void EditArea::resizeEvent(QResizeEvent *e)
     adjustScrollbars();
 }
 
+void EditArea::keyPressEvent ( QKeyEvent * e )  
+{
+    const qreal docksscale = scaleFaktor;
+    if ( e == QKeySequence::ZoomIn) {
+        zoomIn();
+    }
+    if ( e == QKeySequence::ZoomOut) {
+        zoomOut();
+    }
+}
+
+void EditArea::zoomIn()
+{
+    setZoom(mcurrent.m11() + SCALING_STEEP);
+}
+
+void EditArea::zoomOut()
+{
+    setZoom(mcurrent.m11() - SCALING_STEEP);
+}
+
+void EditArea::setZoom( const qreal value )
+{
+    if (value < 0.45 || value > 10) {
+     return;
+    } else {
+      qDebug() << "### setZoom " << value; 
+      scaleFaktor = value;
+      adjustScrollbars();
+      viewport()->update();
+    }
+}
+
+void EditArea::wheelEvent (QWheelEvent * event)
+{
+  qreal docksscale = scaleFaktor;
+  if (event->delta() > 1) {
+      
+      zoomOut();
+      
+  } else {
+      
+      zoomIn();
+  }
+}
+
+
+void EditArea::fitToLarge()
+{
+    adjustScrollbars();
+    const QRectF viewAreaRect(0,0,viewport()->width(),viewport()->height());
+    const qreal maxavaiable = viewAreaRect.width() - SLIDERMARGIN_TICK_TOTAL;
+    setZoom(maxavaiable / page.width());
+}
+
 void EditArea::contextMenuEvent(QContextMenuEvent *event)
 {
      QMenu *menu = new QMenu(this);
      menu->addAction(tr("Swap page format"),this, SLOT(triggerFormat()));
      menu->addAction(tr("Fit to Window"),this, SLOT(fitToLarge()));
+     menu->addAction(tr("Zoom in CTRL++"),this, SLOT(zoomIn()));
+     menu->addAction(tr("Zoom out CTRL+-"),this, SLOT(zoomOut()));
      menu->exec(event->globalPos());
      delete menu;
 }
@@ -360,23 +403,7 @@ void EditArea::triggerFormat()
     viewport()->update();
 }
 
-void EditArea::fitToLarge()
-{
-    adjustScrollbars();
-    const QRectF viewAreaRect(0,0,viewport()->width(),viewport()->height());
-    const qreal maxavaiable = viewAreaRect.width() - SLIDERMARGIN_TICK_TOTAL;
-    const qreal gozoom =  maxavaiable / page.width();
-    qDebug() << "### fitToLarge " << gozoom;
-    if (gozoom < 0.45 || gozoom > 10) {
-     return;
-    } else {
-      scaleFaktor = gozoom;
-      adjustScrollbars();
-      viewport()->update();
-    }
-    
-    
-}
+
 
 void EditArea::adjustScrollbars()
 {
@@ -418,25 +445,6 @@ void EditArea::adjustScrollbars()
      //////verticalScrollBar()->setRange(0,  page.width() * 10);
 }
 
-
-
-void EditArea::wheelEvent (QWheelEvent * event)
-{
-  qreal docksscale = scaleFaktor;
-  if (event->delta() > 1) {
-      docksscale = docksscale + SCALING_STEEP;
-  } else {
-      docksscale = docksscale - SCALING_STEEP;
-  }
-  if (docksscale < 0.45 || docksscale > 10) {
-   return;
-  } else {
-      scaleFaktor = docksscale;
-      adjustScrollbars();
-      viewport()->update();
-  }
- 
-}
 
 QPointF EditArea::maps( QPointF p ) 
 {
