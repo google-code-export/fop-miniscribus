@@ -25,13 +25,16 @@ protected:
      void resizeEvent(QResizeEvent *e);
      void contextMenuEvent(QContextMenuEvent *event);
      void keyPressEvent ( QKeyEvent * e );
+     void cursorRectSlider( const QTextFrameFormat docrootformat  , QPainter *p );
 
 private:
-    
+    QRectF sl_cursor[6];
     QPointF maps( QPointF p );
     QRectF page;
     qreal mesure; /* fix faktor cm*/
     QTransform mcurrent;
+    QTransform top_matrix;
+    QTransform left_matrix;
     QList<QPointF> dotChain;
     QSize workArea;  /* mobile size from zoom */
     qreal scaleFaktor;
@@ -40,7 +43,7 @@ private:
     QRectF slider_Horrizzontal_Top;
     QRectF slider_Vertical_Left;
     PDocument *_doc;  ///  
-
+    void HandleMoveSlider(  QPointF point , bool top = true );
 signals:
 
 

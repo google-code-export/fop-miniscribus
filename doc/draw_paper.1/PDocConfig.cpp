@@ -1,7 +1,23 @@
 #include "PDocConfig.h"
 
 
-
+QRectF divideRect(const QRectF rect , const int part )
+{
+    bool horrizontal = qMax(rect.height(),rect.width()) == rect.width() ? true : false;
+    const qreal hwi = qMax(rect.height(),rect.width()) / 2;
+    
+    if (horrizontal && part == 1 || horrizontal && part == 0) {
+      return QRectF(rect.topLeft().x(),rect.topLeft().y(),hwi,rect.height());
+    } else if (horrizontal && part !=0 || horrizontal && part !=1) {
+      return QRectF(rect.topLeft().x() + hwi,rect.topLeft().y(),hwi,rect.height());
+    } else if (!horrizontal && part == 0 || !horrizontal && part == 1) {
+      return QRectF(rect.topLeft().x(),rect.topLeft().y(),rect.width(),hwi);
+    } else if (!horrizontal && part != 0 || !horrizontal && part != 1) {
+      return QRectF(rect.topLeft().x(),rect.topLeft().y() + hwi,rect.width(),hwi);
+    } else {
+      return rect;
+    }
+}
 
 
 void paintWidged( QPainter *p , const QRectF rect , const QTransform trax )
@@ -45,8 +61,27 @@ void paintCursor( QPainter *p , const QRectF rect )
     p->restore();
 }
 
+/*
 
-
+QRectF cursorRectTop(  const QRectF rect , const qreal distance  , const QTransform trax )
+{
+    const QPointF init = rect.topLeft();
+    
+    const qreal marginLeftX = init.x() + ( bodyMargins.first * trax.m11() );
+    const qreal marginRightX = init.x() +  rect.width()  - ( bodyMargins.second * trax.m11() );
+    
+    const qreal marginTopY = init.y() + ( bodyMargins.first * trax.m11() );
+    const qreal marginToptX = init.y() +  rect.height()  - ( bodyMargins.second * trax.m11() );
+    
+    const QRectF cursor_1(marginLeftX - (SLIDERCURSORWI / 2),init.y(),SLIDERCURSORWI,rect.height());
+    const QRectF cursor_2(marginRightX - (SLIDERCURSORWI / 2),init.y(),SLIDERCURSORWI,rect.height());
+    
+    const QRectF cursor_3(init.x() ,marginTopY - (SLIDERCURSORWI / 2) ,rect.width(),SLIDERCURSORWI);
+        const QRectF cursor_4(init.x() ,marginToptX - (SLIDERCURSORWI / 2),rect.width(),SLIDERCURSORWI);
+    
+    
+}
+*/
 
 void paintScale( QPainter *p , const QRectF rect , QPair<qreal,qreal> bodyMargins , const QTransform trax )
 {

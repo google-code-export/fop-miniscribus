@@ -17,6 +17,7 @@ EditArea::EditArea( QWidget *parent )
 void EditArea::paintEvent( QPaintEvent *Event )
 {
   lineTimer++;
+  QTextFrameFormat docrootformat = _doc->rootFrame()->frameFormat();
   QPainter *p = new QPainter( viewport() );
   p->setRenderHint(QPainter::Antialiasing, true);
   p->setPen(Qt::NoPen);
@@ -45,7 +46,7 @@ void EditArea::paintEvent( QPaintEvent *Event )
         } 
     }
     
-  QTextFrameFormat docrootformat = _doc->rootFrame()->frameFormat();
+  
   QTransform matrix;
   _doc->paintPage(0,p,page);
   paintShadow(p,page);
@@ -57,6 +58,7 @@ void EditArea::paintEvent( QPaintEvent *Event )
   p->translate(-x,0);
   slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
   paintScale(p,slider_Horrizzontal_Top,qMakePair(docrootformat.leftMargin(),docrootformat.rightMargin()),mcurrent);
+  top_matrix = p->worldTransform();
   /* horrizzontal*/
   p->setWorldTransform(matrix); /* reset */
   p->translate(0,-y);
@@ -64,18 +66,83 @@ void EditArea::paintEvent( QPaintEvent *Event )
   slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
   paintScale(p,slider_Vertical_Left,qMakePair(docrootformat.topMargin(),docrootformat.bottomMargin()),mcurrent);
   /* vertical */
+  left_matrix = p->worldTransform();
   p->setWorldTransform(matrix);
   paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
-  
   }  else  {
      qDebug() << "### maybe first run " << lineTimer;
      adjustScrollbars();
      fitToLarge();
      QAbstractScrollArea::paintEvent(Event);
   }
+  cursorRectSlider(docrootformat,p);
   p->end();
-  
 }
+void EditArea::cursorRectSlider( const QTextFrameFormat docrootformat  , QPainter *p )
+{
+    sl_cursor[0] = slider_Horrizzontal_Top;
+    sl_cursor[1] = divideRect(slider_Horrizzontal_Top,0);
+    sl_cursor[2] = divideRect(slider_Horrizzontal_Top,2);
+    sl_cursor[3] = divideRect(slider_Vertical_Left,0);
+    sl_cursor[4] = divideRect(slider_Vertical_Left,2);
+    sl_cursor[5] = slider_Vertical_Left;
+    /* debug to display if transform correct */
+    /*
+    p->save();
+    p->setBrush(QColor(Qt::green));
+    p->setPen(Qt::NoPen);
+    p->drawRect(sl_cursor[3]);
+    p->drawRect(cursor_2);
+    p->restore();
+    */
+}
+
+void EditArea::HandleMoveSlider(  QPointF point , bool top )
+{
+    setZoom(1);
+    const int diffy = 0;
+    
+    QTextFrameFormat foframe = _doc->rootFrame()->frameFormat();
+    bool moved = false;
+    for (int i = 0; i < 6; ++i)  {
+        if (sl_cursor[i].contains(point)) {
+            qDebug() << "### wake  " << i;
+            if (i == 1) {
+                qreal goto_1 = point.x() - sl_cursor[0].topLeft().x();
+                foframe.setLeftMargin(goto_1);
+                moved = true;
+            } 
+            if (i == 2) {
+                qreal goto_2 = sl_cursor[0].topRight().x() - point.x();
+                foframe.setRightMargin(goto_2);
+                moved = true;
+            }
+            if (i == 3) {
+                qreal goto_3 =  (point.y() + diffy) - sl_cursor[5].topRight().y();
+                foframe.setTopMargin(goto_3);
+                moved = true;
+            }
+            if (i == 4) {
+                qreal goto_4 =  sl_cursor[5].bottomRight().y() - (point.y() + diffy);
+                qDebug() << "### move to  cm." << POINT_TO_CM(goto_4) << " p."<< point.y();
+                foframe.setBottomMargin(goto_4);
+                moved = true;
+            }
+        }
+    }
+    
+    if (moved) {
+    _doc->rootFrame()->setFrameFormat(foframe);
+    viewport()->update();
+    }
+    ///////foframe.setLeftMargin(MM_TO_POINT(15));
+    //////foframe.setRightMargin(MM_TO_POINT(15));
+    ///////foframe.setBottomMargin(MM_TO_POINT(25));
+    /////////foframe.setTopMargin(MM_TO_POINT(25));
+    
+    
+}
+
 
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
@@ -83,11 +150,16 @@ void EditArea::mousePressEvent ( QMouseEvent *e )
     if ( e->button() == Qt::LeftButton) {
         if (page.contains(page_point)) {
             dotChain <<  page_point;
-        } else if (slider_Horrizzontal_Top.contains(e->pos())) {
-            qDebug() << "### s top  " << e->pos();
-        } else if (slider_Vertical_Left.contains(e->pos())) {
-            qDebug() << "### s left " << e->pos();
-        }
+        } else {
+            
+            QPointF rack( QPointF(xOffset(),yOffset()) + e->pos());
+            
+            if (slider_Horrizzontal_Top.contains(rack)) {
+            HandleMoveSlider(rack,true);
+            } else if (slider_Vertical_Left.contains(rack)) {
+            HandleMoveSlider(rack,false);  
+            }
+        } 
    }
     viewport()->update();
 }
@@ -97,6 +169,8 @@ void EditArea::mouseDoubleClickEvent ( QMouseEvent *e )
     if (page.contains(page_point)) {
         dotChain.clear();
         setZoom(1.0);
+    } else {
+        HandleMoveSlider(e->pos());
     }
     viewport()->update();
 }
@@ -131,7 +205,7 @@ void EditArea::setZoom( const qreal value )
     if (value < 0.45 || value > 10) {
      return;
     } else {
-      qDebug() << "### setZoom " << value; 
+      //////qDebug() << "### setZoom " << value; 
       scaleFaktor = value;
       adjustScrollbars();
       viewport()->update();
@@ -216,7 +290,10 @@ void EditArea::adjustScrollbars()
 
 void EditArea::verticalValue( const int index ) 
 {
-    ////////qDebug() << "### verticalValue " << POINT_TO_CM(index * scaleFaktor) <<  " r." << index;
+    /////////qDebug() << "### verticalValue " << POINT_TO_CM(index * scaleFaktor) <<  " r." << index;
+    qDebug() << "### scroll top_matrix  " << top_matrix;
+    qDebug() << "### scroll left_matrix  " << left_matrix;
+    qDebug() << "### scroll slider_Horrizzontal_Top  " << slider_Horrizzontal_Top;
 }
 
 QPointF EditArea::maps( QPointF p ) 

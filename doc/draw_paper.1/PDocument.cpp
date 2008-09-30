@@ -56,7 +56,7 @@ void PDocument::openFile( const QString file )
     setHtml(html);
     delete buf;
     QTextFrameFormat foframe = rootFrame()->frameFormat();
-    if (foframe.leftMargin() < 3) { 
+    if (foframe.leftMargin() < 10) { 
     foframe.setLeftMargin(MM_TO_POINT(15));
     foframe.setRightMargin(MM_TO_POINT(15));
     foframe.setBottomMargin(MM_TO_POINT(25));
