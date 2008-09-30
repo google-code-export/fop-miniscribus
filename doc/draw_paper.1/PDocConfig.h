@@ -15,6 +15,7 @@ static const qreal PAPERSPACE = 18.0;
 
 
 static const qreal BorderShadow = 5.2;
+static const int DefaultFonzSize = 10;
 
 static const qreal SLIDERMARGIN_TICK_LEFT = SLIDERMARGIN_TICK + SLIDERSPACER;
 static const qreal SLIDERMARGIN_TICK_TOTAL = SLIDERMARGIN_TICK + SLIDERSPACER + SLIDERSPACER;

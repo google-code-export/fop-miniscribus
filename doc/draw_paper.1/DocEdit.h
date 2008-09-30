@@ -39,6 +39,7 @@ private:
     qint64 lineTimer;
     QRectF slider_Horrizzontal_Top;
     QRectF slider_Vertical_Left;
+    PDocument *_doc;  ///  
 
 signals:
 
