@@ -1,6 +1,7 @@
 = QT Install Instruction Window OS =
 
   * First get Git  http://git.or.cz/#download  win32 or else binary
+  * Install Subversion on window get http://tortoisesvn.tigris.org/
   * Read the basic Git guide http://linux.yyz.us/git-howto.html
   * Open a Git Shell and cd to path to build
 
@@ -59,6 +60,8 @@ SET PATH=%QTDIR%\bin;%OPENSSL%\bin;%MYSQL%\lib\opt;C:\dev\cmake\bin;%PATH%
 
   Remember only cd to qtdir and git pull to get only the difference from new source code
   if new code is incomming only write nmake, and you are update.
+  Now to build Miniscribus create a new dir and right click SVN Checkout 
+  enter http://fop-miniscribus.googlecode.com/svn/trunk/fop_miniscribus.2.0.0/ open a     shell on this dir and build (  qmake and at end  nmake )
 
 
 
