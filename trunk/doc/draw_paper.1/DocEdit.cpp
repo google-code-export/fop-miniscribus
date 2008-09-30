@@ -5,10 +5,10 @@
 /**/
 EditArea::EditArea( QWidget *parent )
   : QAbstractScrollArea(0),page(0,0,0,0),lineTimer(0),
-    workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2)
+    workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2),_doc(new PDocument)
 {
   mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
-  ////////dotChain << maps(QPointF(33,33)) << maps(QPointF(444,444));
+  _doc->openFile("index.html");
   adjustScrollbars();
   connect(verticalScrollBar(), SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
   resize(700,400);
@@ -44,7 +44,10 @@ void EditArea::paintEvent( QPaintEvent *Event )
                 p->setOpacity(1.0);
         } 
     }
+    
+  QTextFrameFormat docrootformat = _doc->rootFrame()->frameFormat();
   QTransform matrix;
+  _doc->paintPage(0,p,page);
   paintShadow(p,page);
   /* reset matrix */
   p->setWorldTransform(matrix);
@@ -53,13 +56,13 @@ void EditArea::paintEvent( QPaintEvent *Event )
   /* horrizzontal*/
   p->translate(-x,0);
   slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
-  paintScale(p,slider_Horrizzontal_Top,qMakePair(MM_TO_POINT(15),MM_TO_POINT(15)),mcurrent);
+  paintScale(p,slider_Horrizzontal_Top,qMakePair(docrootformat.leftMargin(),docrootformat.rightMargin()),mcurrent);
   /* horrizzontal*/
   p->setWorldTransform(matrix); /* reset */
   p->translate(0,-y);
   /* vertical */
   slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
-  paintScale(p,slider_Vertical_Left,qMakePair(MM_TO_POINT(15),MM_TO_POINT(15)),mcurrent);
+  paintScale(p,slider_Vertical_Left,qMakePair(docrootformat.topMargin(),docrootformat.bottomMargin()),mcurrent);
   /* vertical */
   p->setWorldTransform(matrix);
   paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
@@ -180,12 +183,14 @@ void EditArea::triggerFormat()
 void EditArea::adjustScrollbars()
 {
      /* portrait - landscape */
-     qreal lmax = qMax(CM_TO_POINT(mesure),CM_TO_POINT(mesure) * PAGEFAKTOR);
-     qreal lmin = qMin(CM_TO_POINT(mesure),CM_TO_POINT(mesure) * PAGEFAKTOR);
+     qreal lmax = qMax(_doc->pageSize().width(),_doc->pageSize().height());
+     qreal lmin = qMin(_doc->pageSize().width(),_doc->pageSize().height());
      if (portrait_mode) {
      page = QRectF(0,0,lmin,lmax);
+     _doc->setFormat(PDocument::PPortrait);
      } else {
      page = QRectF(0,0,lmax,lmin); 
+     _doc->setFormat(PDocument::PLandscape);
      }
      const qreal left_slide = SLIDERMARGIN_TICK_TOTAL;
      workArea = QSize(page.width() * scaleFaktor , page.height() * scaleFaktor);

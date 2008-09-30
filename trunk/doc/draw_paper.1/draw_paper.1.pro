@@ -6,9 +6,13 @@ TEMPLATE = app
 TARGET = xx
 DEPENDPATH += .
 INCLUDEPATH += .
-
-CONFIG += qt debug warn_off console
+###########  console
+CONFIG += qt release warn_off
 DESTDIR	+= ./
+
+
+QT += xml
+QT += network
 
 
 win32-msvc*{
