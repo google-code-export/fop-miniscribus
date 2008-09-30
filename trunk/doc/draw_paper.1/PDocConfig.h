@@ -27,6 +27,7 @@ void paintCursor( QPainter *p , const QRectF rect );
 void paintShadow( QPainter *p , const QRectF rect );
 void paintScale( QPainter *p , const QRectF rect , QPair<qreal,qreal> bodyMargins , const QTransform trax );
 
+QRectF divideRect(const QRectF rect , const int part = 0);
 
 
 #define POINT_TO_CM(cm) ((cm)/28.3465058)

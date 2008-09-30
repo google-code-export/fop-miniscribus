@@ -6,8 +6,8 @@ TEMPLATE = app
 TARGET = xx
 DEPENDPATH += .
 INCLUDEPATH += .
-###########  console
-CONFIG += qt release warn_off
+###########  
+CONFIG += qt debug warn_off console
 DESTDIR	+= ./
 
 
