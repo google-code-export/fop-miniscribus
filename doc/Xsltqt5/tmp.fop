@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
-     <cms:pager printer_format="CH-A4" build="01.10.2008 01:03:43" editor="FOP converter to QT-TextDocument" />
+     <cms:pager printer_format="CH-A4" build="01.10.2008 01:21:19" editor="FOP converter to QT-TextDocument" />
      <fo:layout-master-set>
           <fo:simple-page-master margin-left="42.5198pt" page-height="841.891pt" master-name="CH-A4" margin-bottom="2.83465pt" margin-top="272.126pt" margin-right="28.3465pt" page-width="598.111pt" >
                <fo:region-body margin-left="42.5198pt" background-color="#ffffff" margin-bottom="28.3465pt" region-name="xsl-region-body" margin-top="272.126pt" margin-right="2.83465pt" />
@@ -8,50 +8,50 @@
      </fo:layout-master-set>
      <fo:page-sequence master-reference="CH-A4" >
           <fo:flow flow-name="xsl-region-body" >
-               <fo:block-container width="150pt" opacity="1" margin-left="2pt" z-index="35.806" absolute-position="absolute" height="95pt" left="44.3269pt" margin-bottom="2pt" lock="1" id="layer_10" margin-top="2pt" margin-right="2pt" top="171.787pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >_RIFNR_</fo:block>
+               <fo:block-container width="528pt" opacity="255" border-start-color="#000000" margin-left="4pt" z-index="36.4726" absolute-position="absolute" height="24pt" background-color="#ffffff" left="43.1pt" margin-bottom="4pt" border-width="1pt" id="layer_10" margin-top="4pt" margin-right="4pt" top="273.122pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="9pt" >_TITLE_</fo:block>
                </fo:block-container>
-               <fo:block-container width="300pt" opacity="1" margin-left="2pt" z-index="13.333" absolute-position="absolute" height="156pt" left="479.945pt" margin-bottom="2pt" lock="1" id="layer_11" margin-top="2pt" margin-right="2pt" top="29.2084pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >www.crosskern.com</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >www.ciz.ch</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >E-Mail ciz@ciz.ch</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >Tel. 091/753 20 66</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >Via Cantonale</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >6672 Gordevio</fo:block>
+               <fo:block-container width="495pt" opacity="1" margin-left="0pt" z-index="10.01" absolute-position="absolute" height="47pt" left="-222pt" margin-bottom="0pt" id="layer_11" margin-top="0pt" rotate="270" margin-right="0pt" top="554pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >_BARCODE_</fo:block>
                </fo:block-container>
-               <fo:block-container width="318pt" opacity="1" margin-left="2pt" z-index="11" absolute-position="absolute" height="177pt" left="41.1283pt" margin-bottom="2pt" lock="1" id="layer_12" margin-top="2pt" margin-right="2pt" top="21.3933pt" imgcount="1" >
+               <fo:block-container width="525pt" opacity="1" margin-left="0pt" z-index="36.1393" absolute-position="absolute" height="400pt" left="43.9329pt" margin-bottom="0pt" id="layer_12" margin-top="0pt" margin-right="0pt" top="336.324pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="9pt" >_INVOICE_</fo:block>
+               </fo:block-container>
+               <fo:block-container width="206pt" opacity="1" margin-left="0pt" z-index="17.9996" absolute-position="absolute" height="91pt" left="362.437pt" margin-bottom="0pt" lock="1" id="layer_13" margin-top="0pt" margin-right="0pt" top="148.294pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >_USER_ADDO_</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
+               </fo:block-container>
+               <fo:block-container width="150pt" opacity="1" margin-left="0pt" z-index="13.333" absolute-position="absolute" height="70pt" left="43.1014pt" margin-bottom="0pt" lock="1" id="layer_14" margin-top="0pt" margin-right="0pt" top="94.4116pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >Gordevio _DATE_</fo:block>
+               </fo:block-container>
+               <fo:block-container width="77pt" opacity="1" margin-left="2pt" z-index="29.9994" absolute-position="absolute" height="12pt" left="538.78pt" margin-bottom="2pt" lock="1" id="layer_15" margin-top="2pt" rotate="90" margin-right="2pt" top="810pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="5pt" >T Aed3456</fo:block>
+               </fo:block-container>
+               <fo:block-container width="528pt" opacity="1" margin-left="2pt" z-index="33.4727" absolute-position="absolute" height="47pt" left="43.35pt" margin-bottom="2pt" id="layer_16" margin-top="2pt" margin-right="2pt" top="778.58pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="center" color="#000000" font-size="6pt" > 6672 Gordevio E-Mail: ********** - Conto Posta PC 40-688153-4</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="center" color="#000000" font-size="6pt" >Pagamenti Fr./ Euro: Banca Raiffeisen Maggia e Valli - CH-6673 Maggia a favore di: IBAN/Value: CH86 8033 5000 0006 99945/CHF a favore di: PPK-ScreenDesign - 6672 Gordevio - Conto 65-6427-7</fo:block>
+               </fo:block-container>
+               <fo:block-container width="44pt" opacity="1" margin-left="2pt" z-index="31.1394" absolute-position="absolute" height="10pt" left="14.15pt" margin-bottom="2pt" lock="1" id="layer_17" margin-top="2pt" rotate="270" margin-right="2pt" top="44pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="3pt" >Matrix OZ-83927</fo:block>
+               </fo:block-container>
+               <fo:block-container width="450pt" opacity="1" margin-left="2pt" z-index="17.9996" absolute-position="absolute" height="30pt" left="41.7407pt" margin-bottom="2pt" lock="1" id="layer_18" margin-top="2pt" margin-right="2pt" top="74.582pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >Webprogramm di Peter Hohl</fo:block>
+               </fo:block-container>
+               <fo:block-container width="318pt" opacity="1" margin-left="2pt" z-index="11" absolute-position="absolute" height="177pt" left="41.1283pt" margin-bottom="2pt" lock="1" id="layer_19" margin-top="2pt" margin-right="2pt" top="21.3933pt" imgcount="1" >
                     <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >
                          <fo:external-graphic width="180pt" height="47pt" src="Pictures/pngexternal-paste-1202315682-562-image.png" />
                     </fo:block>
                </fo:block-container>
-               <fo:block-container width="450pt" opacity="1" margin-left="2pt" z-index="17.9996" absolute-position="absolute" height="30pt" left="41.7407pt" margin-bottom="2pt" lock="1" id="layer_13" margin-top="2pt" margin-right="2pt" top="74.582pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >Webprogramm di Peter Hohl</fo:block>
+               <fo:block-container width="300pt" opacity="1" margin-left="2pt" z-index="13.333" absolute-position="absolute" height="156pt" left="480.588pt" margin-bottom="2pt" id="layer_20" margin-top="2pt" margin-right="2pt" top="29.2084pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >www.crosskern.com</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >www.ciz.ch</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >E-Mail ***********</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >Tel. 091/753 20 66</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >Via Cantonale</fo:block>
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="6pt" >6672 Gordevio</fo:block>
                </fo:block-container>
-               <fo:block-container width="44pt" opacity="1" margin-left="2pt" z-index="31.1394" absolute-position="absolute" height="10pt" left="14.15pt" margin-bottom="2pt" lock="1" id="layer_14" margin-top="2pt" rotate="270" margin-right="2pt" top="44pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="3pt" >Matrix OZ-83927</fo:block>
-               </fo:block-container>
-               <fo:block-container width="528pt" opacity="1" margin-left="2pt" z-index="33.4727" absolute-position="absolute" height="47pt" left="43.35pt" margin-bottom="2pt" id="layer_15" margin-top="2pt" margin-right="2pt" top="778.58pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="center" color="#000000" font-size="6pt" > 6672 Gordevio E-Mail: ciz@ciz.ch - Conto Posta PC 40-688153-4</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="center" color="#000000" font-size="6pt" >Pagamenti Fr./ Euro: Banca Raiffeisen Maggia e Valli - CH-6673 Maggia a favore di: IBAN/Value: CH86 8033 5000 0006 99945/CHF a favore di: PPK-ScreenDesign - 6672 Gordevio - Conto 65-6427-7</fo:block>
-               </fo:block-container>
-               <fo:block-container width="77pt" opacity="1" margin-left="2pt" z-index="29.9994" absolute-position="absolute" height="12pt" left="538.78pt" margin-bottom="2pt" lock="1" id="layer_16" margin-top="2pt" rotate="90" margin-right="2pt" top="810pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="5pt" >T Aed3456</fo:block>
-               </fo:block-container>
-               <fo:block-container width="150pt" opacity="1" margin-left="0pt" z-index="13.333" absolute-position="absolute" height="70pt" left="43.1014pt" margin-bottom="0pt" lock="1" id="layer_17" margin-top="0pt" margin-right="0pt" top="94.4116pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >Gordevio _DATE_</fo:block>
-               </fo:block-container>
-               <fo:block-container width="206pt" opacity="1" margin-left="0pt" z-index="17.9996" absolute-position="absolute" height="91pt" left="362.437pt" margin-bottom="0pt" lock="1" id="layer_18" margin-top="0pt" margin-right="0pt" top="148.294pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >_USER_ADDO_</fo:block>
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" />
-               </fo:block-container>
-               <fo:block-container width="525pt" opacity="1" margin-left="0pt" z-index="36.1393" absolute-position="absolute" height="400pt" left="43.9329pt" margin-bottom="0pt" id="layer_19" margin-top="0pt" margin-right="0pt" top="336.324pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="9pt" >_INVOICE_</fo:block>
-               </fo:block-container>
-               <fo:block-container width="495pt" opacity="1" margin-left="0pt" z-index="10.01" absolute-position="absolute" height="47pt" left="-222pt" margin-bottom="0pt" id="layer_20" margin-top="0pt" rotate="270" margin-right="0pt" top="554pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >_BARCODE_</fo:block>
-               </fo:block-container>
-               <fo:block-container width="528pt" opacity="255" border-start-color="#000000" margin-left="4pt" z-index="36.4726" absolute-position="absolute" height="24pt" background-color="#ffffff" left="43.1pt" margin-bottom="4pt" border-width="1pt" id="layer_21" margin-top="4pt" margin-right="4pt" top="273.122pt" imgcount="0" >
-                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="9pt" >_TITLE_</fo:block>
+               <fo:block-container width="150pt" opacity="1" margin-left="2pt" z-index="35.806" absolute-position="absolute" height="95pt" left="44.3269pt" margin-bottom="2pt" lock="1" id="layer_21" margin-top="2pt" margin-right="2pt" top="171.787pt" imgcount="0" >
+                    <fo:block font-family="MS Shell Dlg 2" text-align="left" color="#000000" font-size="8pt" >_RIFNR_</fo:block>
                </fo:block-container>
           </fo:flow>
      </fo:page-sequence>
