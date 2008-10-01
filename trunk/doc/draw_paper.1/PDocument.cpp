@@ -39,7 +39,8 @@ void PDocument::setHtml ( const QString & html )
     init();
     style();
     QTextDocument::setHtml(html);
-    setPageSize(QSizeF(MM_TO_POINT(210),MM_TO_POINT(297)));
+    ///////setPageSize(QSizeF(MM_TO_POINT(210),MM_TO_POINT(297)));
+    setPageSize(QSizeF(MM_TO_POINT(300),MM_TO_POINT(300)));
 }
 
 void PDocument::openFile( const QString file )
