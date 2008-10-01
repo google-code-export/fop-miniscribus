@@ -124,7 +124,7 @@ void EditArea::HandleMoveSlider(  QPointF point , bool top )
             }
             if (i == 4) {
                 qreal goto_4 =  sl_cursor[5].bottomRight().y() - (point.y() + diffy);
-                qDebug() << "### move to  cm." << POINT_TO_CM(goto_4) << " p."<< point.y();
+                ////////qDebug() << "### move to  cm." << POINT_TO_CM(goto_4) << " p."<< point.y();
                 foframe.setBottomMargin(goto_4);
                 moved = true;
             }
@@ -146,29 +146,45 @@ void EditArea::HandleMoveSlider(  QPointF point , bool top )
 
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
+    debugRecti(page);
+    
+    QPointF rack( QPointF(xOffset(),yOffset()) + e->pos());
     QPointF page_point = maps(e->pos()); 
+    
     if ( e->button() == Qt::LeftButton) {
         if (page.contains(page_point)) {
             dotChain <<  page_point;
         } else {
             
-            QPointF rack( QPointF(xOffset(),yOffset()) + e->pos());
-            
             if (slider_Horrizzontal_Top.contains(rack)) {
             HandleMoveSlider(rack,true);
             } else if (slider_Vertical_Left.contains(rack)) {
             HandleMoveSlider(rack,false);  
+            } else {
+                
+             
+                
             }
         } 
    }
-    viewport()->update();
+   viewport()->update();
+   qDebug() << "### top press cm rack " << POINT_TO_CM(rack.y()) << " pos."<< POINT_TO_CM(e->pos().y());
+   ///////////qDebug() << "### top press page_point" << POINT_TO_CM(page_point.y()) << " pos|"<< page_point.y();
+   
+   
+////////qDebug() << "### pressed 1 rack" << rack.y() << " pos."<< e->pos().y();
+////////qDebug() << "### pressed 2 cm rack" << POINT_TO_CM(rack.y()) << " pos."<< POINT_TO_CM(e->pos().y());
+              
+   
 }
 void EditArea::mouseDoubleClickEvent ( QMouseEvent *e )   
 {
     QPointF page_point = maps(e->pos()); 
     if (page.contains(page_point)) {
-        dotChain.clear();
-        setZoom(1.0);
+        //////dotChain.clear();
+        ////////setZoom(1.0);
+        dotChain <<  page_point;
+        
     } else {
         HandleMoveSlider(e->pos());
     }
@@ -291,9 +307,9 @@ void EditArea::adjustScrollbars()
 void EditArea::verticalValue( const int index ) 
 {
     /////////qDebug() << "### verticalValue " << POINT_TO_CM(index * scaleFaktor) <<  " r." << index;
-    qDebug() << "### scroll top_matrix  " << top_matrix;
-    qDebug() << "### scroll left_matrix  " << left_matrix;
-    qDebug() << "### scroll slider_Horrizzontal_Top  " << slider_Horrizzontal_Top;
+    ////////qDebug() << "### scroll top_matrix  " << top_matrix;
+    ///////////qDebug() << "### scroll left_matrix  " << left_matrix;
+    ///////////qDebug() << "### scroll slider_Horrizzontal_Top  " << slider_Horrizzontal_Top;
 }
 
 QPointF EditArea::maps( QPointF p ) 

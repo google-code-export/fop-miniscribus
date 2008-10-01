@@ -20,6 +20,22 @@ QRectF divideRect(const QRectF rect , const int part )
 }
 
 
+void debugRecti(const QRectF rect )
+{
+    const qreal lmax = qMax(rect.height(),rect.width());
+    const qreal lmin = qMax(rect.height(),rect.width());
+    
+    qDebug() << "-------------------------------------------------------------------";
+    qDebug() << "### a topleft Y" << POINT_TO_CM(rect.top());
+    qDebug() << "### max " << POINT_TO_CM(lmax);
+    qDebug() << "### min " << POINT_TO_CM(lmin);
+    qDebug() << "### a bottomLeft X " << POINT_TO_CM(rect.bottom());
+    qDebug() << "-------------------------------------------------------------------";
+    
+    
+}
+
+
 void paintWidged( QPainter *p , const QRectF rect , const QTransform trax )
 {
     p->save();
