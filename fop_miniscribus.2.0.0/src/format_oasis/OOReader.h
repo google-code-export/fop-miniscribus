@@ -10,7 +10,7 @@
 #include <QDomDocument>
 #include <QTextTableFormat>
 
-#include "FoColorName.h"
+#include "OOColorName.h"
 #include "OOFormat.h"
 
 
