@@ -1,5 +1,15 @@
 ######################################################################################
+
+
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
+### qt4.5 not make ! ##
 CONFIG += libxslt libxml2 libiconv
+} else {
+QT += xmlpatterns
+}
+
+
+
 
 
 win32-msvc* {
@@ -41,6 +51,8 @@ DEPENDPATH += $$LIB_EXTERN_PATH/include
 }
 
 
+contains(CONFIG, libxslt) {
+
 unix {
 INCLUDEPATH += /usr/include/libxslt
 INCLUDEPATH += /usr/include/libxml2/libxml
@@ -60,7 +72,7 @@ LIBS += -lxml2 -lxslt
 }
 
 
-
+}
 
 
 

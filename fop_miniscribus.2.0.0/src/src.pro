@@ -4,8 +4,8 @@
 
 TEMPLATE = app
 TARGET = scribe
-DEPENDPATH += . bookmark foformat paperformat textapi ui
-INCLUDEPATH += . bookmark foformat paperformat textapi ui
+DEPENDPATH += . bookmark format_fop format_oasis paperformat textapi ui
+INCLUDEPATH += . bookmark format_fop format_oasis paperformat textapi ui
 
 
 
@@ -61,10 +61,28 @@ DESTDIR	+= ../
 QT += xml
 QT += network
 QT += svg 
+
 contains(QT_CONFIG, opengl):QT += opengl
 
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
+### qt4.5 not make ! ##
 HEADERS += ../modules/xslt/xslt_convert.h
-SOURCES += ../modules/xslt/xslt_convert.cpp  
+SOURCES += ../modules/xslt/xslt_convert.cpp
+} else {
+
+
+QT += xmlpatterns
+HEADERS += format_oasis/GZipReader.h format_oasis/GZipWriter.h OOFormat.h format_oasis/OOReader.h
+SOURCES += format_oasis/GZip.cpp format_oasis/OOFormat.cpp format_oasis/OOReader.cpp
+
+
+}
+
+
+
+
+
+
 
 # Input
 HEADERS += Config.h \
@@ -74,11 +92,11 @@ HEADERS += Config.h \
            bookmark/BookMarkModel.h \
            bookmark/BookTree.h \
            bookmark/TranslateModel.h \
-           foformat/Fo_Format.h \
-           foformat/Fo_Reader.h \
-           foformat/Fo_Writter.h \
-           foformat/FoColorName.h \
-           foformat/Fop_Leader_Element.h \
+           format_fop/Fo_Format.h \
+           format_fop/Fo_Reader.h \
+           format_fop/Fo_Writter.h \
+           format_fop/FoColorName.h \
+           format_fop/Fop_Leader_Element.h \
            paperformat/PageFormatDlg.h \
            paperformat/PageFormatGroup.h \
            BasicFoConfig.h \
@@ -99,11 +117,11 @@ SOURCES += main.cpp \
            bookmark/BookMarkModel.cpp \
            bookmark/BookTree.cpp \
            bookmark/TranslateModel.cpp \
-           foformat/Fo_Format.cpp \
-           foformat/Fo_Reader.cpp \
-           foformat/Fo_Writter.cpp \
-           foformat/FoColorName.cpp \
-           foformat/Fop_Leader_Element.cpp \
+           format_fop/Fo_Format.cpp \
+           format_fop/Fo_Reader.cpp \
+           format_fop/Fo_Writter.cpp \
+           format_fop/FoColorName.cpp \
+           format_fop/Fop_Leader_Element.cpp \
            paperformat/PageFormatDlg.cpp \
            paperformat/PageFormatGroup.cpp \
            BasicFoConfig.cpp \

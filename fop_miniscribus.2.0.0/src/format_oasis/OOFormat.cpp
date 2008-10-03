@@ -1,5 +1,5 @@
 #include "OOFormat.h"
-
+#include "FoColorName.h"
 
 
 static QString txtcapitalize( QString & s)
@@ -72,7 +72,7 @@ QTextFrameFormat DefaultFrameFormat()
     return base;
 }
 
-QTextCharFormat DefaultCharFormats( bool qtwritteln , QTextCharFormat format )
+QTextCharFormat OODefaultCharFormats( bool qtwritteln , QTextCharFormat format )
 {
     #if QT_VERSION >= 0x040500
     format.setFontStyleStrategy ( QFont::PreferAntialias );
@@ -81,7 +81,7 @@ QTextCharFormat DefaultCharFormats( bool qtwritteln , QTextCharFormat format )
 }
 
 /* set all margin to zero qt4 send 12 top 12 bottom by default */
-QTextBlockFormat DefaultMargin( QTextBlockFormat rootformats )
+QTextBlockFormat OODefaultMargin( QTextBlockFormat rootformats )
 {
     rootformats.setBottomMargin(4);
     rootformats.setTopMargin(4);
@@ -89,15 +89,6 @@ QTextBlockFormat DefaultMargin( QTextBlockFormat rootformats )
     rootformats.setLeftMargin(0);
     rootformats.setAlignment( Qt::AlignLeft );
     return rootformats;
-}
-
-QTextCharFormat PreFormatChar( QTextCharFormat format )
-{
-    format.setFont(QFont( "courier",11,-1,true) );
-    format.setForeground(QBrush(Qt::darkBlue));
-    format.setFontLetterSpacing(90);
-    ///////format.setBackground(QBrush(Qt::lightGray));
-    return format;
 }
 
 

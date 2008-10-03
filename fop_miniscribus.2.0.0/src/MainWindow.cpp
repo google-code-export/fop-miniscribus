@@ -3,16 +3,24 @@
 #include "Fo_Format.h"
 #include "Fo_Reader.h"
 #include "Fo_Writter.h"
-#include "oo_handler.h"
-#include "ziphandle.h"   ////// open file gzip 
+
 
 #ifndef QT_NO_OPENGL
 #include <QtOpenGL>
 #endif
 
+
+#if QT_VERSION >= 0x040500
+#include <QXmlQuery>
 using namespace ApacheFop;
-using namespace OpenOffice;
+#else
+#include "ziphandle.h"   ////// open file gzip 
+using namespace ApacheFop;
 using namespace OOO;
+#endif
+
+
+
 
 
 #include <QCloseEvent>
@@ -656,8 +664,33 @@ void GraphicsView::openFile( const QString file )
     } else if ( ext ==  "sxw" || ext ==  "stw"   ) {
         M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
-        currentopenfilerunning = "";   /* only read modus save as fop or html */
         
+        #if QT_VERSION >= 0x040500
+        QChar letter('A' + (qrand() % 26));
+        const QString locationfile = QString("%1/%2__xml").
+                       arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
+                       arg(letter);
+        QMap<QString,QByteArray>  filist = unzipstream(fi.absoluteFilePath());
+        QByteArray base = filist["content.xml"];
+        if (base.size() > 0) {
+           if (fwriteutf8(locationfile,QString(base.constData()))) {
+                XsltConText *report = new XsltConText(locationfile,_OOOV1FILE_);
+                const QString xhtml = report->read();
+                QTextDocument  *oodoc = new QTextDocument();
+                oodoc->setHtml(xhtml);
+                delete report;
+                currentopenfilerunning = "";   /* only read modus save as fop or html */
+               defaultA4Page.HandlePrint( oodoc );
+               session->current_Page_Format = defaultA4Page;
+               session->AppendPaper(defaultA4Page);
+               pageFull->setDocument(new QTextDocument(oodoc->toPlainText()) );
+           }
+        
+        
+        
+        }
+        
+        #else
         OO_Xslt *oohandler = new OO_Xslt(fi.absoluteFilePath(),DOC_1_VERSION);
         currentopenfilerunning = "";   /* only read modus save as fop or html */
         QTextDocument  *oodoc = oohandler->Document();
@@ -665,6 +698,9 @@ void GraphicsView::openFile( const QString file )
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
         pageFull->setDocument(new QTextDocument(oodoc->toPlainText()) );
+        #endif
+        
+        
         
         BookMarkModelRead  *booki = new BookMarkModelRead();
         QStandardItemModel *dat = booki->bookModel();
@@ -676,18 +712,17 @@ void GraphicsView::openFile( const QString file )
         M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
         currentopenfilerunning = "";   /* only read modus save as fop or html */
-        
-        /* crasher  beta 
-        OO_Handler *ooswapper = new OO_Handler( fi.absoluteFilePath() );
-        QTextDocument  *oodoc = ooswapper->document();
-        defaultA4Page.HandlePrint( oodoc );
-        session->current_Page_Format = defaultA4Page;
-        session->AppendPaper(defaultA4Page);
-        pageFull->setDocument(oodoc);
-        */
-        
-        /* take xslt-method beta ....   */
-        
+        #if QT_VERSION >= 0x040500
+        pageFull->setDocument(new QTextDocument());
+        /* start item */
+        force = new PushDoc(this);
+        Ooo = new OOReader(fi.absoluteFilePath());
+        Ooo->moveToThread(force);
+        connect(force, SIGNAL(started()),Ooo,SLOT(read())); 
+        connect(Ooo, SIGNAL(ready()), this, SLOT(drawDoc()));
+        //////connect(Ooo, SIGNAL(statusRead(int,int)), this, SLOT(onRead(int,int)));    
+        force->start();
+        #else
         OO_Xslt *oohandler = new OO_Xslt(fi.absoluteFilePath(),DOC_1_VERSION);
         currentopenfilerunning = "";   /* only read modus save as fop or html */
         QTextDocument  *oodoc = oohandler->Document();
@@ -695,22 +730,24 @@ void GraphicsView::openFile( const QString file )
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
         pageFull->setDocument(new QTextDocument(oodoc->toPlainText()) );
+        #endif
+        
         
         BookMarkModelRead  *booki = new BookMarkModelRead();
         QStandardItemModel *dat = booki->bookModel();
         emit inBookmark(QStringList(),dat);
         QTimer::singleShot(1, this, SLOT(zoomChain())); 
         QDir::setCurrent(dir_);
+        
         return;
-    }  else if ( ext == "html" || ext == "htm" ) {
+    }  else if ( ext == "html" || ext == "htm" || ext == "txt" ) {
          M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
-        buf->LoadFile( currentopenfilerunning );
+        buf->LoadFile( fi.absoluteFilePath() );
         const QByteArray chunkhtml = buf->stream();
         delete buf;
         QTextDocument *htmldoc = new QTextDocument();
         htmldoc->setHtml ( QString ( chunkhtml) );
-        ///////htmldoc->setTextWidth ( defaultA4Page.G_regt.width() );
         defaultA4Page.HandlePrint( htmldoc );
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
@@ -724,7 +761,7 @@ void GraphicsView::openFile( const QString file )
         return;
     }  else if ( ext == "page" ) {
         M_PageSize defaultA4Page;
-        qDebug() << "### pageload .......... ";
+        //////////qDebug() << "### pageload .......... ";
         buf->LoadFile( fi.absoluteFilePath() );
         const QByteArray chunkhtml = buf->stream();
         delete buf;
@@ -747,6 +784,24 @@ void GraphicsView::openFile( const QString file )
     
     QDir::setCurrent(dir_);
 }
+
+
+void GraphicsView::drawDoc()
+{
+    #if QT_VERSION >= 0x040500
+    if (Ooo) {
+    pageFull->setDocument(Ooo->document()->clone());
+    delete Ooo;
+    }
+    if (force) {
+    force->quit();
+    }
+    #endif
+    QTimer::singleShot(1, this, SLOT(zoomChainStop())); 
+}
+
+
+
 
 void GraphicsView::zoomChain()
 {

@@ -1,11 +1,26 @@
 
-message(Need QT Version 4.4.1)
 
 
-##### flag from compiler ??? 
+#Require at least Qt 4.4.1
+QT_VERSION = $$[QT_VERSION]
+QT_VERSION = $$split(QT_VERSION, ".")
+QT_VER_MAJ = $$member(QT_VERSION, 0) 
+QT_VER_MIN = $$member(QT_VERSION, 1) 
+QT_VER_PAT = $$member(QT_VERSION, 2) 
+
+
+
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) {
+    error(MiniScribus requires Qt 4.4.0 or newer. Version $$[QT_VERSION] was detected. optimum 4.5)
+} else {
+   message(..ok qt version..)
+   message(Version $$[QT_VERSION] was detected)
+   message(..ok qt version..)
+}
+
 
 DEFINES += OPENGLINITYES
-LIB_EXTENSION = a   ### compiler default
+LIB_EXTENSION = a
 
 win32-msvc*{
 LIB_EXTENSION = lib  ### compiler option
@@ -42,18 +57,26 @@ LIB_TREE_PATH = $$BUILD_TREE_PATH/lib
 message(Libs install dir  $$LIB_TREE_PATH)
 
 INCLUDEPATH += $$BUILD_TREE_PATH/include
-######INCLUDEPATH += $$BUILD_TREE_PATH/modules/apng
+DEPENDPATH += $$BUILD_TREE_PATH/include
+
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/tidy
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/zip
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/ooo
 INCLUDEPATH += $$BUILD_TREE_PATH/modules/xslt
-
-DEPENDPATH += $$BUILD_TREE_PATH/include
-########DEPENDPATH += $$BUILD_TREE_PATH/modules/apng
 DEPENDPATH += $$BUILD_TREE_PATH/modules/tidy
 DEPENDPATH += $$BUILD_TREE_PATH/modules/zip
 DEPENDPATH += $$BUILD_TREE_PATH/modules/ooo
 DEPENDPATH += $$BUILD_TREE_PATH/modules/xslt
+} else {
+INCLUDEPATH += $$BUILD_TREE_PATH/modules/tidy
+DEPENDPATH += $$BUILD_TREE_PATH/modules/tidy
+}
+
+
+
+
+
 
 !include( ./config_xslt.pri ) {
 message( "../config_xslt.pri not found" )

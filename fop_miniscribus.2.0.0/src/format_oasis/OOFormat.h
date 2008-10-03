@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QDomDocument>
 #include <QTextTableFormat>
-#include "OOColorName.h"
+#include "FoColorName.h"
 #include <QTextDocument>
 #include <QApplication>
 #include <QColor>
@@ -12,8 +12,8 @@
 
 
 
-
-static const int InterSpace = 15;  /* distance from page 1 to 2 */
+/*
+static const int InterSpace = 15;
 static const int SliderTopHeight = 28;
 static const int SliderLeftHeight = 28;
 static const int MaximumPages = 99;
@@ -21,13 +21,21 @@ static const int BorderShadow = 5;
 
 static const int PageSizeID = 824;
 static const int PageMarginID = 825;
-static const int LayerCss2ID = 826;  /* layer css on documents propritety as QString */
+static const int LayerCss2ID = 826;  
 static const int CellBorderStyleID = 827;
 
 static const qreal DEBUgletterspacing = 99.9;
 static const int DEBUgdefaultFontPointSize = 10;
 
 static const int CellDomelementID = 2308;
+*/
+
+static const qreal DEBUgletterspacing = 99.9;
+static const int DEBUgdefaultFontPointSize = 10;
+static const int LayerCss2ID = 826;  
+static const int CellBorderStyleID = 827;
+
+
 
 #define _LINK_COLOR_ \
              QColor("#dc0000")
@@ -56,9 +64,8 @@ static QString bulletChar(const QTextBlock &block)
 */
 
 QString  ootrimmed( QString txt , const QString txttransform = QString("none") );
-QTextCharFormat PreFormatChar( QTextCharFormat format = QTextCharFormat() );
-QTextBlockFormat DefaultMargin( QTextBlockFormat rootformats = QTextBlockFormat() );
-QTextCharFormat DefaultCharFormats( bool qtwritteln = false , QTextCharFormat format = QTextCharFormat()  );
+QTextBlockFormat OODefaultMargin( QTextBlockFormat rootformats = QTextBlockFormat() );
+QTextCharFormat OODefaultCharFormats( bool qtwritteln = false , QTextCharFormat format = QTextCharFormat()  );
 QByteArray CatDomElement( const QDomElement e );
 #ifdef _OOREADRELEASE_
 QString cssGroup( const QDomElement e );
@@ -136,8 +143,6 @@ class ReadWriteBuf
   QDomDocument doc;
   QBuffer *d;
 };
-
-
 
 
 

@@ -1,7 +1,7 @@
 #ifndef MINISCRIBUS_CONFIG_H
 #define MINISCRIBUS_CONFIG_H
 
-#include "xslt_convert.h"
+#include <QtCore>
 #include <QDomElement>
 #include <stdio.h>
 #include <math.h>
@@ -173,7 +173,7 @@ static inline bool AllowtoBreack( const QDomElement e )
 static inline QStringList KnowMimeFile()
 {
  QStringList support;
- support << "fo" << "fop" << "page" "fop.gz" << "fo.gz" << "sxw" << "stw" << "odt" << "ott" << "htm" << "html"; 
+ support << "fo" << "fop" << "page" "fop.gz" << "fo.gz" << "sxw" << "stw" << "odt" << "ott" << "htm" << "html" << "txt"; 
  return support;
 }
                
@@ -184,9 +184,13 @@ static inline QString FileFilterHaving()
   filter = "";
   filter += QString( "FOP file" ) + " (*.fop *.fop.gz *.fo *.fo.gz *.xml);;";
   filter+= QString( "MiniScribus binary stream file" ) + " (*.page);;"; 
+  #if QT_VERSION >= 0x04050
+  /* xslt from qt 4.5  must fix not run having time for old format OO 1 */
+  #else
   filter+= QString( "OpenOffice 1.1 file format" ) + " (*.sxw *.stw);;"; 
+  #endif
   filter+= QString( "OpenOffice 2.4 file format" ) + " (*.odt *.ott);;"; 
-  filter+= QString( "XHTML file format" ) + " (*.htm *.html);;"; 
+  filter+= QString( "XHTML file format" ) + " (*.htm *.html *.txt);;"; 
   //////filter += ")";
   return filter;
 }

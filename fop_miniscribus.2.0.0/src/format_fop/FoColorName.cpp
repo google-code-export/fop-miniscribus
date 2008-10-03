@@ -1,17 +1,23 @@
 
+#include "FoColorName.h"
 
 
-#include <QDomDocument>
-#include <QTextTableFormat>
-#include "OOColorName.h"
-#include <QTextDocument>
+/*  QColor  alpha color 0 - 100%  100% = full transparent */
+
+qreal OoColorAlpha( const int i )
+{
+    if (i > 0 && i < 101) {
+    return 255 - ALPHACOLPER(i);
+    } else {
+    return 255;
+    }
+}
 
 
-FopColor::FopColor( const QString colorchunk , FopColor::AlternateColor col )
+
+FopColor::FopColor()
 {
     foplist.clear();
-
-    
     record("aliceblue" 	,QColor(240, 248, 255,255));
     record("authoren"	,QColor(240, 255, 255,255));
     record("scribe"	,QColor(240, 255, 255,255));
@@ -190,7 +196,7 @@ FopColor::FopColor( const QString colorchunk , FopColor::AlternateColor col )
           
     /////////////////qDebug() << "### avaiablelist.size()   " << avaiablelist.size();
           
-    currentcolor = foColor(colorchunk,col);
+    currentcolor = foColor("scribe",Transparent);
 }
 
 
@@ -277,19 +283,19 @@ QPixmap FopColor::createColorMap( const QString colorchunk )
 }
 
 
-
-
 void FopColor::record( const QString colorchunk , QColor item )
 {
     foplist.insert(colorchunk,item);
 }
 
 
-QString metrics( const qreal screenpoint )
-{
-   return QString("%1mm").arg(Pointo(screenpoint,"mm"));
-}
 
+
+
+qreal FopInt( const QString datain )
+{
+    return Unit(datain);
+}
 
 
 qreal Unit( const QString datain )
@@ -465,6 +471,22 @@ qreal ToPoint( qreal unit , const QString unita )
     }
     return ri;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

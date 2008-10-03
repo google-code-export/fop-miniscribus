@@ -9,9 +9,10 @@
 
 #include <QDomDocument>
 #include <QTextTableFormat>
-
-#include "OOColorName.h"
 #include "OOFormat.h"
+
+#include "OOFormat.h"
+
 
 
 QMap<QString,QByteArray> unzipstream( const QString file );
@@ -42,43 +43,6 @@ ChildImport::ChildImport( QIODevice* device = 0 );
 void ChildImport::copyDeep( QIODevice* device , QXmlStreamWriter &out  );
 };
 
-
-class LoadGetImage : public QHttp
-{
-    Q_OBJECT
-//
-public: 
-     LoadGetImage( const QString nr , QUrl url_send );
-     void Start();
-     inline int Htpp_id() { return Http_id; } 
-     inline QPixmap pics() { return resultimage; } 
-     QString cid;
-     int Http_id;
-    QHttpRequestHeader header;
-    QUrl url;
-    QPixmap resultimage;
-    signals:
-      void take(QString);
-    public slots:
-     void ImageReady( bool error );
-};
-
-
-class Gloader : public QThread
-{
-    Q_OBJECT
-     
-public:
-  void Setting( QObject *parent , const QString id , QUrl url_send ); 
-protected:
-  void run();
-  signals:
-private:
-    QString cid;
-    QUrl url;
-    LoadGetImage *Rhttp;
-    QObject* receiver;
-};
 
 
 

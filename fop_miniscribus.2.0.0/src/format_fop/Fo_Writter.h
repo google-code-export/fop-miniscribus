@@ -7,6 +7,8 @@
 /* session file !!! */
 #include <QGraphicsRectItem>
 #include "Layer_Absolute_Floating.h"
+#include "FoColorName.h"   /* unit cm mm point ecc...*/
+
 
 
 typedef enum

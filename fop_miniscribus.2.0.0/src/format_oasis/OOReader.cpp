@@ -53,66 +53,6 @@ QMap<QString,QByteArray> unzipstream( const QString file )
 
 
 
-
-
-
-
-
-
-/* image get remote */
-
-
-LoadGetImage::LoadGetImage( const QString nr , QUrl url_send  )
-		: QHttp(url_send.host(),QHttp::ConnectionModeHttp ,80)
-{
-	url = url_send;
-	cid = nr;
-	setHost(url_send.host() , 80);
-}
-
-void LoadGetImage::Start()
-{
-	const QString METHOD =  "GET";
-	const QString agent = QString("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
-	header.setRequest(METHOD,url.path(),1,1);
-	header.setValue("Accept-Charset","ISO-8859-1,utf-8;q=0.7,*;q=0.7");
-	header.setValue("Host",url.host());
-	header.setValue("User-Agent",agent);
-	connect(this, SIGNAL(done(bool)), this , SLOT(ImageReady(bool)));
-	Http_id = request(header,0,0);
-}
-
-void LoadGetImage::ImageReady( bool error )
-{
-	if (!error) {
-		resultimage.loadFromData(readAll());
-		if (!resultimage.isNull()) {
-			emit take(cid);
-		}
-
-
-	}
-}
-
-
-void Gloader::Setting( QObject *parent , const QString  id , QUrl url_send )
-{
-	receiver = parent;
-	cid = id;
-	url = url_send;
-	setTerminationEnabled(true);
-}
-
-void Gloader::run()
-{
-	Rhttp = new LoadGetImage(cid,url);
-	connect(Rhttp, SIGNAL(take(QString)), receiver , SLOT(in_image(QString)));
-	Rhttp->Start();
-	exec();
-}
-
-
-
 /* -------------------------------------------------------------------------------------------------------------------------*/
 /* ----------------------------------------------- reader --------------------------------------------------------------------------*/
 /* -------------------------------------------------------------------------------------------------------------------------*/
@@ -158,13 +98,14 @@ void OOReader::read()
 
 void OOReader::in_image( const QString imagename )
 {
+    /*
 	LoadGetImage *ht = qobject_cast<LoadGetImage *>(sender());
 	if (ht) {
 		QPixmap  imagen = ht->pics();
-		qDebug() << "### remote image incomming " << imagename;
 		Qdoc->addResource(QTextDocument::ImageResource,QUrl(imagename),imagen);
 		emit ready();
 	}
+    */
 }
 
 
@@ -382,8 +323,8 @@ bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int proces
 
 	QDomElement firstpara = ul_blck.firstChildElement("text:p");
 	const int CCpos = cur.position();
-	QTextCharFormat spanFor = DefaultCharFormats(QTWRITTELN);
-	QTextBlockFormat paraFormat = DefaultMargin();
+	QTextCharFormat spanFor = OODefaultCharFormats(QTWRITTELN);
+	QTextBlockFormat paraFormat = OODefaultMargin();
 	if (!ul_blck.isNull() && !firstpara.isNull()) {
 		cur.insertBlock();   /* make first block  to convert to list format */
 		cur.beginEditBlock();
@@ -405,9 +346,9 @@ bool OOReader::convertList( QTextCursor &cur , QDomElement e  , const int proces
 
 QPair<QTextBlockFormat,QTextCharFormat> OOReader::paraFormatCss2( const QString name , QTextBlockFormat parent , bool HandleSpace  )
 {
-	QTextBlockFormat paraFormat = DefaultMargin();
+	QTextBlockFormat paraFormat = OODefaultMargin();
 	paraFormat.merge(parent);
-	QTextCharFormat charFormat = DefaultCharFormats(QTWRITTELN);
+	QTextCharFormat charFormat = OODefaultCharFormats(QTWRITTELN);
 	if (css2[name].valid) {
 		StyleInfo format = css2[name];
 		charFormat.merge(format.ofchar);
@@ -421,7 +362,7 @@ QPair<QTextBlockFormat,QTextCharFormat> OOReader::paraFormatCss2( const QString 
 
 QTextCharFormat OOReader::charFormatCss2( const QString name , QTextCharFormat parent , bool HandleSpace  )
 {
-	QTextCharFormat base = DefaultCharFormats(QTWRITTELN);
+	QTextCharFormat base = OODefaultCharFormats(QTWRITTELN);
 	base.merge(parent);
 	if (css2[name].valid && parent.isValid()) {
 		StyleInfo format = css2[name];
@@ -446,7 +387,7 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
 		cur.beginEditBlock();
 	}
 	if (!paraFormat.isValid () ) {
-		paraFormat = DefaultMargin();
+		paraFormat = OODefaultMargin();
 	}
 	cur.setBlockFormat(paraFormat);
 	cur.setCharFormat(spanFor);
@@ -490,9 +431,9 @@ bool OOReader::convertBlock( QTextCursor &cur , QDomElement e  , const int proce
 			pretag.prepend("<pre>");
 			pretag.append("</pre>");
 			QTextDocumentFragment fragment = QTextDocumentFragment::fromHtml(pretag);
-			cur.setCharFormat ( PreFormatChar() );
+			///////cur.setCharFormat ( OOPreFormatChar() );
 			cur.insertFragment(fragment);
-			cur.setCharFormat ( PreFormatChar() );
+			/////////cur.setCharFormat ( PreFormatChar() );
 		}
 		child = child.nextSibling();
 	}
@@ -584,9 +525,11 @@ bool OOReader::convertImage( QTextCursor &cur , const QDomElement e , QTextCharF
 		}
 		else if (turi.scheme() != "file") {
 			/* remote url take to draw ? and TimestampsMs is url */
+            /*
 			Gloader *grephttp = new Gloader();
 			grephttp->Setting(this,TimestampsMs,turi);
 			grephttp->start(QThread::LowPriority);
+            */
 		}
 
 		if (!drawimage.isNull()) {
@@ -651,7 +594,7 @@ bool OOReader::convertFragment( QTextCursor &cur , const QDomElement e , QTextCh
 	if (e.isNull()) {
 		return false;
 	}
-	QTextCharFormat styleroot = DefaultCharFormats(QTWRITTELN);
+	QTextCharFormat styleroot = OODefaultCharFormats(QTWRITTELN);
 	styleroot.merge(parent);
 	cur.setCharFormat(styleroot);
 	if ( e.tagName() == QLatin1String( "text:span" ) ) {
@@ -840,18 +783,18 @@ OOReader::StyleInfo& OOReader::StyleInfo::operator=(const StyleInfo &d)
 }
 
 OOReader::StyleInfo::StyleInfo()
-		: name("erno"), position(0),type(obodypage),valid(false),filled(false),ofchar(DefaultCharFormats(true))
+		: name("erno"), position(0),type(obodypage),valid(false),filled(false),ofchar(OODefaultCharFormats(true))
 {
 	QTextFormat page;
 	/* default page  size if non can read */
 	/* if body size page is found redraw all PageSizeID - PageMarginID
 	to set % widht to elements if having and at endo to know pagecount */
-	QSizeF defaultBody(CM_TO_POINT(20.999),CM_TO_POINT(29.699));
-	FoRegion marinArea;
-	marinArea.toAll(CM_TO_POINT(1.8));
-	marinArea.padding = MM_TO_POINT(5);
-	page.setProperty(PageSizeID,defaultBody);
-	page.setProperty(PageMarginID,marinArea);
+	/////////QSizeF defaultBody(CM_TO_POINT(20.999),CM_TO_POINT(29.699));
+	////////////FoRegion marinArea;
+	////////////marinArea.toAll(CM_TO_POINT(1.8));
+	///////////marinArea.padding = MM_TO_POINT(5);
+	//////////page.setProperty(PageSizeID,defaultBody);
+	////////page.setProperty(PageMarginID,marinArea);
 	of = page;
 }
 
@@ -1116,14 +1059,14 @@ void OOReader::TextBlockFormatPaint( const QString name , const QDomElement e )
 	if (name.size() < 1) {
 		return;
 	}
-	QTextFormat bblock = TextBlockFormFromDom(e,DefaultMargin());
+	QTextFormat bblock = TextBlockFormFromDom(e,OODefaultMargin());
 	QDomElement es = e.nextSiblingElement ("style:text-properties");
 	QDomElement ei = e.nextSiblingElement ("style:background-image");
 
 	if (css2[name].valid) {
 		css2[name].of = bblock;
 		if (!es.isNull()) {
-			css2[name].ofchar = TextCharFormFromDom(es,DefaultCharFormats(QTWRITTELN));
+			css2[name].ofchar = TextCharFormFromDom(es,OODefaultCharFormats(QTWRITTELN));
 		}
 		css2[name].filled = true;
 #ifdef _OOREADRELEASE_
@@ -1141,7 +1084,7 @@ void OOReader::TextCharFormatPaint( const QString name , const QDomElement e )
 	if (name.size() < 1) {
 		return;
 	}
-	QTextCharFormat  Charformat = TextCharFormFromDom(e,DefaultCharFormats(QTWRITTELN));
+	QTextCharFormat  Charformat = TextCharFormFromDom(e,OODefaultCharFormats(QTWRITTELN));
 	if (css2[name].valid) {
 		css2[name].filled = true;
 #ifdef _OOREADRELEASE_
