@@ -9,12 +9,20 @@ extern void qt_mac_set_dock_menu(QMenu *);
 #include <Carbon/Carbon.h>
 #endif
 
-#if defined Q_WS_MAC
+#if defined _COMPOSE_STATIC_
 #include <QtPlugin>
+#if defined _USE_qjpeg
 Q_IMPORT_PLUGIN(qjpeg)
+#endif
+#if defined _USE_qmng
 Q_IMPORT_PLUGIN(qmng)
+#endif
+#if defined _USE_qgif
 Q_IMPORT_PLUGIN(qgif)
+#endif
+#if defined _USE_qtiff
 Q_IMPORT_PLUGIN(qtiff)
+#endif
 #endif
 
 

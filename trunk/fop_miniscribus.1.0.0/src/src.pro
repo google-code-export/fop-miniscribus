@@ -7,22 +7,45 @@ TARGET = MiniScribus
 DEPENDPATH += . floating_box ui
 INCLUDEPATH += . floating_box ui
 
-TARGET = xx
 
-DESTDIR	+= ./
+DESTDIR	+= ../
 
 win32:RC_FILE = win.rc
-CONFIG += console
 CONFIG   += qt warn_off release
 
 
 macx {
 RC_FILE = zzz.icns
-QTPLUGIN     += qmng qjpeg qgif qtiff
 QMAKE_INFO_PLIST = Info.plist
 QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
 CONFIG+=x86 ppc
 }
+
+
+contains(CONFIG, static): {
+
+       ######### on main.cpp use defined ########
+       
+       DEFINES += _COMPOSE_STATIC_
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqjpeg.a) {
+            QTPLUGIN += qjpeg
+            DEFINES += _USE_qjpeg
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqgif.a) {
+            QTPLUGIN += qgif   
+            DEFINES += _USE_qgif            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqmng.a) {
+            QTPLUGIN += qmng   
+            DEFINES += _USE_qmng            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqtiff.a) {
+            QTPLUGIN += qtiff   
+            DEFINES += _USE_qtiff            
+        }
+}
+
+
 
 
 INCLUDEPATH +=  ../fop_lib ../fop_lib/zip
