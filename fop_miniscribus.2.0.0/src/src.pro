@@ -79,6 +79,28 @@ SOURCES += format_oasis/GZip.cpp format_oasis/OOFormat.cpp format_oasis/OOReader
 }
 
 
+contains(CONFIG, static): {
+
+       ######### on main.cpp use defined ########
+       
+       DEFINES += _COMPOSE_STATIC_
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqjpeg.$$LIB_EXTENSION) {
+            QTPLUGIN += qjpeg
+            DEFINES += _USE_qjpeg
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqgif.$$LIB_EXTENSION) {
+            QTPLUGIN += qgif   
+            DEFINES += _USE_qgif            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqmng.$$LIB_EXTENSION) {
+            QTPLUGIN += qmng   
+            DEFINES += _USE_qmng            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqtiff.$$LIB_EXTENSION) {
+            QTPLUGIN += qtiff   
+            DEFINES += _USE_qtiff            
+        }
+}
 
 
 
