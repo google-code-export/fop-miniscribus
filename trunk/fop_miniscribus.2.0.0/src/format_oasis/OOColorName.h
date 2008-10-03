@@ -1,5 +1,5 @@
-#ifndef FOPCOLORFORMAT_H
-#define FOPCOLORFORMAT_H
+#ifndef OOCOLORFORMAT_H
+#define OOCOLORFORMAT_H
 
 
 #include <QtCore>
@@ -34,16 +34,7 @@
 
 
 
-/*  QColor  alpha color 0 - 100%  100% = full transparent */
-#define ALPHACOLPER(aa) ((aa)*2.555555)
-static inline qreal OoColorAlpha( const int i )
-{
-    if (i > 0 && i < 101) {
-    return 255 - ALPHACOLPER(i);
-    } else {
-    return 255;
-    }
-}
+
 
 
 #define _USELISTAPACHECOLOR_  1
@@ -143,38 +134,6 @@ private:
 };
 
 
-class FoRegion
-{
-public:
-  FoRegion();
-  FoRegion& operator=( const FoRegion& d );
-  operator QVariant() const
-  {
-    return QVariant::fromValue(*this);
-  }
-  QString hash() const;
-  void styleContainer( QDomElement e , const qreal height = 0 );
-  void styleSmallDocument( QTextDocument *doc );
-  void styleReadDocument( const QTextDocument *doc );
-  void fomax(  FoRegion& m ,  FoRegion& d );
-  /* same margin to all */
-  void toAll( const qreal unique );
-  void marginNoBody();
-  QMap<QString,QPen> penstyle();  /* return avaiable pen */
-  QColor bg; /* background color */
-  QColor bog; /* border color */
-  qreal margin_top;
-  qreal margin_bottom;
-  qreal margin_left;
-  qreal margin_right;
-  qreal border;
-  qreal padding;
-  QPen rpen;
-  bool enable;
-  QByteArray edom;   /* dome element*/
-};
-
-Q_DECLARE_METATYPE(FoRegion);
 
 
 

@@ -4,16 +4,13 @@
 #include <QDebug>
 #include <QDomDocument>
 #include <QTextTableFormat>
-#include "FoColorName.h"
+#include "OOColorName.h"
 #include <QTextDocument>
 #include <QApplication>
 #include <QColor>
 #include <QCryptographicHash>
 
 
-
-
-    
 
 
 static const int InterSpace = 15;  /* distance from page 1 to 2 */

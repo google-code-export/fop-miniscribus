@@ -9,10 +9,6 @@ static QString txtcapitalize( QString & s)
 
 
 
-
-
-
-
 QByteArray CatDomElement( const QDomElement e )
 {
     if (e.isNull()) {
