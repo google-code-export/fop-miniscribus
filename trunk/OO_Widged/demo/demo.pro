@@ -21,25 +21,41 @@ win32:LIBS	+= -luser32
 
 win32:RC_FILE = win.rc
 
+### compiler default
+LIB_EXTENSION = a  
+
+win32-msvc*{
+LIB_EXTENSION = lib
+DEFINES += VISUALSTUDIOCC_
+CONFIG += embed_manifest_exe 
+message(win32 Visual Studio 2005 Compiler setting ...................................................................) 
+}
+
+win32-g++{
+DEFINES += MINGWCC_
+message(win32 MINGW Compiler setting ................................................................................) 
+}
+
+
 
 contains(CONFIG, static): {
 
        ######### on main.cpp use defined ########
        
        DEFINES += _COMPOSE_STATIC_
-        exists($$[QT_INSTALL_PLUGINS]/imageformats/qjpeg.a) {
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqjpeg.$$LIB_EXTENSION) {
             QTPLUGIN += qjpeg
             DEFINES += _USE_qjpeg
         }
-        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqgif.a) {
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqgif.$$LIB_EXTENSION) {
             QTPLUGIN += qgif   
             DEFINES += _USE_qgif            
         }
-        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqmng.a) {
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqmng.$$LIB_EXTENSION) {
             QTPLUGIN += qmng   
             DEFINES += _USE_qmng            
         }
-        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqtiff.a) {
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqtiff.$$LIB_EXTENSION) {
             QTPLUGIN += qtiff   
             DEFINES += _USE_qtiff            
         }
