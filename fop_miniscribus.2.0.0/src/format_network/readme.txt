@@ -1,0 +1,1 @@
+  network cache to get remote image QNetworkAccessManager
