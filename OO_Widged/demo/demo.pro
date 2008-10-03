@@ -16,10 +16,37 @@ DESTDIR += ../
 ##########console
 CONFIG   +=  qt release warn_off
 
-LIBS   += -lz
+##########LIBS   += -lz
 win32:LIBS	+= -luser32
 
 win32:RC_FILE = win.rc
+
+
+contains(CONFIG, static): {
+
+       ######### on main.cpp use defined ########
+       
+       DEFINES += _COMPOSE_STATIC_
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/qjpeg.a) {
+            QTPLUGIN += qjpeg
+            DEFINES += _USE_qjpeg
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqgif.a) {
+            QTPLUGIN += qgif   
+            DEFINES += _USE_qgif            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqmng.a) {
+            QTPLUGIN += qmng   
+            DEFINES += _USE_qmng            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqtiff.a) {
+            QTPLUGIN += qtiff   
+            DEFINES += _USE_qtiff            
+        }
+}
+
+
+
 
 # Input
 HEADERS += textedit.h \
