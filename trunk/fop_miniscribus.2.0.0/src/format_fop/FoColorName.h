@@ -1,5 +1,5 @@
-#ifndef OOCOLORFORMAT_H
-#define OOCOLORFORMAT_H
+#ifndef FOPCOLORFORMAT_H
+#define FOPCOLORFORMAT_H
 
 
 #include <QtCore>
@@ -8,13 +8,10 @@
 #include <QColor>
 #include <QMap>
 #include <QPixmap>
-#include <QDomDocument>
-#include <QTextTableFormat>
-#include <QTextFrameFormat>
-#include <QTextFrame>
-#include <QDomDocument>
-#include <QTextTableFormat>
-#include <QTextDocument>
+
+
+
+
 
 #define POINT_TO_CM(cm) ((cm)/28.3465058)
 #define POINT_TO_MM(mm) ((mm)/2.83465058)     ////////  0.352777778
@@ -33,11 +30,79 @@
 #define CC_TO_POINT(cc) ((cc)*12.840103)
 
 
+/* fix from Peter Hohl to make image running on dpi unit! */
+static inline qreal DPIactualDiff()
+{
+    QPixmap pixmap(50, 80);
+    pixmap.fill(Qt::transparent);
+    int hi = qMax(pixmap.logicalDpiY(),72);
+    int mi = qMin(pixmap.logicalDpiY(),72);
+    if (hi == mi) {
+    return 1; /* no difference increase or degrease 1:1 running 72 DPI  */
+    }
+    const qreal precision = 0.09741;   /* gimp precision to image */
+    ////////return 1;   /* 1:1 to test */
+    int diff = hi - mi;
+    qreal increments = 1.;
+    if (mi == 72) {  //////  more >>>
+    return increments + (diff / 100.0) + precision;
+    } else {   ///////////// down <<<
+    return increments - (diff / 100.0) + precision;
+    }
+}
+
+#define PDIFIX(ii) ((ii)*DPIactualDiff())
 
 
+QString metrics( const qreal screenpoint );
+/* metric conversion from and to */
+qreal FopInt( const QString datain );
+qreal Unit( const QString datain );
+qreal Pointo( qreal unit , const QString unita );
+qreal ToUnit( qreal unit , const QString unita );
+qreal ToPoint( qreal unit , const QString unita );
 
 
 #define _USELISTAPACHECOLOR_  1
+#define ALPHACOLPER(aa) ((aa)*2.555555)
+qreal OoColorAlpha( const int i );
+
+class QColor;
+class FopColor{
+public:
+    FopColor();
+
+typedef enum
+{  
+  DarkColor = 100,
+  LightColor = 200,
+  Transparent = 300
+} AlternateColor;
+
+
+QColor foColor( const QString colorchunk , FopColor::AlternateColor col = DarkColor );
+QString foName( const QColor e );
+QPixmap createColorMap( const QString colorchunk );
+inline QStringList fopListColor() { return fopcolorNames; }
+inline QColor color() { return currentcolor; }
+inline int size() { return fopcolorNames.count(); }
+protected:
+   QMap<QString,QColor> foplist;   /* forever clear only construct */
+   QMap<QString,QColor> avaiablelist; 
+   QStringList fopcolorNames;
+private:
+    QColor alternateColor( FopColor::AlternateColor col );
+   QColor currentcolor;
+   void record( const QString colorchunk , QColor item );
+};
+
+
+
+
+
+
+
+
 
 /*
 
@@ -69,69 +134,11 @@
 
 
 */
-/* fix from Peter Hohl to make image running on dpi unit! */
-static inline qreal DPIactualDiff()
-{
-    QPixmap pixmap(50, 80);
-    pixmap.fill(Qt::transparent);
-    int hi = qMax(pixmap.logicalDpiY(),72);
-    int mi = qMin(pixmap.logicalDpiY(),72);
-    if (hi == mi) {
-    return 1; /* no difference increase or degrease 1:1 running 72 DPI  */
-    }
-    const qreal precision = 0.09741;   /* gimp precision to image */
-    ////////return 1;   /* 1:1 to test */
-    int diff = hi - mi;
-    qreal increments = 1.;
-    if (mi == 72) {  //////  more >>>
-    return increments + (diff / 100.0) + precision;
-    } else {   ///////////// down <<<
-    return increments - (diff / 100.0) + precision;
-    }
-}
-
-#define PDIFIX(ii) ((ii)*DPIactualDiff())
-
-
-QString metrics( const qreal screenpoint );
-/* metric conversion from and to */
-qreal Unit( const QString datain );
-qreal Pointo( qreal unit , const QString unita );
-qreal ToUnit( qreal unit , const QString unita );
-qreal ToPoint( qreal unit , const QString unita );
 
 
 
-class FopColor
-{
 
-public:
-    
-typedef enum
-{  
-  DarkColor = 100,
-  LightColor = 200,
-  Transparent = 300
-} AlternateColor;
-///static 
-FopColor( const QString colorchunk = QString() , FopColor::AlternateColor col = Transparent );
-QColor foColor( const QString colorchunk , FopColor::AlternateColor col = DarkColor );
-QString foName( const QColor e );
-QPixmap createColorMap( const QString colorchunk );
-/////  static to retun name human readable ? 
-inline QStringList fopListColor() { return fopcolorNames; }
-inline QColor color() { return currentcolor; }
-inline int size() { return fopcolorNames.count(); }
-protected:
-   QMap<QString,QColor> foplist;   /* forever clear only construct */
-   QMap<QString,QColor> avaiablelist; 
-   QStringList fopcolorNames;
-private:
-    QColor alternateColor( FopColor::AlternateColor col );
-   QColor currentcolor;
-   void record( const QString colorchunk , QColor item );
 
-};
 
 
 

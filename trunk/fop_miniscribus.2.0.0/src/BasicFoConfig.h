@@ -10,6 +10,81 @@
 #include "Config.h"
 #include <QSvgRenderer>
 
+#include "FoColorName.h"   /* unit cm mm point ecc...*/
+
+
+
+#if QT_VERSION >= 0x04050
+#include <QXmlQuery>
+#include "OOReader.h"
+
+class StreamBuf
+{
+  public:
+  StreamBuf() 
+  :d(new QBuffer())
+  {
+  d->open(QIODevice::ReadWrite);
+  }
+  ~StreamBuf() { d->close(); }
+  bool clear() {
+    d->write(QByteArray()); 
+    return d->bytesAvailable() == 0 ? true : false;
+  }
+  QIODevice *device() { return d; }
+  QByteArray stream() { return d->data(); }
+  /* <?xml version="1.0" encoding="utf-8"?> */
+  QString data() { return QString::fromUtf8(stream()); }
+  QBuffer *d;
+}; 
+
+
+class XsltConText
+{
+public:
+ XsltConText( const QString xml , const QString xslt )
+  :d(new StreamBuf())
+{
+  xquery = QXmlQuery(QXmlQuery::XSLT20);
+  xquery.setFocus(QUrl(xml));
+  xquery.setQuery(QUrl(xslt));
+}
+
+~XsltConText()
+{
+  delete d;
+}
+
+void setVariable( const QString name , QVariant value )
+{
+    xquery.bindVariable(name,value);
+}
+
+QString read()
+{ 
+  xquery.evaluateTo(d->device());
+  return d->data();
+}
+
+
+QXmlQuery xquery;
+StreamBuf *d;
+
+};
+
+////////QXmlQuery xquery(QXmlQuery::XSLT20);
+/////// xquery.setFocus(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/Xsltqt5/doc/odtdoc.xml"));
+/* variable  <xsl:param name="unixtime" select="'0000000'" />  on style */
+/////xquery.bindVariable("unixtime", QVariant(timer1.toTime_t()));
+/* other variable */
+////////xquery.setQuery(QUrl("http://fop-miniscribus.googlecode.com/svn/trunk/doc/odt-fo/ooo2xslfo-writer.xsl"));
+//////////xquery.evaluateTo(buf->device());
+#else
+#include "xslt_convert.h"
+#endif
+
+
+
 #define _GSCACHE_ \
              QString("%1/.ghosti_CACHE/").arg(QDir::homePath())    /* gs tmp */
 
@@ -21,12 +96,6 @@ QIcon createPenStyleIco( QPen item);
 
 /* allowed char on file name image to save */
 QString Imagename( const  QString txt );
-/* 12mm to point , 12cm , 2inch */
-/* metric conversion from and to */
-qreal FopInt( const QString datain );
-qreal Pointo( qreal unit , const QString unita );
-qreal ToUnit( qreal unit , const QString unita );
-qreal ToPoint( qreal unit , const QString unita );
 
 bool Cache( const QString dirpath );  /* mkdir */
 QString PathConvert( QString path );  /* QDir::toNativeSeparators  */

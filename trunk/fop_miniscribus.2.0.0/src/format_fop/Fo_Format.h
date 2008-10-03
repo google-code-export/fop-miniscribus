@@ -8,13 +8,19 @@
 #include <QDomElement>
 #include <QTextTableCellFormat>
 #include <QSvgRenderer>
-#include "ziphandle.h"
+
+
+
+#include "Tools_Basic.h"
+
+
 #include "SessionManager.h"
 #include "Fop_Leader_Element.h"
 #include "FoColorName.h"
 #include "Image_Page_Struct_Mime.h"
 #include "PageFormatGroup.h"
 
+#include <zlib.h>
 
 
 

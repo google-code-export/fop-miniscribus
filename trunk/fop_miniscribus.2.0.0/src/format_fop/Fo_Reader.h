@@ -104,6 +104,15 @@ public slots:
 
 }
 
+
+
+#if QT_VERSION >= 0x040500
+
+
+
+#else
+
+
 namespace OpenOffice {
     
   enum OOTYPE {
@@ -164,7 +173,7 @@ public slots:
 
 
 
-
+#endif
 
 
 

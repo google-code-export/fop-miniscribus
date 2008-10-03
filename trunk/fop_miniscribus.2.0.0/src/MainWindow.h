@@ -14,7 +14,13 @@
 #include "Text_Api.h"
 #include "Layer_Auto_Extended.h"
 #include "Scribe_Parser.h"
-#include "ziphandle.h"   ////// open file gzip 
+
+#if QT_VERSION >= 0x040500
+#include "OOReader.h"
+#else
+
+#endif
+
 
 
 
@@ -42,6 +48,10 @@ protected:
 QToolButton *tbooks;
 QDockWidget *pdfBookMarkManager;
 BookTree *treeBooks;
+
+
+
+
 bool eventFilter(QObject *obj, QEvent *event);
 void resizeEvent ( QResizeEvent * e );
 void prepareDocks();
@@ -90,7 +100,10 @@ protected:
     bool isFopInstall();
     bool fopInstaller();
     void fopExcec( QStringList commandlist , const QString file );
-  
+    #if QT_VERSION >= 0x040500
+    OOReader *Ooo;
+    PushDoc *force;
+    #endif
 
 private:
     
@@ -125,6 +138,9 @@ void forceResizeIntern();
 void cursorChange(bool);
 void sendinBookmark(QStringList);
 void openMasterMainFile();
+
+/* only qt4.5 qtextdocument performance ok */
+void drawDoc();
 };
 
 

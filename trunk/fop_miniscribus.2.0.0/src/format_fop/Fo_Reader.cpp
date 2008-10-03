@@ -2,7 +2,8 @@
 
 #include "Config.h"
 #include "BasicFoConfig.h"
-#include "xslt_convert.h"
+#include "Fo_Format.h"
+
 
 
     ////TAG_NOT_KNOW = 404,
@@ -42,7 +43,7 @@
 
 
 using namespace ApacheFop;
-using namespace OpenOffice;
+
 
 
 Fo_Reader::~Fo_Reader()
@@ -1798,9 +1799,11 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
 }
 
 
+#if QT_VERSION >= 0x040500
 
 
 
+#else
 /*   source  xslt open office document  */
 
 OO_Xslt::OO_Xslt( const QString filedoc , OOTYPE doc )
@@ -1922,7 +1925,7 @@ void OO_Xslt::convertXslt( OOTYPE doc )  {
 
 
 
-
+#endif
 
 
 

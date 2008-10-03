@@ -4,7 +4,7 @@
 
 
 #include "Config.h"
-
+#include "FoColorName.h"   /* unit cm mm point ecc...*/
 
 
 /* http://www.bessrc.aps.anl.gov/software/qt4-x11-4.2.2-browser/d0/dbc/qtextdocument_8cpp-source.html */

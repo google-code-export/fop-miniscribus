@@ -4,8 +4,14 @@
 
 TEMPLATE = lib
 TARGET = txtscribe
-DEPENDPATH += .  ooo tidy zip
-INCLUDEPATH += . ooo tidy zip
+
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
+DEPENDPATH += . tidy zip
+INCLUDEPATH += . tidy zip
+} else {
+DEPENDPATH += . tidy
+INCLUDEPATH += . tidy
+}
 
 
 
@@ -20,22 +26,16 @@ TARGET = libtxtscribe
 
 CONFIG   +=  qt release warn_off staticlib
 
-contains(QT_CONFIG, opengl):QT += opengl
-
-
 !include( ../config.pri ) {
-message( "../config.pri not found" )
+error( "../config.pri not found" )
 }
+
+
            
-           
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
 
 # Input
-HEADERS += ooo/formatproperty.h \
-           ooo/oo_document.h \
-           ooo/oo_handler.h \
-           ooo/styleinformation.h \
-           ooo/styleparser.h \
-           tidy/access.h \
+HEADERS += tidy/access.h \
            tidy/attrdict.h \
            tidy/attrs.h \
            tidy/bestqtidy.h \
@@ -81,11 +81,8 @@ HEADERS += ooo/formatproperty.h \
            zip/ziphandle.h \
            zip/zlib.h \
            zip/zutil.h
-SOURCES += ooo/formatproperty.cpp \
-           ooo/oo_handler.cpp \
-           ooo/styleinformation.cpp \
-           ooo/styleparser.cpp \
-           tidy/access.c \
+           
+SOURCES += tidy/access.c \
            tidy/alloc.c \
            tidy/attrask.c \
            tidy/attrdict.c \
@@ -129,3 +126,64 @@ SOURCES += ooo/formatproperty.cpp \
            zip/unzip.c \
            zip/zip.c \
            zip/zutil.c
+               
+           
+} else {
+
+SOURCES += tidy/access.c \
+           tidy/alloc.c \
+           tidy/attrask.c \
+           tidy/attrdict.c \
+           tidy/attrget.c \
+           tidy/attrs.c \
+           tidy/buffio.c \
+           tidy/charsets.c \
+           tidy/clean.c \
+           tidy/config.c \
+           tidy/entities.c \
+           tidy/fileio.c \
+           tidy/iconvtc.c \
+           tidy/istack.c \
+           tidy/lexer.c \
+           tidy/localize.c \
+           tidy/parser.c \
+           tidy/pprint.c \
+           tidy/streamio.c \
+           tidy/tagask.c \
+           tidy/tags.c \
+           tidy/tidylib.c \
+           tidy/tmbstr.c \
+           tidy/utf8.c
+           
+           
+HEADERS += tidy/access.h \
+           tidy/attrdict.h \
+           tidy/attrs.h \
+           tidy/bestqtidy.h \
+           tidy/buffio.h \
+           tidy/charsets.h \
+           tidy/clean.h \
+           tidy/config.h \
+           tidy/entities.h \
+           tidy/fileio.h \
+           tidy/forward.h \
+           tidy/iconvtc.h \
+           tidy/lexer.h \
+           tidy/message.h \
+           tidy/parser.h \
+           tidy/platform.h \
+           tidy/pprint.h \
+           tidy/streamio.h \
+           tidy/tags.h \
+           tidy/tidy-int.h \
+           tidy/tidy.h \
+           tidy/tidyenum.h \
+           tidy/tmbstr.h \
+           tidy/utf8.h \
+           tidy/version.h
+           
+}
+           
+           
+           
+           
