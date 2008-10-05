@@ -30,6 +30,7 @@ void paintScale( QPainter *p , const QRectF rect , QPair<qreal,qreal> bodyMargin
 QRectF divideRect(const QRectF rect , const int part = 0);
 bool isOnPage(const QRectF rect , const QPointF p , const qreal zoom);
 QRectF moveZero(const QRectF rect );
+void paintArea( QPainter *p , const QRectF rect , QColor col );
 
 #define POINT_TO_CM(cm) ((cm)/28.3465058)
 #define POINT_TO_MM(mm) ((mm)/2.83465058)
