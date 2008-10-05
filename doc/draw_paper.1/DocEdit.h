@@ -12,26 +12,34 @@ class EditArea : public QAbstractScrollArea
 public:
     
      EditArea( QWidget *parent = 0 );
-     inline int xOffset() const { return horizontalScrollBar()->value(); }
-     inline int yOffset() const { return verticalScrollBar()->value(); }
+     QRectF boundingRect() const; /* viewport rect */
      
 protected:
     
      void paintEvent( QPaintEvent *Event );
      void mousePressEvent ( QMouseEvent *e );
      void mouseDoubleClickEvent ( QMouseEvent *e );
+     void mouseMoveEvent ( QMouseEvent *e );
+     void mouseReleaseEvent ( QMouseEvent *e );
      void adjustScrollbars();
+     void cursorCheck();
      void wheelEvent (QWheelEvent * event);
      void resizeEvent(QResizeEvent *e);
      void contextMenuEvent(QContextMenuEvent *event);
      void keyPressEvent ( QKeyEvent * e );
      void cursorRectSlider( const QTextFrameFormat docrootformat  , QPainter *p );
+     bool clickSlider( const QPointF p );
+     inline int xOffset() const { return horizontalScrollBar()->value(); }
+     inline int yOffset() const { return verticalScrollBar()->value(); }
 
 private:
     QRectF sl_cursor[6];
+    QRectF debugRect;
     QPointF maps( QPointF p );
+    QPointF slider_maps( QPointF p , bool top );
     QRectF page;
     qreal mesure; /* fix faktor cm*/
+    qreal border_wi;  /*  border from left to first topslider center zoom */
     QTransform mcurrent;
     QTransform top_matrix;
     QTransform left_matrix;
@@ -43,7 +51,9 @@ private:
     QRectF slider_Horrizzontal_Top;
     QRectF slider_Vertical_Left;
     PDocument *_doc;  ///  
-    void HandleMoveSlider(  QPointF point , bool top = true );
+    bool isOnSlider( const QPointF p );
+    bool HandleMoveSlider(  QPointF point , bool top = true );
+
 signals:
 
 
@@ -53,9 +63,10 @@ public slots:
     void setZoom( const qreal value );
     void zoomIn();
     void zoomOut();
+    void update( const  QRectF rect );
+    void update();
 
 private slots:
-    
 void verticalValue( const int index );
 
 

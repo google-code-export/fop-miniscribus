@@ -18,6 +18,11 @@ void PDocument::init()
 	setDefaultTextOption(opt);
 }
 
+QSizeF PDocument::size()
+{
+    return QTextDocument::pageSize();
+}
+
 QRectF PDocument::boundingRect() const
 {
     return documentLayout()->frameBoundingRect(rootFrame());
