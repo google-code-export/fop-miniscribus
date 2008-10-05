@@ -78,10 +78,13 @@ private:
     QBasicTimer cursorTimeLine;
     bool cursortime;
     bool overwriteMode;
+    bool cursorIsFocusIndicator;
     QTextCursor C_cursor;
     QTextCharFormat LastCharFormat;
     QColor HightlightColor() const;
     int position_selection_start;
+    
+    QPair<int,int> RangeSelection;
 
     void paintEditPage( const int index  , QPainter * painter  , const QRectF viewarea );
     bool cursorMoveKeyEvent(QKeyEvent *e);
@@ -92,6 +95,7 @@ private:
 
 
     void Controller_keyPressEvent ( QKeyEvent * e );
+    void textMoveEvent( const QPointF point  );
 
 
 
