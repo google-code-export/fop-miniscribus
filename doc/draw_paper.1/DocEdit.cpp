@@ -11,96 +11,99 @@ static void paintWidgedDebug( QPainter *p , const QRectF rect )
 
 /**/
 EditArea::EditArea( QWidget *parent )
-  : QAbstractScrollArea(0),page(0,0,0,0),lineTimer(0),
-    workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2),_doc(new PDocument)
+        : QAbstractScrollArea(0),page(0,0,0,0),lineTimer(0),
+        workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2),_doc(new PDocument),overwriteMode(false),
+        position_selection_start(-1)
 {
-  mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
-  _doc->openFile("index.html");
-  adjustScrollbars();
-  connect(verticalScrollBar(), SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
-  resize(700,400);
+    mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
+    _doc->openFile("index.html");
+    C_cursor = QTextCursor(_doc);
+    cursorMovetoPosition(QPointF(0,0));
+    setBlinkingCursorEnabled(true);
+    adjustScrollbars();
+    connect(verticalScrollBar(), SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
+    resize(700,400);
 }
 
 void EditArea::paintEvent( QPaintEvent *Event )
 {
-  lineTimer++;
-  QTransform matrix;  
-  QTextFrameFormat docrootformat = _doc->rootFrame()->frameFormat();
-  QPainter *p = new QPainter( viewport() );
-  p->setRenderHint(QPainter::Antialiasing, true);
-  p->setPen(Qt::NoPen);
-  p->setBrush(_EDITORBGCOLOR_);
-  p->drawRect(Event->rect());
-    
-  if (lineTimer != 1) {
-  const QRectF viewAreaRect(0,0,viewport()->width(),viewport()->height());
-  const int y = yOffset();
-  const int x = xOffset();
-  p->translate(-x,-y);
-  p->setWorldTransform(mcurrent,true);  /*  zoom && center on adjustScrollbars() */
-  p->setBrush(Qt::white);
-  p->drawRect(page);
-      
-    for (int i = 0; i < dotChain.size(); ++i) {
-        const QPointF nowPoint = dotChain.at(i);
-        QRectF fire(nowPoint  - QPointF(8,8),QSizeF(16,16));
-                p->setBrush(Qt::red);
-                p->setPen(Qt::white);
-                p->setOpacity(0.5);
-                p->drawEllipse(fire);
-                p->setOpacity(1.0);
+    lineTimer++;
+    QTransform matrix;
+    QTextFrameFormat docrootformat = _doc->rootFrame()->frameFormat();
+    QPainter *p = new QPainter( viewport() );
+    p->setRenderHint(QPainter::Antialiasing, true);
+    p->setPen(Qt::NoPen);
+    p->setBrush(_EDITORBGCOLOR_);
+    p->drawRect(Event->rect());
+
+    if (lineTimer != 1) {
+        const QRectF viewAreaRect(0,0,viewport()->width(),viewport()->height());
+        const int y = yOffset();
+        const int x = xOffset();
+        p->translate(-x,-y);
+        p->setWorldTransform(mcurrent,true);  /*  zoom && center on adjustScrollbars() */
+        p->setBrush(Qt::white);
+        p->drawRect(page);
+
+        for (int i = 0; i < dotChain.size(); ++i) {
+            const QPointF nowPoint = dotChain.at(i);
+            QRectF fire(nowPoint  - QPointF(8,8),QSizeF(16,16));
+            p->setBrush(Qt::red);
+            p->setPen(Qt::white);
+            p->setOpacity(0.5);
+            p->drawEllipse(fire);
+            p->setOpacity(1.0);
+        }
+
+        paintEditPage(0,p,page);
+        paintShadow(p,page);
+        /* reset matrix as a null matrix */
+
+        p->setWorldTransform(matrix);
+        /* top left bars static to not move */
+        paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,viewAreaRect.height()),mcurrent);
+        paintWidged(p,QRectF(0,0,viewAreaRect.width(),SLIDERMARGIN_TICK_TOTAL),mcurrent);
+        /* top left bars static to not move */
+        /* horrizzontal  slider */
+        p->translate(-x,0);
+        slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
+        paintScale(p,slider_Horrizzontal_Top,qMakePair(docrootformat.leftMargin(),docrootformat.rightMargin()),mcurrent);
+        top_matrix = p->worldTransform();
+        /* horrizzontal*/
+        p->setWorldTransform(matrix); /* reset */
+        p->translate(0,-y);
+        /* vertical */
+        slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
+        paintScale(p,slider_Vertical_Left,qMakePair(docrootformat.topMargin(),docrootformat.bottomMargin()),mcurrent);
+        /* vertical */
+        left_matrix = p->worldTransform();
+        p->setWorldTransform(matrix);
+        paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
+        ///////////////paintArea(p,pageMatrix().mapRect(CurrentBlockRect()),HightlightColor());
+
+    }  else  {
+        qDebug() << "### maybe first run " << lineTimer;
+        adjustScrollbars();
+        fitToLarge();
+        QAbstractScrollArea::paintEvent(Event);
     }
-    
-  
-  
-  _doc->paintPage(0,p,page);
-  paintShadow(p,page);
-  /* reset matrix as a null matrix */
-  
-  p->setWorldTransform(matrix);
-  /* top left bars static to not move */
-  paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,viewAreaRect.height()),mcurrent); 
-  paintWidged(p,QRectF(0,0,viewAreaRect.width(),SLIDERMARGIN_TICK_TOTAL),mcurrent); 
-  /* top left bars static to not move */ 
-  /* horrizzontal  slider */
-  p->translate(-x,0);
-  slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
-  paintScale(p,slider_Horrizzontal_Top,qMakePair(docrootformat.leftMargin(),docrootformat.rightMargin()),mcurrent);
-  top_matrix = p->worldTransform();
-  /* horrizzontal*/
-  p->setWorldTransform(matrix); /* reset */
-  p->translate(0,-y);
-  /* vertical */
-  slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
-  paintScale(p,slider_Vertical_Left,qMakePair(docrootformat.topMargin(),docrootformat.bottomMargin()),mcurrent);
-  /* vertical */
-  left_matrix = p->worldTransform();
-  p->setWorldTransform(matrix);
-  paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
-  //////HandleTransform();
-  //////paintWidgedDebug(p,debugRect);
-  
-  }  else  {
-     qDebug() << "### maybe first run " << lineTimer;
-     adjustScrollbars();
-     fitToLarge();
-     QAbstractScrollArea::paintEvent(Event);
-  }
-  p->setWorldTransform(matrix);
-  cursorRectSlider(docrootformat,p);
-  p->end();
+    p->setWorldTransform(matrix);
+    cursorRectSlider(docrootformat,p);
+
+
+    p->end();
 }
 
 void EditArea::cursorRectSlider( const QTextFrameFormat docrootformat  , QPainter *p )
 {
     sl_cursor[0] = QRectF(0,0,_doc->size().width(),PAPERSPACE + SLIDERMARGIN_TICK_TOTAL);
     sl_cursor[5] = QRectF(0,0,PAPERSPACE + SLIDERMARGIN_TICK_TOTAL,_doc->size().height());
-    
+
     sl_cursor[1] = divideRect(sl_cursor[0],0);
     sl_cursor[2] = divideRect(sl_cursor[0],2);
     sl_cursor[3] = divideRect(sl_cursor[5],0);
     sl_cursor[4] = divideRect(sl_cursor[5],2);
-    
+
     ///////////QTransform aa;
     /////paintWidged(p,sl_cursor[5],aa);
 }
@@ -109,7 +112,7 @@ bool EditArea::clickSlider( const QPointF p )
 {
     for (int i = 0; i < 6; ++i)  {
         if (sl_cursor[i].contains(p)) {
-          return true;  
+            return true;
         }
     }
     return false;
@@ -121,19 +124,19 @@ bool EditArea::HandleMoveSlider(  QPointF point , bool top )
     if (top) {
     qDebug() << "### HandleMoveSlider top  Xpos." << POINT_TO_CM(point.x()) << "  Ypos."<< point.y();
     } else {
-    qDebug() << "### HandleMoveSlider left Ypos." << POINT_TO_CM(point.y()) << "  Ypos."<< point.x(); 
+    qDebug() << "### HandleMoveSlider left Ypos." << POINT_TO_CM(point.y()) << "  Ypos."<< point.x();
     }
     */
-    
+
     QTextFrameFormat foframe = _doc->rootFrame()->frameFormat();
     bool moved = false;
     for (int i = 0; i < 6; ++i)  {
         if (sl_cursor[i].contains(point)) {
             if (i == 1 && top) {
-               ///////qDebug() << "### wake top 1 " << i << point.y();
+                ///////qDebug() << "### wake top 1 " << i << point.y();
                 foframe.setLeftMargin(point.x());
                 moved = true;
-            } 
+            }
             if (i == 2 && top) {
                 /////////qDebug() << "### wake top 2 " << i << point.y();
                 foframe.setRightMargin(_doc->size().width() - point.x());
@@ -152,14 +155,14 @@ bool EditArea::HandleMoveSlider(  QPointF point , bool top )
             }
         }
     }
-    
+
     if (moved) {
-    _doc->rootFrame()->setFrameFormat(foframe);
-    update(boundingRect());
-    return true;
+        _doc->rootFrame()->setFrameFormat(foframe);
+        update(boundingRect());
+        return true;
     } else {
-    update(boundingRect());
-    return false;
+        update(boundingRect());
+        return false;
     }
 }
 
@@ -168,9 +171,28 @@ QRectF EditArea::boundingRect() const
     return QRectF(0,0,viewport()->width(),viewport()->height());
 }
 
+QTransform EditArea::pageMatrix()
+{
+    QTransform runmatrix = mcurrent;
+    runmatrix.translate(xOffset(),yOffset());
+    return runmatrix;
+}
+
+
+
 void EditArea::update( const  QRectF rect )
 {
-    viewport()->update(rect.toRect());
+    /* tanslate to doc if need */
+    const QRectF maximum = boundingRect();
+    if (maximum.contains(rect)) {
+        /* smaller transform */
+        QRectF realrect = pageMatrix().mapRect(rect);
+        qDebug() << "------repaint hi -" << realrect.height() << "-------";
+        viewport()->update(realrect.toRect());
+    } else {
+        viewport()->update(maximum.toRect());
+        qDebug() << "------repaint full -";
+    }
 }
 
 
@@ -185,30 +207,30 @@ bool EditArea::isOnSlider( const QPointF p )
     QRectF totalForbitten(0,0,border_wi + PAPERSPACE,SLIDERMARGIN_TICK_TOTAL);
     QRectF sliderTop(totalForbitten.topRight(),QSizeF(boundingRect().width(),SLIDERMARGIN_TICK_TOTAL * 1.111));
     QRectF sliderLeft(totalForbitten.bottomLeft(),QSizeF(SLIDERMARGIN_TICK_TOTAL * 1.111,boundingRect().height()));
-    if (totalForbitten.contains(p)) { 
-    return false;
+    if (totalForbitten.contains(p)) {
+        return false;
     }
     int cc = 0;
     bool isaccept = false;
     if (sliderTop.contains(p)) {
-    cc = 1;
-    isaccept = HandleMoveSlider(slider_maps(p,true),true);  
+        cc = 1;
+        isaccept = HandleMoveSlider(slider_maps(p,true),true);
     } else if (sliderLeft.contains(p)) {
-    cc = 2;
-    isaccept = HandleMoveSlider(slider_maps(p,false),false);
+        cc = 2;
+        isaccept = HandleMoveSlider(slider_maps(p,false),false);
     }
-    
+
     if (isaccept) {
         if (cc == 1) {
-        QApplication::setOverrideCursor(QCursor(Qt::SizeHorCursor));
+            QApplication::setOverrideCursor(QCursor(Qt::SizeHorCursor));
         } else if (cc == 2) {
-        QApplication::setOverrideCursor(QCursor(Qt::SizeVerCursor));  
+            QApplication::setOverrideCursor(QCursor(Qt::SizeVerCursor));
         }
     } else {
         cursorCheck();
     }
-    
-    
+
+
     return isaccept;
 }
 
@@ -220,51 +242,52 @@ void EditArea::mouseReleaseEvent ( QMouseEvent *e )
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
     if ( e->button() != Qt::LeftButton) {
-     QApplication::restoreOverrideCursor();
-     return;
+        QApplication::restoreOverrideCursor();
+        return;
     }
     bool isaccept = isOnSlider(e->pos());
     if (!isaccept) {
-           if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
-               /* text event to doc */
-           }
+        if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
+            /* text event to doc */
+            cursorMovetoPosition( maps(e->pos()) );
+        }
     }
     //////
     e->setAccepted(isaccept);
 }
 
-void EditArea::mouseDoubleClickEvent( QMouseEvent *e )   
+void EditArea::mouseDoubleClickEvent( QMouseEvent *e )
 {
     if ( e->button() != Qt::LeftButton) {
-     QApplication::restoreOverrideCursor();
-     return;
+        QApplication::restoreOverrideCursor();
+        return;
     }
     bool isaccept = isOnSlider(e->pos());
     if (!isaccept) {
-           if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
-               /* text event to doc */
-           }
+        if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
+            /* text event to doc */
+        }
     }
     //////QApplication::restoreOverrideCursor();
     e->setAccepted(isaccept);
 }
 
 
-void EditArea::mouseMoveEvent ( QMouseEvent *e )  
+void EditArea::mouseMoveEvent ( QMouseEvent *e )
 {
     if ( e->button() != Qt::LeftButton) {
-     ////////return;
+        ////////return;
     }
     qDebug() << "------mouseMoveEvent--------------------------";
     bool isaccept = isOnSlider(e->pos());
     if (!isaccept) {
-           if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
-               /* text event to doc */
-           }
+        if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
+            /* text event to doc */
+        }
     }
     //////QApplication::restoreOverrideCursor();
     e->setAccepted(isaccept);
-    
+
 }
 
 
@@ -274,15 +297,10 @@ void EditArea::resizeEvent(QResizeEvent *e)
     adjustScrollbars();
 }
 
-void EditArea::keyPressEvent ( QKeyEvent * e )  
+void EditArea::keyPressEvent ( QKeyEvent * e )
 {
-    const qreal docksscale = scaleFaktor;
-    if ( e == QKeySequence::ZoomIn) {
-        zoomIn();
-    }
-    if ( e == QKeySequence::ZoomOut) {
-        zoomOut();
-    }
+    ///// const qreal docksscale = scaleFaktor;
+    Controller_keyPressEvent(e);
 }
 
 
@@ -291,12 +309,12 @@ void EditArea::keyPressEvent ( QKeyEvent * e )
 
 void EditArea::wheelEvent (QWheelEvent * event)
 {
-  qreal docksscale = scaleFaktor;
-  if (event->delta() > 1) {
-      zoomOut();
-  } else {
-      zoomIn();
-  }
+    qreal docksscale = scaleFaktor;
+    if (event->delta() > 1) {
+        zoomOut();
+    } else {
+        zoomIn();
+    }
 }
 
 
@@ -304,19 +322,19 @@ void EditArea::wheelEvent (QWheelEvent * event)
 
 void EditArea::contextMenuEvent(QContextMenuEvent *event)
 {
-    
+
     cursorCheck();
-    
+
     if (isOnPage(_doc->boundingRect(),maps(event->pos()),scaleFaktor)) {
-    
-     QMenu *menu = new QMenu(this);
-     menu->addAction(tr("Swap page format"),this, SLOT(triggerFormat()));
-     menu->addAction(tr("Fit to Window"),this, SLOT(fitToLarge()));
-     menu->addAction(tr("Zoom in CTRL++"),this, SLOT(zoomIn()));
-     menu->addAction(tr("Zoom out CTRL+-"),this, SLOT(zoomOut()));
-     menu->exec(event->globalPos());
-     delete menu;
-        
+
+        QMenu *menu = new QMenu(this);
+        menu->addAction(tr("Swap page format"),this, SLOT(triggerFormat()));
+        menu->addAction(tr("Fit to Window"),this, SLOT(fitToLarge()));
+        menu->addAction(tr("Zoom in CTRL++"),this, SLOT(zoomIn()));
+        menu->addAction(tr("Zoom out CTRL+-"),this, SLOT(zoomOut()));
+        menu->exec(event->globalPos());
+        delete menu;
+
     }
 }
 
@@ -326,41 +344,41 @@ void EditArea::contextMenuEvent(QContextMenuEvent *event)
 
 void EditArea::adjustScrollbars()
 {
-     /* portrait - landscape */
-     qreal lmax = qMax(_doc->pageSize().width(),_doc->pageSize().height());
-     qreal lmin = qMin(_doc->pageSize().width(),_doc->pageSize().height());
-     if (portrait_mode) {
-     page = QRectF(0,0,lmin,lmax);
-     _doc->setFormat(PDocument::PPortrait);
-     } else {
-     page = QRectF(0,0,lmax,lmin); 
-     _doc->setFormat(PDocument::PLandscape);
-     }
-     const qreal left_slide = SLIDERMARGIN_TICK_TOTAL;
-     workArea = QSize(page.width() * scaleFaktor , page.height() * scaleFaktor);
-     bool stayinwi =  workArea.width() < viewport()->width() ? true : false;
-     bool stayinhi =  workArea.height() < viewport()->height() ? true : false;
-     border_wi = left_slide;
-     qreal border_hi = 0.1;
-      if ( stayinwi ) {
-          border_wi = qMax( left_slide ,qAbs((qreal)(workArea.width()  / 2) - (viewport()->width() / 2)));
-      } else {
-          border_hi = left_slide;
-      }
-     mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,border_wi + PAPERSPACE,SLIDERMARGIN_TICK_TOTAL + PAPERSPACE); ////// ultimo da sopra penultimo da sinistra 
-     QSize viewPanelSize = viewport()->size();
-     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
-     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
-     verticalScrollBar()->setPageStep(workArea.height());  /* zoom state */
-     horizontalScrollBar()->setPageStep(workArea.width()); /* zoom state */
-     verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
-     horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width()  + SLIDERMARGIN_TICK_TOTAL * 3);
-     /////////////cursorCheck();
+    /* portrait - landscape */
+    qreal lmax = qMax(_doc->pageSize().width(),_doc->pageSize().height());
+    qreal lmin = qMin(_doc->pageSize().width(),_doc->pageSize().height());
+    if (portrait_mode) {
+        page = QRectF(0,0,lmin,lmax);
+        _doc->setFormat(PDocument::PPortrait);
+    } else {
+        page = QRectF(0,0,lmax,lmin);
+        _doc->setFormat(PDocument::PLandscape);
+    }
+    const qreal left_slide = SLIDERMARGIN_TICK_TOTAL;
+    workArea = QSize(page.width() * scaleFaktor , page.height() * scaleFaktor);
+    bool stayinwi =  workArea.width() < viewport()->width() ? true : false;
+    bool stayinhi =  workArea.height() < viewport()->height() ? true : false;
+    border_wi = left_slide;
+    qreal border_hi = 0.1;
+    if ( stayinwi ) {
+        border_wi = qMax( left_slide ,qAbs((qreal)(workArea.width()  / 2) - (viewport()->width() / 2)));
+    } else {
+        border_hi = left_slide;
+    }
+    mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,border_wi + PAPERSPACE,SLIDERMARGIN_TICK_TOTAL + PAPERSPACE); ////// ultimo da sopra penultimo da sinistra
+    QSize viewPanelSize = viewport()->size();
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+    verticalScrollBar()->setPageStep(workArea.height());  /* zoom state */
+    horizontalScrollBar()->setPageStep(workArea.width()); /* zoom state */
+    verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
+    horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width()  + SLIDERMARGIN_TICK_TOTAL * 3);
+    /////////////cursorCheck();
 }
 
-void EditArea::verticalValue( const int index ) 
+void EditArea::verticalValue( const int index )
 {
-    
+    update();
 }
 
 /* ####################################### Public slot  init ###########################################*/
@@ -395,19 +413,19 @@ void EditArea::zoomOut()
 
 void EditArea::setZoom( const qreal value )
 {
-    
+
     if (value < 0.45 || value > 10) {
-     return;
+        return;
     } else {
-        
+
         qDebug() << "------setZoom--" << value << "------------------------";
-        
+
         ////qDebug() << "-------------------------------------------------------------------";
-        ////qDebug() << "### new setZoom " << value; 
+        ////qDebug() << "### new setZoom " << value;
         //////qDebug() << "-------------------------------------------------------------------";
-      scaleFaktor = value;
-      adjustScrollbars();
-      viewport()->update();
+        scaleFaktor = value;
+        adjustScrollbars();
+        viewport()->update();
     }
 }
 
@@ -421,15 +439,15 @@ void EditArea::cursorCheck()
 {
     QCursor  *cur =  QApplication::overrideCursor();
     if (!cur) {
-     return;
+        return;
     }
     if (cur->shape() != Qt::ArrowCursor) {
-     QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+        QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
     }
 
 }
 
-QPointF EditArea::maps( QPointF p ) 
+QPointF EditArea::maps( QPointF p )
 {
     QTransform transmouse = mcurrent.inverted();
     transmouse.translate (xOffset(),yOffset());  /* scroll bars x,y */
@@ -437,28 +455,703 @@ QPointF EditArea::maps( QPointF p )
 }
 
 
-QPointF EditArea::slider_maps( QPointF p , bool top ) 
+QPointF EditArea::slider_maps( QPointF p , bool top )
 {
     bool hacks = false;
     QTransform transmouse = mcurrent.inverted();
     if (top) {
-    transmouse.translate (xOffset(),SLIDERMARGIN_TICK_TOTAL + SLIDERSPACER);  /* scroll bars x,y */
+        transmouse.translate (xOffset(),SLIDERMARGIN_TICK_TOTAL + SLIDERSPACER);  /* scroll bars x,y */
     } else {
-    if (xOffset() == 0) {
-    hacks = true;
-    transmouse.translate (0,yOffset());  /* scroll bars x,y */   
-    } else {
-    transmouse.translate(SLIDERMARGIN_TICK_TOTAL + SLIDERSPACER ,yOffset());  /* scroll bars x,y */  
-    } 
+        if (xOffset() == 0) {
+            hacks = true;
+            transmouse.translate (0,yOffset());  /* scroll bars x,y */
+        } else {
+            transmouse.translate(SLIDERMARGIN_TICK_TOTAL + SLIDERSPACER ,yOffset());  /* scroll bars x,y */
+        }
     }
     QPointF np = transmouse.map(p);
     if (hacks) {
-    np.setX ( SLIDERMARGIN_TICK_TOTAL / 2 );
+        np.setX ( SLIDERMARGIN_TICK_TOTAL / 2 );
     }
     return np;
 }
 
 /* ####################################### Translate mouse events end ###################################*/
+
+
+/* ####################################### Text api handler  ###################################*/
+
+void EditArea::setBlinkingCursorEnabled( bool enable )
+{
+    if (enable && QApplication::cursorFlashTime() > 0) {
+        cursorTimeLine.start( QApplication::cursorFlashTime() / 2,this);
+    }  else {
+        cursorTimeLine.stop();
+    }
+    update();
+}
+
+bool EditArea::editEnable()
+{
+    return cursorTimeLine.isActive();
+
+}
+
+QTextCursor EditArea::textCursor()
+{
+    return C_cursor;
+}
+
+void EditArea::cursorMovetoPosition( const QPointF &pos )
+{
+    const int cursorPosFozze = _doc->documentLayout()->hitTest(pos,Qt::FuzzyHit);
+    if (cursorPosFozze != -1) {
+        C_cursor = QTextCursor(_doc);
+        C_cursor.setPosition(cursorPosFozze);
+        cursortime = true; /* fast display */
+        repaintCursor(false);
+    }
+
+}
+
+void EditArea::timerEvent(QTimerEvent *event)
+{
+    if (!editEnable()) {
+        return;
+    }
+    /* activate undo redo only at the first blink cursor */
+    if (!_doc->isUndoRedoEnabled()) {
+        _doc->setUndoRedoEnabled(true);
+    }
+    if (event->timerId() == cursorTimeLine.timerId()) {
+        
+        /////qDebug() << "------timer -" << event->timerId() << " xx";
+        
+        cursortime = cursortime == true ? false : true;
+        //////repaintCursor(false);
+    }
+}
+
+void EditArea::repaintCursor( bool allrect )
+{
+    if (allrect) {
+        update();
+        return;
+    } else {
+
+        if (C_cursor.hasComplexSelection() && C_cursor.currentTable()) {
+            QTextTable *table = C_cursor.currentTable();
+            QRectF tablerect = _doc->documentLayout()->frameBoundingRect(table);
+            update(tablerect);
+            return;
+        }
+
+        const  QRectF paragraphrect = CurrentBlockRect();
+
+        if (paragraphrect.isValid()) {
+            update(paragraphrect);
+        } else {
+            update();
+        }
+
+    }
+
+}
+
+QRectF EditArea::CurrentBlockRect()
+{
+    return _doc->documentLayout()->blockBoundingRect(textCursor().block());
+}
+
+void EditArea::paintEditPage( const int index  , QPainter * painter  , const QRectF viewarea )
+{
+    ////////const QPointF topleft = pageIndexTopLeft(index);
+    QAbstractTextDocumentLayout::PaintContext CTX;
+    CTX.palette.setColor(QPalette::Text, Qt::black);
+    const QRectF body = QRectF(viewarea.topLeft().x(), viewarea.topLeft().y() ,_doc->size().width(),_doc->size().height()); /* on view */
+    QRectF view(0, index * body.height(), body.width(), body.height() );   /* on doc */
+    painter->save();
+    painter->translate(body.topLeft());
+    painter->setClipRect(view);
+    CTX.clip = view;
+    CTX.cursorPosition = -1;
+    CTX.palette.setColor(QPalette::Text, Qt::black);
+    CTX.palette.setColor(QPalette::Highlight,HightlightColor());
+    CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
+    if (editEnable() && cursortime ) {
+
+        CTX.cursorPosition = textCursor().position();
+
+        if ( textCursor().hasSelection()) {
+            QAbstractTextDocumentLayout::Selection Internal_selection;
+            Internal_selection.cursor = textCursor();
+            CTX.selections.append(Internal_selection);
+        }
+
+    }
+    _doc->documentLayout()->draw(painter,CTX);
+    painter->restore();
+}
+
+
+QTextLine EditArea::currentTextLine(const QTextCursor &cursor)
+{
+    const QTextBlock block = cursor.block();
+    if (!block.isValid())
+        return QTextLine();
+
+    const QTextLayout *layout = block.layout();
+    if (!layout)
+        return QTextLine();
+    const int relativePos = cursor.position() - block.position();
+    return layout->lineForTextPosition(relativePos);
+}
+
+QColor EditArea::HightlightColor() const
+{
+    QColor BackHightlight("#0072ab");
+    BackHightlight.setAlpha(180);
+    return BackHightlight;
+}
+
+/* swap Insert key */
+void EditArea::swapOverwriteMode()
+{
+    overwriteMode = overwriteMode == false ? true : false;
+    QApplication::beep();
+}
+
+QTextTableCell EditArea::cellOnPosition( const int posi )
+{
+    if (posi != -1) {
+        QTextCursor tmpcursor(_doc);
+        tmpcursor.setPosition(posi);
+        if ( !tmpcursor.currentTable() ) {
+            return QTextTableCell();
+        }
+        return tmpcursor.currentTable()->cellAt(tmpcursor);
+    }  else {
+        return QTextTableCell();
+    }
+}
+
+void EditArea::gotoNextTableCell()
+{
+    QTextTable *table = textCursor().currentTable();
+    if (!table) {
+        return;
+    }
+    QTextTableCell cell = cellOnPosition(textCursor().position());
+
+    int newColumn = cell.column() + cell.columnSpan();
+    int newRow = cell.row();
+
+    if (newColumn >= table->columns()) {
+        newColumn = 0;
+        ++newRow;
+        if (newRow >= table->rows())
+            table->insertRows(table->rows(), 1);
+    }
+
+    cell = table->cellAt(newRow, newColumn);
+    const int moveto  = cell.firstCursorPosition().position();
+    C_cursor.setPosition(moveto);
+    cursortime = true; /* fast display */
+}
+
+void EditArea::gotoPreviousTableCell()
+{
+    QTextTable *table = textCursor().currentTable();
+    if (!table) {
+        return;
+    }
+    QTextTableCell cell = cellOnPosition(textCursor().position());
+    int newColumn = cell.column() - 1;
+    int newRow = cell.row();
+    if (newColumn < 0) {
+        newColumn = table->columns() - 1;
+        --newRow;
+        if (newRow < 0)
+            return;
+    }
+    cell = table->cellAt(newRow, newColumn);
+    const int moveto  = cell.firstCursorPosition().position();
+    C_cursor.setPosition(moveto);
+    cursortime = true; /* fast display */
+}
+
+void EditArea::selectAll()
+{
+    if (position_selection_start == C_cursor.anchor()) {
+        return;
+    }
+
+    C_cursor.select(QTextCursor::Document);
+    position_selection_start = C_cursor.anchor();
+    update();
+}
+
+void EditArea::paste()
+{
+    if (!editEnable()) {
+        return;
+    }
+    //////InsertMimeDataOnCursor(clipboard->mimeData());
+    update();
+}
+
+void EditArea::copy()
+{
+    if (!C_cursor.hasSelection()) {
+        QApplication::beep();
+        return;
+    }
+    /////QMimeData *data = createMimeDataFromSelection();
+    /////clipboard->setMimeData(data);
+    update();
+}
+
+void EditArea::cut()
+{
+    if (!editEnable()) {
+        return;
+    }
+    if (!C_cursor.hasSelection()) {
+        QApplication::beep();
+        return;
+    }
+    copy();
+    C_cursor.removeSelectedText();
+    update();
+}
+
+void EditArea::undo()
+{
+    if (!editEnable()) {
+        return;
+    }
+
+    _doc->undo();
+    update();
+}
+
+void EditArea::redo()
+{
+    if (!editEnable()) {
+        return;
+    }
+    _doc->redo();
+    update();
+}
+
+void EditArea::EnsureVisibleCursor()
+{
+    const QRectF  blockrect = CurrentBlockRect();
+    qDebug() << "### EnsureVisibleCursor  " << blockrect.topLeft().y();
+}
+
+
+/* ####################################### Text api handler  ###################################*/
+
+/* ####################################### Text api event handler  ###################################*/
+
+void EditArea::Controller_keyPressEvent ( QKeyEvent * e )
+{
+    //////////qDebug() << "### Controller_keyPressEvent  " << e->text() << e->key();
+    ///////ResetClickTimer();
+    cursortime = false;
+
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_S) {
+        return;
+    }
+    if ( e->key() == Qt::Key_Insert) {
+        swapOverwriteMode();
+        e->accept();
+        return;
+    }
+    if ( e->key() == Qt::Key_ScrollLock ) {
+        ////////SwapCursorMode();
+        e->accept();
+        return;
+    }
+    if (C_cursor.currentTable() && e->key() == Qt::Key_Tab || C_cursor.currentTable() && e->key() == Qt::Key_Right ) {
+        gotoNextTableCell();
+        e->accept();
+        return;
+    }
+    if (C_cursor.currentTable() && e->key() == Qt::Key_Left ) {
+        gotoPreviousTableCell();
+        e->accept();
+        return;
+    }
+
+    LastCharFormat = C_cursor.charFormat();
+
+    /* fast access */
+
+    if (e == QKeySequence::SelectAll || (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_A) {
+        e->accept();
+        selectAll();
+        return;
+    } else if (e == QKeySequence::Copy || (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_C) {
+        e->accept();
+        copy();
+        return;
+    }  else if (e == QKeySequence::Paste || (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_V) {
+        e->accept();
+        paste();
+        return;
+    } else if (e == QKeySequence::Cut || (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_C) {
+        e->accept();
+        cut();
+        return;
+    }
+
+
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_B) {
+        LastCharFormat.setFontWeight(!C_cursor.charFormat().font().bold()  ? QFont::Bold : QFont::Normal);
+        C_cursor.setCharFormat(LastCharFormat);
+        e->accept();
+        return;
+    }
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_I) {
+        LastCharFormat.setFontItalic(!LastCharFormat.font().italic() ? true : false );
+        C_cursor.setCharFormat(LastCharFormat);
+        e->accept();
+        return;
+    }
+
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_J) {
+        ////////InsertImageonCursor();
+        e->accept();
+        return;
+    }
+
+    if ((e->modifiers() & Qt::AltModifier) && e->key() == Qt::Key_S) {
+        ////////// showhtml();
+        return;
+    }
+
+
+    if ( e == QKeySequence::ZoomIn) {
+        zoomIn();
+    }
+    if ( e == QKeySequence::ZoomOut) {
+        zoomOut();
+    }
+
+
+
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_U) {
+        LastCharFormat.setUnderlineStyle(!LastCharFormat.font().underline() ? QTextCharFormat::SingleUnderline : QTextCharFormat::NoUnderline );
+        C_cursor.setCharFormat(LastCharFormat);
+        e->accept();
+        return;
+    }
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_H) {
+        C_cursor.insertFragment(QTextDocumentFragment::fromHtml("<hr>"));
+        e->accept();
+        return;
+    }
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Z || e == QKeySequence::Undo) {
+        e->accept();
+        undo();
+        return;
+    }
+    if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_Y || e == QKeySequence::Redo ) {
+        e->accept();
+        redo();
+        return;
+    }
+
+
+    //////////////return;
+
+    /* move action on cursor ? */
+    if (cursorMoveKeyEvent(e)) {
+        e->accept();
+        repaintCursor();
+        EnsureVisibleCursor();
+        return;
+    }
+
+    /* fast access end  */
+
+    if (e->key() == Qt::Key_Backspace && !(e->modifiers() & ~Qt::ShiftModifier)) {
+
+        QTextBlockFormat blockFmt = C_cursor.blockFormat();
+
+        if (blockFmt.bottomMargin() == 12) {
+            blockFmt.setBottomMargin(0);
+        }
+
+        if (blockFmt.topMargin() == 12) {
+            blockFmt.setTopMargin(0);
+        }
+
+
+
+        QTextList *list = C_cursor.currentList();
+        if (list && C_cursor.atBlockStart()) {
+            list->remove(C_cursor.block());
+        } else if (C_cursor.atBlockStart() && blockFmt.indent() > 0) {
+            blockFmt.setIndent(blockFmt.indent() - 1);
+            C_cursor.setBlockFormat(blockFmt);
+        } else {
+            C_cursor.deletePreviousChar();
+        }
+        goto accept;
+    }  else if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
+
+        QTextBlockFormat blockFmt = C_cursor.blockFormat();
+
+
+        if (e->modifiers() & Qt::ControlModifier) {
+            /*  no br !  */
+            C_cursor.insertBlock();
+        } else {
+            C_cursor.insertBlock();   /* default format can take from setting */
+        }
+        /* leave default qt margin */
+        if (blockFmt.bottomMargin() == 12) {
+            blockFmt.setBottomMargin(0);
+        }
+        if (blockFmt.topMargin() == 12) {
+            blockFmt.setTopMargin(0);
+        }
+        blockFmt.setIndent(blockFmt.indent() - 1);
+        C_cursor.setBlockFormat(blockFmt);
+        e->accept();
+        goto accept;
+    } else if (e == QKeySequence::Delete) {
+
+        if (C_cursor.hasSelection()) {
+            QString remtxt = C_cursor.selectedText();
+            for (int i = 0; i < remtxt.size(); ++i) {
+                C_cursor.deleteChar();
+            }
+            ////////////SwapSelectionsCursor();  /* clear */
+        } else {
+            C_cursor.deleteChar();
+        }
+
+        goto accept;
+    } else if (e == QKeySequence::DeleteEndOfWord) {
+        C_cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+        C_cursor.deleteChar();
+        goto accept;
+    } else if (e == QKeySequence::DeleteStartOfWord) {
+        C_cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+        C_cursor.deleteChar();
+        goto accept;
+    }
+    else if (e == QKeySequence::DeleteEndOfLine) {
+        QTextBlock block = C_cursor.block();
+        if (C_cursor.position() == block.position() + block.length() - 2) {
+            C_cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+        } else {
+            C_cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+            C_cursor.deleteChar();
+        }
+        goto accept;
+    }  else {
+        /* go insert text ......................*/
+        goto process;
+    }
+
+
+
+process:
+    {
+        QString text = e->text();
+        if (!text.isEmpty() && (text.at(0).isPrint() || text.at(0) == QLatin1Char('\t'))) {
+
+            if (getoverwriteMode() && !C_cursor.hasSelection() && !C_cursor.atBlockEnd()) {
+                C_cursor.deleteChar();
+                repaintCursor();
+            }
+
+            C_cursor.insertText(text);
+            e->accept();
+
+
+            return;
+
+        } else if (!text.isEmpty() && C_cursor.hasSelection() ) {
+            QString remove = C_cursor.selectedText();
+            for (int i = 0; i < remove.size(); ++i) {
+                C_cursor.deletePreviousChar();
+            }
+
+            C_cursor.insertText(text);
+            
+
+            return;
+
+        }  else {
+            e->ignore();
+            QApplication::beep();
+            return;
+        }
+        
+        repaintCursor();
+
+    }
+
+
+
+    /* ########## section accept ################*/
+accept:
+    {
+        repaintCursor();
+        /* ########## section accept ################*/
+    }
+
+
+}
+
+
+
+
+
+
+bool EditArea::cursorMoveKeyEvent(QKeyEvent *e)
+{
+    const QTextCursor oldSelection = C_cursor;
+    const int oldCursorPos = oldSelection.position();
+
+    QTextCursor::MoveMode mode = QTextCursor::MoveAnchor;
+    QTextCursor::MoveOperation op = QTextCursor::NoMove;
+
+    if (e->key() == Qt::Key_Right) {
+        op = QTextCursor::Right;
+    } else if (e->key() == Qt::Key_Left) {
+        op = QTextCursor::Left;
+    } else if (e == QKeySequence::MoveToPreviousChar) {
+        op = QTextCursor::Left;
+    }
+    else if (e == QKeySequence::SelectNextChar) {
+        op = QTextCursor::Right;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectPreviousChar) {
+        op = QTextCursor::Left;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectNextWord) {
+        op = QTextCursor::WordRight;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectPreviousWord) {
+        op = QTextCursor::WordLeft;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectStartOfLine) {
+        op = QTextCursor::StartOfLine;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectEndOfLine) {
+        op = QTextCursor::EndOfLine;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectStartOfBlock) {
+        op = QTextCursor::StartOfBlock;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectEndOfBlock) {
+        op = QTextCursor::EndOfBlock;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectStartOfDocument) {
+        op = QTextCursor::Start;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectEndOfDocument) {
+        op = QTextCursor::End;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectPreviousLine) {
+        op = QTextCursor::Up;
+        mode = QTextCursor::KeepAnchor;
+    }
+    else if (e == QKeySequence::SelectNextLine) {
+        op = QTextCursor::Down;
+        mode = QTextCursor::KeepAnchor;
+        {
+            QTextBlock block = C_cursor.block();
+            QTextLine line = currentTextLine(C_cursor);
+            if (!block.next().isValid()
+                    && line.isValid()
+                    && line.lineNumber() == block.layout()->lineCount() - 1)
+                op = QTextCursor::End;
+        }
+    }
+    else if (e == QKeySequence::SelectNextLine) {
+        op = QTextCursor::Down;
+        mode = QTextCursor::KeepAnchor;
+        {
+            QTextBlock block = C_cursor.block();
+            QTextLine line = currentTextLine(C_cursor);
+            if (!block.next().isValid()
+                    && line.isValid()
+                    && line.lineNumber() == block.layout()->lineCount() - 1)
+                op = QTextCursor::End;
+        }
+    }
+    else if (e == QKeySequence::MoveToNextWord) {
+        op = QTextCursor::WordRight; ///// 16777236
+    }
+    else if (e == QKeySequence::MoveToPreviousWord) {
+        op = QTextCursor::WordLeft;
+    } else if (e->key() == Qt::Key_Left) {
+        op = QTextCursor::WordLeft;
+    } else if (e->key() == Qt::Key_Right) {
+        op = QTextCursor::WordRight;
+    } else if (e == QKeySequence::MoveToEndOfBlock) {
+        op = QTextCursor::EndOfBlock;
+    }
+    else if (e == QKeySequence::MoveToStartOfBlock) {
+        op = QTextCursor::StartOfBlock;
+    }
+    else if (e == QKeySequence::MoveToNextLine) {
+        op = QTextCursor::Down;
+    }
+    else if (e == QKeySequence::MoveToPreviousLine) {
+        op = QTextCursor::Up;
+    }
+    else if (e == QKeySequence::MoveToPreviousLine) {
+        op = QTextCursor::Up;
+    }
+    else if (e == QKeySequence::MoveToStartOfLine) {
+        op = QTextCursor::StartOfLine;
+    }
+    else if (e == QKeySequence::MoveToEndOfLine) {
+        op = QTextCursor::EndOfLine;
+    }
+    else if (e == QKeySequence::MoveToStartOfDocument) {
+        op = QTextCursor::Start;
+    }
+    else if (e == QKeySequence::MoveToEndOfDocument) {
+        op = QTextCursor::End;
+    }
+    else {
+        return false;
+    }
+    repaintCursor(true);
+    const bool moved = C_cursor.movePosition(op,QTextCursor::MoveAnchor);
+    if (moved) {
+        if (C_cursor.position() != oldCursorPos) {
+            repaintCursor();
+        }
+
+    }
+    return true;
+}
+
+
+/* ####################################### Text api event handler  ###################################*/
+
+
 
 
 
