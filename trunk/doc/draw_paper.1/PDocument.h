@@ -83,6 +83,7 @@ public:
   };
   
     void init();
+    QSizeF size();
     QRectF boundingRect() const;
     void style();
     void paintPage( const int index  , QPainter * painter  , const QRectF viewarea  );

@@ -28,7 +28,8 @@ void paintShadow( QPainter *p , const QRectF rect );
 void paintScale( QPainter *p , const QRectF rect , QPair<qreal,qreal> bodyMargins , const QTransform trax );
 
 QRectF divideRect(const QRectF rect , const int part = 0);
-void debugRecti(const QRectF rect );
+bool isOnPage(const QRectF rect , const QPointF p , const qreal zoom);
+QRectF moveZero(const QRectF rect );
 
 #define POINT_TO_CM(cm) ((cm)/28.3465058)
 #define POINT_TO_MM(mm) ((mm)/2.83465058)

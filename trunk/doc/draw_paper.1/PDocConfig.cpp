@@ -19,19 +19,38 @@ QRectF divideRect(const QRectF rect , const int part )
     }
 }
 
+QRectF moveZero(const QRectF rect )
+{
+    return QRectF(0,0,rect.width(),rect.height());
+}
 
-void debugRecti(const QRectF rect )
+
+bool isOnPage(const QRectF rect , const QPointF p , const qreal zoom )
 {
     const qreal lmax = qMax(rect.height(),rect.width());
     const qreal lmin = qMax(rect.height(),rect.width());
+    bool having = rect.contains(p);
     
+    /*
     qDebug() << "-------------------------------------------------------------------";
     qDebug() << "### a topleft Y" << POINT_TO_CM(rect.top());
     qDebug() << "### max " << POINT_TO_CM(lmax);
     qDebug() << "### min " << POINT_TO_CM(lmin);
     qDebug() << "### a bottomLeft X " << POINT_TO_CM(rect.bottom());
+    qDebug() << "### clic Y " << POINT_TO_CM(p.y());
+    qDebug() << "### clic X " << POINT_TO_CM(p.x());
+    qDebug() << "### zoom " << zoom;
+    qDebug() << "### having " << having;
     qDebug() << "-------------------------------------------------------------------";
+    */
+    //////QApplication::restoreOverrideCursor();
     
+    if (having) {
+     return true;
+    } else {
+     QApplication::beep(); 
+     return false;
+    }
     
 }
 
@@ -45,6 +64,15 @@ void paintWidged( QPainter *p , const QRectF rect , const QTransform trax )
     p->drawRect(rect);
     p->restore();
 }
+
+
+
+
+
+
+
+
+
 
 void paintCursor( QPainter *p , const QRectF rect )
 {
