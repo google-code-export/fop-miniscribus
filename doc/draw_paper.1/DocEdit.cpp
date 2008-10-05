@@ -13,7 +13,7 @@ static void paintWidgedDebug( QPainter *p , const QRectF rect )
 EditArea::EditArea( QWidget *parent )
         : QAbstractScrollArea(0),page(0,0,0,0),lineTimer(0),
         workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2),_doc(new PDocument),overwriteMode(false),
-        position_selection_start(-1)
+        position_selection_start(-1),cursorIsFocusIndicator(false)
 {
     mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
     _doc->openFile("index.html");
@@ -187,11 +187,11 @@ void EditArea::update( const  QRectF rect )
     if (maximum.contains(rect)) {
         /* smaller transform */
         QRectF realrect = pageMatrix().mapRect(rect);
-        qDebug() << "------repaint hi -" << realrect.height() << "-------";
+        ////////qDebug() << "------repaint hi -" << realrect.height() << "-------";
         viewport()->update(realrect.toRect());
     } else {
         viewport()->update(maximum.toRect());
-        qDebug() << "------repaint full -";
+        /////////qDebug() << "------repaint full -";
     }
 }
 
@@ -234,13 +234,16 @@ bool EditArea::isOnSlider( const QPointF p )
     return isaccept;
 }
 
-void EditArea::mouseReleaseEvent ( QMouseEvent *e )
+void EditArea::mouseReleaseEvent( QMouseEvent *e )
 {
     cursorCheck();
+    position_selection_start = -1;
 }
 
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
+    qDebug() << "------mousePressEvent--------------------------";
+    
     if ( e->button() != Qt::LeftButton) {
         QApplication::restoreOverrideCursor();
         return;
@@ -250,6 +253,11 @@ void EditArea::mousePressEvent ( QMouseEvent *e )
         if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
             /* text event to doc */
             cursorMovetoPosition( maps(e->pos()) );
+            const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+            if (selectionLength < 1) {
+            position_selection_start = C_cursor.position();
+            qDebug() << "------set selection start --" << position_selection_start;
+            }
         }
     }
     //////
@@ -275,14 +283,17 @@ void EditArea::mouseDoubleClickEvent( QMouseEvent *e )
 
 void EditArea::mouseMoveEvent ( QMouseEvent *e )
 {
+    qDebug() << "------mouseMoveEvent--------------------------";
+    
+    
     if ( e->button() != Qt::LeftButton) {
         ////////return;
     }
-    qDebug() << "------mouseMoveEvent--------------------------";
     bool isaccept = isOnSlider(e->pos());
     if (!isaccept) {
         if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
             /* text event to doc */
+            textMoveEvent(maps(e->pos()));
         }
     }
     //////QApplication::restoreOverrideCursor();
@@ -524,11 +535,9 @@ void EditArea::timerEvent(QTimerEvent *event)
         _doc->setUndoRedoEnabled(true);
     }
     if (event->timerId() == cursorTimeLine.timerId()) {
-        
-        /////qDebug() << "------timer -" << event->timerId() << " xx";
-        
-        cursortime = cursortime == true ? false : true;
-        //////repaintCursor(false);
+    /////qDebug() << "------timer -" << event->timerId() << " xx";
+    cursortime = cursortime == true ? false : true;
+    repaintCursor(false);
     }
 }
 
@@ -547,6 +556,12 @@ void EditArea::repaintCursor( bool allrect )
         }
 
         const  QRectF paragraphrect = CurrentBlockRect();
+        
+        if (cursorIsFocusIndicator) {
+           update(); 
+           return;            
+        }
+        
 
         if (paragraphrect.isValid()) {
             update(paragraphrect);
@@ -574,20 +589,30 @@ void EditArea::paintEditPage( const int index  , QPainter * painter  , const QRe
     painter->translate(body.topLeft());
     painter->setClipRect(view);
     CTX.clip = view;
-    CTX.cursorPosition = -1;
     CTX.palette.setColor(QPalette::Text, Qt::black);
-    CTX.palette.setColor(QPalette::Highlight,HightlightColor());
+    CTX.palette.setColor(QPalette::Highlight,Qt::red);
     CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
-    if (editEnable() && cursortime ) {
-
+    
+    if (editEnable() ) {
+        
+        if (cursortime) {
         CTX.cursorPosition = textCursor().position();
-
+        }
+        
         if ( textCursor().hasSelection()) {
+            cursorIsFocusIndicator  = true;
             QAbstractTextDocumentLayout::Selection Internal_selection;
             Internal_selection.cursor = textCursor();
+            QPalette::ColorGroup cg = cursorIsFocusIndicator ? QPalette::Active : QPalette::Inactive;
+            Internal_selection.format.setBackground(CTX.palette.brush(cg, QPalette::Highlight));
+            Internal_selection.format.setForeground(CTX.palette.brush(cg, QPalette::HighlightedText));
+            Internal_selection.format.setProperty(QTextFormat::FullWidthSelection, true);
             CTX.selections.append(Internal_selection);
+        } else {
+           cursorIsFocusIndicator  = false;
         }
-
+    } else {
+    CTX.cursorPosition = -1;
     }
     _doc->documentLayout()->draw(painter,CTX);
     painter->restore();
@@ -754,6 +779,71 @@ void EditArea::EnsureVisibleCursor()
 /* ####################################### Text api handler  ###################################*/
 
 /* ####################################### Text api event handler  ###################################*/
+
+void EditArea::textMoveEvent( const QPointF point  )  
+{
+    const int cursorPosFozze = _doc->documentLayout()->hitTest(point,Qt::FuzzyHit);
+    const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+    if (cursorPosFozze >= INT_MAX || cursorPosFozze ==  -1) {
+    return;
+    }
+    
+    bool is_select_items = textCursor().hasSelection();
+    
+    qDebug() << "### textMoveEvent  ->" << cursorPosFozze << " sel-lengh -> "<< selectionLength << is_select_items;
+    const int stopat = qMax(position_selection_start,cursorPosFozze); 
+	const int startat = qMin(position_selection_start,cursorPosFozze);
+    
+    
+    if (selectionLength > 0) {
+    /* having selection */
+	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
+	} else {
+    /* no selection set a new one */
+    C_cursor.setPosition(cursorPosFozze);
+    position_selection_start = cursorPosFozze;
+    }
+    
+    if (position_selection_start >= 0 && cursorPosFozze >= 0 && !C_cursor.currentTable()) {
+        
+        if (stopat == cursorPosFozze) {
+			 /* move >>>>>>>>>>>>>>>>>>>>>>>>>  */
+			             C_cursor.setPosition(startat);
+						 for (int i = startat; i < cursorPosFozze; ++i) {
+						 C_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+						 }
+		 }  else {
+			 
+			              C_cursor.setPosition(stopat);
+                          const int diffs = stopat - cursorPosFozze;
+			              for (int i = 0; i < diffs; ++i) {
+                          C_cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+                          }
+		 }
+        
+         repaintCursor();
+         return;
+    }
+    
+    if ( position_selection_start >= 0 && C_cursor.currentTable() ) {
+			QTextTable *table = C_cursor.currentTable();
+			QTextTableCell firstcell = cellOnPosition(startat);
+			QTextTableCell lastcell = cellOnPosition(stopat);
+			if ( firstcell.isValid() && lastcell.isValid() ) {
+			int fcellrow = firstcell.row();
+			int fcellcool = firstcell.column();
+			int numRows = qBound(1,lastcell.row() - fcellrow,table->rows());
+			int numColumns = qBound(1,lastcell.column() - fcellcool,table->columns());
+			C_cursor.selectedTableCells(&fcellrow,&numRows,&fcellcool,&numColumns);
+			C_cursor.setPosition(firstcell.firstPosition());
+			C_cursor.setPosition(lastcell.lastPosition(), QTextCursor::KeepAnchor);
+			}
+            repaintCursor(true);
+            return;
+    }
+    
+}
+
 
 void EditArea::Controller_keyPressEvent ( QKeyEvent * e )
 {
