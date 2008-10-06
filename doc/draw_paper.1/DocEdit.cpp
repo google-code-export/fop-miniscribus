@@ -27,6 +27,7 @@ EditArea::EditArea( QWidget *parent )
     connect(vbar, SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
     connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(clipboard_new()));
     connect(_doc, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
+    connect(_doc, SIGNAL(documentLayoutChanged()), this, SLOT(EnsureVisibleCursor()));
     setAcceptDrops ( true );
     resize(700,400);
 }
@@ -125,6 +126,16 @@ void EditArea::EnsureVisibleCursor()
     ensureVisible(visibleRects);
 }
 
+void EditArea::AutoReload()
+{
+    /*  redraw fake cursor */
+    qDebug() << "### AutoReload  ";
+    adjustScrollbars();
+    const qreal oldzoom = scaleFaktor;
+    fitToLarge();
+    setZoom( oldzoom );
+    
+}
 
 void EditArea::ensureVisible( const QRectF _rect )
 {
@@ -261,10 +272,13 @@ bool EditArea::HandleMoveSlider(  QPointF point , bool top )
 
     if (moved) {
         _doc->rootFrame()->setFrameFormat(foframe);
+        QTimer::singleShot(15, this, SLOT(AutoReload()));
         return true;
     }
     return false;
 }
+
+
 
 QRectF EditArea::boundingRect() const
 {
@@ -810,8 +824,8 @@ QTextLine EditArea::currentTextLine(const QTextCursor &cursor)
 
 QColor EditArea::HightlightColor() const
 {
-    QColor BackHightlight("#0072ab");
-    BackHightlight.setAlpha(180);
+    QColor BackHightlight("#82a3c8");
+    BackHightlight.setAlpha(120);
     return BackHightlight;
 }
 
