@@ -272,6 +272,46 @@ void paintShadow( QPainter *p , const QRectF rect )
 
 
 
+QPixmap imagefromMime( const QMimeData *mime )
+{
+    QPixmap one;
+    QStringList dli = mime->formats();
+    
+
+
+    if (dli.contains("text/html"))
+    {
+        QByteArray dd = mime->data("text/html");
+        QTextDocument *picdoc = new QTextDocument();
+        picdoc->setHtml ( QString(dd.data()) );
+        QTextFrame  *Tframe = picdoc->rootFrame();
+        QTextFrameFormat rootformats = Tframe->frameFormat();
+        rootformats.setBottomMargin (0);
+        rootformats.setTopMargin(0);
+        rootformats.setRightMargin (0);
+        rootformats.setLeftMargin (0);
+        rootformats.setPadding (10);
+        rootformats.setBorder(1);
+        rootformats.setBorderBrush(Qt::black);
+        rootformats.setBorderStyle ( QTextFrameFormat::BorderStyle_Solid );
+        Tframe->setFrameFormat ( rootformats );
+        picdoc->adjustSize();
+        /* paint doc */
+        QAbstractTextDocumentLayout *Layout = picdoc->documentLayout();
+        QRectF docirec = Layout->frameBoundingRect(picdoc->rootFrame());
+        QPixmap PicsDocument(docirec.size().toSize());
+        PicsDocument.fill(Qt::white);
+        QRectF clip(0, 0,PicsDocument.width(),PicsDocument.height());
+        QPainter *p = new QPainter(&PicsDocument);
+        p->setRenderHint(QPainter::Antialiasing, true);
+        picdoc->drawContents(p,clip);
+        p->end();
+        return PicsDocument;
+    }
+
+    return one;
+}
+
 
 
 

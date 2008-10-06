@@ -32,6 +32,9 @@ bool isOnPage(const QRectF rect , const QPointF p , const qreal zoom);
 QRectF moveZero(const QRectF rect );
 void paintArea( QPainter *p , const QRectF rect , QColor col );
 
+
+QPixmap imagefromMime( const QMimeData *mime );
+
 #define POINT_TO_CM(cm) ((cm)/28.3465058)
 #define POINT_TO_MM(mm) ((mm)/2.83465058)
 

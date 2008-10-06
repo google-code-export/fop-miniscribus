@@ -4,6 +4,9 @@
 #include "PDocConfig.h"
 #include <QTextDocument>
 #include <QDomDocument>
+#include <QTextDocumentFragment>
+#include <QDrag>
+
 
 class StreamDoc
 {
@@ -73,6 +76,19 @@ public:
     }
     QDomDocument doc;
     QBuffer *d;
+};
+
+
+class QTextEditMimeData : public QMimeData
+{
+public:
+    inline QTextEditMimeData(const QTextDocumentFragment &aFragment) : fragment(aFragment) {}
+    virtual QStringList formats() const;
+protected:
+    virtual QVariant retrieveData(const QString &mimeType, QVariant::Type type) const;
+private:
+    void setup() const;
+    mutable QTextDocumentFragment fragment;
 };
 
 

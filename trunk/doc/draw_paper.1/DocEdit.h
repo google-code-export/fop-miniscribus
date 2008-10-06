@@ -15,7 +15,10 @@ public:
     QRectF boundingRect() const; /* viewport rect */
 
     /*  text api */
-    void setBlinkingCursorEnabled( bool enable );
+    void insertImage( const  QImage image );
+    void insertImage( const QPixmap image );
+    void insertMimeDataOnCursor( const QMimeData *md );
+    void setBlinkingCursorEnabled( bool enable );  /* edit on/off */
     bool editEnable();
     void cursorMovetoPosition( const QPointF &pos );
     QTextCursor textCursor();
@@ -36,6 +39,7 @@ protected:
     void mouseDoubleClickEvent ( QMouseEvent *e );
     void mouseMoveEvent ( QMouseEvent *e );
     void mouseReleaseEvent ( QMouseEvent *e );
+    void dragMoveEvent(QDragMoveEvent *e);
     void timerEvent(QTimerEvent *event);
     void adjustScrollbars();
     void cursorCheck();
@@ -75,7 +79,10 @@ private:
     bool HandleMoveSlider(  QPointF point , bool top = true );
 
     /*   text api   */
+    QClipboard *clipboard;
     QBasicTimer cursorTimeLine;
+    QBasicTimer trippleClickTimer;
+    /////QBasicTimer dragClickTimer;
     bool cursortime;
     bool overwriteMode;
     bool cursorIsFocusIndicator;
@@ -93,15 +100,17 @@ private:
     void gotoPreviousTableCell();
     QTextTableCell cellOnPosition( const int posi );
 
+    QMimeData *createMimeDataFromSelection();
 
-    void Controller_keyPressEvent ( QKeyEvent * e );
+    void controller_keyPressEvent ( QKeyEvent * e );
     void textMoveEvent( const QPointF point  );
-
-
+    void textDoubleClickEvent( const  QPointF point );
+    void resetClickTimer();
+    void startDragAction();
 
     /*   text api   */
 signals:
-
+    void txtcursorChanged(QTextCursor);
 
 public slots:
     void triggerFormat();
@@ -124,6 +133,8 @@ public slots:
 
 private slots:
     void verticalValue( const int index );
+    void clipboard_new();
+    void cursorPosition( QTextCursor & cursor );
 
 
 };
