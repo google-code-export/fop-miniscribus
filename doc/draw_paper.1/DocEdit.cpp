@@ -13,15 +13,18 @@ static void paintWidgedDebug( QPainter *p , const QRectF rect )
 EditArea::EditArea( QWidget *parent )
         : QAbstractScrollArea(0),page(0,0,0,0),lineTimer(0),
         workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2),_doc(new PDocument),overwriteMode(false),
-        position_selection_start(-1),cursorIsFocusIndicator(false),clipboard(QApplication::clipboard())
+        position_selection_start(-1),cursorIsFocusIndicator(false),clipboard(QApplication::clipboard()),preeditCursor(0),rtl(true)
 {
     mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
+    visibleRects = QRectF(0,0,1,9);
     _doc->openFile("index.html");
     C_cursor = QTextCursor(_doc);
     cursorMovetoPosition(QPointF(0,0));
     setBlinkingCursorEnabled(true);
+    vbar = verticalScrollBar();
+    hbar = horizontalScrollBar();
     adjustScrollbars();
-    connect(verticalScrollBar(), SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
+    connect(vbar, SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
     connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(clipboard_new()));
     connect(_doc, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
     setAcceptDrops ( true );
@@ -99,7 +102,8 @@ void EditArea::paintEvent( QPaintEvent *Event )
         left_matrix = p->worldTransform();
         p->setWorldTransform(matrix);
         paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
-        ///////////////paintArea(p,pageMatrix().mapRect(CurrentBlockRect()),HightlightColor());
+        visibleRects = pageMatrix().mapRect(rectForPosition(C_cursor.position()));
+        paintArea(p,visibleRects,HightlightColor());
 
     }  else  {
         qDebug() << "### maybe first run " << lineTimer;
@@ -113,6 +117,85 @@ void EditArea::paintEvent( QPaintEvent *Event )
 
     p->end();
 }
+
+void EditArea::EnsureVisibleCursor()
+{
+    visibleRects = pageMatrix().mapRect(rectForPosition(C_cursor.position()));
+    
+    ensureVisible(visibleRects);
+}
+
+
+void EditArea::ensureVisible( const QRectF _rect )
+{
+    const QRect rect = _rect.toRect();
+    
+    if ((vbar->isVisible() && vbar->maximum() < rect.bottom())  || (hbar->isVisible() && hbar->maximum() < rect.right())) { 
+        adjustScrollbars();  /* set last values */
+    }
+    
+    const int visibleWidth = boundingRect().width();
+    const int visibleHeight = boundingRect().height();
+    
+    
+    
+    if (rect.x() < xOffset()) {
+        if (rtl)
+            hbar->setValue(hbar->maximum() - rect.x());
+        else
+            hbar->setValue(rect.x());
+    } else if (rect.x() + rect.width() > xOffset() + visibleWidth) {
+        if (rtl)
+            hbar->setValue(hbar->maximum() - (rect.x() + rect.width() - visibleWidth));
+        else
+            hbar->setValue(rect.x() + rect.width() - visibleWidth);
+    }
+
+    if (rect.y() < yOffset())  {
+        vbar->setValue(rect.y());
+    }  else if (rect.y() + rect.height() > yOffset() + visibleHeight) {
+        vbar->setValue(rect.y() + rect.height() - visibleHeight);
+    }
+    
+    qDebug() << "### EnsureVisibleCursor  " << visibleRects.topLeft().y();
+    adjustScrollbars();
+    update();
+}
+
+void EditArea::adjustScrollbars()
+{
+    /* portrait - landscape */
+    qreal lmax = qMax(_doc->pageSize().width(),_doc->pageSize().height());
+    qreal lmin = qMin(_doc->pageSize().width(),_doc->pageSize().height());
+    if (portrait_mode) {
+        page = QRectF(0,0,lmin,lmax);
+        _doc->setFormat(PDocument::PPortrait);
+    } else {
+        page = QRectF(0,0,lmax,lmin);
+        _doc->setFormat(PDocument::PLandscape);
+    }
+    const qreal left_slide = SLIDERMARGIN_TICK_TOTAL;
+    workArea = QSize(page.width() * scaleFaktor , page.height() * scaleFaktor);
+    bool stayinwi =  workArea.width() < viewport()->width() ? true : false;
+    bool stayinhi =  workArea.height() < viewport()->height() ? true : false;
+    border_wi = left_slide;
+    qreal border_hi = 0.1;
+    if ( stayinwi ) {
+        border_wi = qMax( left_slide ,qAbs((qreal)(workArea.width()  / 2) - (viewport()->width() / 2)));
+    } else {
+        border_hi = left_slide;
+    }
+    mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,border_wi + PAPERSPACE,SLIDERMARGIN_TICK_TOTAL + PAPERSPACE); ////// ultimo da sopra penultimo da sinistra
+    QSize viewPanelSize = viewport()->size();
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+    verticalScrollBar()->setPageStep(workArea.height());  /* zoom state */
+    horizontalScrollBar()->setPageStep(workArea.width()); /* zoom state */
+    verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
+    horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width()  + SLIDERMARGIN_TICK_TOTAL * 3);
+    /////////////cursorCheck();
+}
+
 
 void EditArea::cursorRectSlider( const QTextFrameFormat docrootformat  , QPainter *p )
 {
@@ -178,12 +261,9 @@ bool EditArea::HandleMoveSlider(  QPointF point , bool top )
 
     if (moved) {
         _doc->rootFrame()->setFrameFormat(foframe);
-        update(boundingRect());
         return true;
-    } else {
-        update(boundingRect());
-        return false;
     }
+    return false;
 }
 
 QRectF EditArea::boundingRect() const
@@ -194,7 +274,7 @@ QRectF EditArea::boundingRect() const
 QTransform EditArea::pageMatrix()
 {
     QTransform runmatrix = mcurrent;
-    runmatrix.translate(xOffset(),yOffset());
+    runmatrix.translate(-xOffset(),-yOffset());
     return runmatrix;
 }
 
@@ -246,10 +326,16 @@ bool EditArea::isOnSlider( const QPointF p )
         } else if (cc == 2) {
             QApplication::setOverrideCursor(QCursor(Qt::SizeVerCursor));
         }
+        
+        update();
+        update();
+        EnsureVisibleCursor();
+        
+        
     } else {
         cursorCheck();
     }
-
+    
 
     return isaccept;
 }
@@ -475,39 +561,7 @@ void EditArea::contextMenuEvent(QContextMenuEvent *event)
 
 
 
-void EditArea::adjustScrollbars()
-{
-    /* portrait - landscape */
-    qreal lmax = qMax(_doc->pageSize().width(),_doc->pageSize().height());
-    qreal lmin = qMin(_doc->pageSize().width(),_doc->pageSize().height());
-    if (portrait_mode) {
-        page = QRectF(0,0,lmin,lmax);
-        _doc->setFormat(PDocument::PPortrait);
-    } else {
-        page = QRectF(0,0,lmax,lmin);
-        _doc->setFormat(PDocument::PLandscape);
-    }
-    const qreal left_slide = SLIDERMARGIN_TICK_TOTAL;
-    workArea = QSize(page.width() * scaleFaktor , page.height() * scaleFaktor);
-    bool stayinwi =  workArea.width() < viewport()->width() ? true : false;
-    bool stayinhi =  workArea.height() < viewport()->height() ? true : false;
-    border_wi = left_slide;
-    qreal border_hi = 0.1;
-    if ( stayinwi ) {
-        border_wi = qMax( left_slide ,qAbs((qreal)(workArea.width()  / 2) - (viewport()->width() / 2)));
-    } else {
-        border_hi = left_slide;
-    }
-    mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,border_wi + PAPERSPACE,SLIDERMARGIN_TICK_TOTAL + PAPERSPACE); ////// ultimo da sopra penultimo da sinistra
-    QSize viewPanelSize = viewport()->size();
-    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
-    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
-    verticalScrollBar()->setPageStep(workArea.height());  /* zoom state */
-    horizontalScrollBar()->setPageStep(workArea.width()); /* zoom state */
-    verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
-    horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width()  + SLIDERMARGIN_TICK_TOTAL * 3);
-    /////////////cursorCheck();
-}
+
 
 void EditArea::verticalValue( const int index )
 {
@@ -712,7 +766,7 @@ void EditArea::paintEditPage( const int index  , QPainter * painter  , const QRe
     painter->setClipRect(view);
     CTX.clip = view;
     CTX.palette.setColor(QPalette::Text, Qt::black);
-    CTX.palette.setColor(QPalette::Highlight,Qt::red);
+    CTX.palette.setColor(QPalette::Highlight,HightlightColor());
     CTX.palette.setColor(QPalette::HighlightedText,Qt::white);
     
     if (editEnable() ) {
@@ -892,12 +946,7 @@ void EditArea::redo()
     update();
 }
 
-void EditArea::EnsureVisibleCursor()
-{
-    const QRectF  blockrect = CurrentBlockRect();
-    qDebug() << "### EnsureVisibleCursor  " << blockrect.topLeft().y();
-    update();
-}
+
 
 void EditArea::resetClickTimer()
 {
@@ -1382,7 +1431,7 @@ bool EditArea::cursorMoveKeyEvent(QKeyEvent *e)
     const bool moved = C_cursor.movePosition(op,QTextCursor::MoveAnchor);
     if (moved) {
         if (C_cursor.position() != oldCursorPos) {
-            repaintCursor();
+            EnsureVisibleCursor();
         }
 
     }
@@ -1390,7 +1439,59 @@ bool EditArea::cursorMoveKeyEvent(QKeyEvent *e)
 }
 
 
+QRectF EditArea::rectForPosition(int position) const
+{
+    const QTextBlock block = _doc->findBlock(position);
+    if (!block.isValid()) {
+        return QRectF();
+    }
+    const QAbstractTextDocumentLayout *docLayout = _doc->documentLayout();
+    const QTextLayout *layout = block.layout();
+    const QPointF layoutPos = docLayout->blockBoundingRect(block).topLeft();
+    int relativePos = position - block.position();
+    
+    if (preeditCursor != 0) {
+        int preeditPos = layout->preeditAreaPosition();
+        if (relativePos == preeditPos)
+            relativePos += preeditCursor;
+        else if (relativePos > preeditPos)
+            relativePos += layout->preeditAreaText().length();
+    }
+    QTextLine line = layout->lineForTextPosition(relativePos);
+    int cursorWidth;
+    {
+        bool ok = false;
+#ifndef QT_NO_PROPERTIES
+        cursorWidth = docLayout->property("cursorWidth").toInt(&ok);
+#endif
+        if (!ok)
+            cursorWidth = 1;
+    }
+    
+    QRectF r;
+
+    if (line.isValid()) {
+        qreal x = line.cursorToX(relativePos);
+        qreal w = 0;
+        if (overwriteMode) {
+            if (relativePos < line.textLength() - line.textStart())
+                w = line.cursorToX(relativePos + 1) - x;
+            else
+                w = QFontMetrics(block.layout()->font()).width(QLatin1Char(' ')); // in sync with QTextLine::draw()
+        }
+        r = QRectF(layoutPos.x() + x, layoutPos.y() + line.y(),
+                   cursorWidth + w, line.height());
+    } else {
+        r = QRectF(layoutPos.x(), layoutPos.y(), cursorWidth, 10); // #### correct height
+    }
+
+    return r;
+}
+
 /* ####################################### Text api event handler  ###################################*/
+
+
+
 void EditArea::insertImage( const  QImage image )
 {
     if (image.width() > _doc->size().width()) {
