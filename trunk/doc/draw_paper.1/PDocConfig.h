@@ -11,7 +11,11 @@ static const qreal SCALING_STEEP = 0.05555555555;
 static const qreal SLIDERMARGIN_TICK = 20.0;
 static const qreal SLIDERSPACER = 2.5;
 static const qreal SLIDERCURSORWI = 6.0;
-static const qreal PAPERSPACE = 1.0;
+static const qreal PAPERSPACE = 5;
+
+
+
+static const int MaximumPages = 99;
 
 
 static const qreal BorderShadow = 5.2;

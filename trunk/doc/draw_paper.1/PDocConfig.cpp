@@ -257,8 +257,17 @@ void paintScale( QPainter *p , const QRectF rect , QPair<qreal,qreal> bodyMargin
 }
 
 
-void paintShadow( QPainter *p , const QRectF rect )
+void paintShadow( QPainter *p , const QRectF _rect )
 {
+    
+    p->save();
+    p->fillRect(QRect(_rect.bottomLeft().x() , _rect.bottomLeft().y() - BorderShadow ,  BorderShadow * 2 , BorderShadow * 2 ),_EDITORBGCOLOR_);
+    p->restore();
+    
+    
+    QRectF rect = _rect;
+    rect.setHeight ( _rect.height() - BorderShadow );
+    
     p->save();
     QRectF rightShadow(rect.right(), rect.top() + BorderShadow, BorderShadow, rect.height());
     QRectF bottomShadow(rect.left() + BorderShadow, rect.bottom(), rect.width(), BorderShadow);

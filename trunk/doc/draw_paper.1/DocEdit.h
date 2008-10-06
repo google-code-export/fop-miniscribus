@@ -127,6 +127,7 @@ signals:
 public slots:
     void triggerFormat();
     void fitToLarge();
+    void fitToNormal();
     void setZoom( const qreal value );
     void zoomIn();
     void zoomOut();
@@ -148,7 +149,7 @@ public slots:
 private slots:
     void verticalValue( const int index );
     void clipboard_new();
-    void cursorPosition( QTextCursor & cursor );
+    void cursorPosition( const QTextCursor  cursor );
 
 
 };

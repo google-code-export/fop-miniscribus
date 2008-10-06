@@ -41,7 +41,7 @@ public:
             if (f.exists()) {
                 if (f.open(QFile::ReadOnly)) {
                     QByteArray xx;
-                    xx.append(QString::fromUtf8(f.readAll()));
+                    xx.append(f.readAll());
                     d->write(xx);
                     f.close();
                     start();
