@@ -896,6 +896,7 @@ void EditArea::EnsureVisibleCursor()
 {
     const QRectF  blockrect = CurrentBlockRect();
     qDebug() << "### EnsureVisibleCursor  " << blockrect.topLeft().y();
+    update();
 }
 
 void EditArea::resetClickTimer()
@@ -1217,14 +1218,10 @@ process:
 
             if (getoverwriteMode() && !C_cursor.hasSelection() && !C_cursor.atBlockEnd()) {
                 C_cursor.deleteChar();
-                repaintCursor();
             }
 
             C_cursor.insertText(text);
             e->accept();
-
-
-            return;
 
         } else if (!text.isEmpty() && C_cursor.hasSelection() ) {
             QString remove = C_cursor.selectedText();
@@ -1233,18 +1230,13 @@ process:
             }
 
             C_cursor.insertText(text);
-            
-
-            return;
 
         }  else {
             e->ignore();
             QApplication::beep();
             return;
         }
-        
-        repaintCursor();
-
+        EnsureVisibleCursor();
     }
 
 
@@ -1252,7 +1244,7 @@ process:
     /* ########## section accept ################*/
 accept:
     {
-        repaintCursor();
+        EnsureVisibleCursor();
         /* ########## section accept ################*/
     }
 
