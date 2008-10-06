@@ -12,20 +12,15 @@ static const qreal SLIDERMARGIN_TICK = 20.0;
 static const qreal SLIDERSPACER = 2.5;
 static const qreal SLIDERCURSORWI = 6.0;
 static const qreal PAPERSPACE = 5;
-
-
-
 static const int MaximumPages = 99;
-
-
 static const qreal BorderShadow = 5.2;
 static const int DefaultFonzSize = 10;
-
 static const qreal SLIDERMARGIN_TICK_LEFT = SLIDERMARGIN_TICK + SLIDERSPACER;
 static const qreal SLIDERMARGIN_TICK_TOTAL = SLIDERMARGIN_TICK + SLIDERSPACER + SLIDERSPACER;
-
-
 typedef QPair<qreal,qreal> bodyMargins;
+
+
+
 void paintWidged( QPainter *p , const QRectF rect , const QTransform trax );
 void paintCursor( QPainter *p , const QRectF rect );
 void paintShadow( QPainter *p , const QRectF rect );
