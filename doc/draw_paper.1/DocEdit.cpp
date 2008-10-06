@@ -13,7 +13,7 @@ static void paintWidgedDebug( QPainter *p , const QRectF rect )
 EditArea::EditArea( QWidget *parent )
         : QAbstractScrollArea(0),page(0,0,0,0),lineTimer(0),
         workArea(0,0),scaleFaktor(1.3),portrait_mode(true),mesure(11.2),_doc(new PDocument),overwriteMode(false),
-        position_selection_start(-1),cursorIsFocusIndicator(false)
+        position_selection_start(-1),cursorIsFocusIndicator(false),clipboard(QApplication::clipboard())
 {
     mcurrent  = QTransform(scaleFaktor,0.,0.,scaleFaktor,0.,0.);
     _doc->openFile("index.html");
@@ -22,7 +22,26 @@ EditArea::EditArea( QWidget *parent )
     setBlinkingCursorEnabled(true);
     adjustScrollbars();
     connect(verticalScrollBar(), SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
+    connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(clipboard_new()));
+    connect(_doc, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
     resize(700,400);
+}
+
+void EditArea::clipboard_new()
+{
+	qDebug() << "### clipboard fill  ";
+}
+
+void EditArea::cursorPosition( QTextCursor & cursor )
+{
+    LastCharFormat = cursor.charFormat();  
+	if (cursor.isCopyOf(C_cursor)) {
+      
+	} else {
+		 C_cursor.setPosition(cursor.position());
+	}
+    
+    emit txtcursorChanged(C_cursor);
 }
 
 void EditArea::paintEvent( QPaintEvent *Event )
@@ -237,12 +256,45 @@ bool EditArea::isOnSlider( const QPointF p )
 void EditArea::mouseReleaseEvent( QMouseEvent *e )
 {
     cursorCheck();
+    ////////resetClickTimer();
     position_selection_start = -1;
 }
 
+void EditArea::startDragAction()
+{
+    /* start drag */
+    qDebug() << "------ start drag action --------------------------";
+    QMimeData *data = createMimeDataFromSelection();
+    if (data) {
+            QApplication::clipboard()->setMimeData(data);
+            QDrag *drag = new QDrag(this);
+            drag->setMimeData(data); 
+            drag->setHotSpot(QPoint(-25,-25));
+            const QPixmap playdragicon = imagefromMime(data);
+            if (!playdragicon.isNull()) {
+            drag->setPixmap(playdragicon);
+            }
+            if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
+            resetClickTimer();
+            }
+    }
+    resetClickTimer();
+}
+
+void EditArea::dragMoveEvent(QDragMoveEvent *e)
+ {
+     qDebug() << "------dragMoveEvent--------------------------";
+     
+     if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
+         e->acceptProposedAction();
+         cursorMovetoPosition( maps(e->pos()) );
+     }
+ }
+
+
 void EditArea::mousePressEvent ( QMouseEvent *e )
 {
-    qDebug() << "------mousePressEvent--------------------------";
+    qDebug() << "------mousePressEvent--------------------------" << trippleClickTimer.isActive();
     
     if ( e->button() != Qt::LeftButton) {
         QApplication::restoreOverrideCursor();
@@ -252,11 +304,19 @@ void EditArea::mousePressEvent ( QMouseEvent *e )
     if (!isaccept) {
         if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
             /* text event to doc */
+            if (cursorIsFocusIndicator && trippleClickTimer.isActive() && C_cursor.hasSelection()) {
+            startDragAction();
+            e->setAccepted(true);
+            return;
+            //////cursorMovetoPosition( maps(e->pos()) );
+            } else {
             cursorMovetoPosition( maps(e->pos()) );
             const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
             if (selectionLength < 1) {
             position_selection_start = C_cursor.position();
             qDebug() << "------set selection start --" << position_selection_start;
+            }
+            
             }
         }
     }
@@ -274,6 +334,7 @@ void EditArea::mouseDoubleClickEvent( QMouseEvent *e )
     if (!isaccept) {
         if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
             /* text event to doc */
+            textDoubleClickEvent(maps(e->pos()));
         }
     }
     //////QApplication::restoreOverrideCursor();
@@ -310,8 +371,7 @@ void EditArea::resizeEvent(QResizeEvent *e)
 
 void EditArea::keyPressEvent ( QKeyEvent * e )
 {
-    ///// const qreal docksscale = scaleFaktor;
-    Controller_keyPressEvent(e);
+    controller_keyPressEvent(e);
 }
 
 
@@ -721,8 +781,9 @@ void EditArea::paste()
     if (!editEnable()) {
         return;
     }
-    //////InsertMimeDataOnCursor(clipboard->mimeData());
+    insertMimeDataOnCursor(clipboard->mimeData());
     update();
+    resetClickTimer();
 }
 
 void EditArea::copy()
@@ -731,8 +792,8 @@ void EditArea::copy()
         QApplication::beep();
         return;
     }
-    /////QMimeData *data = createMimeDataFromSelection();
-    /////clipboard->setMimeData(data);
+    QMimeData *data = createMimeDataFromSelection();
+    clipboard->setMimeData(data);
     update();
 }
 
@@ -775,10 +836,37 @@ void EditArea::EnsureVisibleCursor()
     qDebug() << "### EnsureVisibleCursor  " << blockrect.topLeft().y();
 }
 
+void EditArea::resetClickTimer()
+{
+	 if (trippleClickTimer.isActive()) {
+	 trippleClickTimer.stop();
+    }
+	
+}
 
 /* ####################################### Text api handler  ###################################*/
 
 /* ####################################### Text api event handler  ###################################*/
+
+void EditArea::textDoubleClickEvent( const  QPointF point )
+{
+    resetClickTimer();
+    const QTextCursor oldSelection = C_cursor;
+    const int cursorPosFozze = _doc->documentLayout()->hitTest(point,Qt::FuzzyHit);
+    cursorMovetoPosition(point);
+	position_selection_start = -1;
+	C_cursor.clearSelection();
+    QTextLine line = currentTextLine(C_cursor);
+	bool doEmit = false;
+	if (line.isValid() && line.textLength()) {
+	C_cursor.select(QTextCursor::WordUnderCursor);
+	doEmit = true;
+	}
+    trippleClickTimer.start(qApp->doubleClickInterval(),this);
+	if (doEmit) {
+	repaintCursor();
+	}
+}
 
 void EditArea::textMoveEvent( const QPointF point  )  
 {
@@ -799,9 +887,9 @@ void EditArea::textMoveEvent( const QPointF point  )
     /* having selection */
 	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
 	} else {
-    /* no selection set a new one */
-    C_cursor.setPosition(cursorPosFozze);
-    position_selection_start = cursorPosFozze;
+    /* no selection set a new one ?? must have one from press event */
+    /////C_cursor.setPosition(cursorPosFozze);
+    ////////position_selection_start = cursorPosFozze;
     }
     
     if (position_selection_start >= 0 && cursorPosFozze >= 0 && !C_cursor.currentTable()) {
@@ -821,6 +909,10 @@ void EditArea::textMoveEvent( const QPointF point  )
                           }
 		 }
         
+         if (C_cursor.hasSelection()) {
+         trippleClickTimer.start(qApp->doubleClickInterval(),this);
+         }
+         
          repaintCursor();
          return;
     }
@@ -838,6 +930,11 @@ void EditArea::textMoveEvent( const QPointF point  )
 			C_cursor.setPosition(firstcell.firstPosition());
 			C_cursor.setPosition(lastcell.lastPosition(), QTextCursor::KeepAnchor);
 			}
+            
+            if (C_cursor.hasSelection()) {
+            trippleClickTimer.start(qApp->doubleClickInterval(),this);
+            }
+         
             repaintCursor(true);
             return;
     }
@@ -845,10 +942,10 @@ void EditArea::textMoveEvent( const QPointF point  )
 }
 
 
-void EditArea::Controller_keyPressEvent ( QKeyEvent * e )
+void EditArea::controller_keyPressEvent ( QKeyEvent * e )
 {
     //////////qDebug() << "### Controller_keyPressEvent  " << e->text() << e->key();
-    ///////ResetClickTimer();
+    resetClickTimer();
     cursortime = false;
 
     if ((e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_S) {
@@ -1240,9 +1337,153 @@ bool EditArea::cursorMoveKeyEvent(QKeyEvent *e)
 
 
 /* ####################################### Text api event handler  ###################################*/
+void EditArea::insertImage( const  QImage image )
+{
+    if (image.width() > _doc->size().width()) {
+     return;
+    }
+    if (image.isNull()) {
+     return;
+    }
+    
+    QDateTime timer1( QDateTime::currentDateTime() );
+    const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
+    _doc->addResource(QTextDocument::ImageResource,QUrl(TimestampsMs),image); 
+    
+        QTextImageFormat format;
+        format.setName( TimestampsMs );
+        format.setHeight ( image.height() );
+        format.setWidth ( image.width() );
+        textCursor().insertImage( format );
+}
+
+void EditArea::insertImage( const QPixmap image )
+{
+    if (image.width() > _doc->size().width()) {
+     return;
+    }
+    if (image.isNull()) {
+     return;
+    }
+    
+    QDateTime timer1( QDateTime::currentDateTime() );
+    const QString TimestampsMs = QString("%1-%2-image").arg(timer1.toTime_t()).arg(timer1.toString("zzz"));
+    _doc->addResource(QTextDocument::ImageResource,QUrl(TimestampsMs),image.toImage()); 
+    
+        QTextImageFormat format;
+        format.setName( TimestampsMs );
+        format.setHeight ( image.height() );
+        format.setWidth ( image.width() );
+        textCursor().insertImage( format );
+}
 
 
+void EditArea::insertMimeDataOnCursor( const QMimeData *md )
+{
+	QTextDocumentFragment fragment;
+	resetClickTimer();
+    if ( md->hasUrls() )  {
+          QList<QUrl> urls = md->urls();
+          for ( int i = 0; i < urls.size(); ++i ) { 
+              QUrl gettyurl(urls.at(i));
+              if (gettyurl.scheme() == "file") {
+                  
+                  QImage pic(gettyurl.toLocalFile());
+                  if (!pic.isNull()) {
+                  insertImage(pic); 
+                  } else {
+                    /* search if html file or document */
+                      
+                  }
+                  
+              } else if (gettyurl.scheme() == "http") {
+                  /* fill net cache */
+              }
+              
+          }		
+        C_cursor.clearSelection();
+        repaintCursor(true);
+        return;          
+    }
+    
+    if ( md->hasImage() ) {
+    QImage image = qvariant_cast<QImage>(md->imageData());
+        if (!image.isNull()) {
+        insertImage(image);
+        }
+    C_cursor.clearSelection();
+    repaintCursor(true);
+    return;
+    }
+    
+    QString cosa;
+    bool hasData;
+		
+    if (md->hasFormat(QLatin1String("application/x-qrichtext")) ) {
+        cosa = md->data(QLatin1String("application/x-qrichtext"));
+        fragment = QTextDocumentFragment::fromHtml(QString::fromUtf8(md->data(QLatin1String("application/x-qrichtext"))));
+        hasData = true;
+    } else if (md->formats().contains("text/html")) {
+        cosa = QString::fromUtf8(md->data(QLatin1String("text/html")));
+        fragment = QTextDocumentFragment::fromHtml(md->html());
+        C_cursor.insertFragment(fragment);
+        C_cursor.clearSelection();
+        repaintCursor(true);
+        EnsureVisibleCursor();
+        return;
+    } else if (md->formats().contains("text/plain")) {
+        cosa = QString::fromUtf8(md->data(QLatin1String("text/plain")));
+        fragment = QTextDocumentFragment::fromPlainText(cosa);
+        hasData = true;
+    }
+    
+    if (hasData && cosa.size() > 0 ) {
+        C_cursor.insertFragment(fragment);
+        C_cursor.clearSelection();
+        repaintCursor(true);
+        EnsureVisibleCursor();
+    } else {
+			QApplication::beep();
+    }
+}
 
+QMimeData *EditArea::createMimeDataFromSelection()
+{
+	 QTextCharFormat base = C_cursor.charFormat();
+	 QString txt;
+	
+	 if (C_cursor.hasSelection()) {
+		 txt = C_cursor.selectedText();
+	 }
+	 QTextImageFormat pico = base.toImageFormat(); 
+	 if (pico.isValid()) {
+         QImage image;
+         const QString picname = pico.name();
+         const QVariant data = _doc->resource(QTextDocument::ImageResource,QUrl::fromEncoded(picname.toUtf8()));
+         if (data.type() == QVariant::Image) {
+            image = qvariant_cast<QImage>(data);
+         } else if (data.type() == QVariant::ByteArray) {
+            image.loadFromData(data.toByteArray());
+         }
+         if (!image.isNull()) {
+            QMimeData *xm = new QMimeData();
+            xm->setImageData(image);
+            return xm;
+         }          
+	 }
+	 const QTextDocumentFragment fragment(C_cursor);
+	 if ( fragment.isEmpty() && txt.size() > 0 ) {
+		QMimeData *xm = new QMimeData();
+		xm->setText(txt);
+		return xm;
+	 } else if (fragment.isEmpty() && txt.isEmpty() ) {
+		QMimeData *xm = new QMimeData();
+		xm->setText(QString("...Selection...Error..."));
+		return xm;
+	} else {
+	return new QTextEditMimeData(fragment);
+	}
+}
 
 
 
