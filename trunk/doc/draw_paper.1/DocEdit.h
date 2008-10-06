@@ -29,6 +29,7 @@ public:
     inline bool getoverwriteMode() {
         return overwriteMode;    /* insert modus */
     }
+    inline QRectF textCursorRect() { return visibleRects; }
 
     /*   text api   */
 
@@ -61,6 +62,7 @@ protected:
 private:
     QRectF sl_cursor[6];
     QRectF debugRect;
+    QRectF visibleRects;
     QPointF maps( QPointF p );
     QPointF slider_maps( QPointF p , bool top );
     QRectF page;
@@ -79,11 +81,15 @@ private:
     PDocument *_doc;  ///
     bool isOnSlider( const QPointF p );
     bool HandleMoveSlider(  QPointF point , bool top = true );
+    
+    QScrollBar *vbar;
+    QScrollBar *hbar;
 
     /*   text api   */
     QClipboard *clipboard;
     QBasicTimer cursorTimeLine;
     QBasicTimer trippleClickTimer;
+    int preeditCursor;
     /////QBasicTimer dragClickTimer;
     bool cursortime;
     bool overwriteMode;
@@ -111,6 +117,8 @@ private:
     void startDragAction();
     
     bool isSelfPlacePaste();
+    QRectF rectForPosition(int position) const;
+    bool rtl;   /* is right to left writteln */
 
     /*   text api   */
 signals:
@@ -131,6 +139,7 @@ public slots:
     void undo();
     void redo();
     void EnsureVisibleCursor();
+    void ensureVisible( const QRectF rect );
 
 
 

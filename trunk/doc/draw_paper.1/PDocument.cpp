@@ -11,6 +11,7 @@ PDocument::PDocument()
 
 void PDocument::init()
 {
+    setUndoRedoEnabled(true);  /* only at end on edit area at first blink cursor enable */
     QTextOption opt;
     opt.setUseDesignMetrics(true);
     opt.setTabStop(8);
