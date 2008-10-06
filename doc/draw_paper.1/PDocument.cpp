@@ -59,7 +59,7 @@ void PDocument::openFile( const QString file )
         return;
     }
     setMetaInformation(QTextDocument::DocumentUrl,QString(fi.absolutePath()));
-    const QString html = QString(buf->stream().constData());
+    const QString html = QString::fromUtf8(buf->stream().constData());
     setHtml(html);
     delete buf;
     QTextFrameFormat foframe = rootFrame()->frameFormat();

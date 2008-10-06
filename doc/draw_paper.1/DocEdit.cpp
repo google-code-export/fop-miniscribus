@@ -29,7 +29,7 @@ EditArea::EditArea( QWidget *parent )
     connect(_doc, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
     connect(_doc, SIGNAL(documentLayoutChanged()), this, SLOT(EnsureVisibleCursor()));
     setAcceptDrops ( true );
-    resize(700,400);
+    resize(999,499);
 }
 
 void EditArea::clipboard_new()
@@ -37,7 +37,7 @@ void EditArea::clipboard_new()
 	qDebug() << "### clipboard fill  ";
 }
 
-void EditArea::cursorPosition( QTextCursor & cursor )
+void EditArea::cursorPosition( const QTextCursor cursor )
 {
     LastCharFormat = cursor.charFormat();  
 	if (cursor.isCopyOf(C_cursor)) {
@@ -66,21 +66,19 @@ void EditArea::paintEvent( QPaintEvent *Event )
         const int x = xOffset();
         p->translate(-x,-y);
         p->setWorldTransform(mcurrent,true);  /*  zoom && center on adjustScrollbars() */
-        p->setBrush(Qt::white);
-        p->drawRect(page);
-
-        for (int i = 0; i < dotChain.size(); ++i) {
-            const QPointF nowPoint = dotChain.at(i);
-            QRectF fire(nowPoint  - QPointF(8,8),QSizeF(16,16));
-            p->setBrush(Qt::red);
-            p->setPen(Qt::white);
-            p->setOpacity(0.5);
-            p->drawEllipse(fire);
-            p->setOpacity(1.0);
+        
+        const int PageSumm = qBound (1,_doc->pageCount(),MaximumPages);
+        
+        
+        
+        for (int o = 0; o < PageSumm; ++o)  {
+            QRectF ddp = page;
+            QPointF tll = _doc->pageIndexTopLeft(o);
+            ddp.moveTo ( tll );
+            paintEditPage(o,p,ddp);
         }
-
-        paintEditPage(0,p,page);
-        paintShadow(p,page);
+        
+        /////paintShadow(p,page);
         /* reset matrix as a null matrix */
 
         p->setWorldTransform(matrix);
@@ -90,24 +88,24 @@ void EditArea::paintEvent( QPaintEvent *Event )
         /* top left bars static to not move */
         /* horrizzontal  slider */
         p->translate(-x,0);
-        slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,workArea.width(),SLIDERMARGIN_TICK);  /* click top area */
+        slider_Horrizzontal_Top = QRectF(mcurrent.m31(),SLIDERSPACER,page.width() * scaleFaktor,SLIDERMARGIN_TICK);  /* click top area */
         paintScale(p,slider_Horrizzontal_Top,qMakePair(docrootformat.leftMargin(),docrootformat.rightMargin()),mcurrent);
         top_matrix = p->worldTransform();
         /* horrizzontal*/
         p->setWorldTransform(matrix); /* reset */
         p->translate(0,-y);
         /* vertical */
-        slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,workArea.height());  /* click left area */
+        slider_Vertical_Left = QRectF(SLIDERSPACER,mcurrent.m32(),SLIDERMARGIN_TICK,page.height() * scaleFaktor);  /* click left area */
         paintScale(p,slider_Vertical_Left,qMakePair(docrootformat.topMargin(),docrootformat.bottomMargin()),mcurrent);
         /* vertical */
         left_matrix = p->worldTransform();
         p->setWorldTransform(matrix);
         paintWidged(p,QRectF(0,0,SLIDERMARGIN_TICK_TOTAL,SLIDERMARGIN_TICK_TOTAL),mcurrent);
-        visibleRects = pageMatrix().mapRect(rectForPosition(C_cursor.position()));
-        paintArea(p,visibleRects,HightlightColor());
+        ////////visibleRects = pageMatrix().mapRect(rectForPosition(C_cursor.position()));
+        ////////////////paintArea(p,visibleRects,HightlightColor());
 
     }  else  {
-        qDebug() << "### maybe first run " << lineTimer;
+        ////////////qDebug() << "### maybe first run " << lineTimer;
         adjustScrollbars();
         fitToLarge();
         QAbstractScrollArea::paintEvent(Event);
@@ -121,9 +119,15 @@ void EditArea::paintEvent( QPaintEvent *Event )
 
 void EditArea::EnsureVisibleCursor()
 {
-    visibleRects = pageMatrix().mapRect(rectForPosition(C_cursor.position()));
+    viewport()->update();
+    return;
     
+    if (lineTimer > 5) {
+    visibleRects = pageMatrix().mapRect(rectForPosition(C_cursor.position()));
     ensureVisible(visibleRects);
+    } else {
+    viewport()->update();
+    }
 }
 
 void EditArea::AutoReload()
@@ -157,20 +161,21 @@ void EditArea::ensureVisible( const QRectF _rect )
             hbar->setValue(rect.x());
     } else if (rect.x() + rect.width() > xOffset() + visibleWidth) {
         if (rtl)
-            hbar->setValue(hbar->maximum() - (rect.x() + rect.width() - visibleWidth));
+            hbar->setValue(hbar->maximum() - (rect.x() + rect.width() - visibleWidth ));
         else
-            hbar->setValue(rect.x() + rect.width() - visibleWidth);
+            hbar->setValue(rect.x() + rect.width() - visibleWidth );
     }
 
     if (rect.y() < yOffset())  {
         vbar->setValue(rect.y());
-    }  else if (rect.y() + rect.height() > yOffset() + visibleHeight) {
-        vbar->setValue(rect.y() + rect.height() - visibleHeight);
+    }  else if (rect.y() + rect.height() > yOffset() + visibleHeight + SLIDERMARGIN_TICK_TOTAL ) {
+        vbar->setValue(rect.y() + rect.height() - visibleHeight + SLIDERMARGIN_TICK_TOTAL );
     }
     
     qDebug() << "### EnsureVisibleCursor  " << visibleRects.topLeft().y();
     adjustScrollbars();
-    update();
+    //////////QTimer::singleShot(0, this, SLOT(AutoReload()));
+    viewport()->update();
 }
 
 void EditArea::adjustScrollbars()
@@ -185,8 +190,10 @@ void EditArea::adjustScrollbars()
         page = QRectF(0,0,lmax,lmin);
         _doc->setFormat(PDocument::PLandscape);
     }
+    const int PageSumm = qBound (1,_doc->pageCount(),MaximumPages);
+    
     const qreal left_slide = SLIDERMARGIN_TICK_TOTAL;
-    workArea = QSize(page.width() * scaleFaktor , page.height() * scaleFaktor);
+    workArea = QSize(page.width() * scaleFaktor , (page.height() * scaleFaktor) *  PageSumm);
     bool stayinwi =  workArea.width() < viewport()->width() ? true : false;
     bool stayinhi =  workArea.height() < viewport()->height() ? true : false;
     border_wi = left_slide;
@@ -202,7 +209,7 @@ void EditArea::adjustScrollbars()
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
     verticalScrollBar()->setPageStep(workArea.height());  /* zoom state */
     horizontalScrollBar()->setPageStep(workArea.width()); /* zoom state */
-    verticalScrollBar()->setRange(0, ( page.height() * scaleFaktor) - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
+    verticalScrollBar()->setRange(0, workArea.height()  - viewPanelSize.height() + SLIDERMARGIN_TICK_TOTAL * 3);
     horizontalScrollBar()->setRange(0, ( page.width() * scaleFaktor) - viewPanelSize.width()  + SLIDERMARGIN_TICK_TOTAL * 3);
     /////////////cursorCheck();
 }
@@ -300,9 +307,9 @@ void EditArea::update( const  QRectF rect )
     const QRectF maximum = boundingRect();
     if (maximum.contains(rect)) {
         /* smaller transform */
-        QRectF realrect = pageMatrix().mapRect(rect);
+        ////////QRectF realrect = pageMatrix().mapRect(rect);
         ////////qDebug() << "------repaint hi -" << realrect.height() << "-------";
-        viewport()->update(realrect.toRect());
+        viewport()->update(rect.toRect());
     } else {
         viewport()->update(maximum.toRect());
         /////////qDebug() << "------repaint full -";
@@ -312,7 +319,7 @@ void EditArea::update( const  QRectF rect )
 
 void EditArea::update()
 {
-    update(boundingRect());
+    viewport()->update();
 }
 
 bool EditArea::isOnSlider( const QPointF p )
@@ -563,6 +570,7 @@ void EditArea::contextMenuEvent(QContextMenuEvent *event)
         QMenu *menu = new QMenu(this);
         menu->addAction(tr("Swap page format"),this, SLOT(triggerFormat()));
         menu->addAction(tr("Fit to Window"),this, SLOT(fitToLarge()));
+        menu->addAction(tr("Reset zoom to 1:1"),this, SLOT(fitToNormal()));
         menu->addAction(tr("Zoom in CTRL++"),this, SLOT(zoomIn()));
         menu->addAction(tr("Zoom out CTRL+-"),this, SLOT(zoomOut()));
         menu->exec(event->globalPos());
@@ -600,6 +608,10 @@ void EditArea::fitToLarge()
     setZoom(maxavaiable / page.width());
 }
 
+void EditArea::fitToNormal()
+{
+    setZoom(1.0);
+}
 
 
 void EditArea::zoomIn()
@@ -740,21 +752,21 @@ void EditArea::repaintCursor( bool allrect )
 
         if (C_cursor.hasComplexSelection() && C_cursor.currentTable()) {
             QTextTable *table = C_cursor.currentTable();
-            QRectF tablerect = _doc->documentLayout()->frameBoundingRect(table);
+            QRectF tablerect = pageMatrix().mapRect(_doc->documentLayout()->frameBoundingRect(table));
             update(tablerect);
             return;
         }
 
-        const  QRectF paragraphrect = CurrentBlockRect();
+        const  QRectF paragraphrect = pageMatrix().mapRect(CurrentBlockRect());
         
         if (cursorIsFocusIndicator) {
-           update(); 
+           update();
            return;            
         }
         
 
         if (paragraphrect.isValid()) {
-            update(paragraphrect);
+            update();
         } else {
             update();
         }
@@ -771,12 +783,19 @@ QRectF EditArea::CurrentBlockRect()
 void EditArea::paintEditPage( const int index  , QPainter * painter  , const QRectF viewarea )
 {
     ////////const QPointF topleft = pageIndexTopLeft(index);
+    painter->save();
+    painter->setBrush(Qt::white);
+    painter->drawRect(viewarea);
+    painter->restore();
+
+    
+    
     QAbstractTextDocumentLayout::PaintContext CTX;
     CTX.palette.setColor(QPalette::Text, Qt::black);
-    const QRectF body = QRectF(viewarea.topLeft().x(), viewarea.topLeft().y() ,_doc->size().width(),_doc->size().height()); /* on view */
-    QRectF view(0, index * body.height(), body.width(), body.height() );   /* on doc */
+    const QRectF body = QRectF(viewarea.topLeft(),_doc->size()); /* on view */
+    QRectF view(viewarea.topLeft(),_doc->size());   /* on doc */
     painter->save();
-    painter->translate(body.topLeft());
+    ////////painter->translate(body.topLeft());
     painter->setClipRect(view);
     CTX.clip = view;
     CTX.palette.setColor(QPalette::Text, Qt::black);
@@ -805,6 +824,12 @@ void EditArea::paintEditPage( const int index  , QPainter * painter  , const QRe
     CTX.cursorPosition = -1;
     }
     _doc->documentLayout()->draw(painter,CTX);
+    painter->restore();
+    
+    
+    
+    painter->save();
+    paintShadow(painter,viewarea);
     painter->restore();
 }
 
