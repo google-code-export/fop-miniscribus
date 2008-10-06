@@ -140,6 +140,7 @@ public slots:
     void redo();
     void EnsureVisibleCursor();
     void ensureVisible( const QRectF rect );
+    void AutoReload();
 
 
 
