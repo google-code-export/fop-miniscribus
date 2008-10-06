@@ -24,6 +24,7 @@ EditArea::EditArea( QWidget *parent )
     connect(verticalScrollBar(), SIGNAL(valueChanged(int)),this, SLOT(verticalValue(int)));
     connect(clipboard, SIGNAL(dataChanged() ), this, SLOT(clipboard_new()));
     connect(_doc, SIGNAL(cursorPositionChanged(QTextCursor) ), this, SLOT(cursorPosition(QTextCursor) ));
+    setAcceptDrops ( true );
     resize(700,400);
 }
 
@@ -262,6 +263,16 @@ void EditArea::mouseReleaseEvent( QMouseEvent *e )
 
 void EditArea::startDragAction()
 {
+    
+    if (!C_cursor.hasSelection()) {
+	return;
+	}
+	const int selectionLength = qAbs(C_cursor.position() - C_cursor.anchor());
+	if (selectionLength > 0) {
+	RangeSelection = qMakePair(C_cursor.position(),C_cursor.anchor());
+	}
+    
+    
     /* start drag */
     qDebug() << "------ start drag action --------------------------";
     QMimeData *data = createMimeDataFromSelection();
@@ -288,8 +299,59 @@ void EditArea::dragMoveEvent(QDragMoveEvent *e)
      if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
          e->acceptProposedAction();
          cursorMovetoPosition( maps(e->pos()) );
+         EnsureVisibleCursor();
      }
+     update();
  }
+ 
+void EditArea::dragEnterEvent(QDragEnterEvent *e)
+{
+     qDebug() << "------dragEnterEvent--------------------------";
+     e->acceptProposedAction();
+}
+
+void EditArea::dropEvent(QDropEvent *e)
+{
+    if (isSelfPlacePaste()) {
+     return;
+    }
+    qDebug() << "------dropEvent--------------------------";
+    if (isOnPage(_doc->boundingRect(),maps(e->pos()),scaleFaktor)) {
+         e->acceptProposedAction();
+         cursorMovetoPosition( maps(e->pos()) );
+         const QMimeData *dat = e->mimeData();
+          if (dat) {
+         insertMimeDataOnCursor(dat);
+          }
+         
+     }
+     
+    RangeSelection = qMakePair(-1,-1);
+    resetClickTimer();
+    update();
+}
+
+bool EditArea::isSelfPlacePaste()
+{
+	const int Sx1 = RangeSelection.first - 2;
+	const int Sx2 = RangeSelection.second + 2;
+	bool goup = false;
+	bool godown = false;
+	const int foundits = C_cursor.position();
+	if (foundits < Sx1 && foundits < Sx2) {
+		 /* go up */
+		 goup = true;
+	}
+	if (foundits > Sx1 && foundits > Sx2) {
+		 /* go down */
+		 godown = true;
+	}
+	if (goup || godown) {
+		return false;
+	} else {
+		return true;
+	}
+}
 
 
 void EditArea::mousePressEvent ( QMouseEvent *e )
@@ -1380,6 +1442,13 @@ void EditArea::insertImage( const QPixmap image )
 
 void EditArea::insertMimeDataOnCursor( const QMimeData *md )
 {
+    
+    if (isSelfPlacePaste()) {
+     return;
+    }
+    
+    
+    
 	QTextDocumentFragment fragment;
 	resetClickTimer();
     if ( md->hasUrls() )  {

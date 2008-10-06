@@ -40,6 +40,8 @@ protected:
     void mouseMoveEvent ( QMouseEvent *e );
     void mouseReleaseEvent ( QMouseEvent *e );
     void dragMoveEvent(QDragMoveEvent *e);
+    void dragEnterEvent(QDragEnterEvent *e);
+    void dropEvent(QDropEvent *e);
     void timerEvent(QTimerEvent *event);
     void adjustScrollbars();
     void cursorCheck();
@@ -107,6 +109,8 @@ private:
     void textDoubleClickEvent( const  QPointF point );
     void resetClickTimer();
     void startDragAction();
+    
+    bool isSelfPlacePaste();
 
     /*   text api   */
 signals:

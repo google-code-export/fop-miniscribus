@@ -283,7 +283,7 @@ QPixmap imagefromMime( const QMimeData *mime )
     {
         QByteArray dd = mime->data("text/html");
         QTextDocument *picdoc = new QTextDocument();
-        picdoc->setHtml ( QString(dd.data()) );
+        picdoc->setHtml ( QString::fromUtf8(dd.data()) );
         QTextFrame  *Tframe = picdoc->rootFrame();
         QTextFrameFormat rootformats = Tframe->frameFormat();
         rootformats.setBottomMargin (0);
