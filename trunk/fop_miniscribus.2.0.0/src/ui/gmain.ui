@@ -66,6 +66,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNewDoc" />
+   <addaction name="localprint" />
    <addaction name="printfile" />
    <addaction name="savertf" />
    <addaction name="actionGenralSave" />
@@ -162,7 +163,7 @@
      <normaloff>:/img/fileprint.png</normaloff>:/img/fileprint.png</iconset>
    </property>
    <property name="text" >
-    <string>Print Preview Document</string>
+    <string>FOP Print Preview Document</string>
    </property>
   </action>
   <action name="savertf" >
@@ -181,6 +182,15 @@
    </property>
    <property name="text" >
     <string>Save as Tif Fax Format</string>
+   </property>
+  </action>
+  <action name="localprint" >
+   <property name="icon" >
+    <iconset resource="../osApplication.qrc" >
+     <normaloff>:/images/print-32.png</normaloff>:/images/print-32.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Print Preview  Document whitout FOP</string>
    </property>
   </action>
  </widget>
