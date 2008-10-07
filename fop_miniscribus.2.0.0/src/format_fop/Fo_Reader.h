@@ -4,6 +4,10 @@
 
 #include "Fo_Format.h"
 
+#if QT_VERSION >= 0x040500
+#include "FillCache.h"
+#endif
+
 
 
 namespace ApacheFop
@@ -32,6 +36,7 @@ public:
     {
         return layerList;
     }
+    inline QStringList urls() { return Remote_Image_List; }
     void appendPageParaBreak( QTextCursor Cinline , bool fullsize = true );
 protected:
     int doc_cur;
@@ -64,10 +69,9 @@ protected:
     bool RunningFirstFrame( QTextCursor Cursor );
 
 
-    bool FoDrawSvgInline( const QDomElement e  );  /* only root tag */
+    /////////bool FoDrawSvgInline( const QDomElement e  );  /* only root tag */
     bool FoDrawSvgInline( const QDomElement e  , QTextCursor Cursor  ); /* only tree down */
 
-    bool FoDrawImage(  const QDomElement e );
     bool FoDrawImage(  const QDomElement e , QTextCursor Cursor );
 
     void FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  );
@@ -80,6 +84,7 @@ protected:
     
 
 private:
+    QStringList Remote_Image_List;
     int Current_Block_Tree_Level;
     QString file;
     QFileInfo finfo;
@@ -95,6 +100,9 @@ private:
     QDomElement  trlastelemnt;
     QMap<int,RichDoc> layerList;
     QVector<QTextLength> LastTableCON;
+    #if QT_VERSION >= 0x040500
+    ///////NetCacheSwap *netswap;
+    #endif
 
 signals:
 

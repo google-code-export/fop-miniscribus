@@ -114,6 +114,7 @@ signals:
   void inBookmark(QStringList,QStandardItemModel*);
   void fileBaseOpen(QString);
   void bookMarkActive(bool);
+  void setStaus(QString);
 public slots:
     void viewDisplay( const QRectF area );
      void DisplayTop();
@@ -138,6 +139,7 @@ void forceResizeIntern();
 void cursorChange(bool);
 void sendinBookmark(QStringList);
 void openMasterMainFile();
+void statusSend( const QString msg );
 
 /* only qt4.5 qtextdocument performance ok */
 void drawDoc();

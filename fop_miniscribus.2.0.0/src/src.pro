@@ -4,8 +4,8 @@
 
 TEMPLATE = app
 TARGET = scribe
-DEPENDPATH += . bookmark format_fop format_oasis paperformat textapi ui
-INCLUDEPATH += . bookmark format_fop format_oasis paperformat textapi ui
+DEPENDPATH += . bookmark format_fop format_oasis paperformat textapi ui format_network
+INCLUDEPATH += . bookmark format_fop format_oasis paperformat textapi ui format_network
 
 
 
@@ -72,8 +72,8 @@ SOURCES += ../modules/xslt/xslt_convert.cpp
 
 
 QT += xmlpatterns
-HEADERS += format_oasis/GZipReader.h format_oasis/GZipWriter.h OOFormat.h format_oasis/OOReader.h
-SOURCES += format_oasis/GZip.cpp format_oasis/OOFormat.cpp format_oasis/OOReader.cpp
+HEADERS += format_oasis/GZipReader.h format_oasis/GZipWriter.h OOFormat.h format_oasis/OOReader.h format_network/FillCache.h
+SOURCES += format_oasis/GZip.cpp format_oasis/OOFormat.cpp format_oasis/OOReader.cpp  format_network/FillCache.cpp
 
 
 }

@@ -57,6 +57,12 @@ Fo_Reader::Fo_Reader(  const QString readfile , QObject *parent  )
          file(0),Qdoc(new QTextDocument()),LayerCount(0),readerFopVersionDocument(2.0),
          Current_Block_Tree_Level(0),oldMiniScribusFormat(false)
 {
+    #if QT_VERSION >= 0x040500
+    //////netswap = new NetCacheSwap();
+    #endif
+    
+    Remote_Image_List.clear();
+    
     doc_cur = 0;
     QFont userfont( QApplication::font() );
     userfont.setPointSize(_DEFAULT_FONT_POINT_SIZE_);
@@ -724,14 +730,14 @@ bool Fo_Reader::InlineBlockLoop( const QDomElement e , QTextCursor Cinline , boo
             }
             else if ( FoTag(childElement) == IMAGE_INLINE  )
             {
-                FoDrawSvgInline( childElement );
+                FoDrawSvgInline( childElement , Cinline );
                 /////////qDebug() << "##   svg image paint    ";
             }
             else if ( FoTag(childElement) == IMAGE_SRC  )
             {
                //////////// qDebug() << "##   normal image paint1   ";
                 
-                FoDrawImage( childElement );
+                FoDrawImage( childElement , Cinline );
             }
             else if ( FoTag(childElement) == FLOATBLOCK  )
             {
@@ -956,13 +962,6 @@ bool Fo_Reader::FoListUlTagPaint( const QDomElement e  )
 
 
 
-bool Fo_Reader::FoDrawImage( const QDomElement e  )
-{
-    Tcursor.setPosition(doc_cur);
-    bool maketag = FoDrawImage(e,Tcursor);
-    doc_cur = Tcursor.position();
-    return maketag;
-}
 
 bool Fo_Reader::FoDrawImage(  const QDomElement e , QTextCursor Cursor )
 {
@@ -1024,12 +1023,18 @@ bool Fo_Reader::FoDrawImage(  const QDomElement e , QTextCursor Cursor )
             hrefimageplace.startsWith("https://", Qt::CaseInsensitive) ||
             hrefimageplace.startsWith("ftp://", Qt::CaseInsensitive))
     {
-        resourceName = QString("/none/%1/%2/url/%3").arg(TimestampsMs).arg(ImageCount).arg(hrefimageplace);
+        resourceName = hrefimageplace;
+        Remote_Image_List.append(resourceName);
         /* grab */
-        resultimage = ximg.erno_pix();
+        resultimage = QPixmap(":/img/File_down.png");
         ximg.set_pics( resultimage );
         derangedata = ximg.streams();
         RunningFromFile = false;
+        #if QT_VERSION >= 0x040500
+        ///////netswap->start_Get(imageurl);
+        #endif
+        
+        
     }
 
     if (RunningFromFile)
@@ -1128,9 +1133,19 @@ bool Fo_Reader::FoDrawImage(  const QDomElement e , QTextCursor Cursor )
     ximg.name = FileBaseName;
     ximg.extension = extensionCurrent;
     QUrl recresourcein(resourceName);
-    Qdoc->addResource( QTextDocument::ImageResource,recresourcein,scaledsimage);
+    
+    
+    
+    
+    
+    
+    
     session->ImagePageList.insert(resourceName,ximg);
-
+    
+    QTextDocument *currentdoc = const_cast<QTextDocument *>(Cursor.block().document());
+    currentdoc->addResource( QTextDocument::ImageResource,recresourcein,scaledsimage);
+    
+    
     QTextImageFormat format;
     format.setName( resourceName );
     format.setHeight ( scaledsimage.height() );
@@ -1148,14 +1163,6 @@ bool Fo_Reader::FoDrawImage(  const QDomElement e , QTextCursor Cursor )
     QDir::setCurrent(LastPathToRestore);
     /////////////qDebug() << "##   dir restore dirrrrrrrrrrrrrrrrrrrr   " << LastPathToRestore;
     return true;
-}
-
-bool Fo_Reader::FoDrawSvgInline( const QDomElement e  )
-{
-    Tcursor.setPosition(doc_cur);
-    bool maketag = FoDrawSvgInline(e,Tcursor);
-    doc_cur = Tcursor.position();
-    return maketag;
 }
 
 
@@ -1207,8 +1214,11 @@ bool Fo_Reader::FoDrawSvgInline( const QDomElement e  , QTextCursor Cursor  )
         ximg.info = "Inline svg image";
 
         session->ImagePageList.insert(resourceName,ximg);   /* need only if inline original svg stream can not repopulate on save */
-
-        Qdoc->addResource( QTextDocument::ImageResource,QUrl(resourceName),scaler);
+        
+        QTextDocument *currentdoc = const_cast<QTextDocument *>(Cursor.block().document());
+        currentdoc->addResource( QTextDocument::ImageResource,QUrl(resourceName),scaler);
+        
+        
         QTextImageFormat format;
         format.setName( resourceName );
         format.setWidth ( scaler.width() );

@@ -3,14 +3,9 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = scribe
-DEPENDPATH += . bookmark foformat paperformat textapi ui
-INCLUDEPATH += . bookmark foformat paperformat textapi ui
-
-message("--------------------------------------------")
-message("Build on debug mode + console")
-message("Swap src.pro ,  debug.pro  to leave console debug")
-message("--------------------------------------------")
+TARGET = xx
+DEPENDPATH += . bookmark format_fop format_oasis paperformat textapi ui format_network
+INCLUDEPATH += . bookmark format_fop format_oasis paperformat textapi ui format_network
 
 
 
@@ -28,32 +23,25 @@ QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
 CONFIG+=x86 ppc
 }
 
-##########   debug work xx 
+
 win32:RC_FILE = win.rc
-win32:TARGET = xx
-macx:TARGET = Scribe
-win32:DESTDIR	+= ./
 
 unix {
-TARGET = scribe
+TARGET = foedit
 BINDIR = /usr/bin
 target.path = $$BINDIR
 INSTALLS += target
 }
 
-
-CONFIG -= app_bundle
-
-#Require at least Qt 4.4.1
-QT_VERSION = $$[QT_VERSION]
-QT_VERSION = $$split(QT_VERSION, ".")
-QT_VER_MAJ = $$member(QT_VERSION, 0) 
-QT_VER_MIN = $$member(QT_VERSION, 1) 
-QT_VER_PAT = $$member(QT_VERSION, 2) 
-
-lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) | lessThan(QT_VER_PAT, 1) {
-   error(QTextPanel requires Qt 4.4.1 or newer. Version $$[QT_VERSION] was detected.)
+win32 {
+!include( ../install.pri ) {
+error( "install.pri not found" )
 }
+target.path = $$PREFIX
+INSTALLS += target
+}
+
+###macosx:CONFIG -= app_bundle
 
 
 
@@ -62,17 +50,62 @@ lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 4) | lessThan(QT_VER_PAT, 1) {
 MOC_DIR = build/.moc
 RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
-####  
+####  console
+#####CONFIG +=  qt release warn_off 
 CONFIG +=  qt debug warn_off console
+
+
 LIBS += $$BUILD_TREE_PATH/lib/libtxtscribe.$$LIB_EXTENSION
 
+
+DESTDIR	+= ../
 QT += xml
 QT += network
 QT += svg 
+
 contains(QT_CONFIG, opengl):QT += opengl
 
+lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
+### qt4.5 not make ! ##
 HEADERS += ../modules/xslt/xslt_convert.h
-SOURCES += ../modules/xslt/xslt_convert.cpp  
+SOURCES += ../modules/xslt/xslt_convert.cpp
+} else {
+
+
+QT += xmlpatterns
+HEADERS += format_oasis/GZipReader.h format_oasis/GZipWriter.h OOFormat.h format_oasis/OOReader.h format_network/FillCache.h
+SOURCES += format_oasis/GZip.cpp format_oasis/OOFormat.cpp format_oasis/OOReader.cpp  format_network/FillCache.cpp
+
+
+}
+
+
+contains(CONFIG, static): {
+
+       ######### on main.cpp use defined ########
+       
+       DEFINES += _COMPOSE_STATIC_
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqjpeg.$$LIB_EXTENSION) {
+            QTPLUGIN += qjpeg
+            DEFINES += _USE_qjpeg
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqgif.$$LIB_EXTENSION) {
+            QTPLUGIN += qgif   
+            DEFINES += _USE_qgif            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqmng.$$LIB_EXTENSION) {
+            QTPLUGIN += qmng   
+            DEFINES += _USE_qmng            
+        }
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/libqtiff.$$LIB_EXTENSION) {
+            QTPLUGIN += qtiff   
+            DEFINES += _USE_qtiff            
+        }
+}
+
+
+
+
 
 # Input
 HEADERS += Config.h \
@@ -82,11 +115,11 @@ HEADERS += Config.h \
            bookmark/BookMarkModel.h \
            bookmark/BookTree.h \
            bookmark/TranslateModel.h \
-           foformat/Fo_Format.h \
-           foformat/Fo_Reader.h \
-           foformat/Fo_Writter.h \
-           foformat/FoColorName.h \
-           foformat/Fop_Leader_Element.h \
+           format_fop/Fo_Format.h \
+           format_fop/Fo_Reader.h \
+           format_fop/Fo_Writter.h \
+           format_fop/FoColorName.h \
+           format_fop/Fop_Leader_Element.h \
            paperformat/PageFormatDlg.h \
            paperformat/PageFormatGroup.h \
            BasicFoConfig.h \
@@ -107,11 +140,11 @@ SOURCES += main.cpp \
            bookmark/BookMarkModel.cpp \
            bookmark/BookTree.cpp \
            bookmark/TranslateModel.cpp \
-           foformat/Fo_Format.cpp \
-           foformat/Fo_Reader.cpp \
-           foformat/Fo_Writter.cpp \
-           foformat/FoColorName.cpp \
-           foformat/Fop_Leader_Element.cpp \
+           format_fop/Fo_Format.cpp \
+           format_fop/Fo_Reader.cpp \
+           format_fop/Fo_Writter.cpp \
+           format_fop/FoColorName.cpp \
+           format_fop/Fop_Leader_Element.cpp \
            paperformat/PageFormatDlg.cpp \
            paperformat/PageFormatGroup.cpp \
            BasicFoConfig.cpp \
