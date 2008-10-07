@@ -25,6 +25,15 @@ ProxyServer
 #include <QNetworkReply>
 #include <QNetworkProxy>
 
+
+
+static const int SAVELocal_as_File = 1;
+
+
+
+
+
+
 class NetCacheSwap : public QNetworkAccessManager
 {
      Q_OBJECT
