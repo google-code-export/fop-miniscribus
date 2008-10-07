@@ -248,7 +248,11 @@ LINK_GHOSTPS = 9008,
     
     connect(savertf, SIGNAL(triggered()),edit->view(), SLOT(saveRtfDoc()));
     connect(savetiff, SIGNAL(triggered()),edit->view(), SLOT(saveTiffDoc()));
-    connect(printfile, SIGNAL(triggered()),edit->view(), SLOT(printPreview()));
+    connect(edit->view(), SIGNAL(setStaus(QString)),statusbar, SLOT(showMessage(QString)));
+    
+    
+    
+    connect(edit->view(), SIGNAL(sceneSwap(bool)),this, SLOT(menuUpdate(bool)));
     
     
      for (int i = 0; i < toolse.size(); ++i) {
@@ -476,9 +480,16 @@ GraphicsView::GraphicsView( QWidget* parent )
     connect(pageFull, SIGNAL(pageCountChange() ), this, SLOT(forceResizeIntern()));
     connect(pageFull, SIGNAL(autocursorchange(bool) ), this, SLOT(cursorChange(bool)));
     connect(pageFull, SIGNAL(inBookmark(QStringList)),this, SLOT(sendinBookmark(QStringList)));
+    connect(pageFull, SIGNAL(statusMsg(QString)),this, SLOT(statusSend(QString)));
     
     QTimer::singleShot(5, this, SLOT(DisplayTop()));
     QTimer::singleShot(50, this, SLOT(openMasterMainFile()));
+}
+
+
+void GraphicsView::statusSend( const QString msg )
+{
+    emit setStaus(msg);
 }
 
 bool GraphicsView::eventFilter(QObject *obj, QEvent *e)
@@ -565,7 +576,9 @@ void GraphicsView::openFile()
 
 void GraphicsView::openMasterMainFile()
 {
-    openFile(":/file/recfile/main_doc.page");
+    //////openFile(":/file/recfile/main_doc.page");
+    
+    openFile("starter.fop");
 }
 
 void GraphicsView::openFile( const QString file )
@@ -625,6 +638,10 @@ void GraphicsView::openFile( const QString file )
         const QTextDocument *fopdoc = fops->document()->clone();
         pageFull->setDocument(fopdoc);
         pageFull->appendLayer(absoluteItem);
+        pageFull->loadDocs(fops->urls());
+        
+        
+        
         M_PageSize formatFF = fops->PSize();
         session->current_Page_Format = formatFF;
         session->AppendPaper(formatFF);
@@ -791,10 +808,11 @@ void GraphicsView::drawDoc()
     #if QT_VERSION >= 0x040500
     if (Ooo) {
     pageFull->setDocument(Ooo->document()->clone());
-    delete Ooo;
+    /////////delete Ooo;
+    /* wait image */
     }
     if (force) {
-    force->quit();
+    ////////////////force->quit();
     }
     #endif
     QTimer::singleShot(1, this, SLOT(zoomChainStop())); 

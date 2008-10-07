@@ -4,6 +4,11 @@
 #include "Fo_Format.h"
 #include "XML_Editor.h"
 
+#if QT_VERSION >= 0x040500
+#include "FillCache.h"
+#endif
+
+
 
 TextMount::TextMount()
   : device(0)
@@ -65,6 +70,64 @@ TextLayer::TextLayer( QGraphicsItem *parent  )
     /////////////SetupHeaderFooter();
     QTimer::singleShot(1, this, SLOT(cursor_wake_up()));
     SetupHeaderFooter();
+}
+
+
+void TextLayer::loadDocs( QStringList remoteurls )
+{
+    if (remoteurls.size() < 1) {
+    return;
+    }
+    
+    #if QT_VERSION >= 0x040500
+    NetCacheSwap *netswap = new NetCacheSwap();
+    connect(netswap, SIGNAL(incomming(QUrl)),this,SLOT(fillresource(QUrl)));
+    connect(netswap, SIGNAL(inTextUtf(QString)),this,SLOT(appStatus(QString)));
+    
+    
+     for (int i = 0; i < remoteurls.size(); ++i)  {
+         const QString hrefimageplace = remoteurls.at(i);
+         if (hrefimageplace.startsWith("http://", Qt::CaseInsensitive) ||
+            hrefimageplace.startsWith("https://", Qt::CaseInsensitive) ||
+            hrefimageplace.startsWith("ftp://", Qt::CaseInsensitive))
+          {
+            netswap->start_Get(QUrl(hrefimageplace));
+            emit statusMsg(QString("Loading wait %1...").arg(hrefimageplace));
+          }
+     }
+    #endif
+}
+
+void TextLayer::appStatus( const QString msg )
+{
+    emit statusMsg(msg);
+}
+
+void TextLayer::fillresource( QUrl uri )
+{
+    QImage img;
+    QList<QGraphicsItem *> subLevelItems = childItems();
+    #if QT_VERSION >= 0x040500
+    NetCacheSwap *dat = qobject_cast<NetCacheSwap *>(sender());
+    if (dat) {
+        
+         qDebug() << "### > load image  ->" << uri;
+         NetCacheSwap::CacheInfo dev_cache = dat->take_Url(uri);
+         img.loadFromData( dev_cache.chunk);
+         if (!img.isNull()) {
+              document()->addResource( QTextDocument::ImageResource,uri,img);
+                 for (int i = 0; i < subLevelItems.size(); ++i) { 
+                           AbsoluteLayer *e = 0;
+                           e = layer_cast<AbsoluteLayer *>(subLevelItems[i]);
+                           if (e) {
+                            e->document()->addResource( QTextDocument::ImageResource,uri,img);
+                            }
+                 }
+         }
+    }
+    #endif
+    SceneReload();
+    emit statusMsg(QString());
 }
 
 

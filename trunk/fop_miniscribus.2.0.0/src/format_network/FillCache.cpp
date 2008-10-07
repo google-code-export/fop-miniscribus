@@ -66,11 +66,23 @@ connect(this, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
 loadSettings();
 location = QDesktopServices::storageLocation(QDesktopServices::CacheLocation);
-qDebug() << "### Remote Cache setting to   -> " << location;
+QDir dd_cache;
+    
+    if (dd_cache.mkpath ( location )) {
+        qDebug() << "### mkdir Remote Cache setting to ok  -> " << location;
+    } else {
+        qDebug() << "### unable to create cache on   -> " << location;
+    }
+    
+
 diskCache->setCacheDirectory(location);
 setCache(diskCache);
+    
+    
+    
+    
     /////start_Get(QUrl("http://fop-miniscribus.googlecode.com/files/scribe_2beta.zip") );
-start_Get(QUrl("http://dist.trolltech.com/video/xmldemo/XMLPatterns%20Final.swf") );
+//////////start_Get(QUrl("http://dist.trolltech.com/video/xmldemo/XMLPatterns%20Final.swf") );
 //////////start_Get(QUrl("http://code.google.com/p/fop-miniscribus/wiki/QT_Trolltech") );
 //////start_Get(QUrl("http://code.google.com/p/fop-miniscribus/wiki/BookMark") );
 ////////start_Get(QUrl("http://code.google.com/p/fop-miniscribus/wiki/KeyBoard") );
@@ -80,12 +92,21 @@ start_Get(QUrl("http://dist.trolltech.com/video/xmldemo/XMLPatterns%20Final.swf"
 void NetCacheSwap::start_Get( const QUrl url )
 {
     CacheInfo havingram = take_Url(url);
+    
+    qDebug() << "### > start_Get a   havingram.pending  ->" << havingram.pending;
+    qDebug() << "### > start_Get  a  havingram.valid  ->" << havingram.valid;
+    
     if (havingram.pending) {
     return;
     }
     if (havingram.valid) {
     emit incomming(url); 
     }
+    
+    
+    qDebug() << "### > start_Get b   havingram.pending  ->" << havingram.pending;
+    qDebug() << "### > start_Get  b  havingram.valid  ->" << havingram.valid;
+    
     
     CacheInfo newrequest;
     QNetworkRequest need(url);
@@ -94,11 +115,8 @@ void NetCacheSwap::start_Get( const QUrl url )
     need.setRawHeader( "Accept-Encoding", "gzip,deflate,qcompress" ); ////////gzip,deflate,qcompress
     need.setRawHeader( "Connection", "keep-alive" );
     if (cookie_host[url.host()].size() > 0) {
-        
-        qDebug() << "### > send cookie ->" << cookie_host[url.host()].toAscii();
-        
+     qDebug() << "### > send cookie ->" << cookie_host[url.host()].toAscii();
      need.setRawHeader( "Cookie",cookie_host[url.host()].toAscii()); 
-        
     }
     QNetworkReply *reps = get(need);
     newrequest.pending = true;
@@ -118,6 +136,8 @@ NetCacheSwap::CacheInfo NetCacheSwap::take_Url( const QUrl url )
         qDebug() << "### > take valid having  ->" << cachename << " url->" << url.toString();
         return cache_ram[cachename]; 
     } else {
+        neturl.pending = false;
+        neturl.valid = false;
         qDebug() << "### <> not having having  ->" << cachename << " url->" << url.toString();
     }
     return neturl;
@@ -182,7 +202,10 @@ void NetCacheSwap::incomming_cache()
     if (dd.valid) {
        cache_ram.insert(dd.hash,dd);
        qDebug() << "### register valid -> " << dd.hash << dd.url;
-       savecurrent(dd.chunk,current->url());
+        if (SAVELocal_as_File == 1) {
+         savecurrent(dd.chunk,current->url());
+        }
+        
        emit incomming(current->url());
     } else {
        qDebug() << "### noooot valid -> " << current->url().toString();
@@ -246,8 +269,8 @@ void NetCacheSwap::progress(const qint64 in ,const qint64 tot )
     if (in > 1 && tot > 0) {
     parts = in*100.00/tot;
     }
-    emit inTextUtf(QString("Loading %1\% MB%2").arg(parts).arg(floatMega(in)));
-   //////qDebug() << "### incomming progress -> " << in << tot << " ->" << current->url().toString();
+    emit inTextUtf(QString("Loading %1\% - MB%2 - url:%3").arg(parts).arg(floatMega(in)).arg(current->url().toString()));
+    /////////qDebug() << "### incomming progress -> " << in << tot << " ->" << current->url().toString();
 }
 
 
