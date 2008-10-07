@@ -202,7 +202,10 @@ void NetCacheSwap::incomming_cache()
     if (dd.valid) {
        cache_ram.insert(dd.hash,dd);
        qDebug() << "### register valid -> " << dd.hash << dd.url;
-       savecurrent(dd.chunk,current->url());
+        if (SAVELocal_as_File == 1) {
+         savecurrent(dd.chunk,current->url());
+        }
+        
        emit incomming(current->url());
     } else {
        qDebug() << "### noooot valid -> " << current->url().toString();

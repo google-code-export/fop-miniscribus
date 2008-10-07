@@ -22,6 +22,7 @@ int main( int argc, char ** argv )
     QString msg = "Running only on qt version 4.5 >";
     #if QT_VERSION >= 0x040500
     NetCacheSwap *netswap = new NetCacheSwap();
+    netswap->start_Get(QUrl("http://ppk.ciz.ch/format/images/cartina_vm5.tif"));
     
     msg="Loading....";
     #endif
