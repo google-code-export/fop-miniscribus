@@ -2,9 +2,9 @@
 <fo:root xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:cms="http://www.pulitzer.ch/2007/CMSFormat" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:svg="http://www.w3.org/2000/svg" >
  <fo:layout-master-set>
   <fo:simple-page-master page-height="297.052mm" master-name="A4_210_x_297_mm" page-width="209.888mm" >
-   <fo:region-body margin-left="33.4353mm" background-color="white" region-name="xsl-region-body" margin-bottom="26.7482mm" margin-top="40.1223mm" margin-right="33.4353mm" />
-   <fo:region-before reference-orientation="0" background-color="white" region-name="xsl-region-before" extent="40.1223mm" />
-   <fo:region-after reference-orientation="0" background-color="white" region-name="xsl-region-after" extent="26.7482mm" />
+   <fo:region-body margin-left="25mm" background-color="white" region-name="xsl-region-body" margin-bottom="20mm" margin-top="30mm" margin-right="25mm" />
+   <fo:region-before reference-orientation="0" background-color="white" region-name="xsl-region-before" extent="30mm" />
+   <fo:region-after reference-orientation="0" background-color="white" region-name="xsl-region-after" extent="20mm" />
   </fo:simple-page-master>
  </fo:layout-master-set>
  <fo:bookmark-tree>
@@ -63,13 +63,13 @@
  <fo:page-sequence master-reference="A4_210_x_297_mm" >
   <fo:title>MiniScribus Test BookMark Write</fo:title>
   <fo:static-content flow-name="xsl-region-before" >
-   <fo:block-container margin-left="0mm" overflow="hidden" background-color="white" height="40.1223mm" margin-bottom="0mm" padding="0mm" margin-top="0mm" margin-right="0mm" >
+   <fo:block-container margin-left="0mm" overflow="hidden" background-color="white" height="30mm" margin-bottom="0mm" padding="0mm" margin-top="0mm" margin-right="0mm" >
     <fo:block>.<!--Header region / xsl-region-before -->
     </fo:block>
    </fo:block-container>
   </fo:static-content>
   <fo:static-content flow-name="xsl-region-after" >
-   <fo:block-container margin-left="0mm" overflow="hidden" background-color="white" height="26.7482mm" margin-bottom="0mm" padding="0mm" margin-top="0mm" margin-right="0mm" >
+   <fo:block-container margin-left="0mm" overflow="hidden" background-color="white" height="20mm" margin-bottom="0mm" padding="0mm" margin-top="0mm" margin-right="0mm" >
     <fo:block>.<!--Footer region / xsl-region-after -->
     </fo:block>
    </fo:block-container>
@@ -80,11 +80,11 @@ FOP: An Open-Source XSL Formatter and Renderer</fo:block>
    <fo:block margin-bottom="1pt" id="sec1" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
 A) What is FOP?</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-FOP is the world's first print formatter driven by XSL formatting objects. It is a Java 
-1.1 application that reads a formatting object tree and then turns it into a PDF document. The 
-formatting object tree, can be in the form of an XML document (output by an XSLT engine 
-like XT or Xalan) or can be passed in memory as a DOM Document or (in the 
-case of XT) SAX events.</fo:block>
+FOP is the world's first print formatter driven by XSL formatting objects. It is a Java 1.1 
+application that reads a formatting object tree and then turns it into a PDF document. The formatting 
+object tree, can be in the form of an XML document (output by an XSLT engine like 
+XT or Xalan) or can be passed in memory as a DOM Document or (in the case 
+of XT) SAX events.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
     <fo:inline font-size="8pt" >
 FOP is part of Apache's XML project. The homepage of FOP is</fo:inline>
@@ -122,8 +122,8 @@ PDF file</fo:inline>
 () .</fo:inline>
    </fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-To run FOP from the command line, see Running FOP. If you are interested in embedding 
-FOP in a Java application of your own, see Embedding FOP.</fo:block>
+To run FOP from the command line, see Running FOP. If you are interested in embedding FOP 
+in a Java application of your own, see Embedding FOP.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
     <fo:inline font-size="8pt" >
 You can also download the</fo:inline>
@@ -142,9 +142,9 @@ Following software must be installed:</fo:block>
 a) Java 1.1.x or later</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
     <fo:inline font-size="8pt" >
-For the fo-file viewer mode of FOP (see below) you must have the swing classes installed. 
-From Java 1.2 on (aka Java 2) they are part of the standard java distribution. If you 
-use Java 1.1.x you must seperately include the swing classes, which can be found at the</fo:inline>
+For the fo-file viewer mode of FOP (see below) you must have the swing classes installed. From 
+Java 1.2 on (aka Java 2) they are part of the standard java distribution. If you use 
+Java 1.1.x you must seperately include the swing classes, which can be found at the</fo:inline>
     <fo:inline font-style="italic" font-size="8pt" >
 Sun website</fo:inline>
     <fo:inline font-size="8pt" >
@@ -160,9 +160,9 @@ Xerces-J</fo:inline>
    </fo:block>
    <fo:block margin-bottom="1pt" id="sec3-1-3" color="rgb(0,0,0,255)" >
     <fo:inline font-size="8pt" >
-c) If you have to produce the flow objects files, which are the input for FOP, 
-you need a transformation utility to create this files from your xml files. Normally this is an 
-XSLT stylesheet processor like</fo:inline>
+c) If you have to produce the flow objects files, which are the input for FOP, you 
+need a transformation utility to create this files from your xml files. Normally this is an XSLT 
+stylesheet processor like</fo:inline>
     <fo:inline font-style="italic" font-size="8pt" >
 XT</fo:inline>
     <fo:inline font-size="8pt" >
@@ -189,23 +189,23 @@ c) Previewing the fo-file:</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 java org.apache.fop.apps.AWTCommandLine fo-file</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Each method uses next to the fop classes other packages. The following describes each method in 
-detail.</fo:block>
+Each method uses next to the fop classes other packages. The following describes each method in detail.
+</fo:block>
    <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="14pt" >
 a) Method One</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-One is to first use an XSLT engine to produce the formatting object tree as an 
-XML document and then running the class org.apache.fop.apps.CommandLine with the formatting object file name and PDF filename 
-as arguments. You will need to include FOP and your XML Parser in your classpath and so 
-you might invoke</fo:block>
+One is to first use an XSLT engine to produce the formatting object tree as an XML 
+document and then running the class org.apache.fop.apps.CommandLine with the formatting object file name and PDF filename as 
+arguments. You will need to include FOP and your XML Parser in your classpath and so you 
+might invoke</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 java -cp fop_x_xx_x.jar;xerces.jar</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 org.apache.fop.apps.CommandLine fo-file pdf-file</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-If your SAX Parser is other than Xerces, you will need to set the property org.xml.sax.parser 
-to the SAX Parser class to use. The following example shows the command line, if you use 
-XP, the XML parser from James Clark:</fo:block>
+If your SAX Parser is other than Xerces, you will need to set the property org.xml.sax.parser to 
+the SAX Parser class to use. The following example shows the command line, if you use XP, 
+the XML parser from James Clark:</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 java -Dorg.xml.sax.parser=com.jclark.xml.sax.Driver</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
@@ -217,11 +217,11 @@ org.apache.fop.apps.AWTCommandLine formatting-tree-file pdf-file</fo:block>
    <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="14pt" >
 b) Method Two</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Rather than performing transformation with an XSLT before invoking FOP, it is possible, if you use 
-XT as your XSLT engine, to just call FOP and have it call XT for you. To 
-do this, run the class org.apache.fop.apps.CommandLine with the source XML file name, XSL file name and PDF 
-file name as arguments. You will need to include FOP, SAX, your SAX Parser and XT in 
-your classpath and so you might invoke</fo:block>
+Rather than performing transformation with an XSLT before invoking FOP, it is possible, if you use XT 
+as your XSLT engine, to just call FOP and have it call XT for you. To do 
+this, run the class org.apache.fop.apps.CommandLine with the source XML file name, XSL file name and PDF file 
+name as arguments. You will need to include FOP, SAX, your SAX Parser and XT in your 
+classpath and so you might invoke</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 java -Dorg.xml.sax.parser=com.jclark.xml.sax.Driver</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
@@ -229,14 +229,14 @@ java -Dorg.xml.sax.parser=com.jclark.xml.sax.Driver</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 org.apache.fop.apps.CommandLine xml-file xsl-file pdf-file</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Again, if your SAX Parser is other than Xerces, you will need to set the property 
-org.xml.sax.parser to the SAX Parser class to use.</fo:block>
+Again, if your SAX Parser is other than Xerces, you will need to set the property org.xml.sax.parser 
+to the SAX Parser class to use.</fo:block>
    <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="14pt" >
 c) Method Three</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-If you already produced the FO file, you can preview the results of your transformation without 
-using any pdf viewer by invoking FOP with the viewer application. You will need to include FOP 
-and your XML Parser in your classpath</fo:block>
+If you already produced the FO file, you can preview the results of your transformation without using 
+any pdf viewer by invoking FOP with the viewer application. You will need to include FOP and 
+your XML Parser in your classpath</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 java -cp fop_x_xx_x.jar;xerces.jar</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
@@ -244,26 +244,26 @@ org.apache.fop.apps.AWTCommandLine fo-file</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
 The viewer uses the swing classes.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Note: If you are using java 2 or later (i.e. jdk 1.2. or later) you can put 
-all needed jar files into the subdirectory jdk1.2.x\jre\lib\ext (windows example). Then FOP can be started without 
-classpath:</fo:block>
+Note: If you are using java 2 or later (i.e. jdk 1.2. or later) you can 
+put all needed jar files into the subdirectory jdk1.2.x\jre\lib\ext (windows example). Then FOP can be started without classpath:
+</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
 java org.apache.fop.apps.CommandLine fo-file pdf-file</fo:block>
    <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="16pt" >
 3) Running FOP on MacOS</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Ensure that you have a recent MRJ, and that you have downloaded and unpacked the XP 
-and SAX distributions. The xp.jar and sax.jar files work as is on MacOS.</fo:block>
+Ensure that you have a recent MRJ, and that you have downloaded and unpacked the XP and 
+SAX distributions. The xp.jar and sax.jar files work as is on MacOS.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Drag the FOP jarfile onto the JBindery icon. When the first dialog appears, type "org.apache.fop.apps.CommandLine" in 
-the "Class name" field. Using UNIX syntax, type the names of the input formatting-object file and the 
-output PDF in the "Optional parameters" field.</fo:block>
+Drag the FOP jarfile onto the JBindery icon. When the first dialog appears, type "org.apache.fop.apps.CommandLine" in the 
+"Class name" field. Using UNIX syntax, type the names of the input formatting-object file and the output 
+PDF in the "Optional parameters" field.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Click on the Classpath icon. To add the xp.jar and sax.jar files, click the "Add .zip 
-file" button, navigate to the file in question, and click Open.</fo:block>
+Click on the Classpath icon. To add the xp.jar and sax.jar files, click the "Add .zip file" 
+button, navigate to the file in question, and click Open.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Once both are added (the FOP jarfile will already be in the list), click Run. A 
-"stdout" window will appear and display FOP runtime messages.</fo:block>
+Once both are added (the FOP jarfile will already be in the list), click Run. A "stdout" 
+window will appear and display FOP runtime messages.</fo:block>
    <fo:block margin-bottom="1pt" margin-top="8pt" color="rgb(0,0,0,255)" font-size="16pt" >
 4) Problems</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
@@ -272,26 +272,26 @@ If you have problems running FOP, please have a look at the</fo:inline>
     <fo:inline font-style="italic" font-size="8pt" >
 FOP FAQ</fo:inline>
     <fo:inline font-size="8pt" >
-(faq.html) . If you don't find a solution there, you can ask for help on the 
-list fop-dev@xmlgraphics.apache.org. Maybe it's bug and maybe somebody is already working on it.</fo:inline>
+(faq.html) . If you don't find a solution there, you can ask for help on the list 
+fop-dev@xmlgraphics.apache.org. Maybe it's bug and maybe somebody is already working on it.</fo:inline>
    </fo:block>
    <fo:block margin-bottom="1pt" id="sec4" margin-top="20pt" color="rgb(0,0,0,255)" font-size="18pt" >
 D) Embedding FOP</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Instantiate org.apache.fop.apps.Driver. Once this class is instantiated, methods are called to set the Renderer to use, 
-the (possibly multiple) ElementMapping(s) to use and the PrintWriter to use to output the results of the 
-rendering (where applicable). In the case of the Renderer and ElementMapping(s), the Driver may be supplied either 
-with the object itself, or the name of the class, in which case Driver will instantiate the 
-class itself. The advantage of the latter is it enables runtime determination of Renderer and ElementMapping(s).</fo:block>
+Instantiate org.apache.fop.apps.Driver. Once this class is instantiated, methods are called to set the Renderer to use, the 
+(possibly multiple) ElementMapping(s) to use and the PrintWriter to use to output the results of the rendering 
+(where applicable). In the case of the Renderer and ElementMapping(s), the Driver may be supplied either with 
+the object itself, or the name of the class, in which case Driver will instantiate the class 
+itself. The advantage of the latter is it enables runtime determination of Renderer and ElementMapping(s).</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Once the Driver is set up, the buildFOTree method is called. Depending on whether DOM or 
-SAX is being used, the invocation of the method is either buildFOTree(Document) or buildFOTree(Parser, InputSource) respectively.</fo:block>
+Once the Driver is set up, the buildFOTree method is called. Depending on whether DOM or SAX 
+is being used, the invocation of the method is either buildFOTree(Document) or buildFOTree(Parser, InputSource) respectively.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-A third possibility may be used to build the FO Tree, namely calling getDocumentHandler() and firing 
-the SAX events yourself.</fo:block>
+A third possibility may be used to build the FO Tree, namely calling getDocumentHandler() and firing the 
+SAX events yourself.</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
-Once the FO Tree is built, the format() and render() methods may be called in that 
-order.</fo:block>
+Once the FO Tree is built, the format() and render() methods may be called in that order.
+</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="8pt" >
 Here is an example use of Driver from CommandLine.java:</fo:block>
    <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
@@ -316,14 +316,6 @@ E) What's Implemented?</fo:block>
 Also see STATUS for what is being worked on.</fo:block>
    <fo:block margin-left="28.3465pt" margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
 1) Formatting Objects</fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
    <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
      <!--
@@ -396,7 +388,7 @@ layout-master-set</fo:inline>
      </fo:list-item-label>
      <fo:list-item-body start-indent="body-start()" >
       <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
-       <fo:inline font-size="16pt" >
+       <fo:inline>
 simple-page-master</fo:inline>
       </fo:block>
      </fo:list-item-body>
@@ -412,7 +404,7 @@ simple-page-master</fo:inline>
       </fo:block>
      </fo:list-item-label>
      <fo:list-item-body start-indent="body-start()" >
-      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
        <fo:inline>
 region-body</fo:inline>
       </fo:block>
@@ -838,14 +830,6 @@ Use margin space to make space!
 -->
     </fo:leader>
    </fo:block>
-   <fo:block margin-bottom="1pt" line-height="12pt" margin-top="1pt" color="rgb(0,0,0,255)" >
-    <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="12pt" leader-length="2.001%" >
-     <!--
-Sipmle Breack line / empty Paragraph version 1.001. 
-Use margin space to make space!
--->
-    </fo:leader>
-   </fo:block>
    <fo:block margin-bottom="1pt" line-height="11pt" color="rgb(0,0,0,255)" >
     <fo:leader leader-pattern="space" speak-numeral="1.001" content-height="11pt" leader-length="2.001%" >
      <!--
@@ -910,7 +894,7 @@ page-master-name</fo:inline>
      </fo:list-item-label>
      <fo:list-item-body start-indent="body-start()" >
       <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
-       <fo:inline font-size="16pt" >
+       <fo:inline>
 page-master-first</fo:inline>
       </fo:block>
      </fo:list-item-body>
@@ -926,7 +910,7 @@ page-master-first</fo:inline>
       </fo:block>
      </fo:list-item-label>
      <fo:list-item-body start-indent="body-start()" >
-      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" font-size="16pt" >
+      <fo:block margin-bottom="1pt" color="rgb(0,0,0,255)" >
        <fo:inline>
 page-master-repeating</fo:inline>
       </fo:block>
