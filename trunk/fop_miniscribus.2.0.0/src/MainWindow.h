@@ -17,10 +17,12 @@
 
 #if QT_VERSION >= 0x040500
 #include "OOReader.h"
+#include <QTextDocumentWriter>
 #else
 
 #endif
 
+#include <QPrintPreviewDialog>
 
 
 
@@ -132,6 +134,8 @@ public slots:
     void printPreview();
     void saveRtfDoc();
     void saveTiffDoc();
+    void printPreview(QPrinter *printer);
+    void filePrintPreview();
 
 
 private slots:
