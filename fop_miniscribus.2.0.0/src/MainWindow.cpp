@@ -20,7 +20,17 @@ using namespace OOO;
 #endif
 
 
-
+static QString FileFilterHavingOnSave()
+{
+  QString filter;
+  filter = "";
+  filter += QString( "FOP file" ) + " (*.fop *.fo *.xml);;";
+  #if QT_VERSION >= 0x04050
+  filter+= QString( "OpenOffice 2.4 file format" ) + " (*.odt );;";
+  filter+= QString( "XHTML file format" ) + " (*.htm *.html *.txt);;";
+  #endif
+  return filter;
+}
 
 
 #include <QCloseEvent>
@@ -249,9 +259,7 @@ LINK_GHOSTPS = 9008,
     connect(savertf, SIGNAL(triggered()),edit->view(), SLOT(saveRtfDoc()));
     connect(savetiff, SIGNAL(triggered()),edit->view(), SLOT(saveTiffDoc()));
     connect(edit->view(), SIGNAL(setStaus(QString)),statusbar, SLOT(showMessage(QString)));
-    
-    
-    
+    connect(localprint, SIGNAL(triggered()),edit->view(),SLOT(filePrintPreview()));
     connect(edit->view(), SIGNAL(sceneSwap(bool)),this, SLOT(menuUpdate(bool)));
     
     
@@ -576,9 +584,8 @@ void GraphicsView::openFile()
 
 void GraphicsView::openMasterMainFile()
 {
-    //////openFile(":/file/recfile/main_doc.page");
-    
-    openFile("starter.fop");
+    openFile(":/file/recfile/main_doc.page");
+    /////////openFile("starter.fop");
 }
 
 void GraphicsView::openFile( const QString file )
@@ -845,28 +852,39 @@ void GraphicsView::zoomChainStop()
 
 void GraphicsView::saveAsFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save FOP file",QString(setter.value("LastDir").toString()) , "*.fop *.fo *.xml");
-    
+    QString fileName = QFileDialog::getSaveFileName(this, "Save file",QString(setter.value("LastDir").toString()) ,FileFilterHavingOnSave());
     if (fileName.size() > 1) {
-        QFileInfo fi(fileName);
-        const QString ext = fi.completeSuffix().toLower();
-        if (ext == "fo" || ext == "fop" || ext == "xml") {
-          /* ok */
-        } else {
-        fileName = fileName+".fop"; 
-        }
-        QFileInfo fix(fileName);
-        setter.setValue("LastDir",fix.absolutePath() + "/");
-        if (!saveFopFile(fix.absoluteFilePath(),false)) {
+    QFileInfo fi(fileName);
+        
+    const QString ext = fi.completeSuffix().toLower();
+    if (ext != "fo" || ext != "fop" || ext != "xml") {
+         QMessageBox::StandardButton ret = QMessageBox::question(this, tr("Scribe / Foedit"),
+                           tr("You can lost PDF Bookmark or floating layer \non other format! Continue and save? %1").arg(fi.fileName()),
+                           QMessageBox::Save | QMessageBox::Discard
+                           | QMessageBox::Cancel,
+                           QMessageBox::Save);
+        
+         if (ret != QMessageBox::Save) {
+          return;
+         }
+     }
+        
+        
+    setter.setValue("LastDir",fi.absolutePath() + "/");
+        
+        
+        if (!saveFopFile(fi.absoluteFilePath(),true)) {
                 QMessageBox infoset;
                 infoset.setWindowTitle(QObject::tr("Error found on document!") );
                 infoset.setText ( tr("Unable to save document, check permission!") );
                 infoset.exec();
-                return;
         }
-        openFile( fileName );
-    }
     
+       QFileInfo fix(currentopenfilerunning);
+          if (fix.exists() ) {
+           openFile( currentopenfilerunning );
+          }
+    }
 }
 
 void GraphicsView::saveOnFile()
@@ -875,16 +893,35 @@ void GraphicsView::saveOnFile()
      return;
     }
     
-    QString fileName = QFileDialog::getSaveFileName(this, "Save FOP file",QString(setter.value("LastDir").toString()) , "*.fop *.fo *.xml");
+  
+    
+    QString fileName = QFileDialog::getSaveFileName(this, "Save file",QString(setter.value("LastDir").toString()) ,FileFilterHavingOnSave());
+    
+    
+    
+    
     
     if (fileName.size() > 1) {
         QFileInfo fi(fileName);
-        const QString ext = fi.completeSuffix().toLower();
-        if (ext == "fo" || ext == "fop" || ext == "xml") {
-          /* ok */
-        } else {
-        fileName = fileName+".fop"; 
-        }
+        
+    const QString ext = fi.completeSuffix().toLower();
+    if (ext != "fo" || ext != "fop" || ext != "xml") {
+         QMessageBox::StandardButton ret = QMessageBox::question(this, tr("Scribe / Foedit"),
+                           tr("You can lost PDF Bookmark or floating layer \non other format! Continue and save? %1").arg(fi.fileName()),
+                           QMessageBox::Save | QMessageBox::Discard
+                           | QMessageBox::Cancel,
+                           QMessageBox::Save);
+        
+         if (ret != QMessageBox::Save) {
+          return;
+         }
+        
+    }
+        
+        
+        
+        
+        /////////const QString ext = fi.completeSuffix().toLower();
         QFileInfo fix(fileName);
         setter.setValue("LastDir",fix.absolutePath() + "/");
         if (!saveFopFile(fix.absoluteFilePath(),true)) {
@@ -1079,6 +1116,7 @@ void GraphicsView::apacheFopConvert()
         /* ok */
     } else {
     saveAsFile();
+    return;
     }
     if (!isFopInstall()) {
     return;
@@ -1147,14 +1185,40 @@ void GraphicsView::fopExcec( QStringList commandlist , const QString file )
 
 bool GraphicsView::saveFopFile( const  QString file ,  bool memo )
 {
+    
+    QFileInfo fi(file);
+    const QString ext = fi.completeSuffix().toLower();
+    
+    
     ApiSession *sx = ApiSession::instance();
+    currentopenfilerunning ="";
+    
+    #if QT_VERSION >= 0x040500
+    if (ext == "odt") {
+    QTextDocumentWriter writer(file);
+    writer.setFormat("odf"); 
+    return writer.write(pageFull->document());
+    } else if (ext == "html" || ext == "htm") {
+    QTextDocumentWriter writer(file);
+    writer.setFormat("HTML"); 
+    return writer.write(pageFull->document());    
+    } else if (ext == "txt") {
+    QTextDocumentWriter writer(file);
+    writer.setFormat("plaintext"); 
+    return writer.write(pageFull->document());    
+    }
+    #endif
+    
+    
+    
+    
     StreamFop *buf = new StreamFop();
-    QFileInfo pi(file);
+    
     /* layer put */
     /* save image if exist  */
     QDomDocument *fopdoc = pageFull->fopPagedoc();
     if (sx->saveImageFile.size() > 0 ) {
-          const QString imgagedirgo = pi.absolutePath() + "/" + FOPIMAGEDIR;
+          const QString imgagedirgo = fi.absolutePath() + "/" + FOPIMAGEDIR;
              ///// Cache( imgagedirgo );
           QMapIterator<QString,QByteArray> i(sx->saveImageFile);
           while (i.hasNext()) {
@@ -1275,6 +1339,10 @@ void GraphicsView::forceResizeIntern()
     scene->clearSelection();
     emit NewPageFormatin();
 }
+
+
+
+
 
 
 PaperEditor::PaperEditor( QWidget *parent)
@@ -1425,7 +1493,62 @@ void PaperEditor::DisplayTop()
 
 
 
+void GraphicsView::filePrintPreview()
+{
+#ifndef QT_NO_PRINTER
+    
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize paper = sx->CurrentPageFormat();
+    
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintPreviewDialog preview(&printer, this);
+    preview.setWindowTitle ( paper.doctitle + " " + paper.autor + " /" + paper.HName());
+    preview.setWindowFlags ( Qt::Window );
+    connect(&preview, SIGNAL(paintRequested(QPrinter *)), this ,SLOT(printPreview(QPrinter *)));
+    preview.exec();
+#endif
+}
 
+void GraphicsView::printPreview(QPrinter *printer)
+{
+    ApiSession *sx = ApiSession::instance();
+    M_PageSize paper = sx->CurrentPageFormat();
+    const QRectF fpage = pageFull->boundingRect();
+    QTextDocument *doc = pageFull->document();
+    const int PageSumm = qBound (1,doc->pageCount(),MaximumPages);
+    const int stoppp = PageSumm -1;
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    
+#ifndef QT_NO_PRINTER
+    
+    printer->setPaperSize( paper.PageExternal(0).size() , QPrinter::Point );          
+    printer->setFullPage(true);
+    
+    printer->setDocName ( paper.doctitle );
+    printer->setCreator ( paper.autor );
+
+    
+     //////lineEdit_2->setText( paper.doctitle );
+     /////////lineEdit_3->setText( paper.autor );
+    
+    if (!paper.landscape) {
+    printer->setOrientation ( QPrinter::Portrait );
+    } else {
+    printer->setOrientation ( QPrinter::Landscape ); 
+    }
+    QPainter painter(printer);
+    for (int i=0; i<PageSumm;i++) {
+        const QRectF pagen =  paper.PageExternal(i);
+        scene->render(&painter,painter.viewport(),pagen,Qt::KeepAspectRatioByExpanding);   
+        /* Ratio must paint correct! */
+        qApp->processEvents();
+        if (i != stoppp ) { 
+        Q_ASSERT ( printer->newPage() ); 
+        }
+    }
+#endif
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+}
 
 
 

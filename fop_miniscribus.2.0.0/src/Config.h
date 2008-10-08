@@ -50,14 +50,14 @@ static const qreal MINIMUMJAVAVERSION= 1.4;
 
 
 
-#define SCRIBEVERSION  "2.0.1"
+#define SCRIBEVERSION  "2.0.2"
 
 
 #define _APPLICATIONS_NAME_ \
-               QString( "MiniScribus Scribe (beta) version %1 ").arg(SCRIBEVERSION) 
+               QString( "MiniScribus Scribe/Foedit version %1 ").arg(SCRIBEVERSION) 
 
 #define _NOTITLEONDOC_ \
-             QString("MiniScribus ver. %1 - Untitled Document").arg(SCRIBEVERSION)
+             QString("MiniScribus v.%1 - Untitled Document").arg(SCRIBEVERSION)
 
 
 #define NEWLAYERCOLORSET \

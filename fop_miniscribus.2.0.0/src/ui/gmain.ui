@@ -163,7 +163,7 @@
      <normaloff>:/img/fileprint.png</normaloff>:/img/fileprint.png</iconset>
    </property>
    <property name="text" >
-    <string>FOP Print Preview Document</string>
+    <string>Apache FOP Print Preview Document</string>
    </property>
   </action>
   <action name="savertf" >
@@ -190,7 +190,7 @@
      <normaloff>:/images/print-32.png</normaloff>:/images/print-32.png</iconset>
    </property>
    <property name="text" >
-    <string>Print Preview  Document whitout FOP</string>
+    <string>Print Preview  Document without  java FOP</string>
    </property>
   </action>
  </widget>
