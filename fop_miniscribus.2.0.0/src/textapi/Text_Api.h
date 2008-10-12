@@ -16,10 +16,10 @@
 
 
 
-class QTextEditMimeData : public QMimeData
+class STextEditMimeData : public QMimeData
 {
 public:
-    inline QTextEditMimeData(const QTextDocumentFragment &aFragment) : fragment(aFragment) {}
+    inline STextEditMimeData(const QTextDocumentFragment &aFragment) : fragment(aFragment) {}
     virtual QStringList formats() const;
 protected:
     virtual QVariant retrieveData(const QString &mimeType, QVariant::Type type) const;
