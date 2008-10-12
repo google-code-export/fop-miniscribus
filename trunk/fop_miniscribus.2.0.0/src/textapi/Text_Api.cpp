@@ -1519,7 +1519,7 @@ QMimeData *TextProcessor::createMimeDataFromSelection()
 		xm->setText(QString("...Selection...Error..."));
 		return xm;
 	} else {
-	return new QTextEditMimeData(fragment);    /////QTextDocumentFragment::fromHtml(md->html())
+	return new STextEditMimeData(fragment);    /////STextDocumentFragment::fromHtml(md->html())
 	}
 }
 
@@ -3087,7 +3087,7 @@ void LayerText::setDocument ( const QTextDocument * document , FileHandlerType T
 
 
 
-QStringList QTextEditMimeData::formats() const
+QStringList STextEditMimeData::formats() const
 {
     if (!fragment.isEmpty())
         return QStringList() << QString::fromLatin1("text/plain") << QString::fromLatin1("text/html");
@@ -3095,16 +3095,16 @@ QStringList QTextEditMimeData::formats() const
         return QMimeData::formats();
 }
 
-QVariant QTextEditMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
+QVariant STextEditMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
 {
     if (!fragment.isEmpty())
         setup();
     return QMimeData::retrieveData(mimeType, type);
 }
 
-void QTextEditMimeData::setup() const
+void STextEditMimeData::setup() const
 {
-    QTextEditMimeData *that = const_cast<QTextEditMimeData *>(this);
+    STextEditMimeData *that = const_cast<STextEditMimeData *>(this);
     that->setData(QLatin1String("text/html"), fragment.toHtml("utf-8").toUtf8());
     that->setText(fragment.toPlainText());
     fragment = QTextDocumentFragment();

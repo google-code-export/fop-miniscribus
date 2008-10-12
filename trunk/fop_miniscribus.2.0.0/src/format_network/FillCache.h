@@ -27,7 +27,7 @@ ProxyServer
 
 
 
-static const int SAVELocal_as_File = 1;
+static const int SAVELocal_as_File = 0;
 
 
 
