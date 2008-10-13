@@ -101,6 +101,7 @@ void NetCacheSwap::start_Get( const QUrl url )
     }
     if (havingram.valid) {
     emit incomming(url); 
+    return;
     }
     
     
