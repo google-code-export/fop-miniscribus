@@ -10,7 +10,7 @@
 #endif
 
 
-#if QT_VERSION >= 0x040500
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
 #include <QXmlQuery>
 using namespace ApacheFop;
 #else
@@ -689,7 +689,7 @@ void GraphicsView::openFile( const QString file )
         M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
         
-        #if QT_VERSION >= 0x040500
+        #ifdef _HAVING_NEW_TEXTDOCUMENT_
         QChar letter('A' + (qrand() % 26));
         const QString locationfile = QString("%1/%2__xml").
                        arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
@@ -736,7 +736,7 @@ void GraphicsView::openFile( const QString file )
         M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
         currentopenfilerunning = "";   /* only read modus save as fop or html */
-        #if QT_VERSION >= 0x040500
+        #ifdef _HAVING_NEW_TEXTDOCUMENT_
         pageFull->setDocument(new QTextDocument());
         /* start item */
         force = new PushDoc(this);
@@ -812,7 +812,7 @@ void GraphicsView::openFile( const QString file )
 
 void GraphicsView::drawDoc()
 {
-    #if QT_VERSION >= 0x040500
+    #ifdef _HAVING_NEW_TEXTDOCUMENT_
     if (Ooo) {
     pageFull->setDocument(Ooo->document()->clone());
     /////////delete Ooo;
@@ -1193,7 +1193,7 @@ bool GraphicsView::saveFopFile( const  QString file ,  bool memo )
     ApiSession *sx = ApiSession::instance();
     currentopenfilerunning ="";
     
-    #if QT_VERSION >= 0x040500
+    #ifdef _HAVING_NEW_TEXTDOCUMENT_
     if (ext == "odt") {
     QTextDocumentWriter writer(file);
     writer.setFormat("odf"); 
