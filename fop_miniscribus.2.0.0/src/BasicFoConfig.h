@@ -14,7 +14,7 @@
 
 
 
-#if QT_VERSION >= 0x04050
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
 #include <QXmlQuery>
 #include "OOReader.h"
 

@@ -44,9 +44,6 @@ INSTALLS += target
 ###macosx:CONFIG -= app_bundle
 
 
-
-
-
 MOC_DIR = build/.moc
 RCC_DIR = build/.rcc
 OBJECTS_DIR = build/.obj
@@ -70,7 +67,8 @@ HEADERS += ../modules/xslt/xslt_convert.h
 SOURCES += ../modules/xslt/xslt_convert.cpp
 } else {
 
-
+message(loading 4.5 ------- 4.5 - 4.5------- 4.5 - 4.5 ------- 4.5 )
+DEFINES += _HAVING_NEW_TEXTDOCUMENT_
 QT += xmlpatterns
 HEADERS += format_oasis/GZipReader.h format_oasis/GZipWriter.h OOFormat.h format_oasis/OOReader.h format_network/FillCache.h
 SOURCES += format_oasis/GZip.cpp format_oasis/OOFormat.cpp format_oasis/OOReader.cpp  format_network/FillCache.cpp
