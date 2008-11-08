@@ -1809,7 +1809,7 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
 }
 
 
-#if QT_VERSION >= 0x040500
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
 
 
 
