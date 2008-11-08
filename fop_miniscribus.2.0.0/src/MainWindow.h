@@ -15,7 +15,7 @@
 #include "Layer_Auto_Extended.h"
 #include "Scribe_Parser.h"
 
-#if QT_VERSION >= 0x040500
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
 #include "OOReader.h"
 #include <QTextDocumentWriter>
 #else
@@ -102,7 +102,7 @@ protected:
     bool isFopInstall();
     bool fopInstaller();
     void fopExcec( QStringList commandlist , const QString file );
-    #if QT_VERSION >= 0x040500
+    #ifdef _HAVING_NEW_TEXTDOCUMENT_
     OOReader *Ooo;
     PushDoc *force;
     #endif
