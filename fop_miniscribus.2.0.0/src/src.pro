@@ -63,6 +63,9 @@ contains(QT_CONFIG, opengl):QT += opengl
 
 lessThan(QT_VER_MAJ, 4) | lessThan(QT_VER_MIN, 5) {
 ### qt4.5 not make ! ##
+
+DEFINES += _WORKING_ON_OLD_QTEXTDOCUMENT_SETTING
+
 HEADERS += ../modules/xslt/xslt_convert.h
 SOURCES += ../modules/xslt/xslt_convert.cpp
 } else {
