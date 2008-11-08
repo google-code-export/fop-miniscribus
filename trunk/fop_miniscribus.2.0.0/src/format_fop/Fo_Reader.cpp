@@ -1816,6 +1816,9 @@ void Fo_Reader::FrameDomIterator(  QDomNode node ,  QTextCursor Cinline  )
 #else
 /*   source  xslt open office document  */
 
+using namespace OpenOffice;
+
+
 OO_Xslt::OO_Xslt( const QString filedoc , OOTYPE doc )
  : havingdoc(false)
 {

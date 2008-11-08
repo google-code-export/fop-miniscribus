@@ -20,6 +20,19 @@
 #include "Image_Page_Struct_Mime.h"
 #include "PageFormatGroup.h"
 
+
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
+/*   new zip && xslt */
+
+
+#else
+#include "quazip.h"
+#include "gojobzip.h"
+
+#endif
+
+
+
 #include <zlib.h>
 
 
