@@ -145,7 +145,11 @@ typedef enum
 
 
 
-
+  enum OOTYPE {
+    DOC_1_VERSION = 11,
+    DOC_2_VERSION = 20, 
+    DOC_UNKNOW = 100
+  };
 
 
 
@@ -184,7 +188,7 @@ static inline QString FileFilterHaving()
   filter = "";
   filter += QString( "FOP file" ) + " (*.fop *.fop.gz *.fo *.fo.gz *.xml);;";
   filter+= QString( "MiniScribus binary stream file" ) + " (*.page);;"; 
-  #if QT_VERSION >= 0x04050
+  #ifdef _HAVING_NEW_TEXTDOCUMENT_
   /* xslt from qt 4.5  must fix not run having time for old format OO 1 */
   #else
   filter+= QString( "OpenOffice 1.1 file format" ) + " (*.sxw *.stw);;"; 

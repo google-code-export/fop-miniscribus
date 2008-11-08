@@ -1,8 +1,12 @@
 #ifndef FO_READER_H
 #define FO_READER_H
 
-
+#include "Config.h"
 #include "Fo_Format.h"
+
+
+
+
 
 #ifdef _HAVING_NEW_TEXTDOCUMENT_
 #include "FillCache.h"
@@ -120,14 +124,12 @@ public slots:
 
 #else
 
+#include "ziphandle.h"   ////// open file gzip 
+
 
 namespace OpenOffice {
     
-  enum OOTYPE {
-    DOC_1_VERSION = 11,
-    DOC_2_VERSION = 20, 
-    DOC_UNKNOW = 100
-  };
+
   
   
   /*
