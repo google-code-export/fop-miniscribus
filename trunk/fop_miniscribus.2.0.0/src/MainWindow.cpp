@@ -16,7 +16,7 @@ using namespace ApacheFop;
 #else
 #include "ziphandle.h"   ////// open file gzip 
 using namespace ApacheFop;
-using namespace OOO;
+//////using namespace OOO;
 #endif
 
 
@@ -25,7 +25,7 @@ static QString FileFilterHavingOnSave()
   QString filter;
   filter = "";
   filter += QString( "FOP file" ) + " (*.fop *.fo *.xml);;";
-  #if QT_VERSION >= 0x04050
+  #ifdef _HAVING_NEW_TEXTDOCUMENT_
   filter+= QString( "OpenOffice 2.4 file format" ) + " (*.odt );;";
   filter+= QString( "XHTML file format" ) + " (*.htm *.html *.txt);;";
   #endif
