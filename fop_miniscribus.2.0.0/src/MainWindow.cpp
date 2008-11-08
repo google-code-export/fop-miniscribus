@@ -16,7 +16,7 @@ using namespace ApacheFop;
 #else
 #include "ziphandle.h"   ////// open file gzip 
 using namespace ApacheFop;
-//////using namespace OOO;
+using namespace OpenOffice;
 #endif
 
 
