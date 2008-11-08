@@ -4,7 +4,7 @@
 
 #include "Fo_Format.h"
 
-#if QT_VERSION >= 0x040500
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
 #include "FillCache.h"
 #endif
 
@@ -100,7 +100,7 @@ private:
     QDomElement  trlastelemnt;
     QMap<int,RichDoc> layerList;
     QVector<QTextLength> LastTableCON;
-    #if QT_VERSION >= 0x040500
+    #ifdef _HAVING_NEW_TEXTDOCUMENT_
     ///////NetCacheSwap *netswap;
     #endif
 
@@ -114,7 +114,7 @@ public slots:
 
 
 
-#if QT_VERSION >= 0x040500
+#ifdef _HAVING_NEW_TEXTDOCUMENT_
 
 
 
