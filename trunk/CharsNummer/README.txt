@@ -1,0 +1,1 @@
+codes.txt  open on window wordpad to find window only chars
