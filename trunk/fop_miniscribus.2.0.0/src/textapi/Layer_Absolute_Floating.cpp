@@ -190,7 +190,7 @@ void AbsoluteLayer::setStyle( QString stylelist )
     qreal minimums = MINIMUMZINDEXFLOATING;
     setZValue (minimums);
     
-    FopColor fhc;
+    FopColor fhc(QString("red"),FopColor::Transparent);
     QStringList syle = stylelist.split(";");
     qreal hi,wi;
     incss.clear();

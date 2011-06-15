@@ -39,8 +39,6 @@ public:
     void appendLayer( QMap<int,RichDoc> floatingelement  );
     QTextCursor textCursor();
     void SwapPageModel( M_PageSize e );
-    /* load remote image or resource inline on documents */
-    void loadDocs( QStringList remoteurls );
     
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -82,7 +80,7 @@ private:
 signals:
   void pageCountChange();
   void autocursorchange(bool);   /* true on auto text / false on absolute */
-  void statusMsg(QString);
+  //////void absolutecursorchange();
   void inBookmark(QStringList);
 public slots:
     void SceneReload();
@@ -96,8 +94,6 @@ public slots:
 
 private slots:
  void bookmarkRecord();
- void fillresource( QUrl uri );
- void appStatus( const QString msg );
 
 /*
     void deleteSelected();

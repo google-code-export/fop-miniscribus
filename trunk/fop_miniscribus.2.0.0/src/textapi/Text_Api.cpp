@@ -1519,7 +1519,7 @@ QMimeData *TextProcessor::createMimeDataFromSelection()
 		xm->setText(QString("...Selection...Error..."));
 		return xm;
 	} else {
-	return new STextEditMimeData(fragment);    /////STextDocumentFragment::fromHtml(md->html())
+	return new QTextEditMimeData(fragment);    /////QTextDocumentFragment::fromHtml(md->html())
 	}
 }
 
@@ -2498,7 +2498,7 @@ void  TextProcessor::LinkText()
                    if (hrefprimo.startsWith("#")) {
                       linkerma = hrefprimo; 
                    } else {
-                       if (!hrefprimo.contains("@") || !hrefprimo.contains("mailto:") ) {
+                       if (!hrefprimo.contains("@") or !hrefprimo.contains("mailto:") ) {
                         linkerma = hrefprimo +"#target="+ satarget;
                        } else {
                         linkerma = hrefprimo; 
@@ -3087,7 +3087,7 @@ void LayerText::setDocument ( const QTextDocument * document , FileHandlerType T
 
 
 
-QStringList STextEditMimeData::formats() const
+QStringList QTextEditMimeData::formats() const
 {
     if (!fragment.isEmpty())
         return QStringList() << QString::fromLatin1("text/plain") << QString::fromLatin1("text/html");
@@ -3095,16 +3095,16 @@ QStringList STextEditMimeData::formats() const
         return QMimeData::formats();
 }
 
-QVariant STextEditMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
+QVariant QTextEditMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
 {
     if (!fragment.isEmpty())
         setup();
     return QMimeData::retrieveData(mimeType, type);
 }
 
-void STextEditMimeData::setup() const
+void QTextEditMimeData::setup() const
 {
-    STextEditMimeData *that = const_cast<STextEditMimeData *>(this);
+    QTextEditMimeData *that = const_cast<QTextEditMimeData *>(this);
     that->setData(QLatin1String("text/html"), fragment.toHtml("utf-8").toUtf8());
     that->setText(fragment.toPlainText());
     fragment = QTextDocumentFragment();

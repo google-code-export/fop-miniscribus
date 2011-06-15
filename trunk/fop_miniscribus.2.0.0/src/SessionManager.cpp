@@ -1,7 +1,7 @@
 #include "SessionManager.h"
 
 #include "BasicFoConfig.h"
-#include "Tools_Basic.h"
+
 
 ApiSession* ApiSession::st_ = 0;
 
