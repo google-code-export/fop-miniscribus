@@ -48,7 +48,7 @@ void Href_Gui::Acceptvars()
     QString te = text_href->text();
     QString url = otext_href->currentText();
     QString target = target_href->itemText(target_href->currentIndex()); 
-    if (te.size() < 1 ||  url.size() < 1) {
+    if (te.size() < 1 or  url.size() < 1) {
         QMessageBox::warning( this, tr( "Error Text!" ),tr("Please set a valid url"));
         return;
     }

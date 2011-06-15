@@ -1,7 +1,7 @@
 #ifndef MINISCRIBUS_CONFIG_H
 #define MINISCRIBUS_CONFIG_H
 
-#include <QtCore>
+#include "xslt_convert.h"
 #include <QDomElement>
 #include <stdio.h>
 #include <math.h>
@@ -46,18 +46,18 @@ static const qreal NEWLAYERWI= 350;
 static const qreal NEWLAYERHI= 40;
 
 
-static const qreal MINIMUMJAVAVERSION= 1.4;
+static const qreal MINIMUMJAVAVERSION= 1.6;
 
 
 
-#define SCRIBEVERSION  "2.0.2"
+#define SCRIBEVERSION  "2.0.0"
 
 
 #define _APPLICATIONS_NAME_ \
-               QString( "MiniScribus Scribe/Foedit version %1 ").arg(SCRIBEVERSION) 
+               QString( "MiniScribus Scribe (beta) version %1 ").arg(SCRIBEVERSION) 
 
 #define _NOTITLEONDOC_ \
-             QString("MiniScribus v.%1 - Untitled Document").arg(SCRIBEVERSION)
+             QString("MiniScribus ver. %1 - Untitled Document").arg(SCRIBEVERSION)
 
 
 #define NEWLAYERCOLORSET \
@@ -145,11 +145,7 @@ typedef enum
 
 
 
-  enum OOTYPE {
-    DOC_1_VERSION = 11,
-    DOC_2_VERSION = 20, 
-    DOC_UNKNOW = 100
-  };
+
 
 
 
@@ -177,7 +173,7 @@ static inline bool AllowtoBreack( const QDomElement e )
 static inline QStringList KnowMimeFile()
 {
  QStringList support;
- support << "fo" << "fop" << "page" "fop.gz" << "fo.gz" << "sxw" << "stw" << "odt" << "ott" << "htm" << "html" << "txt"; 
+ support << "fo" << "fop" << "page" "fop.gz" << "fo.gz" << "sxw" << "stw" << "odt" << "ott" << "htm" << "html"; 
  return support;
 }
                
@@ -188,13 +184,9 @@ static inline QString FileFilterHaving()
   filter = "";
   filter += QString( "FOP file" ) + " (*.fop *.fop.gz *.fo *.fo.gz *.xml);;";
   filter+= QString( "MiniScribus binary stream file" ) + " (*.page);;"; 
-  #ifdef _HAVING_NEW_TEXTDOCUMENT_
-  /* xslt from qt 4.5  must fix not run having time for old format OO 1 */
-  #else
   filter+= QString( "OpenOffice 1.1 file format" ) + " (*.sxw *.stw);;"; 
-  #endif
   filter+= QString( "OpenOffice 2.4 file format" ) + " (*.odt *.ott);;"; 
-  filter+= QString( "XHTML file format" ) + " (*.htm *.html *.txt);;"; 
+  filter+= QString( "XHTML file format" ) + " (*.htm *.html);;"; 
   //////filter += ")";
   return filter;
 }

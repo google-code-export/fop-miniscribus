@@ -14,15 +14,7 @@
 #include "Text_Api.h"
 #include "Layer_Auto_Extended.h"
 #include "Scribe_Parser.h"
-
-#ifdef _HAVING_NEW_TEXTDOCUMENT_
-#include "OOReader.h"
-#include <QTextDocumentWriter>
-#else
-
-#endif
-
-#include <QPrintPreviewDialog>
+#include "ziphandle.h"   ////// open file gzip 
 
 
 
@@ -50,10 +42,6 @@ protected:
 QToolButton *tbooks;
 QDockWidget *pdfBookMarkManager;
 BookTree *treeBooks;
-
-
-
-
 bool eventFilter(QObject *obj, QEvent *event);
 void resizeEvent ( QResizeEvent * e );
 void prepareDocks();
@@ -93,19 +81,12 @@ protected:
     void resizeEvent(QResizeEvent *event);
     TextLayer *pageFull;
     QSettings setter;
-    QString foptipe;
     /* current file setting */
     QString currentopenfilerunning;
     QString currentopenfilealternate;
     bool gzippedfile;
     QTextCodec *currentfilecodec;
-    bool isFopInstall();
-    bool fopInstaller();
-    void fopExcec( QStringList commandlist , const QString file );
-    #ifdef _HAVING_NEW_TEXTDOCUMENT_
-    OOReader *Ooo;
-    PushDoc *force;
-    #endif
+    
 
 private:
     
@@ -116,7 +97,6 @@ signals:
   void inBookmark(QStringList,QStandardItemModel*);
   void fileBaseOpen(QString);
   void bookMarkActive(bool);
-  void setStaus(QString);
 public slots:
     void viewDisplay( const QRectF area );
      void DisplayTop();
@@ -131,11 +111,6 @@ public slots:
     void apacheFopConvert();
     void saveOnPageBinFile();
     void pageclear();
-    void printPreview();
-    void saveRtfDoc();
-    void saveTiffDoc();
-    void printPreview(QPrinter *printer);
-    void filePrintPreview();
 
 
 private slots:
@@ -143,10 +118,6 @@ void forceResizeIntern();
 void cursorChange(bool);
 void sendinBookmark(QStringList);
 void openMasterMainFile();
-void statusSend( const QString msg );
-
-/* only qt4.5 qtextdocument performance ok */
-void drawDoc();
 };
 
 

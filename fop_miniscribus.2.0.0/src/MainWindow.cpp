@@ -3,34 +3,16 @@
 #include "Fo_Format.h"
 #include "Fo_Reader.h"
 #include "Fo_Writter.h"
-
+#include "oo_handler.h"
+#include "ziphandle.h"   ////// open file gzip 
 
 #ifndef QT_NO_OPENGL
 #include <QtOpenGL>
 #endif
 
-
-#ifdef _HAVING_NEW_TEXTDOCUMENT_
-#include <QXmlQuery>
-using namespace ApacheFop;
-#else
-#include "ziphandle.h"   ////// open file gzip 
 using namespace ApacheFop;
 using namespace OpenOffice;
-#endif
-
-
-static QString FileFilterHavingOnSave()
-{
-  QString filter;
-  filter = "";
-  filter += QString( "FOP file" ) + " (*.fop *.fo *.xml);;";
-  #ifdef _HAVING_NEW_TEXTDOCUMENT_
-  filter+= QString( "OpenOffice 2.4 file format" ) + " (*.odt );;";
-  filter+= QString( "XHTML file format" ) + " (*.htm *.html *.txt);;";
-  #endif
-  return filter;
-}
+using namespace OOO;
 
 
 #include <QCloseEvent>
@@ -109,9 +91,7 @@ void MainWindow::linkExternal()
     OpenDeskBrowser(QUrl("http://code.google.com/p/fop-miniscribus/wiki/KeyBoard"));  
     }  else if ( a == 9010) {
     OpenDeskBrowser(QUrl("http://sourceforge.net/project/project_donations.php?group_id=202496")); 
-    }  else if ( a == 9011) {
-    OpenDeskBrowser(QUrl("http://code.google.com/p/fop-miniscribus/issues/list")); 
-    } 
+    }
 }
 
 /*
@@ -195,13 +175,12 @@ toolBar->addWidget(tbooks);
     snc->registerCommand_S(StaticCmd(LINK_APACHEFOP,tr("Apache fop Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
     snc->registerCommand_S(StaticCmd(LINK_GHOSTPS,tr("Ghostscript Page"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
     snc->registerCommand_S(StaticCmd(LINK_KEYBOARDOC,tr("Application KeyBoard shortcut"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
-    snc->registerCommand_S(StaticCmd(LINK_SUPPORT,tr("Support and Help to MiniScribus"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
-    snc->registerCommand_S(StaticCmd(LINK_BUG_ISSEUE,tr("Report a bug (require Gmail user)"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
+     snc->registerCommand_S(StaticCmd(LINK_SUPPORT,tr("Support and Help to MiniScribus"),QIcon(":/img/web-48x48.png"),QKeySequence(),this,SLOT(linkExternal())));
 
 
 
 
-    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_BUG_ISSEUE , LINK_SUPPORT , LINK_KEYBOARDOC , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
+    StaticCommandID LinkActionHelp[] = {  LINK_GOOGLEBASE , LINK_SUPPORT , LINK_KEYBOARDOC , LINK_AUTHOR , LINK_XSLDOC , LINK_TROLLTECH , LINK_QTFORUMEN , LINK_QTFORUMDE , LINK_APACHEFOP , LINK_JAVA , LINK_GHOSTPS , S_NONE };
          
     for (int x = 0; LinkActionHelp[x] != S_NONE; x++) {
                  StaticCommandID id = LinkActionHelp[x];
@@ -255,13 +234,6 @@ LINK_GHOSTPS = 9008,
     connect(edit->view(), SIGNAL(fileBaseOpen(QString)),this, SLOT(setWindowTitle(QString)));
     connect(actionNewDoc, SIGNAL(triggered()),edit->view(), SLOT(pageclear()));
     connect(edit->view(), SIGNAL(bookMarkActive(bool)),this, SLOT(showBooks(bool)));
-    
-    connect(savertf, SIGNAL(triggered()),edit->view(), SLOT(saveRtfDoc()));
-    connect(savetiff, SIGNAL(triggered()),edit->view(), SLOT(saveTiffDoc()));
-    connect(edit->view(), SIGNAL(setStaus(QString)),statusbar, SLOT(showMessage(QString)));
-    connect(localprint, SIGNAL(triggered()),edit->view(),SLOT(filePrintPreview()));
-    connect(edit->view(), SIGNAL(sceneSwap(bool)),this, SLOT(menuUpdate(bool)));
-    
     
      for (int i = 0; i < toolse.size(); ++i) {
          toolse[i]->installEventFilter(this);  
@@ -458,16 +430,6 @@ GraphicsView::GraphicsView( QWidget* parent )
 	:QGraphicsView( parent ),pageFull(new TextLayer(0))
 {
     
-    #if defined Q_WS_WIN
-    foptipe = "Bat file";
-    #endif
-    #if defined Q_WS_X11
-     foptipe = "sh script";
-    #endif
-    #if defined Q_WS_MAC
-    foptipe = "sh script";
-    #endif
-    
    QPalette p = palette();
    p.setColor(QPalette::Window,Qt::lightGray);
    p.setColor(QPalette::Base,Qt::lightGray);
@@ -488,16 +450,9 @@ GraphicsView::GraphicsView( QWidget* parent )
     connect(pageFull, SIGNAL(pageCountChange() ), this, SLOT(forceResizeIntern()));
     connect(pageFull, SIGNAL(autocursorchange(bool) ), this, SLOT(cursorChange(bool)));
     connect(pageFull, SIGNAL(inBookmark(QStringList)),this, SLOT(sendinBookmark(QStringList)));
-    connect(pageFull, SIGNAL(statusMsg(QString)),this, SLOT(statusSend(QString)));
     
     QTimer::singleShot(5, this, SLOT(DisplayTop()));
     QTimer::singleShot(50, this, SLOT(openMasterMainFile()));
-}
-
-
-void GraphicsView::statusSend( const QString msg )
-{
-    emit setStaus(msg);
 }
 
 bool GraphicsView::eventFilter(QObject *obj, QEvent *e)
@@ -585,7 +540,6 @@ void GraphicsView::openFile()
 void GraphicsView::openMasterMainFile()
 {
     openFile(":/file/recfile/main_doc.page");
-    /////////openFile("starter.fop");
 }
 
 void GraphicsView::openFile( const QString file )
@@ -645,10 +599,6 @@ void GraphicsView::openFile( const QString file )
         const QTextDocument *fopdoc = fops->document()->clone();
         pageFull->setDocument(fopdoc);
         pageFull->appendLayer(absoluteItem);
-        pageFull->loadDocs(fops->urls());
-        
-        
-        
         M_PageSize formatFF = fops->PSize();
         session->current_Page_Format = formatFF;
         session->AppendPaper(formatFF);
@@ -688,33 +638,8 @@ void GraphicsView::openFile( const QString file )
     } else if ( ext ==  "sxw" || ext ==  "stw"   ) {
         M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
+        currentopenfilerunning = "";   /* only read modus save as fop or html */
         
-        #ifdef _HAVING_NEW_TEXTDOCUMENT_
-        QChar letter('A' + (qrand() % 26));
-        const QString locationfile = QString("%1/%2__xml").
-                       arg(QDesktopServices::storageLocation(QDesktopServices::CacheLocation)).
-                       arg(letter);
-        QMap<QString,QByteArray>  filist = unzipstream(fi.absoluteFilePath());
-        QByteArray base = filist["content.xml"];
-        if (base.size() > 0) {
-           if (fwriteutf8(locationfile,QString(base.constData()))) {
-                XsltConText *report = new XsltConText(locationfile,_OOOV1FILE_);
-                const QString xhtml = report->read();
-                QTextDocument  *oodoc = new QTextDocument();
-                oodoc->setHtml(xhtml);
-                delete report;
-                currentopenfilerunning = "";   /* only read modus save as fop or html */
-               defaultA4Page.HandlePrint( oodoc );
-               session->current_Page_Format = defaultA4Page;
-               session->AppendPaper(defaultA4Page);
-               pageFull->setDocument(new QTextDocument(oodoc->toPlainText()) );
-           }
-        
-        
-        
-        }
-        
-        #else
         OO_Xslt *oohandler = new OO_Xslt(fi.absoluteFilePath(),DOC_1_VERSION);
         currentopenfilerunning = "";   /* only read modus save as fop or html */
         QTextDocument  *oodoc = oohandler->Document();
@@ -722,9 +647,6 @@ void GraphicsView::openFile( const QString file )
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
         pageFull->setDocument(new QTextDocument(oodoc->toPlainText()) );
-        #endif
-        
-        
         
         BookMarkModelRead  *booki = new BookMarkModelRead();
         QStandardItemModel *dat = booki->bookModel();
@@ -736,17 +658,18 @@ void GraphicsView::openFile( const QString file )
         M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
         currentopenfilerunning = "";   /* only read modus save as fop or html */
-        #ifdef _HAVING_NEW_TEXTDOCUMENT_
-        pageFull->setDocument(new QTextDocument());
-        /* start item */
-        force = new PushDoc(this);
-        Ooo = new OOReader(fi.absoluteFilePath());
-        Ooo->moveToThread(force);
-        connect(force, SIGNAL(started()),Ooo,SLOT(read())); 
-        connect(Ooo, SIGNAL(ready()), this, SLOT(drawDoc()));
-        //////connect(Ooo, SIGNAL(statusRead(int,int)), this, SLOT(onRead(int,int)));    
-        force->start();
-        #else
+        
+        /* crasher  beta 
+        OO_Handler *ooswapper = new OO_Handler( fi.absoluteFilePath() );
+        QTextDocument  *oodoc = ooswapper->document();
+        defaultA4Page.HandlePrint( oodoc );
+        session->current_Page_Format = defaultA4Page;
+        session->AppendPaper(defaultA4Page);
+        pageFull->setDocument(oodoc);
+        */
+        
+        /* take xslt-method beta ....   */
+        
         OO_Xslt *oohandler = new OO_Xslt(fi.absoluteFilePath(),DOC_1_VERSION);
         currentopenfilerunning = "";   /* only read modus save as fop or html */
         QTextDocument  *oodoc = oohandler->Document();
@@ -754,24 +677,22 @@ void GraphicsView::openFile( const QString file )
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
         pageFull->setDocument(new QTextDocument(oodoc->toPlainText()) );
-        #endif
-        
         
         BookMarkModelRead  *booki = new BookMarkModelRead();
         QStandardItemModel *dat = booki->bookModel();
         emit inBookmark(QStringList(),dat);
         QTimer::singleShot(1, this, SLOT(zoomChain())); 
         QDir::setCurrent(dir_);
-        
         return;
-    }  else if ( ext == "html" || ext == "htm" || ext == "txt" ) {
+    }  else if ( ext == "html" || ext == "htm" ) {
          M_PageSize defaultA4Page;
         /* :-)  html not know is format !!!!!!! */
-        buf->LoadFile( fi.absoluteFilePath() );
+        buf->LoadFile( currentopenfilerunning );
         const QByteArray chunkhtml = buf->stream();
         delete buf;
         QTextDocument *htmldoc = new QTextDocument();
         htmldoc->setHtml ( QString ( chunkhtml) );
+        ///////htmldoc->setTextWidth ( defaultA4Page.G_regt.width() );
         defaultA4Page.HandlePrint( htmldoc );
         session->current_Page_Format = defaultA4Page;
         session->AppendPaper(defaultA4Page);
@@ -785,7 +706,7 @@ void GraphicsView::openFile( const QString file )
         return;
     }  else if ( ext == "page" ) {
         M_PageSize defaultA4Page;
-        //////////qDebug() << "### pageload .......... ";
+        qDebug() << "### pageload .......... ";
         buf->LoadFile( fi.absoluteFilePath() );
         const QByteArray chunkhtml = buf->stream();
         delete buf;
@@ -808,25 +729,6 @@ void GraphicsView::openFile( const QString file )
     
     QDir::setCurrent(dir_);
 }
-
-
-void GraphicsView::drawDoc()
-{
-    #ifdef _HAVING_NEW_TEXTDOCUMENT_
-    if (Ooo) {
-    pageFull->setDocument(Ooo->document()->clone());
-    /////////delete Ooo;
-    /* wait image */
-    }
-    if (force) {
-    ////////////////force->quit();
-    }
-    #endif
-    QTimer::singleShot(1, this, SLOT(zoomChainStop())); 
-}
-
-
-
 
 void GraphicsView::zoomChain()
 {
@@ -852,39 +754,28 @@ void GraphicsView::zoomChainStop()
 
 void GraphicsView::saveAsFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save file",QString(setter.value("LastDir").toString()) ,FileFilterHavingOnSave());
+    QString fileName = QFileDialog::getSaveFileName(this, "Save FOP file",QString(setter.value("LastDir").toString()) , "*.fop *.fo *.xml");
+    
     if (fileName.size() > 1) {
-    QFileInfo fi(fileName);
-        
-    const QString ext = fi.completeSuffix().toLower();
-    if (ext != "fo" || ext != "fop" || ext != "xml") {
-         QMessageBox::StandardButton ret = QMessageBox::question(this, tr("Scribe / Foedit"),
-                           tr("You can lost PDF Bookmark or floating layer \non other format! Continue and save? %1").arg(fi.fileName()),
-                           QMessageBox::Save | QMessageBox::Discard
-                           | QMessageBox::Cancel,
-                           QMessageBox::Save);
-        
-         if (ret != QMessageBox::Save) {
-          return;
-         }
-     }
-        
-        
-    setter.setValue("LastDir",fi.absolutePath() + "/");
-        
-        
-        if (!saveFopFile(fi.absoluteFilePath(),true)) {
+        QFileInfo fi(fileName);
+        const QString ext = fi.completeSuffix().toLower();
+        if (ext == "fo" || ext == "fop" || ext == "xml") {
+          /* ok */
+        } else {
+        fileName = fileName+".fop"; 
+        }
+        QFileInfo fix(fileName);
+        setter.setValue("LastDir",fix.absolutePath() + "/");
+        if (!saveFopFile(fix.absoluteFilePath(),false)) {
                 QMessageBox infoset;
                 infoset.setWindowTitle(QObject::tr("Error found on document!") );
                 infoset.setText ( tr("Unable to save document, check permission!") );
                 infoset.exec();
+                return;
         }
-    
-       QFileInfo fix(currentopenfilerunning);
-          if (fix.exists() ) {
-           openFile( currentopenfilerunning );
-          }
+        openFile( fileName );
     }
+    
 }
 
 void GraphicsView::saveOnFile()
@@ -893,35 +784,16 @@ void GraphicsView::saveOnFile()
      return;
     }
     
-  
-    
-    QString fileName = QFileDialog::getSaveFileName(this, "Save file",QString(setter.value("LastDir").toString()) ,FileFilterHavingOnSave());
-    
-    
-    
-    
+    QString fileName = QFileDialog::getSaveFileName(this, "Save FOP file",QString(setter.value("LastDir").toString()) , "*.fop *.fo *.xml");
     
     if (fileName.size() > 1) {
         QFileInfo fi(fileName);
-        
-    const QString ext = fi.completeSuffix().toLower();
-    if (ext != "fo" || ext != "fop" || ext != "xml") {
-         QMessageBox::StandardButton ret = QMessageBox::question(this, tr("Scribe / Foedit"),
-                           tr("You can lost PDF Bookmark or floating layer \non other format! Continue and save? %1").arg(fi.fileName()),
-                           QMessageBox::Save | QMessageBox::Discard
-                           | QMessageBox::Cancel,
-                           QMessageBox::Save);
-        
-         if (ret != QMessageBox::Save) {
-          return;
-         }
-        
-    }
-        
-        
-        
-        
-        /////////const QString ext = fi.completeSuffix().toLower();
+        const QString ext = fi.completeSuffix().toLower();
+        if (ext == "fo" || ext == "fop" || ext == "xml") {
+          /* ok */
+        } else {
+        fileName = fileName+".fop"; 
+        }
         QFileInfo fix(fileName);
         setter.setValue("LastDir",fix.absolutePath() + "/");
         if (!saveFopFile(fix.absoluteFilePath(),true)) {
@@ -963,177 +835,94 @@ void GraphicsView::saveOnPageBinFile()
 }
 
 
-bool GraphicsView::isFopInstall()
+void GraphicsView::apacheFopConvert()
 {
-    QString foptipe,javadir,exefop;
-    double jk_version = JavaVersion();
     
+    /* if not fop save its */
+    QFileInfo fi(currentopenfilerunning);
+    
+    if (!fi.exists()) {
+    saveAsFile();
+    return;
+    }
+    
+    const QString ext = fi.completeSuffix().toLower();
+    if (ext == "fo" || ext == "fop" || ext == "xml") {
+        /* ok */
+    } else {
+    saveAsFile();
+    }
+    
+    QString exefop,foptipe,javadir,impdf,bakfops;
     #if defined Q_WS_WIN
+    foptipe = "Bat file";
     javadir = getenv("JAVA_HOME");
     #endif
     #if defined Q_WS_X11
+    foptipe = "sh script";
     javadir = getenv("JAVA_HOME");
     #endif
     #if defined Q_WS_MAC
+    foptipe = "sh script";
     javadir = "existforever..";   /* default install all version */
     #endif
-    
-    exefop = QString(setter.value("FopApplicationfi").toString());
-    QFileInfo executefop(exefop);
-    
-    if (jk_version >= MINIMUMJAVAVERSION && executefop.exists() ) {
-        /* java looks fine */
-        return true;
-    } else {
-         fopInstaller();
-        return false;
-    }
-    
-}
 
-bool GraphicsView::fopInstaller()
-{
-    QString exefop,javadir,impdf,bakfops;
- 
     
+    /*   check java version if exist !*/
     double jk_version = JavaVersion();
+    qDebug() << "# jk_version->  " << jk_version;
     if (jk_version >= MINIMUMJAVAVERSION) {
-    QMessageBox::warning(this, tr("Java versio check."), tr("Java version is not ok installed %1 need %2.").arg(jk_version).arg(MINIMUMJAVAVERSION),QMessageBox::Cancel,QMessageBox::Cancel);
+        /* java looks fine */
     } else {
     /* java envoirment or version faliled */
-    return false;
+    return;
     }
+    
+    
     exefop = QString(setter.value("FopApplicationfi").toString());
-    QFileInfo fi(exefop);
-    if (exefop.isEmpty()  || !fi.exists()) {
-         exefop = QFileDialog::getOpenFileName(this, tr("Place of Apache Fop \"%1\" application ").arg(foptipe),"",tr("fop (*)"));
-         if (exefop.isEmpty()) {
-          return false;
-         }
-         setter.setValue("FopApplicationfi",exefop);
-         if (!isFopInstall()) {
-          /* if file not exist !!! */
-         setter.setValue("FopApplicationfi",""); 
-         return false;
-         } else {
-         return true;
-         }
-    } else {
-    return true;
-    }
+    qDebug() << "# exefop " << exefop;
     
-}
-
-
-void GraphicsView::saveTiffDoc()
-{
-    QFileInfo fi(currentopenfilerunning);
-    if (!fi.exists()) {
-    saveAsFile();
-    return;
-    }
-    const QString ext = fi.completeSuffix().toLower();
-    if (ext == "fo" || ext == "fop" || ext == "xml") {
-        /* ok */
-    } else {
-    saveAsFile();
-    }
-    if (!isFopInstall()) {
-    return;
-    }
-    
-    QString rtffile = QFileDialog::getSaveFileName(this, "Save as",QString(setter.value("LastDirPDFSave").toString())+fi.baseName()+".tif", "Tif Fax page Format  (*.tif)");
-    if (rtffile.isEmpty()) {
-    return;
-    }
-    QFileInfo fipdf(rtffile);
-    setter.setValue("LastDirPDFSave",fipdf.absolutePath() + "/");
-    fopExcec( QStringList() << "-fo" << currentopenfilerunning << "-tiff" << rtffile , rtffile );
-}
-
-
-void GraphicsView::saveRtfDoc()
-{
-    QFileInfo fi(currentopenfilerunning);
-    if (!fi.exists()) {
-    saveAsFile();
-    return;
-    }
-    const QString ext = fi.completeSuffix().toLower();
-    if (ext == "fo" || ext == "fop" || ext == "xml") {
-        /* ok */
-    } else {
-    saveAsFile();
-    }
-    if (!isFopInstall()) {
-    return;
-    }
-    
-    QString rtffile = QFileDialog::getSaveFileName(this, "Save as",QString(setter.value("LastDirPDFSave").toString())+fi.baseName()+".rtf", "Richt Text  (*.rtf)");
-    if (rtffile.isEmpty()) {
-    return;
-    }
-    QFileInfo fipdf(rtffile);
-    setter.setValue("LastDirPDFSave",fipdf.absolutePath() + "/");
-    fopExcec( QStringList() << "-fo" << currentopenfilerunning << "-rtf" << rtffile , rtffile );
-}
-
-void GraphicsView::printPreview()
-{
-    QFileInfo fi(currentopenfilerunning);
-    if (!fi.exists()) {
-    saveAsFile();
-    return;
-    }
-    const QString ext = fi.completeSuffix().toLower();
-    if (ext == "fo" || ext == "fop" || ext == "xml") {
-        /* ok */
-    } else {
-    saveAsFile();
-    }
-    if (!isFopInstall()) {
-    return;
-    }
-    QApplication::restoreOverrideCursor();
-    QProcess process;
-    process.startDetached( setter.value("FopApplicationfi").toString()  , QStringList()  << currentopenfilerunning << "-awt"  );
-     if (!process.waitForFinished()) {
-         
-         /* no fop install !!! */
-     }
-}
-
-void GraphicsView::apacheFopConvert()
-{
-    QString exefop,impdf;
-    QFileInfo fi(currentopenfilerunning);
-    if (!fi.exists()) {
-    saveAsFile();
-    return;
-    }
-    const QString ext = fi.completeSuffix().toLower();
-    if (ext == "fo" || ext == "fop" || ext == "xml") {
-        /* ok */
-    } else {
-    saveAsFile();
-    return;
-    }
-    if (!isFopInstall()) {
-    return;
-    }
-
-    exefop = QString(setter.value("FopApplicationfi").toString());
     if (exefop.isEmpty()) {
          exefop = QFileDialog::getOpenFileName(this, tr("Place of Fop \"%1\" application ").arg(foptipe),"",tr("fop (*)"));
+         
+        
          if (exefop.isEmpty()) {
           return;
          }
-         setter.setValue("FopApplicationfi",exefop);
+         
+         setter.setValue("FopApplicationfi",exefop);  /* modus on cms not editor !!! */
         
+    } else {
+        
+            QString msgDB =tr("Use fop %2 location path = %1 ?").arg(exefop).arg(foptipe);
+            int ret = QMessageBox::question(this, tr("Pleas Confirm!"),msgDB,QMessageBox::Ok | QMessageBox::No | QMessageBox::Discard,QMessageBox::Ok);
+            
+            if (ret == QMessageBox::Discard) {
+            return;
+            }
+            
+             if (ret == QMessageBox::No )  {
+                  bakfops = exefop;
+                  exefop ="";
+                  exefop = QFileDialog::getOpenFileName(this, tr("Place of Fop \"%1\" application ").arg(foptipe),bakfops,tr("fop (*)"));  
+                 if (exefop.isEmpty()) {
+                  return;
+                 }
+                 setter.setValue("FopApplicationfi",exefop);  /* modus on cms not editor !!! */
+             }
     }
-    if (!isFopInstall()) {
-    return;
-    }  
+    
+    
+         if (exefop.isEmpty()) {
+          return;
+         }
+         
+    
+    qDebug() << "# file fop " << exefop;
+    /* dont try to save if extern chunk is from hand make destroy!!!!! */
+    
+    
+    
     /* save location */
     impdf = QFileDialog::getSaveFileName(this, "Save as",QString(setter.value("LastDirPDFSave").toString())+fi.baseName()+".pdf", "Pdf  (*.pdf)");
         if (impdf.isEmpty()) {
@@ -1142,83 +931,54 @@ void GraphicsView::apacheFopConvert()
           
 
 
-            if (impdf.endsWith(".pdf")) {
+    if (impdf.endsWith(".pdf")) {
              /* ok */
             } else {
             impdf = impdf+".pdf";  
             }
+            
             QFileInfo fipdf(impdf);
             setter.setValue("LastDirPDFSave",fipdf.absolutePath() + "/");
-            fopExcec( QStringList() << "-fo" << currentopenfilerunning << "-pdf" << impdf , impdf );
-}
 
-
-void GraphicsView::fopExcec( QStringList commandlist , const QString file )
-{
-    if (!isFopInstall()) {
-    return;
-    }  
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    QProcess process;
-    process.setReadChannelMode(QProcess::MergedChannels);
-    process.start(setter.value("FopApplicationfi").toString()  , commandlist);
-                         
-                  if (!process.waitForFinished()) {
+    qDebug() << "# write to impdf " << impdf;
+            
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+            QProcess process;
+            process.setReadChannelMode(QProcess::MergedChannels);
+            process.start( exefop ,  QStringList() << "-fo" << currentopenfilerunning << "-pdf" << impdf);
+                         if (!process.waitForFinished()) {
                           QApplication::restoreOverrideCursor();
-                             QMessageBox::critical(0, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
-                             return;
+                          QApplication::restoreOverrideCursor(); 
+                          QMessageBox::critical(this, tr("Error by XSLT-FO apache"),tr("Unable to convert Your file!\nError %1").arg(QString(process.errorString())));
+                          return;
                          } else {
+                            QApplication::restoreOverrideCursor();
                              QApplication::restoreOverrideCursor();
-                                     if (file.size() > 3) {
-                                     OpenDeskBrowser(QUrl(file));
-                                     }
+                             OpenDeskBrowser(QUrl(impdf));
                            return;  
-                         }          
-                         
-                         
-    QApplication::restoreOverrideCursor();           
-                         
+                         }
+            
+            QApplication::restoreOverrideCursor();
+
+    
 }
+
+
+
 
 
 
 
 bool GraphicsView::saveFopFile( const  QString file ,  bool memo )
 {
-    
-    QFileInfo fi(file);
-    const QString ext = fi.completeSuffix().toLower();
-    
-    
     ApiSession *sx = ApiSession::instance();
-    currentopenfilerunning ="";
-    
-    #ifdef _HAVING_NEW_TEXTDOCUMENT_
-    if (ext == "odt") {
-    QTextDocumentWriter writer(file);
-    writer.setFormat("odf"); 
-    return writer.write(pageFull->document());
-    } else if (ext == "html" || ext == "htm") {
-    QTextDocumentWriter writer(file);
-    writer.setFormat("HTML"); 
-    return writer.write(pageFull->document());    
-    } else if (ext == "txt") {
-    QTextDocumentWriter writer(file);
-    writer.setFormat("plaintext"); 
-    return writer.write(pageFull->document());    
-    }
-    #endif
-    
-    
-    
-    
     StreamFop *buf = new StreamFop();
-    
+    QFileInfo pi(file);
     /* layer put */
     /* save image if exist  */
     QDomDocument *fopdoc = pageFull->fopPagedoc();
     if (sx->saveImageFile.size() > 0 ) {
-          const QString imgagedirgo = fi.absolutePath() + "/" + FOPIMAGEDIR;
+          const QString imgagedirgo = pi.absolutePath() + "/" + FOPIMAGEDIR;
              ///// Cache( imgagedirgo );
           QMapIterator<QString,QByteArray> i(sx->saveImageFile);
           while (i.hasNext()) {
@@ -1341,10 +1101,6 @@ void GraphicsView::forceResizeIntern()
 }
 
 
-
-
-
-
 PaperEditor::PaperEditor( QWidget *parent)
     : QFrame(parent),tievents(0),NotPaperUpdate(true)
 {
@@ -1404,19 +1160,14 @@ PaperEditor::PaperEditor( QWidget *parent)
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
     
     
-    resetView();
-    QTimer::singleShot(1, this, SLOT(DisplayTop()));  
-   
-    #if defined Q_WS_WIN
-    /* dont start default openGlButton */
-    #endif
-    #if defined Q_WS_X11
-    /* dont start default openGlButton */
-    #endif
-    #if defined Q_WS_MAC
-    openGlButton->setChecked ( true );
-    toggleOpenGL();
-    #endif 
+   resetView();
+   QTimer::singleShot(1, this, SLOT(DisplayTop()));  
+
+   openGlButton->setChecked ( true );
+   toggleOpenGL();
+
+    
+    
 }
 
 
@@ -1493,62 +1244,7 @@ void PaperEditor::DisplayTop()
 
 
 
-void GraphicsView::filePrintPreview()
-{
-#ifndef QT_NO_PRINTER
-    
-    ApiSession *sx = ApiSession::instance();
-    M_PageSize paper = sx->CurrentPageFormat();
-    
-    QPrinter printer(QPrinter::HighResolution);
-    QPrintPreviewDialog preview(&printer, this);
-    preview.setWindowTitle ( paper.doctitle + " " + paper.autor + " /" + paper.HName());
-    preview.setWindowFlags ( Qt::Window );
-    connect(&preview, SIGNAL(paintRequested(QPrinter *)), this ,SLOT(printPreview(QPrinter *)));
-    preview.exec();
-#endif
-}
 
-void GraphicsView::printPreview(QPrinter *printer)
-{
-    ApiSession *sx = ApiSession::instance();
-    M_PageSize paper = sx->CurrentPageFormat();
-    const QRectF fpage = pageFull->boundingRect();
-    QTextDocument *doc = pageFull->document();
-    const int PageSumm = qBound (1,doc->pageCount(),MaximumPages);
-    const int stoppp = PageSumm -1;
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    
-#ifndef QT_NO_PRINTER
-    
-    printer->setPaperSize( paper.PageExternal(0).size() , QPrinter::Point );          
-    printer->setFullPage(true);
-    
-    printer->setDocName ( paper.doctitle );
-    printer->setCreator ( paper.autor );
-
-    
-     //////lineEdit_2->setText( paper.doctitle );
-     /////////lineEdit_3->setText( paper.autor );
-    
-    if (!paper.landscape) {
-    printer->setOrientation ( QPrinter::Portrait );
-    } else {
-    printer->setOrientation ( QPrinter::Landscape ); 
-    }
-    QPainter painter(printer);
-    for (int i=0; i<PageSumm;i++) {
-        const QRectF pagen =  paper.PageExternal(i);
-        scene->render(&painter,painter.viewport(),pagen,Qt::KeepAspectRatioByExpanding);   
-        /* Ratio must paint correct! */
-        qApp->processEvents();
-        if (i != stoppp ) { 
-        Q_ASSERT ( printer->newPage() ); 
-        }
-    }
-#endif
-    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
-}
 
 
 
