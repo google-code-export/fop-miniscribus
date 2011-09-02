@@ -1,0 +1,1397 @@
+
+#include <QString>
+#include <QtDebug>
+#include <QDebug> 
+#include <QApplication>
+#include <QByteArray>
+#include <QFile>
+#include <QTextCodec>
+#include <QDateTime>
+#include <QDate>
+#include <QStringList>
+#include <QRegExp>
+#include <QUrl>
+#include <QDomNode>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomImplementation>
+#include <QDomProcessingInstruction>
+#include <QProcess>
+#include <QStringList>
+#include <QSettings>
+#include <QActionGroup>
+#include <QColorDialog>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
+#include <QMessageBox>
+#include <QTextDocumentFragment>
+#include <QTextCursor>
+#include <QFileDialog>
+#include <QString>
+#include <QTextStream>
+#include <QFontDatabase>
+#include <QTextBlockFormat>
+#include <QTextListFormat>
+#include <QTextFormat>
+#include <QTextList>
+#include <QTextCodec>
+#include <QByteArray>
+#include <QDebug>
+#include <QSettings>
+#include <QErrorMessage>
+#include <QProcess>
+#include <QTextCursor>
+#include <QTextTable>
+#include <QTextTableCell>
+#include <QTextTableFormat>
+#include <QInputDialog>
+#include <QMenu>
+
+
+#include <QObject>
+
+#include <iostream> 
+#include <ctime> 
+#include <cstdlib>
+#include "qxml.h"
+#include "main.h"
+#include "tidy.h" 
+#include "qxml.h"
+      
+
+
+/*
+UmanTimeFromUnix(QTime_Null)
+
+QString decodeBase64( QString xml )
+QString encodeBase64( QString xml )
+QString file_get_line(QString fullFileName,int linenr)
+bool qt_unlink(QString fullFileName)
+bool is_file(QString fullFileName)
+void CPrint( QString xml )
+uint QTime_Null()    UmanTimeFromUnix(QTime_Null())
+QString UmanTimeFromUnix( uint unixtime )
+int direct_int(QString xid)
+double direct_double(QString xid)
+int dateswap(QString form, uint unixtime )
+bool file_put_contents(QString fullFileName,QString xml)
+QString ReadFile(QString fullFileName)
+bool CheckUtf8(QString fullFileName)
+bool IsNetFile( QString fullFileName )
+bool qt_unlink(QString fullFileName)
+bool is_file(QString fullFileName)
+bool is_numeric(QString incomming)
+QString file_get_line(QString fullFileName,int linenr)
+QString Domain( QString url )
+QStringList GetLinks( QString bo , QString domain )
+QString CleanTag( QString body )
+QString CatPosition( QString body , const QString ax , const QString zx )
+QStringList ShuffleRandomList( QStringList belist )
+QString  Euro_Format(QString p)
+*/
+typedef QMap<int, QStringList> RssParams;
+typedef QMap<int, QStringList> HrefTextList;
+
+class Base_QBaseFile
+{
+    
+public:
+    QStringList eleborator;
+    QString  ErrorMSG;
+    QStringList  tidiconfigfile;
+    int status;
+    TidyDoc doc;
+
+/* print to console */
+void CPrint( QString xml )
+{
+    QTextStream out2(stdout);
+    out2 << xml; 
+}
+
+void CoPrint( QString xml )
+{
+    QTextStream out2(stdout);
+    out2 << xml+"\n"; 
+}
+
+
+QString XMLEnQuote( QString t )
+{
+  QString text = t;
+  text.replace("&", "&amp;");   /*  qt4 toUtf8 dont replace && */
+  text.replace("\"","&quot;");
+  text.replace("'", "&apos;");
+  text.replace("<", "&lt;");
+  text.replace(">", "&gt;");
+  text.replace("\n", "&#10;");
+  text.replace("\r", "&#13;");
+  return text;
+}
+
+QString XMLDeQuote( QString t )
+{
+  QString text = t;
+  text.replace("&amp;", "&");   /*  qt4 toUtf8 dont replace && */
+  text.replace("&quot;","\"");
+  text.replace("&apos;", "'");
+  text.replace("&lt;", "<");
+  text.replace("&gt;", ">");
+  text.replace("&#10;", "\n");
+  text.replace("&#13;", "\r");
+  return text;
+}
+
+QString SqlEnQuote( QString t )
+{
+  QString text = t;
+  text.replace("\"","\\\"");
+  text.replace("'", "\\\'");
+  return text;
+}
+
+
+/* open file url mail ecc on other programm */
+void OpenUrl_File_Dir_Dektop( QString item )
+{
+    #if defined(Q_WS_WIN)
+    QProcess p;
+    QStringList s;
+    s << "url.dll,FileProtocolHandler" << item;
+    p.startDetached(QString("rundll32.exe") , s );
+    #endif
+    #if defined Q_WS_MAC
+    QProcess m;
+    QStringList macs;
+    macs << item;  /* oeffnet der default browser */
+    m.startDetached(QString("open") , macs );
+    #endif 
+}
+
+
+
+/* read a static rss version 1/2 file and return QMap params of link title description */
+RssParams ReadRssFile( QString fileplace , int limiter )
+{
+   RssParams contingent;
+   QFile xmlfile( fileplace );
+   QString errorStr, obname, inhalt;
+   int errorLine, errorColumn, position;
+   position = 0 -1;
+   QDomDocument doc("RSS"); 
+     if(!xmlfile.open( QIODevice::ReadOnly ) ) {
+      return contingent;
+     } 
+     if (!doc.setContent(&xmlfile,true, &errorStr, &errorLine, &errorColumn)) { 
+      xmlfile.close(); 
+      return contingent;  
+     }
+    QDomElement root = doc.documentElement();
+    QDomElement chanelbase = root.firstChildElement("channel");
+    QDomElement child = chanelbase.firstChildElement("item");
+        while (!child.isNull()) {
+           QString title = CleanTagAsText(child.firstChildElement("title").text());
+           QString desc = CleanTagAsText(child.firstChildElement("description").text());
+           desc.replace(title," ");
+           desc.replace("\n"," ");
+           QString urirss = child.firstChildElement("link").text();
+           if (!title.isEmpty() and !desc.isEmpty() and !urirss.isEmpty()) {
+               position++;
+               if (position < limiter) {
+               contingent.insert(position,QStringList() << encodeBase64(urirss) << encodeBase64(title) << encodeBase64(desc));
+               }
+           }
+           child = child.nextSiblingElement("item");
+        }
+   xmlfile.close(); 
+   return contingent;
+}
+
+QString  BraketAfterVal( QString braket )
+{
+    int esanummer = 0;
+    int summer = braket.size();
+    if (braket.startsWith("[")) {
+       int starter = braket.indexOf("]",0);
+       
+           if (starter > 0) {
+              int sostfrom = summer - (starter + 2);
+               qDebug() << "### starter   " << starter << " cosa-- " <<  sostfrom;
+              QString   xid = braket.right(sostfrom);  
+               if (xid.size() > 0) {
+                return xid;
+               }
+           }
+    }
+return braket;
+}
+
+QString  FileFromUri( QString uris )
+{
+    
+    if (uris.startsWith("Show('")) {
+        uris.replace("Show('","");
+        uris.replace("/')","");
+    }
+    
+    int esanummer = 0;
+    int summer = uris.size();
+    if (uris.startsWith("/")) {
+       int starter = uris.lastIndexOf("/");
+           if (starter > 0) {
+              int sostfrom = summer - (starter + 1);
+              QString   xid = uris.right(sostfrom);  
+               if (xid.size() > 0) {
+                return xid;
+               }
+           }
+    }
+return uris;
+}
+
+QString  PathFromUri( QString uris )
+{
+    int esanummer = 0;
+    int summer = uris.size();
+    if (uris.startsWith("/")) {
+       int starter = uris.lastIndexOf("/");
+           if (starter > 0) {
+              QString   xid = uris.left(starter + 1);  
+               if (xid.size() > 0) {
+                return xid;
+               }
+           }
+    }
+return uris;
+}
+
+QString datetr(QString form, uint unixtime )
+{
+     QDateTime fromunix;
+     fromunix.setTime_t(unixtime); 
+     return fromunix.toString((const QString)form);
+}
+
+QString CheckDir(uint unixtime , int dir = 0  )
+{
+    QString base_3 ="";
+    QString base = Cms_Base_Dir();
+    QString base_0 = QString("%1%2/").arg( base , datetr("yyyy",(uint)unixtime) );
+    QString base_1 = QString("%1%2/").arg( base_0 , datetr("MM",(uint)unixtime) );
+    QString base_2 = QString("%1%2/").arg( base_1 , datetr("dd",(uint)unixtime) );
+    base_3 = QString("%1%2/").arg( base_2 , QString::number(unixtime) );
+    QString pictures = QString("%1Pictures/").arg(base_3);
+    QString dataattach = QString("%1data/").arg(base_3);   
+        
+        QDir dir0(base_3);
+        if (!dir0.mkpath(base_3) ) { 
+        /*qDebug() << "### mkdir  " << base_3;*/
+        }
+        QDir dir1(pictures);
+        if (!dir1.mkpath(pictures) ) { 
+        /*qDebug() << "### mkdir  " << base_3;*/
+        }
+        QDir dir2(dataattach);
+        if (!dir2.mkpath(dataattach) ) { 
+        /*qDebug() << "### mkdir  " << base_3;*/
+        }
+        
+        if ( dir == 0 ) {
+          return base_3;  
+        } else if ( dir == 1 ) {
+          return pictures;  
+        } else if ( dir == 2 ) {
+          return dataattach;  
+        } else {
+          return base_3;
+        }
+}
+
+QString  Cms_Base_Dir()
+{
+    return BASE_FILE_CMS;
+}
+
+
+
+int  BraketNummer( QString braket )
+{
+    int esanummer = 0;
+    if (braket.startsWith("[")) {
+       braket.replace(QString("["), QString("")); 
+       int zool = braket.indexOf("]",0); 
+           if (zool > 0) {
+              QString   xid = braket.left(zool);  
+               if (is_numeric(xid)) {
+                      bool ok; 
+                      esanummer = xid.toInt(&ok);
+               }
+           }
+    }
+return esanummer;
+}
+
+/* format euro mill ... */
+QString  Euro_Format(QString p)
+{
+    QStringList m;
+    m.clear();
+    int to = p.size();
+    int a = to - 3;
+    int b = to - 6;
+    int c = to - 9;
+    int d = to - 12;
+    int h = to - 15;
+    int f = to - 18;
+    for (int e=0; e<to; e++){
+     int x = e + 1;
+     if (x ==a || x ==b || x ==c || x ==d || x ==h || x ==f) {
+     m.append(p.mid(e,1)+"'");
+     } else {
+     m.append(p.mid(e,1));   
+     }
+    }
+return m.join("");
+    
+}
+
+/* random nummer */
+int FooNumer( int lowest, int highest )
+{
+    using namespace std;
+    srand((unsigned)time(0)); 
+    int random_integer; 
+    int range=(highest-lowest)+1; 
+    for(int index=0; index<10; index++){ 
+        random_integer = lowest+int(range*rand()/(RAND_MAX + 1.0)); 
+    } 
+return random_integer;
+}
+
+/* test random list */
+void Listare()
+{
+   QStringList RTFmonth = QStringList() << "uno" << "due" << "tre" << "quattro" << "cinque" << "sei" << "sette" << "otto" << "nove" << "dieci" << "undici" << "dodici" << "tredici";
+   QStringList newlistener = ShuffleRandomList(RTFmonth);
+   newlistener.append("ultimo\n");
+   RTFmonth.append("ultimo\n");
+   CPrint(RTFmonth.join(" - "));
+   CPrint(newlistener.join(" - "));
+    
+}
+/* random QStringList */
+QStringList ShuffleRandomList( QStringList belist )
+{
+    eleborator.clear();
+    eleborator = belist;
+    eleborator.sort();
+    int base = 0;
+    int destruct;
+    for (int i = 0; i < eleborator.size(); ++i)  { 
+        destruct = FooNumer(base,eleborator.size());
+        if (destruct != i) {
+        eleborator.swap(destruct,i);
+        }
+        eleborator.move(0,eleborator.size() - 1 );
+    }
+return   eleborator;  
+}
+
+/* make space to QInputDialog */
+QString SpacerMin( int foo )
+{
+    QStringList spac;
+    QString rspa = "";
+     spac.clear();
+    if (foo > 0) {
+    for (int i = 0; i < foo; ++i)  { 
+        spac.append("-");
+    }
+    rspa = spac.join("");
+    }
+    return rspa;
+}
+
+uint QTime_Null()
+{
+    QDateTime timer1( QDateTime::currentDateTime() ); 
+    return timer1.toTime_t();
+}
+
+/* display a mail date format */
+QString UmanTimeFromUnix( uint unixtime )
+{
+     /* mail rtf Date format! http://www.faqs.org/rfcs/rfc788.html */
+     QDateTime fromunix;
+     fromunix.setTime_t(unixtime); 
+     QStringList RTFdays = QStringList() << "day_NULL" << "Mon" << "Tue" << "Wed" << "Thu" << "Fri" << "Sat" << "Sun";
+     QStringList RTFmonth = QStringList() << "month_NULL" << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun" << "Jul" << "Aug" << "Sep" << "Oct" << "Nov" << "Dec";
+     QDate timeroad(dateswap("yyyy",unixtime),dateswap("M",unixtime),dateswap("d",unixtime));
+     /*qDebug() << "### RTFdays " << RTFdays.at(timeroad.dayOfWeek());
+     qDebug() << "### RTFmonth " << RTFmonth.at(dateswap("M",unixtime));
+     qDebug() << "### yyyy " << dateswap("yyyy",unixtime);
+     qDebug() << "### M " << dateswap("M",unixtime);
+     qDebug() << "### d " << dateswap("d",unixtime);*/
+     QStringList rtfd_line;
+     rtfd_line.clear();
+     rtfd_line.append("Date: ");
+     rtfd_line.append(RTFdays.at(timeroad.dayOfWeek()));
+     rtfd_line.append(", ");
+     rtfd_line.append(QString::number(dateswap("d",unixtime)));
+     rtfd_line.append(" ");
+     rtfd_line.append(RTFmonth.at(dateswap("M",unixtime)));
+     rtfd_line.append(" ");
+     rtfd_line.append(QString::number(dateswap("yyyy",unixtime)));
+     rtfd_line.append(" ");
+     rtfd_line.append(fromunix.toString("hh:mm:ss"));
+     rtfd_line.append("");
+     /*qDebug() << "### mail rtf Date format " << rtfd_line.join("");*/
+return QString(rtfd_line.join(""));
+}
+
+/* take a qstring and put to int */
+int direct_int(QString xid)
+{
+    int newnummer = 0;
+    if (is_numeric(xid)) {
+        bool ok; 
+        newnummer = xid.toInt(&ok);
+        return newnummer;
+    }
+ return newnummer;
+}
+
+/* take a qstring and put to double */
+double direct_double(QString xid)
+{
+    double newnummer = 0.01;
+    if (is_numeric(xid)) {
+        bool ok; 
+        newnummer = xid.toDouble(&ok);
+        return newnummer;
+    }
+ return newnummer;
+}
+
+/* return int value from a unixtime date MMM YYY ... */
+int dateswap(QString form, uint unixtime )
+{
+     QDateTime fromunix;
+     fromunix.setTime_t(unixtime); 
+     QString numeric = fromunix.toString((const QString)form);
+     bool ok; 
+     return (int)numeric.toFloat(&ok);
+}
+
+
+
+/* put qstring to a file */
+bool file_put_contents(QString fullFileName,QString xml)
+{
+        bool isutf8;
+        QTextCodec *codecx;
+        QFile f0( fullFileName );
+        if ( f0.open( QFile::WriteOnly | QFile::Text ) )
+        {
+        QTextStream sw0( &f0 );
+        sw0 << xml;
+        f0.close();
+        } 
+        
+        isutf8 = CheckUtf8(fullFileName);
+        if (isutf8) {
+        codecx = QTextCodec::codecForMib(106);
+        } else {
+        codecx = QTextCodec::codecForMib(4);     
+        }
+        
+        QString data = xml+"\n";
+        QFile f( fullFileName );
+        if ( f.open( QFile::WriteOnly | QFile::Text ) )
+        {
+        QTextStream sw( &f );
+        sw.setCodec(codecx);
+        sw << data;
+        f.close();
+        return true;
+        }
+        return false;
+}
+
+
+/* read the contenet of a local file as qstring */
+QString ReadFile(QString fullFileName)
+{
+    bool utf8 = CheckUtf8(fullFileName);
+    QString inside = "";
+    QFile file(fullFileName); 
+    if (file.exists()) {
+                if (file.open(QFile::ReadOnly | QFile::Text)) {
+                   if (utf8) {
+                    inside = QString::fromUtf8(file.readAll());   
+                   } else {
+                    inside =file.readAll();   
+                   }
+                  file.close();
+                }
+    }
+
+return inside;
+}
+
+
+/*  Readutf8File file_put_utf8contents */
+/* read the contenet of a local file as qstring */
+QString Readutf8File(QString fullFileName)
+{
+    bool utf8 = CheckUtf8(fullFileName);
+    QString inside = "";
+    QFile file(fullFileName); 
+    if (file.exists()) {
+                if (file.open(QFile::ReadOnly | QFile::Text)) {
+                    inside = QString::fromUtf8(file.readAll());   
+                  file.close();
+                }
+    }
+
+return inside;
+}
+
+
+
+bool file_put_utf8contents(QString fullFileName,QString xml)
+{
+        QTextCodec *codecx;
+        codecx = QTextCodec::codecForMib(106);
+        QFile f( fullFileName );
+        if ( f.open( QFile::WriteOnly | QFile::Text ) )
+        {
+        QTextStream sw( &f );
+        sw.setCodec(codecx);
+        sw << xml;
+        f.close();
+        return true;
+        }
+        return false;
+}
+
+
+
+
+
+
+
+
+
+/* check if in file contain utf8 html xml */
+bool CheckUtf8(QString fullFileName)
+{
+    if (is_file(fullFileName)) {
+            int grabline = 40;
+            for(int nrco=0;nrco<grabline;nrco++){
+                QString streams = file_get_line(fullFileName,nrco);
+                if (streams.contains("utf-8", Qt::CaseInsensitive)) { 
+                return true;
+                }
+            }
+    }
+return false;
+}
+
+/* check if a net file to download */
+bool IsNetFile( QString fullFileName )
+{
+    if (fullFileName.startsWith("http://", Qt::CaseInsensitive) or 
+        fullFileName.startsWith("ftp://", Qt::CaseInsensitive) or
+        fullFileName.startsWith("webdav://", Qt::CaseInsensitive)  )
+       { 
+         return true;
+       } else {
+         return false;  
+       }
+}
+
+/* check if a int or float nummer */
+bool is_numeric(QString incomming)
+{
+    incomming.replace(QString(" "), QString("")); /* trimm */
+    QString str2 = incomming;
+    bool ok; 
+    str2.toFloat(&ok); 
+return ok;
+}
+
+/* check if a file exist alert dons say true if a zero byte file!  */
+bool is_file(QString fullFileName)
+{
+    QFile f( fullFileName );
+	if ( f.exists()  and f.size() > 0) {
+    return true;  
+	} else {
+	return false;
+    }
+}
+
+/* remove a file */
+bool qt_unlink(QString fullFileName)
+{
+    QFile f( fullFileName );
+	if ( is_file( fullFileName ) ) {
+       if (f.remove()) {
+        return true;
+       }
+	}
+return false;
+}
+
+
+
+/* get line nummer of a file */
+QString file_get_line(QString fullFileName,int linenr)
+{
+    QString result;  
+    QFile file( fullFileName );
+    if( file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
+       QTextStream in( &file );
+       int currentLineNr = 0; // or 1
+       while( ! in.atEnd() ) {
+          QString line( in.readLine() );
+          if( currentLineNr == linenr ) {   /* only rewrite here .. lineNr */
+             result = line;
+             break;
+          }
+          currentLineNr += 1;
+          /*qDebug() << "### linerr  " << currentLineNr; */
+       }
+    }
+    return result;
+}
+
+/* check the file db if is sqlite3 format....  */
+bool check_file_db( QString curDBFilename )
+{
+   bool ok=false;
+   QString first_line = file_get_line(curDBFilename,1);  /* return QString from first line or "" */
+   
+     QFile file(curDBFilename);
+         /*  check befor sqlite3 write a new file! */
+         if (!file.exists()) {
+         return ok;   
+         }
+         if (first_line.size() < 1) {
+         return ok;  
+         }      
+         if (!first_line.startsWith("SQLite format 3")) {
+         return ok;  
+        } 
+return true;
+}
+
+/* encode to name */
+QString encodeBase64( QString xml )
+{
+    QByteArray text;
+    text.append(xml);
+    return text.toBase64();
+}
+
+/* decode to name */
+QString decodeBase64( QString xml )
+{
+    QByteArray xcode("");;
+    xcode.append(xml);
+    QByteArray precode(QByteArray::fromBase64(xcode));
+    QString notetxt = precode.data();
+    return notetxt;
+}
+/* extract domaine from a url */
+QString Domain( QString url )
+{
+   QString hdomain = "";
+   if (!IsNetFile(url)) {
+   url.prepend("http://");
+   return Domain(url);
+   }
+   QUrl wurl( url );
+   hdomain = QString( "http://%1" ).arg( wurl.host() );
+   return hdomain;
+}
+
+
+/* get all link and text from a html page */
+HrefTextList GetLinks( QString body , QString domain , QString baseurl )
+{
+   /* typedef QMap<int, QStringList> HrefTextList; */
+   /* qDebug() << "### body..... " << body;*/
+   HrefTextList HrefText;
+   QString abberationbase = baseurl.left(baseurl.lastIndexOf("/"))+"/";
+   HrefText.clear();
+    /* QRegExp expression( "href=[\"\'](.*)[\"\'][^>]*>(.*)</a>", Qt::CaseInsensitive );  */
+   QRegExp expression( "href=[\"\'](.*)[\"\']>(.*)</a>", Qt::CaseInsensitive );
+   expression.setMinimal(true);
+   QString href, text;
+   int iPosition = 0;
+   int counter = 0 - 1;
+   while( (iPosition = expression.indexIn( body , iPosition )) != -1 ) {
+      QString semi = expression.cap( 1 );
+       /* target class ecc... */
+       if (semi.contains("\"", Qt::CaseInsensitive)) {
+           int trovouno = semi.indexOf("\"");
+           semi = semi.left(trovouno);
+       }
+        if (semi.contains("'", Qt::CaseInsensitive)) {
+           int trovodue = semi.indexOf("'");
+           semi = semi.left(trovodue);
+       }
+       semi.replace("&amp;","&");
+      text = CleanTagAsText(expression.cap( 2 ));
+      if ( semi.startsWith("http://", Qt::CaseInsensitive) ) {
+          href = semi;
+      } else if (!semi.startsWith("/", Qt::CaseInsensitive)) {
+          href = QString( "%1%2" ).arg( abberationbase , semi );  
+      } else if (semi.startsWith("/", Qt::CaseInsensitive)) {
+          href = QString( "%1%2" ).arg( domain , semi );  
+      }
+      href = CleanTagAsText(href);
+      /*qDebug() << "### link href trovato..... " << href;*/
+      if (IsNetFile(href)) {
+          counter++;  
+          HrefText.insert(counter,QStringList() << href << text);
+      }
+      iPosition += expression.matchedLength();
+      /*qDebug() << "### iPosition " << iPosition;*/
+   } 
+   
+   return  HrefText;
+}
+
+
+
+QString  GetTitleFrombody( QString body )
+{
+    QRegExp expression( "<title>(.*)</title>", Qt::CaseInsensitive );
+    expression.setMinimal(true);
+    QString titolo = "Error title of page";
+    int iPosition = 0;
+           while( (iPosition = expression.indexIn( body , iPosition )) != -1 ) {
+              titolo = expression.cap( 1 );
+              iPosition += expression.matchedLength();
+           } 
+    return titolo;
+    
+}
+
+
+/* remove all html tag and return as clean html */
+QString CleanTag( QString body )
+{
+    /*qDebug() << "### start clean tag ";*/
+    QString newbody = InternalTagClean(body);
+    
+    newbody.replace("##break##","<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>");
+    newbody.replace("\n"," ");
+    QString lobody = QString( "<p class=\"qt_clean\" title=\"Programm powered by PPK-Webprogramm www.ciz.ch\">%1</p>" ).arg( newbody );
+    /*qDebug() << "### newbody " << newbody; */
+ return lobody;
+}  
+
+
+/* remove all html tag and return as text */
+QString CleanTagAsText( QString body )
+{
+    /*qDebug() << "### start clean tag ";*/
+    QString newbody = InternalTagClean(body);
+    newbody.replace("##break##"," ");
+    newbody.replace("\n"," ");
+    QString wbody = newbody.trimmed();
+    /*qDebug() << "### newbody " << newbody; */
+ return wbody;
+} 
+
+
+
+
+
+
+/* remove all html tag and return as text and ##break## internal tag */
+QString InternalTagClean( QString body )
+{
+    body.replace("&nbsp;"," ");
+    body.replace(QRegExp("<script(.)[^>]",Qt::CaseInsensitive), "°###cdatastart###° script-tag-attribute ");
+    body.replace(QRegExp("<style(.)[^>]",Qt::CaseInsensitive), "°###cdatastart###° style-tag-attribute ");
+    body.replace("//<![CDATA[","°###cdatastart###° cdata ");
+    body.replace("//]]>","°###cdataend###°");
+    body.replace("<!--","°###cdatastart###° comment ");
+    body.replace("<noscript>","°###cdatastart###° nosript-tag ");
+    body.replace("</noscript>","°###cdataend###°");
+    body.replace("<NOSCRIPT>","°###cdatastart###° nosript-tag");
+    body.replace("</NOSCRIPT>","°###cdataend###°");
+    body.replace("<SCRIPT>","°###cdatastart###° script-tag");
+    body.replace("</SCRIPT>","°###cdataend###°");
+    body.replace("<script>","°###cdatastart###° script-tag");
+    body.replace("</script>","°###cdataend###°");
+    body.replace("<style>","°###cdatastart###° style-tag");
+    body.replace("</style>","°###cdataend###°");
+    body.replace("<STYLE>","°###cdatastart###° style-tag");
+    body.replace("</STYLE>","°###cdataend###°");
+    body.replace("-->","°###cdataend###°");
+    body.replace("<!---","°###cdatastart###° comment ");
+    body.replace("--->","°###cdataend###°");
+    /* body.replace(QRegExp("<p[^>]*>([^<]*)</p>",Qt::CaseInsensitive), "\\1");*/ 
+    body.replace(QRegExp("<li[^>]*>([^<]*)</li>",Qt::CaseInsensitive), "\\1 ##break##");
+    body.replace(QRegExp("<li[^>]*>([^<]*)",Qt::CaseInsensitive), "\\1 ##break##");
+    body.replace("<br>","##break##");
+    body.replace("</br>","##break##");
+    body.replace("</p>","##break##");
+    body.replace("</td>","##break##");
+    body.remove(QRegExp("<head>(.*)</head>",Qt::CaseInsensitive));
+    body.remove(QRegExp("°###cdatastart###°(.)[^°]*°###cdataend###°",Qt::CaseInsensitive));
+    body.remove(QRegExp("<script(.)[^>]*</script>",Qt::CaseInsensitive));
+    body.remove(QRegExp("°###cdatastart###°(.)[^°]*°###cdataend###°",Qt::CaseInsensitive));
+    body.remove(QRegExp("<form(.)[^>]*</form>",Qt::CaseInsensitive));
+    body.remove(QRegExp("<FORM(.)[^>]*</FORM>",Qt::CaseInsensitive));
+    body.remove(QRegExp("<script(.)[^>]*</script>",Qt::CaseInsensitive));
+    body.remove(QRegExp("<SCRIPT(.)[^>]*</SCRIPT>",Qt::CaseInsensitive));
+    body.remove(QRegExp("<style(.)[^>]*</style>",Qt::CaseInsensitive));
+    body.remove(QRegExp("<STYLE(.)[^>]*</STYLE>",Qt::CaseInsensitive));
+    body.remove(QRegExp("<(.)[^>]*>"));
+    
+ return body;
+}
+
+
+
+
+
+
+
+
+QString CatPosition( QString body , const QString ax , const QString zx )
+{
+QString solver;
+int startx  = body.indexOf(ax,0,Qt::CaseInsensitive);
+int stopx   = body.lastIndexOf(QRegExp(zx));
+int allx    = body.size(); 
+    
+    if (stopx > startx) {
+        qDebug() << "### stop supera start .... start=" << startx << " stop=" << stopx;
+        int estrai = stopx - startx;
+        solver = body.mid(startx,estrai);
+        qDebug() << "### estratto risultato " << solver;
+    } else {
+        solver =  body; 
+    }
+    
+return solver;
+}
+
+QStringList ThemeListCMS()
+{
+    QStringList themelists;
+    themelists.clear();
+    
+    QFile xmlfile(APPLICATION_SETTING);
+    if(!xmlfile.open( QIODevice::ReadOnly ) ) {
+     return themelists;
+    }
+    QString errorStr, obname, inhalt, listapat, themelist;
+    int errorLine;
+    int errorColumn;
+    
+    QDomDocument doc("http://www.pulitzer.ch/2005/PuliCMS/1.0"); 
+     if (!doc.setContent(&xmlfile)) {
+     return themelists;
+     } 
+    QDomElement root = doc.documentElement();
+    if( root.tagName() != "setting" ) {
+    return themelists;
+    }
+    QDomNode n = root.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        if( !e.isNull() )
+        {
+                       if( e.tagName() == "themes" ) {
+                           themelist = decodeBase64(e.text());
+                       }
+                       
+         n = n.nextSibling();
+        } 
+    }
+    
+    xmlfile.close();
+    themelists = themelist.split("|");
+    return themelists;
+}
+
+
+
+bool Copy_To(QString inputfile, QString outfile)
+{
+    bool actioncpy = false;
+    if (is_file(inputfile)) {
+           qt_unlink(outfile);
+           QFile Imaged(inputfile); 
+               if (!Imaged.copy(outfile)) { 
+                   ErrorMSG ="Not possibel to copy!";         
+                } else {
+                   actioncpy = true; 
+                }
+    }
+return actioncpy;
+}
+
+
+/* QString clean file inputfile and put to outfile */
+bool CleanTidy(QString inputfile, QString outfile)
+{
+    /*qDebug() << "### load inputfile....  "  << inputfile;*/
+    /*qDebug() << "### load outfile....  "  << outfile;*/
+    Bool ok;
+    ctmbstr cfgfil = NULL, outputfil = NULL, htmlfil = NULL;
+    int rc = 0 - 10;
+    int base = 0 - 10;
+    int status = 0;
+    QByteArray infile = inputfile.toAscii();
+    QByteArray outfi = outfile.toAscii();
+    htmlfil = infile.data();   /* incomming file entra */
+    outputfil = outfi.data();
+    rc = tidyParseFile( doc, htmlfil );
+   
+                if ( outputfil ) {
+                    status = tidySaveFile( doc, outputfil );
+                    ///////////qDebug() << "### save to out file ... ";
+                } else {
+                    status = tidySaveStdout( doc );
+                }
+               
+    /* check if file exist if not copy in to out */
+    QFile f( outfile );
+   if (!f.exists()) {
+    //////////qDebug() << "### file out not exist copy in to out... ";
+       QFile Imaged(inputfile); 
+      if (!Imaged.copy(outfile)) { 
+       ErrorMSG ="Not possibel to copy!";         
+       }
+   } else {
+    ///////////qDebug() << "### file found SUCCESS!!!!!!!! bravo ... ";
+    return true;
+    }
+    /* check if file exist if not copy in to out */
+
+return false;
+}
+
+
+/* write the config file */
+bool tidy_file_set_config(QString xml)
+{
+return file_put_utf8contents(TIDY_CONF,xml);
+    /* file_put_utf8contents   Readutf8File  */
+} 
+
+/* prepare config tidy config file xhtml clean */
+bool SetUp_xhtml_full_page()
+{
+    status = 0;
+    ErrorMSG ="";
+    doc = tidyCreate();
+    /////////qDebug() << "### load config. xhtml ...  ";
+    bool ok;
+    tidiconfigfile.clear();
+    tidiconfigfile.append("output-xhtml: yes");
+    tidiconfigfile.append("clean: yes");
+    tidiconfigfile.append("wrap: 550");
+    tidiconfigfile.append("indent-spaces: 1");
+    tidiconfigfile.append("char-encoding: utf8");
+    tidiconfigfile.append("output-encoding: utf8");
+    tidiconfigfile.append("wrap-attributes: yes");
+    tidiconfigfile.append("doctype: yes");
+    tidiconfigfile.append("hide-comments: yes");
+    tidiconfigfile.append("numeric-entities: yes");
+    tidiconfigfile.append("drop-proprietary-attributes: yes");
+    tidiconfigfile.append("word-2000: yes");
+    tidiconfigfile.append("bare: yes");
+    //////tidiconfigfile.append("show-body-only: yes");  /* only body checks */
+    QString configtotsl = tidiconfigfile.join("\n");
+    ok = tidy_file_set_config(configtotsl);   /* TIDY_CONF */
+    if (ok) {
+         QByteArray configfileti = TIDY_CONF.toAscii();
+         status = tidyLoadConfig( doc, configfileti.data() );  /* http://ch2.php.net/manual/de/function.tidy-load-config.php */
+        if ( status != 0 ) {
+         ErrorMSG ="Not possibel to load Config File!";
+         return false;
+        } else { 
+        return true;
+        }
+    } else {
+      ErrorMSG ="Not possibel to load Config File!";
+     return false; 
+    } 
+}
+
+
+/* prepare config tidy config file xhtml clean */
+bool SetUp_xhtml()
+{
+    status = 0;
+    ErrorMSG ="";
+    doc = tidyCreate();
+    qDebug() << "### load config. xhtml ...  ";
+    bool ok;
+    tidiconfigfile.clear();
+    tidiconfigfile.append("output-xhtml: yes");
+    tidiconfigfile.append("clean: yes");
+    tidiconfigfile.append("wrap: 550");
+    tidiconfigfile.append("indent-spaces: 1");
+    tidiconfigfile.append("char-encoding: utf8");
+    tidiconfigfile.append("output-encoding: utf8");
+    tidiconfigfile.append("wrap-attributes: yes");
+    tidiconfigfile.append("hide-comments: yes");
+    tidiconfigfile.append("numeric-entities: yes");
+    tidiconfigfile.append("drop-proprietary-attributes: no");
+    tidiconfigfile.append("word-2000: yes");
+    //////tidiconfigfile.append("bare: yes");
+    tidiconfigfile.append("show-body-only: yes");  /* only body checks */
+    QString configtotsl = tidiconfigfile.join("\n");
+    ok = tidy_file_set_config(configtotsl);   /* TIDY_CONF */
+    if (ok) {
+         QByteArray configfileti = TIDY_CONF.toAscii();
+         status = tidyLoadConfig( doc, configfileti.data() );  /* http://ch2.php.net/manual/de/function.tidy-load-config.php */
+        if ( status != 0 ) {
+         ErrorMSG ="Not possibel to load Config File!";
+         return false;
+        } else { 
+        return true;
+        }
+    } else {
+      ErrorMSG ="Not possibel to load Config File!";
+     return false; 
+    } 
+}
+
+
+/* prepare config tidy config file xml clean */
+bool SetUp_xml()
+{
+    status = 0;
+    ErrorMSG ="";
+    doc = tidyCreate();
+    qDebug() << "### load config xml ....  ";
+    bool ok;
+    tidiconfigfile.clear();
+    tidiconfigfile.append("input-xml: yes");
+    tidiconfigfile.append("char-encoding: utf8");
+    tidiconfigfile.append("output-encoding: ascii");
+    tidiconfigfile.append("output-xml: yes");
+    tidiconfigfile.append("hide-comments: yes");
+    tidiconfigfile.append("numeric-entities: yes");
+    tidiconfigfile.append("add-xml-space: no");
+    QString configtotsl = tidiconfigfile.join("\n");
+    ok = tidy_file_set_config(configtotsl);   /* TIDY_CONF */
+    if (ok) {
+         QByteArray configfileti = TIDY_CONF.toAscii();
+         status = tidyLoadConfig( doc, configfileti.data() );  /* http://ch2.php.net/manual/de/function.tidy-load-config.php */
+        if ( status != 0 ) {
+         ErrorMSG ="Not possibel to load Config File!";
+         return false;
+        } else { 
+        return true;
+        }
+    } else {
+      ErrorMSG ="Not possibel to load Config File!";
+     return false; 
+    } 
+}
+
+
+
+
+
+
+QString TidyCleanhtml( QString body )
+{
+    QString newbody;
+    bool ok;
+    QString sucleanfile = QString( "%1tidy_tmp.html" ).arg( WORK_CACHEDIR );
+    QString sucleanfileout = QString( "%1tidy_tmp_out.html" ).arg( WORK_CACHEDIR );
+    qt_unlink(sucleanfileout);
+    ok = file_put_utf8contents(sucleanfile,body);
+    /* file_put_utf8contents   Readutf8File  */
+    if (!ok) {
+    return body;
+    } else {
+    SetUp_xhtml();
+    CleanTidy(sucleanfile,sucleanfileout);
+    newbody =  Readutf8File(sucleanfileout);
+            if (newbody.size() > 2) {
+            return newbody;
+            } else {
+            return body;   
+            }
+    }        
+}
+
+
+QString TidyCleanxml( QString body )
+{
+    QString newbody;
+    bool ok;
+    QString sucleanfile = QString( "%1tidy_tmp.xml" ).arg( WORK_CACHEDIR );
+    QString sucleanfileout = QString( "%1tidy_tmp_out.xml" ).arg( WORK_CACHEDIR );
+    qt_unlink(sucleanfileout);
+    ok = file_put_utf8contents(sucleanfile,body);
+    /* file_put_utf8contents   Readutf8File  */
+    if (!ok) {
+    return body;
+    } else {
+    SetUp_xml();
+    CleanTidy(sucleanfile,sucleanfileout);
+    newbody =  Readutf8File(sucleanfileout);
+            if (newbody.size() > 2) {
+            return newbody;
+            } else {
+            return body;   
+            }
+    }        
+}
+
+QString cleantext( QString body )
+{
+   return  CleanTagQt4(body,0);   /* default text modus */
+}
+
+QString cleanimagetext( QString body )
+{
+   return  CleanTagQt4(body,1);   /* default text modus */
+}
+
+QString cleancatetext( QString body )
+{
+   return  CleanTagQt4(body,2);   /* default text modus */
+}
+
+/* remove all style to danger before tidy make jobs  */
+QString CleanTagQt4( QString body , int modo )
+{
+    /*qDebug() << "### start clean tag ";*/
+    QString finale, finale4;
+    QString newbody = body;
+    newbody.replace(QRegExp("<div[^>]*>([^<]*)</div>",Qt::CaseInsensitive), "\\1 <!-- QRegExp -->");
+    newbody.replace("-qt-paragraph-type","devnull-type");
+    newbody.replace("margin-top","devnull-top");
+    newbody.replace("margin-bottom","devnull-bottom"); 
+    newbody.replace("margin-left","devnull-left");
+    newbody.replace("margin-right","devnull-right");
+    newbody.replace("text-indent","devnull-indent");
+    newbody.replace("font-size","devnull-size");
+    newbody.replace("#target=_blank\"","\" target=\"_blank\"");
+    newbody.replace("#target=_top\"","\" target=\"_top\"");
+    newbody.replace("#target=_self\"","\" target=\"_self\"");
+    newbody.replace("#target=_main\"","\" target=\"_main\"");
+    newbody.replace("#target=_menu\"","\" target=\"_menu\"");
+    newbody.replace("\n"," ");
+    QString wbody = newbody.trimmed();
+    QString tname = UmanTimeFromUnix(QTime_Null());
+    finale = TidyCleanhtml(QString("<div class=\"####CLASSNAME####\" title=\"Programm powered by PPK-Webprogramm www.ciz.ch document from %2\">%1</div>").arg(wbody).arg(tname));
+    finale.replace("\n"," ");
+    QString  classe_testo = Global_Config("CLASSNAME_TEXT");
+    QString  classe_foto = Global_Config("CLASSNAME_FOTO");
+    QString  classe_cate = Global_Config("CLASSNAME_CATE");
+    
+    
+    if (modo == 0) {
+    finale.replace("####CLASSNAME####",classe_testo);  
+    } else if (modo == 1 ) {
+    finale.replace("####CLASSNAME####",classe_foto);
+    } else if (modo == 2 ) {
+    finale.replace("####CLASSNAME####",classe_cate);
+    } else {
+    finale.replace("####CLASSNAME####","Classe_NON_Configurata");   
+    }
+    finale4 = finale.trimmed();
+ return finale4;
+} 
+
+
+bool EnableAllSetting()
+{
+  if (is_file(ONLINE_SITEMAP) and is_file(APPLICATION_SETTING) and is_file(WORKCATFILE) and is_file(LITEDB) ) {
+      return true;
+  } else {
+      return false;
+  }
+
+}
+
+QString  Global_Config(QString tagname)
+{
+    QFile xmlfile(APPLICATION_SETTING);
+    QString isis="";
+    if(!xmlfile.open( QIODevice::ReadOnly ) ) {
+    return isis;
+    }
+    QString errorStr, obname, inhalt;
+    int errorLine;
+    int errorColumn;
+    
+    QDomDocument doc("http://www.pulitzer.ch/2005/PuliCMS/1.0"); 
+     if (!doc.setContent(&xmlfile,true, &errorStr, &errorLine, &errorColumn)) {
+     return isis;
+     xmlfile.close();
+     } 
+    QDomElement root = doc.documentElement();
+    if( root.tagName() != "setting" ) {
+    return isis;
+    }
+    QDomNode n = root.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        if( !e.isNull() )
+        {
+                   if( e.tagName() == tagname ) {
+                   xmlfile.close();
+                   return decodeBase64(e.text());
+                   }
+                   
+         n = n.nextSibling();
+        } 
+    }
+xmlfile.close();
+return isis;
+}
+
+QString Server_Net_Location()
+{
+    QString  base2 = Global_Config("imex_server");
+    QString  base3 = Domain(base2)+"/";
+    return base3;
+}
+
+QString SerialCheck()
+{
+    QString  base5 ="norial";
+       QString  base2 = Global_Config("imex_serial");
+    
+             if (base2.size() < 10) {
+               return base5;  
+             } else {
+                return base2; 
+             }
+    
+}
+
+QString Sitemap_Net_Location()
+{
+    QString  qserver = Server_Net_Location();
+    QString  setconf = QString("%1qtsitemap/").arg(qserver); 
+    return setconf;
+}
+
+QString Server_User_Setting()
+{
+    QString  user = Global_Config("imex_user");
+    if (user.size() > 1) {
+        return user;
+    } else {
+        user = "no_user_settting";
+        return user;
+    }
+}
+
+QString Server_Category_Map_Setting( int modus = 1 )
+{
+    QString  quser = Server_User_Setting();
+    QString  qserver = Server_Net_Location();
+    QString cate_desc = QString("%1user/db_%2/_qt_cate_desc.xml").arg(qserver,quser);
+    QString cate_full = QString("%1user/db_%2/_qt_cate_full.xml").arg(qserver,quser);
+    if (modus == 1) {
+        return cate_full;
+    } else {
+        return cate_desc;
+    }
+}
+
+QString FileBorn( QString localfile )
+{
+        QFileInfo sinfo(localfile);
+        QDateTime born = sinfo.created();
+        return QString::number(born.toTime_t());
+}
+
+QString xmlspace( QString text )
+{
+        QString nuovo1 = text.trimmed();
+        QString nuovo2 = nuovo1.replace("\n"," ");
+                nuovo2.replace("\r"," ");
+                nuovo2.replace("\t"," ");
+                nuovo2.replace("  "," ");
+        return nuovo2;
+}
+
+
+
+/* 
+
+http://ticino.ppk.go/user/db_dado/_qt_cate_desc.xml 
+http://ticino.ppk.go/user/db_dado/_qt_cate_full.xml
+
+*/
+
+};
+
+namespace BA {
+    class Base: public Base_QBaseFile {};
+} // namespace BA
+
+
+
+
+
+
+
+class CateSetting : public QObject
+{
+    Q_OBJECT
+    
+public:
+        CateSetting( int canva , QString ti ) { 
+            if (canva > 0) {
+                filler = true;
+               position =  canva;
+               titles = ti;
+            } else {
+               filler = false;
+               position =  0;
+               titles = ti;
+            }
+        }
+        inline QString GetTit() const { return titles; }
+        inline QDomElement GetDom()  { return ele; }
+        int Indexnum() const { return position; }
+        bool CateValid() const { return filler; }
+        void SetTit ( QString t ) 
+        {
+           titles = t; 
+        }
+         void SetDom ( QDomElement d ) 
+        {
+           ele = d; 
+        }
+private:
+    bool filler;
+    QDomElement ele;
+    QString titles;
+     int position;  
+};
+
+
+
+
+
+
