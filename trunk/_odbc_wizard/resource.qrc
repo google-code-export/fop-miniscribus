@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>img/File_down.png</file>
+        <file>img/File_up.png</file>
+        <file>img/Ticket_Form.pdf</file>
+        <file>img/about_as_image.png</file>
+        <file>img/create_index.png</file>
+        <file>img/create_table.png</file>
+        <file>img/delete_index.png</file>
+        <file>img/delete_table.png</file>
+        <file>img/hdd_linux_mount.png</file>
+        <file>img/hdd_mac_mount.png</file>
+        <file>img/hdd_win98_mount.png</file>
+        <file>img/icon.ico</file>
+        <file>img/icone16.png</file>
+        <file>img/link.png</file>
+        <file>img/log.png</file>
+        <file>img/modify_table.png</file>
+        <file>img/new.png</file>
+        <file>img/open.png</file>
+        <file>img/revert.png</file>
+        <file>img/save.png</file>
+        <file>img/searchfind.png</file>
+        <file>img/whatis.png</file>
+        <file>img/win.rc</file>
+    </qresource>
+</RCC>
